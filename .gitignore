@@ -1,0 +1,14 @@
+.env
+.venv/
+.pytest_cache/
+.ruff_cache/
+__pycache__/
+*.py[cod]
+
+# Private wardrobe data
+data/
+
+# Local editor and OS files
+.DS_Store
+.idea/
+.vscode/

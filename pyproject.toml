@@ -1,0 +1,38 @@
+[project]
+name = "cloth-store"
+version = "0.1.0"
+description = "Private AI-assisted digital wardrobe"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.141.1",
+    "pillow>=12.3.0",
+    "pydantic-settings>=2.14.2",
+    "python-multipart>=0.0.32",
+    "sqlalchemy>=2.0.51",
+    "uvicorn[standard]>=0.52.0",
+]
+
+[project.scripts]
+cloth-store-api = "cloth_store.app:run"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=9.1.1",
+    "ruff>=0.16.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
