@@ -17,18 +17,18 @@ from typing import Any
 from cloth_store.web import STATIC_ROOT, WEB_ROOT
 from cloth_store.web_storefront import build_storefront_bundle, write_storefront_bundle
 
-BUNDLE_NAME = "lavani-closet"
+BUNDLE_NAME = "cloth-store"
 BUNDLE_VERSION = "1"
 CATALOGUE_PREFIX = "assets/catalogue"
 SELFIE_PREFIX = "assets/selfies"
-DEFAULT_OUTPUT_DIR = Path("dist/lavani-closet")
-DEFAULT_ZIP_PATH = Path("dist/lavani-closet.zip")
-LEGACY_WINDOWS_ZIP_PATH = Path("dist/lavani-closet-windows.zip")
-LEGACY_UNIX_ZIP_PATH = Path("dist/lavani-closet-unix.zip")
+DEFAULT_OUTPUT_DIR = Path("dist/cloth-store")
+DEFAULT_ZIP_PATH = Path("dist/cloth-store.zip")
+LEGACY_WINDOWS_ZIP_PATH = Path("dist/cloth-store-windows.zip")
+LEGACY_UNIX_ZIP_PATH = Path("dist/cloth-store-unix.zip")
 LAUNCHER_DIR = Path(__file__).resolve().parent / "bundle_launchers"
-LAUNCHER_FILES = ("start-lavani.bat", "start-lavani.ps1", "start-lavani.sh")
-LEGACY_WINDOWS_LAUNCHER_FILES = ("start-lavani.bat", "start-lavani.ps1")
-LEGACY_UNIX_LAUNCHER_FILES = ("start-lavani.sh",)
+LAUNCHER_FILES = ("start-cloth-store.bat", "start-cloth-store.ps1", "start-cloth-store.sh")
+LEGACY_WINDOWS_LAUNCHER_FILES = ("start-cloth-store.bat", "start-cloth-store.ps1")
+LEGACY_UNIX_LAUNCHER_FILES = ("start-cloth-store.sh",)
 
 FORBIDDEN_BUNDLE_PARTS = (
     "output_1k.png",
@@ -37,6 +37,14 @@ FORBIDDEN_BUNDLE_PARTS = (
     ".sqlite",
     ".db",
     "node_modules",
+)
+
+REQUIRED_SELFIE_BASENAME = "crop_neck_down.jpg"
+FORBIDDEN_SELFIE_BASENAMES = frozenset(
+    {
+        "crop_refocused.jpg",
+        "crop_only.jpg",
+    }
 )
 
 PROMPT_SOURCE = Path("prompts/catalogue_description_system.md")
@@ -51,7 +59,7 @@ any ML/runtime dependencies.
 
 ## Open the storefront
 
-1. Extract **`lavani-closet.zip`** to any folder (for example `Downloads/lavani-closet`).
+1. Extract **`cloth-store.zip`** to any folder (for example `Downloads/cloth-store`).
 2. Double-click **`index.html`**.
 
 The site loads from your browser using relative CSS, JavaScript, and images.
@@ -103,11 +111,9 @@ No FastAPI, uv, or repository checkout is required.
 ## Image policy
 
 - Catalogue cards and modals use **512px** `output.png` derivatives only.
-- Selfies prefer QC-approved neck-down privacy crops:
-  - normal outfits → `assets/selfies/outfit_N/crop_neck_down.jpg`
-  - review-required outfits with approved neck-down → same
-  - missing/invalid neck-down → `crop_refocused.jpg` or `crop_only.jpg`
-  - no refocus deliverable → original `assets/selfies/outfit_N.jpeg`
+- Selfies use QC-approved neck-down privacy crops only:
+  - `assets/selfies/outfit_N/crop_neck_down.jpg`
+- No refocus crops, original mirror selfies, or face-containing variants are included.
 - No 1K masters, pipeline inputs, or private database files are included.
 
 ## Snapshot notice
@@ -116,7 +122,7 @@ Data and images reflect the catalogue at build time. Rebuild from the repository
 with `uv run cloth-store-static-bundle --repo-root /path/to/cloth_store` to
 refresh.
 
-The canonical shareable artifact is **`dist/lavani-closet.zip`** (this folder).
+The canonical shareable artifact is **`dist/cloth-store.zip`** (this folder).
 """
 
 
@@ -163,10 +169,11 @@ def _catalogue_source_path(repo_root: Path, bundle_url: str) -> Path:
 
 def _selfie_source_path(repo_root: Path, bundle_url: str) -> Path:
     rel = bundle_url.removeprefix(f"{SELFIE_PREFIX}/")
-    refocus_path = repo_root / "final_selfies" / rel
-    if refocus_path.is_file():
-        return refocus_path
-    return repo_root / "data" / rel
+    if not rel.endswith(f"/{REQUIRED_SELFIE_BASENAME}"):
+        raise ValueError(
+            f"Static bundle accepts only {REQUIRED_SELFIE_BASENAME} selfies, got: {bundle_url}"
+        )
+    return repo_root / "final_selfies" / rel
 
 
 def _copy_asset(source: Path, destination: Path, *, manifest_root: Path) -> dict[str, Any]:
@@ -322,6 +329,7 @@ def build_static_bundle(
         repo_root=repo_root,
         selfies_url_prefix=SELFIE_PREFIX,
         assets_url_prefix=CATALOGUE_PREFIX,
+        neck_down_selfies_only=True,
     )
 
     data_dir = output_dir / "data"
@@ -452,7 +460,7 @@ def _validate_bundle_launchers(bundle_dir: Path) -> None:
         "/home/",
         "/path/to/",
         "cloth_store",
-        "dist/lavani-closet",
+        "dist/cloth-store",
     )
     for name in LAUNCHER_FILES:
         launcher_path = bundle_dir / name
@@ -468,14 +476,14 @@ def _validate_bundle_launchers(bundle_dir: Path) -> None:
         for forbidden in forbidden_patterns:
             if forbidden in text:
                 raise AssertionError(f"Launcher {name} contains hardcoded path: {forbidden!r}")
-    bat_text = (bundle_dir / "start-lavani.bat").read_text(encoding="utf-8")
+    bat_text = (bundle_dir / "start-cloth-store.bat").read_text(encoding="utf-8")
     assert "%~dp0" in bat_text or 'cd /d "%~dp0"' in bat_text
-    ps1_text = (bundle_dir / "start-lavani.ps1").read_text(encoding="utf-8")
+    ps1_text = (bundle_dir / "start-cloth-store.ps1").read_text(encoding="utf-8")
     assert "$PSScriptRoot" in ps1_text
-    sh_path = bundle_dir / "start-lavani.sh"
+    sh_path = bundle_dir / "start-cloth-store.sh"
     sh_text = sh_path.read_text(encoding="utf-8")
     assert 'dirname -- "$0"' in sh_text or "$(dirname" in sh_text
-    assert sh_path.stat().st_mode & 0o111, "start-lavani.sh must be executable"
+    assert sh_path.stat().st_mode & 0o111, "start-cloth-store.sh must be executable"
 
 
 def _validate_bundle_html_static_paths(index_html: str) -> None:
@@ -557,6 +565,35 @@ def validate_markdown_links(repo_root: Path) -> list[str]:
     return errors
 
 
+def _validate_bundle_selfie_privacy(bundle_dir: Path, bundle: dict[str, Any]) -> None:
+    """Reject non-neck-down selfie assets and references in the public bundle."""
+    selfies_root = bundle_dir / SELFIE_PREFIX
+    if selfies_root.is_dir():
+        for path in selfies_root.rglob("*"):
+            if not path.is_file():
+                continue
+            name = path.name.lower()
+            rel = path.relative_to(bundle_dir).as_posix()
+            if name in FORBIDDEN_SELFIE_BASENAMES:
+                raise AssertionError(f"Forbidden selfie variant in bundle: {rel}")
+            if name.endswith(".jpeg"):
+                raise AssertionError(f"Forbidden original selfie in bundle: {rel}")
+            if name.endswith(".jpg") and name != REQUIRED_SELFIE_BASENAME:
+                raise AssertionError(f"Forbidden selfie filename in bundle: {rel}")
+
+    for url in collect_bundle_image_urls(bundle):
+        if not url.startswith(f"{SELFIE_PREFIX}/"):
+            continue
+        if not url.endswith(f"/{REQUIRED_SELFIE_BASENAME}"):
+            raise AssertionError(
+                f"Bundle selfie URL must end with /{REQUIRED_SELFIE_BASENAME}: {url}"
+            )
+        rel = url.removeprefix(f"{SELFIE_PREFIX}/")
+        parts = rel.split("/")
+        if len(parts) != 2 or parts[1] != REQUIRED_SELFIE_BASENAME:
+            raise AssertionError(f"Unexpected selfie path shape: {url}")
+
+
 def _validate_featured_bundle_assets(bundle_dir: Path, bundle: dict[str, Any]) -> None:
     dress_ids = {
         item["catalog_id"] for item in bundle.get("items", []) if item.get("role") == "dress"
@@ -606,6 +643,7 @@ def validate_static_bundle(bundle_dir: Path, *, run_http_smoke: bool = True) -> 
     assert bundle.get("lucky_look_candidates")
 
     _validate_featured_bundle_assets(bundle_dir, bundle)
+    _validate_bundle_selfie_privacy(bundle_dir, bundle)
 
     for url in collect_bundle_image_urls(bundle):
         asset_path = bundle_dir / url

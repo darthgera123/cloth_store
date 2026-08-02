@@ -107,7 +107,7 @@ with recent-history diversity so key pieces and look types vary across clicks.
 
 See **[docs/CLOTH_STORE.md](docs/CLOTH_STORE.md)** for the canonical storefront
 guide and **[docs/static-bundle-guide.md](docs/static-bundle-guide.md)** for the
-portable **`dist/lavani-closet.zip`** snapshot (extract, then double-click
+portable **`dist/cloth-store.zip`** snapshot (extract, then double-click
 `index.html`).
 
 ## Verify

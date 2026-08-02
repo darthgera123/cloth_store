@@ -680,7 +680,7 @@ def test_website_static_catalog_contract(tmp_path: Path) -> None:
 
     from cloth_store.static_bundle import build_static_bundle, validate_static_bundle
 
-    static_bundle_dir = tmp_path / "lavani-closet"
+    static_bundle_dir = tmp_path / "cloth-store"
     build_static_bundle(
         repo_root=repo_root,
         output_dir=static_bundle_dir,

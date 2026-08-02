@@ -260,7 +260,7 @@ uv run cloth-store-web-build --repo-root .
 ## Further reading
 
 - [`docs/CLOTH_STORE.md`](docs/CLOTH_STORE.md) — storefront features, selfie refocus URLs, live server
-- [`docs/static-bundle-guide.md`](docs/static-bundle-guide.md) — offline `dist/lavani-closet.zip` bundle
+- [`docs/static-bundle-guide.md`](docs/static-bundle-guide.md) — offline `dist/cloth-store.zip` bundle
 - [`bench/catalog_generation/README.md`](bench/catalog_generation/README.md) — override schema, artifact naming, module map
 - [`bench/plan1_localization/README.md`](bench/plan1_localization/README.md) — bbox/mask/cutout bench details
 - [`final_catalog/README.md`](final_catalog/README.md) — packaging layout and schema

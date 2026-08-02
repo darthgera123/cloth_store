@@ -65,8 +65,7 @@ class PrivacyFixtureOverride:
             source_variant=entry.get("source_variant"),
             render_mode=entry.get("render_mode"),
             user_approved=bool(
-                entry.get("user_approved")
-                or entry.get("qc_status") == PRIVACY_QC_USER_APPROVED
+                entry.get("user_approved") or entry.get("qc_status") == PRIVACY_QC_USER_APPROVED
             ),
             qc_status=entry.get("qc_status"),
             note=entry.get("note"),
@@ -548,8 +547,10 @@ def build_neck_down_config_auto(
         margin_fraction_of_person_height=margin_fraction_of_person_height,
     )
     _, _, person_top, _, person_height = _person_rows_in_base_crop(person_mask, base_crop)
-    floor_y = base_crop.y0 + person_top + int(
-        round(person_height * privacy_floor_fraction_of_person_height)
+    floor_y = (
+        base_crop.y0
+        + person_top
+        + int(round(person_height * privacy_floor_fraction_of_person_height))
     )
     cutoff_candidates = [jaw_y, floor_y]
     provenance = jaw_provenance
@@ -584,9 +585,7 @@ def build_neck_down_config_for_fixture(
     source_metadata: dict[str, Any] | None = None,
 ) -> NeckDownCropConfig:
     defaults = overrides.get("defaults", {})
-    margin = float(
-        defaults.get("face_bottom_margin_fraction_of_person_height", 0.03)
-    )
+    margin = float(defaults.get("face_bottom_margin_fraction_of_person_height", 0.03))
     floor_fraction = float(
         defaults.get(
             "privacy_floor_fraction_of_person_height",
@@ -871,11 +870,7 @@ def generate_neck_down_review_candidate(
             overrides=resolved_overrides,
             source_metadata=source_metadata,
         )
-        render_mode = (
-            RENDER_MODE_CROP_ONLY
-            if use_original_source
-            else RENDER_MODE_SUBCROP
-        )
+        render_mode = RENDER_MODE_CROP_ONLY if use_original_source else RENDER_MODE_SUBCROP
         if fixture_override and fixture_override.user_approved and output_path.is_file():
             existing = (
                 json.loads(metadata_out_path.read_text(encoding="utf-8"))
@@ -919,21 +914,14 @@ def generate_neck_down_review_candidate(
                 qc_status=qc_status,
                 qc_notes=tuple(qc_notes),
             )
-        if (
-            not force
-            and metadata_out_path.is_file()
-            and output_path.is_file()
-        ):
+        if not force and metadata_out_path.is_file() and output_path.is_file():
             existing = json.loads(metadata_out_path.read_text(encoding="utf-8"))
-            if (
-                privacy_metadata_reuse_eligible(
-                    existing,
-                    source_variant_sha256=source_variant_sha256,
-                    config=resolved_config,
-                    source_variant=source_variant,
-                )
-                and existing.get("output_sha256") == sha256_file(output_path)
-            ):
+            if privacy_metadata_reuse_eligible(
+                existing,
+                source_variant_sha256=source_variant_sha256,
+                config=resolved_config,
+                source_variant=source_variant,
+            ) and existing.get("output_sha256") == sha256_file(output_path):
                 geometry = compute_neck_down_crop(
                     image_width=image_width,
                     image_height=image_height,
@@ -981,9 +969,7 @@ def generate_neck_down_review_candidate(
             source_variant=source_variant,
         )
         if qc_status == PRIVACY_QC_FAIL:
-            raise ValueError(
-                f"privacy QC failed for {fixture_id}: {', '.join(qc_notes)}"
-            )
+            raise ValueError(f"privacy QC failed for {fixture_id}: {', '.join(qc_notes)}")
         if fixture_override and fixture_override.user_approved:
             qc_status = PRIVACY_QC_USER_APPROVED
             qc_notes = [fixture_override.note] if fixture_override.note else []

@@ -25,6 +25,7 @@ def build_storefront_bundle(
     final_catalog_root: Path | None = None,
     selfies_url_prefix: str = DEFAULT_SELFIES_PREFIX,
     assets_url_prefix: str = DEFAULT_ASSETS_PREFIX,
+    neck_down_selfies_only: bool = False,
 ) -> dict[str, Any]:
     """Pre-compute catalogue views, styling, and outfit data for the static website."""
     root = repo_root.resolve()
@@ -45,6 +46,7 @@ def build_storefront_bundle(
             if selfies_url_prefix.rstrip("/") == DEFAULT_SELFIES_PREFIX.rstrip("/")
             else selfies_url_prefix
         ),
+        neck_down_selfies_only=neck_down_selfies_only,
     )
 
     items: list[dict[str, Any]] = []

@@ -931,9 +931,7 @@ def _apply_observation_enrichment(
         )
     elif isinstance(stale_color_tags, list) and stale_color_tags:
         garment_class_label = updated.get("garment_class_normalized") or "garment"
-        remove_tags = {
-            str(tag).strip().lower() for tag in stale_color_tags if str(tag).strip()
-        }
+        remove_tags = {str(tag).strip().lower() for tag in stale_color_tags if str(tag).strip()}
         tags = [
             tag
             for tag in tags

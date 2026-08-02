@@ -398,6 +398,7 @@ def resolve_fixture_selfie_asset(
     final_selfies_root: Path = DEFAULT_FINAL_SELFIES_ROOT,
     live_refocus_url_prefix: str = "/final_selfies",
     live_original_url_prefix: str = "/data",
+    neck_down_only: bool = False,
 ) -> FixtureSelfieAsset | None:
     """Resolve the best available per-outfit selfie for storefront display.
 
@@ -405,6 +406,9 @@ def resolve_fixture_selfie_asset(
     available, then packaged refocus crops (``crop_refocused`` by default,
     ``crop_only`` when review is required). Falls back to the original source
     mirror selfie under ``data/`` when no refocus deliverable exists.
+
+    When ``neck_down_only`` is true (static public bundle), only valid
+    ``crop_neck_down`` assets are returned — no refocus or original fallback.
     """
     root = repo_root.resolve()
     metadata = _load_final_selfie_metadata(
@@ -426,6 +430,9 @@ def resolve_fixture_selfie_asset(
                 variant="crop_neck_down",
                 live_url_prefix=live_refocus_url_prefix,
             )
+
+        if neck_down_only:
+            return None
 
         variant = _preferred_refocus_variant(metadata)
         variant_path = root / final_selfies_root / fixture_id / f"{variant}.jpg"
@@ -478,6 +485,7 @@ class StylingResolver:
         repo_root: Path,
         selfies_url_prefix: str = "/fixture-selfies",
         refocus_selfies_url_prefix: str | None = None,
+        neck_down_selfies_only: bool = False,
     ) -> None:
         self._catalog_service = catalog_service
         self._repo_root = repo_root.resolve()
@@ -487,6 +495,7 @@ class StylingResolver:
             if refocus_selfies_url_prefix is not None
             else self._selfies_url_prefix
         )
+        self._neck_down_selfies_only = neck_down_selfies_only
         self._fixture_catalog_ids: dict[str, tuple[str, ...]] = {}
         self._rebuild_indices()
 
@@ -910,6 +919,7 @@ class StylingResolver:
         asset = resolve_fixture_selfie_asset(
             fixture_id,
             repo_root=self._repo_root,
+            neck_down_only=self._neck_down_selfies_only,
         )
         if asset is None:
             return StylingSelfieRef(fixture=fixture_id, image_url=None, available=False)

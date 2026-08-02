@@ -144,7 +144,7 @@ and UI surfaces omit the selfie slide.
 | Mode | Selfie URL pattern |
 |------|-------------------|
 | Live (`cloth-store-web`) | `/final_selfies/outfit_N/crop_neck_down.jpg` (or refocus/original fallback) |
-| Static bundle (`dist/lavani-closet/`) | `assets/selfies/outfit_N/crop_neck_down.jpg` (or fallback) |
+| Static bundle (`dist/cloth-store/`) | `assets/selfies/outfit_N/crop_neck_down.jpg` only |
 
 Regenerate refocus deliverables: see [`final_selfies/README.md`](../final_selfies/README.md)
 and [`bench/selfie_refocus/README.md`](../bench/selfie_refocus/README.md).
@@ -223,14 +223,14 @@ for the full identity table, expected counts, and rebuild commands.
 - **Selfie coverage** — neck-down privacy crops exist for all 31 packaged fixtures;
   refocus/original fallbacks may differ in framing from catalogue renders.
 - **Offline bundle** — see [`static-bundle-guide.md`](static-bundle-guide.md); extract
-  `dist/lavani-closet.zip` and double-click `index.html`. Uses embedded JSON and
+  `dist/cloth-store.zip` and double-click `index.html`. Uses embedded JSON and
   relative asset paths (`assets/catalogue/`, `assets/selfies/`). HTTP serving is
   optional if a browser blocks local file access.
 
 ## Related docs
 
 - [`README.md`](../README.md) — repository entry point
-- [`static-bundle-guide.md`](static-bundle-guide.md) — shareable `dist/lavani-closet.zip`
+- [`static-bundle-guide.md`](static-bundle-guide.md) — shareable `dist/cloth-store.zip`
 - [`final_catalog/README.md`](../final_catalog/README.md) — catalogue packaging
 - [`bench/catalog_generation/GARMENT_IDENTITIES.md`](../bench/catalog_generation/GARMENT_IDENTITIES.md) — identity/exclusion curation
 - [`RECONSTRUCTION_PIPELINE.md`](../RECONSTRUCTION_PIPELINE.md) — generation pipeline
