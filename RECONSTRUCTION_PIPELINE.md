@@ -72,6 +72,7 @@ Batch wrappers: `bench/plan1_localization/run.sh`, `run_masks.sh`, `run_cutouts.
 | Detail crops (tops) | `bench/catalog_generation/detail_crops/` |
 | Case manifest | `bench/catalog_generation/manifest.json` |
 | Garment identities | `bench/catalog_generation/garment_identities.json` |
+| Catalog exclusions | `bench/catalog_generation/catalog_exclusions.json` |
 
 ### Production outputs (`catalog_production_v1`)
 
@@ -87,16 +88,46 @@ Namespace: `bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1
 
 Self-contained per-case copies: `outfit_N/{top|bottom|dress}/` with inputs, attributes, outputs, metadata. Repo-level `manifest.json`, `catalog.json`, `garment_identities.json`, and contact sheets under `final_catalog/contact_sheets/`.
 
-## Identity dedup and aliases
+## Catalog curation (identities, exclusions, index)
 
-Garment identity registry (`garment_identities.json`) maps observations to canonical garment IDs. Alias observations (e.g. shared trousers across fixtures) deduplicate to one indexed item. Rebuild:
+Garment deduplication is **manual, observation-based, and canonical-image driven**.
+The durable registries live under `bench/catalog_generation/`; derived outputs under
+`final_catalog/` are rebuilt deterministically — **no model or API calls** for
+curation-only edits.
+
+| Registry | Purpose |
+|----------|---------|
+| `garment_identities.json` | User-confirmed physical-garment groups + facet normalization |
+| `catalog_exclusions.json` | Role-level observations omitted from indexing/storefront |
+
+Current corrected trouser identities include two distinct straight-fit garments:
+**tan** (outfits 1, 2, 7, 8, 9 → canonical `outfit_2/bottom`) and **khaki**
+(outfits 23–25 → canonical `outfit_24/bottom`). Gray, white, skirt, and shirt
+groups are documented in [`bench/catalog_generation/GARMENT_IDENTITIES.md`](bench/catalog_generation/GARMENT_IDENTITIES.md).
+
+**Blazers** (`outfit_3/top`, `outfit_4/top`) use a separate storefront display
+category but remain `role=top` for pairing. Four observations are excluded from
+indexing while retained counterparts and fixture selfies stay usable.
+
+After registry edits, rebuild in order:
 
 ```bash
+uv run cloth-store-catalog-identities validate --repo-root .
+uv run cloth-store-catalog-identities rebuild --repo-root . --annotate-manifest
+uv run cloth-store-catalog-exclusions --repo-root .
 uv run cloth-store-catalog-index --repo-root .
-uv run cloth-store-catalog-identities --repo-root .
+uv run cloth-store-web-build --repo-root .
+uv run cloth-store-catalog-index --repo-root . --validate-only
 ```
 
-Lexical search: `uv run cloth-store-catalog-search "black blazer"`
+Expected indexed counts (verify from `catalog.json` → `summary`): **33 items**,
+**37 logical garments**, **59 observations**, **4 exclusions**, **7 indexed
+bottoms**; display sections top 22 / blazer 2 / dress 2 / bottom 7.
+
+Lexical search: `uv run cloth-store-catalog-search "tan trousers"`
+
+Full identity/exclusion tables and maintainer workflow:
+[`bench/catalog_generation/GARMENT_IDENTITIES.md`](bench/catalog_generation/GARMENT_IDENTITIES.md).
 
 ## Prompt and precedence rules
 
@@ -157,6 +188,8 @@ Optional flags: `--override`, `--vlm-attributes`, `--repo-root`, `--credentials-
 
 ```bash
 uv run cloth-store-catalog-final-packaging --repo-root .
+uv run cloth-store-catalog-identities rebuild --repo-root . --annotate-manifest
+uv run cloth-store-catalog-exclusions --repo-root .
 uv run cloth-store-catalog-index --repo-root .
 uv run cloth-store-web-build --repo-root .
 ```
@@ -227,7 +260,7 @@ uv run cloth-store-web-build --repo-root .
 ## Further reading
 
 - [`docs/CLOTH_STORE.md`](docs/CLOTH_STORE.md) — storefront features, selfie refocus URLs, live server
-- [`docs/static-bundle-guide.md`](docs/static-bundle-guide.md) — offline `dist/cloth-store.zip` bundle
+- [`docs/static-bundle-guide.md`](docs/static-bundle-guide.md) — offline `dist/lavani-closet.zip` bundle
 - [`bench/catalog_generation/README.md`](bench/catalog_generation/README.md) — override schema, artifact naming, module map
 - [`bench/plan1_localization/README.md`](bench/plan1_localization/README.md) — bbox/mask/cutout bench details
 - [`final_catalog/README.md`](final_catalog/README.md) — packaging layout and schema

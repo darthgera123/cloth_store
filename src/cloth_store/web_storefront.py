@@ -56,6 +56,7 @@ def build_storefront_bundle(
             "catalog_id": item_view.catalog_id,
             "display_name": item_view.display_name,
             "role": item_view.role,
+            "display_category": item_view.display_category,
             "fixture": item_view.fixture,
             "description": item_view.description,
             "labels": [{"kind": label.kind, "value": label.value} for label in item_view.labels],
@@ -72,7 +73,7 @@ def build_storefront_bundle(
     outfit_candidates = [
         candidate.to_dict() for candidate in styling_resolver.list_outfit_candidates()
     ]
-    lucky_candidates = [pair.to_dict() for pair in styling_resolver.list_lucky_pair_candidates()]
+    lucky_candidates = [look.to_dict() for look in styling_resolver.list_lucky_look_candidates()]
 
     return {
         "schema_version": 1,
@@ -81,7 +82,8 @@ def build_storefront_bundle(
         "items": items,
         "styling": styling_by_id,
         "outfit_candidates": outfit_candidates,
-        "lucky_pair_candidates": lucky_candidates,
+        "lucky_look_candidates": lucky_candidates,
+        "lucky_look_candidate_counts": styling_resolver.lucky_look_candidate_counts(),
     }
 
 

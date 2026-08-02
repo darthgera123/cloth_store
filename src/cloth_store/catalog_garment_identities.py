@@ -22,7 +22,7 @@ GARMENT_ID_PATTERN = re.compile(r"^garment_[a-z0-9_]+$")
 OBSERVATION_ID_PATTERN = re.compile(r"^outfit_\d+_(top|bottom|dress)$")
 
 EXPECTED_OBSERVATION_COUNT = 59
-EXPECTED_UNIQUE_GARMENT_COUNT = 46
+EXPECTED_UNIQUE_GARMENT_COUNT = 37
 
 
 class GarmentIdentityError(ValueError):
@@ -408,12 +408,14 @@ def build_manifest_identity_block(
     identity_map: ResolvedIdentityMap,
     registry_path: Path,
     repo_root: Path,
+    excluded_observations: frozenset[str] | None = None,
 ) -> dict[str, Any]:
     registry_text = registry_path.read_text(encoding="utf-8")
+    excluded = excluded_observations or frozenset()
     indexed_observations = sorted(
         observation_id
         for observation_id, garment_id in identity_map.observation_to_garment.items()
-        if observation_id not in identity_map.alias_observations
+        if observation_id not in identity_map.alias_observations and observation_id not in excluded
     )
     try:
         registry_rel = str(registry_path.resolve().relative_to(repo_root.resolve()))
@@ -426,6 +428,7 @@ def build_manifest_identity_block(
         "registry_sha256": sha256_text(registry_text),
         "observation_count": EXPECTED_OBSERVATION_COUNT,
         "unique_garment_count": EXPECTED_UNIQUE_GARMENT_COUNT,
+        "catalog_item_count": len(indexed_observations),
         "observation_to_garment": dict(sorted(identity_map.observation_to_garment.items())),
         "indexed_observations": indexed_observations,
         "groups": [
@@ -491,11 +494,13 @@ def export_garment_identities(
     registry_path: Path,
     repo_root: Path,
     final_root: Path,
+    excluded_observations: frozenset[str] | None = None,
 ) -> dict[str, Any]:
     export = build_manifest_identity_block(
         identity_map=identity_map,
         registry_path=registry_path,
         repo_root=repo_root,
+        excluded_observations=excluded_observations,
     )
     manifest_path = final_root / "manifest.json"
     manifest_text = manifest_path.read_text(encoding="utf-8")
@@ -654,10 +659,34 @@ def main(argv: list[str] | None = None) -> int:
         print(f"wrote {export_path}")
 
         if args.annotate_manifest:
+            from cloth_store.catalog_exclusions import (
+                annotate_manifest_exclusions,
+                build_manifest_exclusion_block,
+                default_exclusion_registry_path,
+                resolve_exclusion_map,
+            )
+
             annotate_manifest_cases(manifest=manifest, identity_map=identity_map)
+            exclusion_map = resolve_exclusion_map(
+                repo_root=repo_root,
+                final_root=final_root,
+                identity_registry_path=registry_path,
+                registry_path=default_exclusion_registry_path(repo_root),
+            )
+            annotate_manifest_exclusions(
+                manifest=manifest,
+                exclusion_map=exclusion_map,
+                identity_map=identity_map,
+            )
             manifest["garment_identities"] = build_manifest_identity_block(
                 identity_map=identity_map,
                 registry_path=registry_path,
+                repo_root=repo_root,
+                excluded_observations=exclusion_map.excluded_observations,
+            )
+            manifest["catalog_exclusions"] = build_manifest_exclusion_block(
+                exclusion_map=exclusion_map,
+                registry_path=default_exclusion_registry_path(repo_root),
                 repo_root=repo_root,
             )
             manifest_path.write_text(

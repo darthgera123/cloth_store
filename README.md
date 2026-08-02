@@ -21,13 +21,18 @@ uv run cloth-store-catalog-pipeline --fixture outfit_6 --role top --dry-run
 uv run cloth-store-catalog-final-packaging --repo-root .
 
 # Rebuild lexical index and garment identities
+uv run cloth-store-catalog-identities validate --repo-root .
+uv run cloth-store-catalog-identities rebuild --repo-root . --annotate-manifest
+uv run cloth-store-catalog-exclusions --repo-root .
 uv run cloth-store-catalog-index --repo-root .
-uv run cloth-store-catalog-identities --repo-root .
 ```
+
+Curation registries and rebuild workflow:
+[`bench/catalog_generation/GARMENT_IDENTITIES.md`](bench/catalog_generation/GARMENT_IDENTITIES.md).
 
 </details>
 
-Primary outputs live under `bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/`; the frozen delivery bundle is `final_catalog/` (manifest, catalog.json, garment_identities.json, per-case assets, contact sheets).
+Primary outputs live under `bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/`; the frozen delivery bundle is `final_catalog/` (manifest, catalog.json, garment_identities.json, per-case assets, contact sheets). User-confirmed identity merges and role-level exclusions are declared in `bench/catalog_generation/garment_identities.json` and `catalog_exclusions.json` — see [`bench/catalog_generation/GARMENT_IDENTITIES.md`](bench/catalog_generation/GARMENT_IDENTITIES.md).
 
 ## 1b. Selfie crop and blur-only refocus (optional)
 
@@ -85,7 +90,7 @@ modal with styling selfies, **Generate an Outfit**, and **I'm Feeling Lucky**.
 
 #### Browse the catalogue
 
-The home view groups items into **Tops**, **Dresses**, and **Bottoms**. Each card shows
+The home view groups items into **Tops**, **Blazers**, **Dresses**, and **Bottoms**. Each card shows
 a 512px product render, a short editorial description, and a **View Piece** link that
 opens the detail modal (carousel, fashion advice, styling selfie when available).
 
@@ -93,15 +98,15 @@ opens the detail modal (carousel, fashion advice, styling selfie when available)
 
 #### I'm Feeling Lucky
 
-Click the header action to draw a random top/bottom pair that was not photographed
-together. The modal labels each piece, shows catalogue images only (no mirror-selfie
-hero), and offers **Try Another** to reshuffle.
+Click the header action to draw a random catalogue-only look (top+bottom, blazer+top+bottom,
+or blazer+dress) that was not photographed together. The modal labels each piece, shows
+catalogue images only (no mirror-selfie hero), and offers **Try Another** to reshuffle.
 
 <img src="./docs/assets/cloth-store-ss2.png" alt="I'm Feeling Lucky — random cross-fixture top and bottom pairing" width="800">
 
 See **[docs/CLOTH_STORE.md](docs/CLOTH_STORE.md)** for the canonical storefront
 guide and **[docs/static-bundle-guide.md](docs/static-bundle-guide.md)** for the
-portable `dist/cloth-store.zip` snapshot.
+portable `dist/lavani-closet.zip` snapshot (Windows launchers included).
 
 ## Verify
 

@@ -1,7 +1,7 @@
 # Final catalog (catalog_production_v1)
 
-Self-contained packaging of production catalog inputs and outputs for all 12 outfits
-(outfit_1…outfit_12 × top/bottom). Each case directory contains exact byte copies of
+Self-contained packaging of production catalog inputs and outputs for outfits 1–31
+(top/bottom/dress roles). Each case directory contains exact byte copies of
 model-bound inputs, structured VLM attributes when available, native 1K output, and
 the canonical 512 derivative.
 
@@ -77,6 +77,40 @@ uv run cloth-store-catalog-final-packaging --repo-root . --contact-sheet-batch-s
 - Cases ok: 59 / 59
 - Cases missing/error: 0
 - Estimated output cost (new generations): $0.067 per 1K call
+
+## Catalog curation and index
+
+Indexed catalogue items are derived from manifest observations plus durable curation
+registries. **No model or API calls** are required to apply identity merges,
+exclusions, or facet normalization — only a deterministic rebuild.
+
+| Source (edit here) | Derived (rebuilt) |
+|--------------------|-------------------|
+| `bench/catalog_generation/garment_identities.json` | `final_catalog/garment_identities.json` |
+| `bench/catalog_generation/catalog_exclusions.json` | applied in `final_catalog/catalog.json` |
+| — | `final_catalog/storefront.json` (via `cloth-store-web-build`) |
+
+Current expected counts (verify with `cloth-store-catalog-index --validate-only`):
+
+| Metric | Count |
+|--------|------:|
+| Manifest observations | 59 |
+| Logical garments | 37 |
+| Indexed catalog items | 33 |
+| Excluded observations | 4 |
+| Indexed bottoms | 7 |
+
+Display sections: tops 22, blazers 2, dresses 2, bottoms 7. Full identity and
+exclusion tables: [`bench/catalog_generation/GARMENT_IDENTITIES.md`](../bench/catalog_generation/GARMENT_IDENTITIES.md).
+
+```bash
+uv run cloth-store-catalog-identities validate --repo-root .
+uv run cloth-store-catalog-identities rebuild --repo-root . --annotate-manifest
+uv run cloth-store-catalog-exclusions --repo-root .
+uv run cloth-store-catalog-index --repo-root .
+uv run cloth-store-web-build --repo-root .
+uv run cloth-store-catalog-index --repo-root . --validate-only
+```
 
 ## Storefront
 

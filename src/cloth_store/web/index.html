@@ -6,7 +6,7 @@
     <title>Lavani's Closet</title>
     <meta
       name="description"
-      content="Lavani's Closet — a curated catalogue of tops and bottoms."
+      content="Lavani's Closet — a curated catalogue of tops, blazers, dresses, and bottoms."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -23,7 +23,7 @@
           <p class="brand-eyebrow">Curated wardrobe</p>
           <h1 class="brand-title">Lavani's Closet</h1>
           <p class="brand-tagline">
-            A refined edit of catalogue pieces — tops and bottoms, styled for clarity.
+            A refined edit of catalogue pieces — tops, blazers, dresses, and bottoms, styled for clarity.
           </p>
         </div>
 
@@ -44,17 +44,20 @@
             />
           </label>
 
-          <div class="role-filters" role="tablist" aria-label="Garment role">
-            <button class="role-filter is-active" type="button" data-role="" aria-selected="true">
+          <div class="role-filters" role="tablist" aria-label="Catalog category">
+            <button class="role-filter is-active" type="button" data-category="" aria-selected="true">
               All pieces
             </button>
-            <button class="role-filter" type="button" data-role="top" aria-selected="false">
+            <button class="role-filter" type="button" data-category="top" aria-selected="false">
               Tops
             </button>
-            <button class="role-filter" type="button" data-role="dress" aria-selected="false">
+            <button class="role-filter" type="button" data-category="blazer" aria-selected="false">
+              Blazers
+            </button>
+            <button class="role-filter" type="button" data-category="dress" aria-selected="false">
               Dresses
             </button>
-            <button class="role-filter" type="button" data-role="bottom" aria-selected="false">
+            <button class="role-filter" type="button" data-category="bottom" aria-selected="false">
               Bottoms
             </button>
           </div>
@@ -82,6 +85,14 @@
               <p class="section-count" data-count-for="top"></p>
             </div>
             <div class="catalog-grid" id="grid-top"></div>
+          </div>
+
+          <div class="catalog-section" data-section="blazer">
+            <div class="section-heading">
+              <h2>Blazers</h2>
+              <p class="section-count" data-count-for="blazer"></p>
+            </div>
+            <div class="catalog-grid" id="grid-blazer"></div>
           </div>
 
           <div class="catalog-section" data-section="dress">
@@ -288,41 +299,23 @@
           <div class="generator-info lucky-info">
             <p class="generator-eyebrow">Catalogue pairing</p>
             <h2 id="lucky-title" class="generator-title">I'm Feeling Lucky</h2>
+            <p id="lucky-look-type" class="lucky-look-type" hidden></p>
             <p id="lucky-summary" class="generator-summary" hidden></p>
 
-            <div class="lucky-pieces" id="lucky-pieces" hidden>
-              <article class="lucky-piece-card" aria-labelledby="lucky-top-name">
-                <div class="lucky-piece-media">
-                  <img
-                    class="lucky-piece-image"
-                    id="lucky-top-image"
-                    alt=""
-                    decoding="async"
-                  />
-                </div>
-                <div class="lucky-piece-copy">
-                  <p class="generator-piece-label">Top</p>
-                  <h3 id="lucky-top-name" class="generator-piece-name"></h3>
-                  <p id="lucky-top-description" class="generator-piece-description"></p>
-                </div>
-              </article>
+            <div class="lucky-pieces" id="lucky-pieces" hidden></div>
 
-              <article class="lucky-piece-card" aria-labelledby="lucky-bottom-name">
+            <template id="lucky-piece-template">
+              <article class="lucky-piece-card">
                 <div class="lucky-piece-media">
-                  <img
-                    class="lucky-piece-image"
-                    id="lucky-bottom-image"
-                    alt=""
-                    decoding="async"
-                  />
+                  <img class="lucky-piece-image" alt="" decoding="async" />
                 </div>
                 <div class="lucky-piece-copy">
-                  <p class="generator-piece-label">Bottom</p>
-                  <h3 id="lucky-bottom-name" class="generator-piece-name"></h3>
-                  <p id="lucky-bottom-description" class="generator-piece-description"></p>
+                  <p class="generator-piece-label"></p>
+                  <h3 class="generator-piece-name"></h3>
+                  <p class="generator-piece-description"></p>
                 </div>
               </article>
-            </div>
+            </template>
 
             <p id="lucky-stage-message" class="generator-stage-message lucky-stage-message">
               Finding a new pairing…

@@ -45,7 +45,14 @@ from cloth_store.catalog_derived_geometry import (
     validate_derived_geometry_path,
     validate_geometry_source_path,
 )
+from cloth_store.catalog_exclusions import (
+    EXPECTED_EXCLUDED_OBSERVATION_COUNT,
+    default_exclusion_registry_path,
+    load_exclusion_registry,
+    validate_exclusion_registry,
+)
 from cloth_store.catalog_garment_identities import (
+    EXPECTED_UNIQUE_GARMENT_COUNT,
     GarmentIdentityError,
     load_garment_identity_registry,
     validate_garment_identity_registry,
@@ -239,10 +246,10 @@ def test_website_static_catalog_contract(tmp_path: Path) -> None:
 
     assert catalog_service.is_available is True
     summary = catalog_service.summary
-    assert int(summary.get("total_items", 0)) == 46
+    assert int(summary.get("total_items", 0)) == EXPECTED_ITEM_COUNT
 
     browse = catalog_service.browse()
-    assert browse.total == 46
+    assert browse.total == EXPECTED_ITEM_COUNT
     assert all(
         item.image_url.startswith("/final_catalog/") and item.image_url.endswith("/output.png")
         for item in browse.items
@@ -283,14 +290,32 @@ def test_website_static_catalog_contract(tmp_path: Path) -> None:
         assert required in prompt_text
     assert all(item.labels for item in browse.items)
 
-    tops = catalog_service.browse(role="top")
-    assert tops.total == 26
+    tops = catalog_service.browse(display_category="top")
+    assert tops.total == 22
+    assert all(item.display_category == "top" for item in tops.items)
     assert all(item.role == "top" for item in tops.items)
 
+    blazers = catalog_service.browse(display_category="blazer")
+    assert blazers.total == 2
+    blazer_ids = {item.catalog_id for item in blazers.items}
+    assert blazer_ids == {"outfit_3_top", "outfit_4_top"}
+    assert all(item.role == "top" for item in blazers.items)
+    assert all(item.garment_class == "blazer" for item in blazers.items)
+    assert catalog_service.get_item("outfit_19_top") is None
+
+    role_tops = catalog_service.browse(role="top")
+    assert role_tops.total == 24
+    assert blazer_ids.issubset({item.catalog_id for item in role_tops.items})
+
+    waistcoat = catalog_service.get_item("outfit_10_top")
+    assert waistcoat is not None
+    assert waistcoat.display_category == "top"
+    assert waistcoat.garment_class == "waistcoat"
+
     dresses = catalog_service.browse(role="dress")
-    assert dresses.total == 3
+    assert dresses.total == 2
     dress_ids = {item.catalog_id for item in dresses.items}
-    assert dress_ids == {"outfit_27_dress", "outfit_29_dress", "outfit_30_dress"}
+    assert dress_ids == {"outfit_29_dress", "outfit_30_dress"}
 
     search = catalog_service.browse(query="black blazer")
     assert search.items[0].catalog_id == "outfit_3_top"
@@ -306,6 +331,9 @@ def test_website_static_catalog_contract(tmp_path: Path) -> None:
     assert 'id="lucky-pair-modal"' in index_html
     assert "Generate an Outfit" in index_html
     assert "I'm Feeling Lucky" in index_html
+    assert 'data-category="blazer"' in index_html
+    assert ">Blazers</" in index_html
+    assert 'id="grid-blazer"' in index_html
 
     app_js = (repo_root / "src/cloth_store/web/static/app.js").read_text(encoding="utf-8")
     assert "/final_catalog/storefront.json" in app_js
@@ -315,6 +343,8 @@ def test_website_static_catalog_contract(tmp_path: Path) -> None:
     assert "output_1k" not in app_js
     assert "advice_title" in app_js
     assert "advice_text" in app_js
+    assert "display_category" in app_js
+    assert "gridBlazer" in app_js
     assert "Gathering the latest edit from the catalogue." in app_js
 
     styles_css = (repo_root / "src/cloth_store/web/static/styles.css").read_text(encoding="utf-8")
@@ -329,6 +359,81 @@ def test_website_static_catalog_contract(tmp_path: Path) -> None:
     outfit_11 = catalog_service.get_item("outfit_11_top")
     assert outfit_11 is not None
     assert outfit_11.display_name == "Black T-Shirt"
+
+    gray_trousers = catalog_service.get_item("outfit_10_bottom")
+    assert gray_trousers is not None
+    assert gray_trousers.display_name == "Gray Straight-Fit Trousers"
+
+    slim_gray_trousers = catalog_service.get_item("outfit_15_bottom")
+    assert slim_gray_trousers is not None
+    assert slim_gray_trousers.display_name == "Gray Slim-Fit Trousers"
+
+    black_blazer = catalog_service.get_item("outfit_3_top")
+    assert black_blazer is not None
+    assert black_blazer.display_name == "Black Blazer"
+    assert "Fit" not in black_blazer.display_name
+
+    for bottom in catalog_service.browse(role="bottom").items:
+        name_lower = bottom.display_name.lower()
+        assert "straight-leg" not in name_lower
+        assert "straight leg" not in name_lower
+        assert "fit fit" not in name_lower
+
+    assert catalog_service.get_item("outfit_2_top") is None
+    assert catalog_service.get_item("outfit_19_top") is None
+    assert catalog_service.get_item("outfit_27_dress") is None
+    assert catalog_service.get_item("outfit_31_bottom") is None
+
+    outfit_2_bottom = catalog_service.get_item("outfit_2_bottom")
+    assert outfit_2_bottom is not None
+    outfit_2_styling = styling_resolver.resolve_for_catalog_item("outfit_2_bottom")
+    assert outfit_2_styling is not None
+    outfit_2_assoc = next(
+        assoc for assoc in outfit_2_styling.associations if assoc.fixture == "outfit_2"
+    )
+    assert outfit_2_assoc.selfie.available is True
+    assert outfit_2_assoc.selfie.image_url == "/final_selfies/outfit_2/crop_refocused.jpg"
+    assert all(partner.catalog_id != "outfit_2_top" for partner in outfit_2_assoc.partners)
+
+    outfit_31_top = catalog_service.get_item("outfit_31_top")
+    assert outfit_31_top is not None
+    outfit_31_styling = styling_resolver.resolve_for_catalog_item("outfit_31_top")
+    assert outfit_31_styling is not None
+    outfit_31_assoc = outfit_31_styling.associations[0]
+    assert outfit_31_assoc.fixture == "outfit_31"
+    assert outfit_31_assoc.selfie.available is True
+    assert all(partner.catalog_id != "outfit_31_bottom" for partner in outfit_31_assoc.partners)
+
+    white_trousers_styling = styling_resolver.resolve_for_catalog_item("outfit_22_bottom")
+    assert white_trousers_styling is not None
+    outfit_19_assoc = next(
+        assoc for assoc in white_trousers_styling.associations if assoc.fixture == "outfit_19"
+    )
+    assert outfit_19_assoc.selfie.available is True
+    assert outfit_19_assoc.selfie.image_url == "/final_selfies/outfit_19/crop_refocused.jpg"
+    assert all(partner.catalog_id != "outfit_19_top" for partner in outfit_19_assoc.partners)
+
+    outfit_5_assoc = next(
+        assoc for assoc in white_trousers_styling.associations if assoc.fixture == "outfit_5"
+    )
+    assert outfit_5_assoc.selfie.available is True
+    assert outfit_5_assoc.selfie.image_url == "/final_selfies/outfit_5/crop_refocused.jpg"
+    assert all(partner.catalog_id != "outfit_5_bottom" for partner in outfit_5_assoc.partners)
+    assert catalog_service.get_item("outfit_5_bottom") is None
+
+    outfit_candidates = styling_resolver.list_outfit_candidates()
+    assert all(candidate.fixture != "outfit_27" for candidate in outfit_candidates)
+    assert catalog_service.browse(query="outfit 27 dress").total == 0
+    assert catalog_service.browse(query="drawstring").total == 0
+    excluded_catalog_ids = {
+        "outfit_2_top",
+        "outfit_19_top",
+        "outfit_27_dress",
+        "outfit_31_bottom",
+    }
+    for query in ("green checkered blazer", "pink floral print", "drawstring waist"):
+        hits = catalog_service.browse(query=query)
+        assert excluded_catalog_ids.isdisjoint({item.catalog_id for item in hits.items})
 
     top_styling = styling_resolver.resolve_for_catalog_item("outfit_10_top")
     assert top_styling is not None
@@ -352,12 +457,16 @@ def test_website_static_catalog_contract(tmp_path: Path) -> None:
     assert refocus_asset.variant == "crop_refocused"
     assert refocus_asset.source_path.name == "crop_refocused.jpg"
     assert top_association.advice_title == FASHION_ADVICE_TITLE
-    assert top_association.advice_text == "Black Waistcoat with dark gray trousers."
+    assert top_association.advice_text == "Black Waistcoat with gray straight-fit trousers."
 
     bottom_styling = styling_resolver.resolve_for_catalog_item("outfit_10_bottom")
     assert bottom_styling is not None
-    bottom_assoc = bottom_styling.associations[0]
-    assert bottom_assoc.advice_text == "Dark Gray Trousers with a black waistcoat."
+    outfit_10_bottom_assoc = next(
+        assoc for assoc in bottom_styling.associations if assoc.fixture == "outfit_10"
+    )
+    assert (
+        outfit_10_bottom_assoc.advice_text == "Gray Straight-Fit Trousers with a black waistcoat."
+    )
 
     outfit_candidates = styling_resolver.list_outfit_candidates()
     assert len(outfit_candidates) >= 20
@@ -370,17 +479,98 @@ def test_website_static_catalog_contract(tmp_path: Path) -> None:
     repeat = styling_resolver.select_outfit_candidate(seed=7)
     assert repeat.fixture == generated.fixture
 
-    lucky = styling_resolver.select_lucky_pair(seed=11)
+    lucky_counts = styling_resolver.lucky_look_candidate_counts()
+    assert lucky_counts["top_bottom"] > 0
+    assert lucky_counts["blazer_top_bottom"] > 0
+    assert lucky_counts["blazer_dress"] > 0
+
+    lucky_candidates = styling_resolver.list_lucky_look_candidates()
+    top_bottom_looks = [look for look in lucky_candidates if look.look_type == "top_bottom"]
+    blazer_top_bottom_looks = [
+        look for look in lucky_candidates if look.look_type == "blazer_top_bottom"
+    ]
+    blazer_dress_looks = [look for look in lucky_candidates if look.look_type == "blazer_dress"]
+    assert top_bottom_looks
+    assert blazer_top_bottom_looks
+    assert blazer_dress_looks
+
+    for look in lucky_candidates:
+        assert look.pieces
+        assert 2 <= len(look.pieces) <= 3
+        assert look.look_type_label
+        assert look.summary
+        assert look.note
+        assert "selfie" not in look.to_dict()
+        for piece in look.pieces:
+            assert piece.catalog_id
+            assert piece.kind in {"top", "blazer", "bottom", "dress"}
+            assert piece.image_url.endswith("/output.png")
+
+    sample_top_bottom = top_bottom_looks[0]
+    assert len(sample_top_bottom.pieces) == 2
+    assert {piece.kind for piece in sample_top_bottom.pieces} == {"top", "bottom"}
+
+    sample_blazer_outfit = blazer_top_bottom_looks[0]
+    assert len(sample_blazer_outfit.pieces) == 3
+    assert {piece.kind for piece in sample_blazer_outfit.pieces} == {
+        "blazer",
+        "top",
+        "bottom",
+    }
+
+    sample_blazer_dress = blazer_dress_looks[0]
+    assert len(sample_blazer_dress.pieces) == 2
+    assert {piece.kind for piece in sample_blazer_dress.pieces} == {"blazer", "dress"}
+
+    documented_pairs = styling_resolver.documented_top_bottom_pairs()
+    for look in top_bottom_looks:
+        top_id = next(p.catalog_id for p in look.pieces if p.kind == "top")
+        bottom_id = next(p.catalog_id for p in look.pieces if p.kind == "bottom")
+        assert (top_id, bottom_id) not in documented_pairs
+
+    lucky = styling_resolver.select_lucky_look(seed=11)
     assert lucky is not None
-    repeat_lucky = styling_resolver.select_lucky_pair(seed=11)
-    assert repeat_lucky.top.catalog_id == lucky.top.catalog_id
+    repeat_lucky = styling_resolver.select_lucky_look(seed=11)
+    assert repeat_lucky.look_type == lucky.look_type
+    assert [piece.catalog_id for piece in repeat_lucky.pieces] == [
+        piece.catalog_id for piece in lucky.pieces
+    ]
+
+    excluded_ids = tuple(piece.catalog_id for piece in lucky.pieces)
+    different = styling_resolver.select_lucky_look(exclude_catalog_ids=excluded_ids, seed=11)
+    if styling_resolver.list_lucky_look_candidates():
+        assert different is None or excluded_ids != tuple(
+            piece.catalog_id for piece in different.pieces
+        )
 
     bundle = build_storefront_bundle(repo_root=repo_root)
-    assert bundle["total_items"] == 46
+    assert bundle["total_items"] == EXPECTED_ITEM_COUNT
     assert len(bundle["outfit_candidates"]) == len(outfit_candidates)
+    assert bundle["lucky_look_candidates"]
+    assert bundle["lucky_look_candidate_counts"]["top_bottom"] == lucky_counts["top_bottom"]
+    assert "lucky-piece-template" in index_html
+    assert "pickLuckyLook" in app_js
+    assert "renderLuckyLook" in app_js
+    assert "lucky_look_candidates" in app_js
+    assert "lucky-piece-template" in app_js
     storefront_path = tmp_path / "storefront.json"
     write_storefront_bundle(bundle, output_path=storefront_path)
     assert storefront_path.is_file()
+
+    from cloth_store.static_bundle import build_static_bundle, validate_static_bundle
+
+    static_bundle_dir = tmp_path / "lavani-closet"
+    build_static_bundle(
+        repo_root=repo_root,
+        output_dir=static_bundle_dir,
+        zip_path=None,
+    )
+    static_report = validate_static_bundle(static_bundle_dir, run_http_smoke=True)
+    assert static_report["total_items"] == EXPECTED_ITEM_COUNT
+    assert (static_bundle_dir / "start-lavani.bat").is_file()
+    assert (static_bundle_dir / "start-lavani.ps1").is_file()
+    assert (static_bundle_dir / "assets/selfies/outfit_30/crop_refocused.jpg").is_file()
+    assert (static_bundle_dir / "assets/catalogue/outfit_30/dress/output.png").is_file()
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         sock.bind(("127.0.0.1", 0))
@@ -403,11 +593,11 @@ def test_website_static_catalog_contract(tmp_path: Path) -> None:
         server.shutdown()
         server.server_close()
 
-    assert build_styling_advice_text("Black Waistcoat", ("Dark Gray Trousers",)) == (
-        "Black Waistcoat with dark gray trousers."
+    assert build_styling_advice_text("Black Waistcoat", ("Gray Trousers",)) == (
+        "Black Waistcoat with gray trousers."
     )
-    assert build_styling_caption("Black Waistcoat", ("Dark Gray Trousers",)) == (
-        "Black Waistcoat with dark gray trousers."
+    assert build_styling_caption("Black Waistcoat", ("Gray Trousers",)) == (
+        "Black Waistcoat with gray trousers."
     )
 
     missing_catalog = tmp_path / "missing_catalog.json"
@@ -480,8 +670,8 @@ def test_website_static_catalog_contract(tmp_path: Path) -> None:
     assert try_resolve_fixture_selfie_path("outfit_99", repo_root=tmp_path) is None
     assert orphan_resolver.list_outfit_candidates() == ()
     assert orphan_resolver.select_outfit_candidate(seed=1) is None
-    assert orphan_resolver.list_lucky_pair_candidates() == ()
-    assert orphan_resolver.select_lucky_pair(seed=1) is None
+    assert orphan_resolver.list_lucky_look_candidates() == ()
+    assert orphan_resolver.select_lucky_look(seed=1) is None
 
 
 def test_vlm_bbox_parsing_and_validation() -> None:
@@ -1880,11 +2070,29 @@ def test_production_pipeline_idempotency_and_output_contract(tmp_path: Path) -> 
         final_root=final_root,
         repo_root=cloth_repo,
     )
-    assert len(identity_map.groups) == 8
+    exclusion_registry_path = default_exclusion_registry_path(cloth_repo)
+    exclusion_payload = load_exclusion_registry(exclusion_registry_path)
+    exclusion_map = validate_exclusion_registry(
+        payload=exclusion_payload,
+        final_root=final_root,
+        identity_map=identity_map,
+    )
+    assert len(exclusion_map.excluded_observations) == EXPECTED_EXCLUDED_OBSERVATION_COUNT
+    assert exclusion_map.excluded_observations == frozenset(
+        {
+            "outfit_2_top",
+            "outfit_19_top",
+            "outfit_27_dress",
+            "outfit_31_bottom",
+        }
+    )
+    assert len(identity_map.groups) == 7
     expected_groups = [
-        ("outfit_3_bottom", "outfit_4_bottom", "garment_dark_gray_trousers_001"),
-        ("outfit_8_bottom", "outfit_9_bottom", "garment_brown_trousers_001"),
-        ("outfit_12_bottom", "outfit_13_bottom", "garment_gray_trousers_001"),
+        (
+            "outfit_3_bottom",
+            "outfit_15_bottom",
+            "garment_gray_trousers_002",
+        ),
         ("outfit_16_bottom", "outfit_15_bottom", "garment_gray_trousers_002"),
         ("outfit_23_bottom", "outfit_24_bottom", "garment_khaki_slim_trousers_001"),
         ("outfit_26_bottom", "outfit_6_bottom", "garment_black_pencil_skirt_001"),
@@ -1925,13 +2133,20 @@ def test_production_pipeline_idempotency_and_output_contract(tmp_path: Path) -> 
     assert len(index_payload["items"]) == EXPECTED_ITEM_COUNT
     assert index_payload["summary"]["observation_count"] == EXPECTED_OBSERVATION_COUNT
     assert index_payload["summary"]["unique_garment_count"] == EXPECTED_ITEM_COUNT
-    assert index_payload["summary"]["merged_identity_count"] == 8
+    assert (
+        index_payload["summary"]["excluded_observation_count"]
+        == EXPECTED_EXCLUDED_OBSERVATION_COUNT
+    )
+    assert index_payload["summary"]["merged_identity_count"] == 7
     by_id = {item["catalog_id"]: item for item in index_payload["items"]}
     for alias_id, canonical_id, garment_id in expected_groups:
         if garment_id in {
             "garment_white_button_down_shirt_001",
             "garment_khaki_slim_trousers_001",
+            "garment_tan_trousers_001",
             "garment_off_white_trousers_001",
+            "garment_gray_trousers_001",
+            "garment_gray_trousers_002",
         }:
             continue
         assert alias_id not in by_id
@@ -1963,47 +2178,118 @@ def test_production_pipeline_idempotency_and_output_contract(tmp_path: Path) -> 
     assert khaki_trousers["alias_observation_ids"] == ["outfit_23_bottom", "outfit_25_bottom"]
     assert "outfit_23_bottom" not in by_id
     assert "outfit_25_bottom" not in by_id
-    off_white_trousers = by_id["outfit_19_bottom"]
-    assert off_white_trousers["garment_id"] == "garment_off_white_trousers_001"
-    assert set(off_white_trousers["observation_ids"]) == {
+    white_trousers = by_id["outfit_22_bottom"]
+    assert white_trousers["garment_id"] == "garment_off_white_trousers_001"
+    assert set(white_trousers["observation_ids"]) == {
+        "outfit_5_bottom",
         "outfit_17_bottom",
         "outfit_18_bottom",
         "outfit_19_bottom",
         "outfit_20_bottom",
         "outfit_21_bottom",
+        "outfit_22_bottom",
     }
-    assert off_white_trousers["alias_observation_ids"] == [
+    assert white_trousers["alias_observation_ids"] == [
+        "outfit_5_bottom",
         "outfit_17_bottom",
         "outfit_18_bottom",
+        "outfit_19_bottom",
         "outfit_20_bottom",
         "outfit_21_bottom",
     ]
+    assert "outfit_5_bottom" not in by_id
     assert "outfit_17_bottom" not in by_id
     assert "outfit_18_bottom" not in by_id
+    assert "outfit_19_bottom" not in by_id
     assert "outfit_20_bottom" not in by_id
     assert "outfit_21_bottom" not in by_id
-    assert off_white_trousers["display_name"] == "white relaxed-fit trousers"
-    assert off_white_trousers["facets"]["fit"]["value"] == "relaxed"
-    assert off_white_trousers["facets"]["colors"]["value"] == "white"
-    assert off_white_trousers["facets"]["fit"]["source"] == "user_confirmed_identity"
-    assert "relaxed fit trousers" in off_white_trousers["tags"]
-    assert "off-white" in off_white_trousers["tags"]
-    assert "beige" in off_white_trousers["tags"]
+    assert white_trousers["display_name"] == "white relaxed-fit trousers"
+    assert white_trousers["facets"]["fit"]["value"] == "relaxed"
+    assert white_trousers["facets"]["colors"]["value"] == "white"
+    assert white_trousers["facets"]["colors"]["source"] == "user_confirmed_identity"
+    assert white_trousers["facets"]["fit"]["source"] == "user_confirmed_identity"
+    assert "relaxed fit trousers" in white_trousers["tags"]
+    assert "white" in white_trousers["tags"]
+    assert "off-white" not in white_trousers["tags"]
+    assert "beige" not in white_trousers["tags"]
+    assert white_trousers["images"]["output_512"]["path"] == "outfit_22/bottom/output.png"
+    gray_trousers = by_id["outfit_10_bottom"]
+    assert gray_trousers["garment_id"] == "garment_gray_trousers_001"
+    assert set(gray_trousers["observation_ids"]) == {
+        "outfit_10_bottom",
+        "outfit_11_bottom",
+        "outfit_12_bottom",
+        "outfit_13_bottom",
+        "outfit_14_bottom",
+    }
+    assert gray_trousers["alias_observation_ids"] == [
+        "outfit_11_bottom",
+        "outfit_12_bottom",
+        "outfit_13_bottom",
+        "outfit_14_bottom",
+    ]
+    assert "outfit_11_bottom" not in by_id
+    assert "outfit_12_bottom" not in by_id
+    assert "outfit_13_bottom" not in by_id
+    assert "outfit_14_bottom" not in by_id
+    assert gray_trousers["display_name"] == "gray trousers"
+    assert gray_trousers["facets"]["colors"]["value"] == "gray"
+    assert gray_trousers["facets"]["colors"]["source"] == "user_confirmed_identity"
+    assert "dark gray" not in gray_trousers["tags"]
+    assert "charcoal gray" not in gray_trousers["tags"]
+    assert gray_trousers["images"]["output_512"]["path"] == "outfit_10/bottom/output.png"
     slim_gray_trousers = by_id["outfit_15_bottom"]
     assert slim_gray_trousers["garment_id"] == "garment_gray_trousers_002"
+    assert set(slim_gray_trousers["observation_ids"]) == {
+        "outfit_3_bottom",
+        "outfit_4_bottom",
+        "outfit_15_bottom",
+        "outfit_16_bottom",
+    }
+    assert slim_gray_trousers["alias_observation_ids"] == [
+        "outfit_3_bottom",
+        "outfit_4_bottom",
+        "outfit_16_bottom",
+    ]
+    assert "outfit_3_bottom" not in by_id
+    assert "outfit_4_bottom" not in by_id
+    assert "outfit_16_bottom" not in by_id
+    assert slim_gray_trousers["images"]["output_512"]["path"] == "outfit_15/bottom/output.png"
     assert slim_gray_trousers["display_name"] == "slim fit gray trousers"
     assert slim_gray_trousers["facets"]["fit"]["value"] == "slim"
     assert slim_gray_trousers["facets"]["fit"]["source"] == "user_confirmed_identity"
+    assert slim_gray_trousers["facets"]["colors"]["value"] == "gray"
+    assert slim_gray_trousers["facets"]["colors"]["source"] == "user_confirmed_identity"
     assert "slim fit trousers" in slim_gray_trousers["tags"]
-    outfit_1_bottom = by_id["outfit_1_bottom"]
-    assert outfit_1_bottom["facets"]["fit"]["value"] == "straight"
-    assert outfit_1_bottom["facets"]["fit"]["source"] == "user_confirmed"
-    assert "straight fit trousers" in outfit_1_bottom["tags"]
-    outfit_2_bottom = by_id["outfit_2_bottom"]
-    assert outfit_2_bottom["facets"]["fit"]["value"] == "straight"
-    assert outfit_2_bottom["facets"]["fit"]["source"] == "user_confirmed"
-    assert "straight fit trousers" in outfit_2_bottom["tags"]
-    assert "outfit_1_bottom" in by_id
+    assert "dark gray" not in slim_gray_trousers["tags"]
+    tan_trousers = by_id["outfit_2_bottom"]
+    assert tan_trousers["garment_id"] == "garment_tan_trousers_001"
+    assert set(tan_trousers["observation_ids"]) == {
+        "outfit_1_bottom",
+        "outfit_2_bottom",
+        "outfit_7_bottom",
+        "outfit_8_bottom",
+        "outfit_9_bottom",
+    }
+    assert tan_trousers["alias_observation_ids"] == [
+        "outfit_1_bottom",
+        "outfit_7_bottom",
+        "outfit_8_bottom",
+        "outfit_9_bottom",
+    ]
+    assert "outfit_1_bottom" not in by_id
+    assert "outfit_7_bottom" not in by_id
+    assert "outfit_8_bottom" not in by_id
+    assert "outfit_9_bottom" not in by_id
+    assert tan_trousers["display_name"] == "tan straight-fit trousers"
+    assert tan_trousers["facets"]["fit"]["value"] == "straight"
+    assert tan_trousers["facets"]["fit"]["source"] == "user_confirmed_identity"
+    assert tan_trousers["facets"]["colors"]["value"] == "tan"
+    assert tan_trousers["facets"]["colors"]["source"] == "user_confirmed_identity"
+    assert "straight fit trousers" in tan_trousers["tags"]
+    assert "tan" in tan_trousers["tags"]
+    assert "brown" not in tan_trousers["tags"]
+    assert "taupe" not in tan_trousers["tags"]
     assert "outfit_12_top" in by_id
     assert "outfit_18_top" in by_id
     assert "outfit_24_top" in by_id
@@ -2013,6 +2299,7 @@ def test_production_pipeline_idempotency_and_output_contract(tmp_path: Path) -> 
         final_root=final_root,
         repo_root=cloth_repo,
         identity_map=identity_map,
+        exclusion_map=exclusion_map,
     )
 
     khaki_trousers = by_id["outfit_24_bottom"]
@@ -2021,8 +2308,8 @@ def test_production_pipeline_idempotency_and_output_contract(tmp_path: Path) -> 
     assert khaki_trousers["facets"]["fit"]["source"] == "user_confirmed_identity"
     assert "straight-fit khaki trousers" in khaki_trousers["tags"]
     assert "khaki" in khaki_trousers["tags"]
-    assert "tan" in khaki_trousers["tags"]
-    assert "brown" in khaki_trousers["tags"]
+    assert "tan" not in khaki_trousers["tags"]
+    assert "brown" not in khaki_trousers["tags"]
 
     first_serialized = serialize_catalog_index(index_payload)
     second_payload = build_catalog_index(repo_root=cloth_repo, final_root=final_root)
@@ -2086,23 +2373,24 @@ def test_production_pipeline_idempotency_and_output_contract(tmp_path: Path) -> 
     assert outfit_6_bottom["garment_id"] == "garment_black_pencil_skirt_001"
     assert "outfit_26_bottom" in outfit_6_bottom["observation_ids"]
 
-    outfit_27_dress = by_id["outfit_27_dress"]
-    assert outfit_27_dress["role"] == "dress"
-    assert outfit_27_dress["garment_class_normalized"] == "dress"
-    assert outfit_27_dress["garment_subtype"] == "knee_length"
-    assert outfit_27_dress["template"]["template_id"] == "dress_knee_length_half_sleeve"
-    assert "knee length" in outfit_27_dress["tags"] or "knee-length" in outfit_27_dress["tags"]
-    assert "dress" in outfit_27_dress["tags"]
-    assert "one-piece" in outfit_27_dress["tags"] or "one piece" in outfit_27_dress["tags"]
-    assert outfit_27_dress.get("legacy_catalog_ids") == ["outfit_27_top"]
-    assert "outfit_27_bottom" not in by_id
-    assert "outfit_27_top" not in by_id
+    assert "outfit_2_top" not in by_id
+    assert "outfit_19_top" not in by_id
+    assert "outfit_27_dress" not in by_id
+    assert "outfit_31_bottom" not in by_id
+    assert "outfit_2_bottom" in by_id
+    assert "outfit_31_top" in by_id
 
     index_summary = index_payload["summary"]
-    assert index_summary["role_counts"]["top"] == 26
-    assert index_summary["role_counts"]["dress"] == 3
-    assert index_summary["role_counts"]["bottom"] == 17
-    assert "outfit_27_dress" in index_summary["sections"]["dress"]
+    assert index_summary["role_counts"]["top"] == 24
+    assert index_summary["role_counts"]["dress"] == 2
+    assert index_summary["role_counts"]["bottom"] == 7
+    assert index_summary["display_category_counts"]["top"] == 22
+    assert index_summary["display_category_counts"]["blazer"] == 2
+    assert index_summary["display_category_counts"]["dress"] == 2
+    assert index_summary["display_category_counts"]["bottom"] == 7
+    assert set(index_summary["display_sections"]["blazer"]) == {"outfit_3_top", "outfit_4_top"}
+    assert "outfit_19_top" not in index_summary["display_sections"].get("blazer", [])
+    assert "outfit_27_dress" not in index_summary["sections"].get("dress", [])
     assert "outfit_29_dress" in index_summary["sections"]["dress"]
     assert "outfit_30_dress" in index_summary["sections"]["dress"]
 
@@ -2126,10 +2414,6 @@ def test_production_pipeline_idempotency_and_output_contract(tmp_path: Path) -> 
     outfit_31_top = by_id["outfit_31_top"]
     assert outfit_31_top["template"]["template_id"] == "top_full_sleeve"
     assert "black" in outfit_31_top["tags"]
-
-    outfit_31_bottom = by_id["outfit_31_bottom"]
-    assert outfit_31_bottom["template"]["template_id"] == "pants"
-    assert outfit_31_bottom["garment_class_normalized"] == "trousers"
 
     dry_outfit_29_dress = run_pipeline_case(
         repo_root=cloth_repo,
@@ -2169,16 +2453,15 @@ def test_production_pipeline_idempotency_and_output_contract(tmp_path: Path) -> 
     skirt_hits = search_catalog(payload=index_payload, query="pencil skirt")
     assert skirt_hits[0].catalog_id == "outfit_6_bottom"
     knee_dress_hits = search_catalog(payload=index_payload, query="knee length dress")
-    assert knee_dress_hits[0].catalog_id == "outfit_27_dress"
+    assert knee_dress_hits[0].catalog_id == "outfit_29_dress"
     short_sleeve_dress_hits = search_catalog(payload=index_payload, query="short sleeve dress")
-    assert short_sleeve_dress_hits[0].catalog_id == "outfit_27_dress"
+    assert short_sleeve_dress_hits[0].catalog_id == "outfit_29_dress"
     outfit_27_dress_hits = search_catalog(payload=index_payload, query="outfit 27 dress")
-    assert outfit_27_dress_hits[0].catalog_id == "outfit_27_dress"
+    assert outfit_27_dress_hits == []
     outfit_27_legacy_hits = search_catalog(payload=index_payload, query="outfit 27 top")
-    assert outfit_27_legacy_hits[0].catalog_id == "outfit_27_dress"
+    assert outfit_27_legacy_hits == []
     dress_role_hits = search_catalog(payload=index_payload, query="", role="dress")
     assert {hit.catalog_id for hit in dress_role_hits} == {
-        "outfit_27_dress",
         "outfit_29_dress",
         "outfit_30_dress",
     }
@@ -2196,8 +2479,8 @@ def test_production_pipeline_idempotency_and_output_contract(tmp_path: Path) -> 
     assert full_sleeve_dress_hits[0].catalog_id in {"outfit_29_dress", "outfit_30_dress"}
     turtleneck_hits = search_catalog(payload=index_payload, query="black turtleneck top")
     assert turtleneck_hits[0].catalog_id == "outfit_31_top"
-    ribbed_pants_hits = search_catalog(payload=index_payload, query="drawstring waist trousers")
-    assert ribbed_pants_hits[0].catalog_id == "outfit_31_bottom"
+    ribbed_pants_hits = search_catalog(payload=index_payload, query="drawstring")
+    assert ribbed_pants_hits == []
     long_skirt_hits = search_catalog(payload=index_payload, query="maxi skirt")
     assert long_skirt_hits[0].catalog_id == "outfit_28_bottom"
     shared_skirt_hits = search_catalog(payload=index_payload, query="outfit 26 bottom")
@@ -2239,8 +2522,10 @@ def test_production_pipeline_idempotency_and_output_contract(tmp_path: Path) -> 
     assert white_shirt_hits[0].catalog_id == "outfit_22_top"
     outfit_22_hits = search_catalog(payload=index_payload, query="outfit_22", role="top")
     assert outfit_22_hits[0].catalog_id == "outfit_22_top"
-    green_blazer_hits = search_catalog(payload=index_payload, query="green gingham blazer")
-    assert green_blazer_hits[0].catalog_id == "outfit_19_top"
+    green_blazer_hits = search_catalog(payload=index_payload, query="green checkered blazer")
+    assert "outfit_19_top" not in {hit.catalog_id for hit in green_blazer_hits}
+    pink_floral_hits = search_catalog(payload=index_payload, query="pink floral print")
+    assert "outfit_2_top" not in {hit.catalog_id for hit in pink_floral_hits}
     lavender_hits = search_catalog(payload=index_payload, query="lavender peplum blouse")
     assert lavender_hits[0].catalog_id == "outfit_21_top"
     navy_short_hits = search_catalog(payload=index_payload, query="navy short sleeve blouse")
@@ -2253,24 +2538,29 @@ def test_production_pipeline_idempotency_and_output_contract(tmp_path: Path) -> 
     dark_gray_pair_hits = search_catalog(payload=index_payload, query="outfit 3 bottom")
     for hits, canonical_id in (
         (khaki_hits, "outfit_24_bottom"),
-        (tan_hits, "outfit_24_bottom"),
-        (brown_pair_hits, "outfit_9_bottom"),
-        (gray_pair_hits, "outfit_13_bottom"),
-        (dark_gray_pair_hits, "outfit_4_bottom"),
+        (tan_hits, "outfit_2_bottom"),
+        (brown_pair_hits, "outfit_2_bottom"),
+        (gray_pair_hits, "outfit_10_bottom"),
+        (dark_gray_pair_hits, "outfit_15_bottom"),
     ):
         assert hits[0].catalog_id == canonical_id
 
     relaxed_trouser_hits = search_catalog(payload=index_payload, query="relaxed fit trousers")
-    assert relaxed_trouser_hits[0].catalog_id == "outfit_19_bottom"
+    assert relaxed_trouser_hits[0].catalog_id == "outfit_22_bottom"
     white_relaxed_hits = search_catalog(payload=index_payload, query="white relaxed-fit trousers")
-    assert white_relaxed_hits[0].catalog_id == "outfit_19_bottom"
+    assert white_relaxed_hits[0].catalog_id == "outfit_22_bottom"
+    outfit_17_bottom_hits = search_catalog(payload=index_payload, query="outfit 17 bottom")
+    assert outfit_17_bottom_hits[0].catalog_id == "outfit_22_bottom"
+    outfit_5_bottom_hits = search_catalog(payload=index_payload, query="outfit 5 bottom")
+    assert outfit_5_bottom_hits[0].catalog_id == "outfit_22_bottom"
+    outfit_19_bottom_hits = search_catalog(payload=index_payload, query="outfit 19 bottom")
+    assert outfit_19_bottom_hits[0].catalog_id == "outfit_22_bottom"
     slim_trouser_hits = search_catalog(payload=index_payload, query="slim fit trousers")
     assert slim_trouser_hits[0].catalog_id == "outfit_15_bottom"
     straight_khaki_hits = search_catalog(payload=index_payload, query="straight-fit khaki trousers")
     assert straight_khaki_hits[0].catalog_id == "outfit_24_bottom"
     straight_fit_hits = search_catalog(payload=index_payload, query="straight fit trousers")
     assert straight_fit_hits[0].catalog_id in {
-        "outfit_1_bottom",
         "outfit_2_bottom",
         "outfit_24_bottom",
     }
@@ -2292,8 +2582,9 @@ def test_production_pipeline_idempotency_and_output_contract(tmp_path: Path) -> 
     identity_block = final_manifest.get("garment_identities")
     if identity_block:
         assert identity_block["observation_count"] == EXPECTED_OBSERVATION_COUNT
-        assert identity_block["unique_garment_count"] == EXPECTED_ITEM_COUNT
-        assert len(identity_block["groups"]) == 8
+        assert identity_block["unique_garment_count"] == EXPECTED_UNIQUE_GARMENT_COUNT
+        assert identity_block["catalog_item_count"] == EXPECTED_ITEM_COUNT
+        assert len(identity_block["groups"]) == 7
         assert (
             identity_block["observation_to_garment"]["outfit_26_bottom"]
             == "garment_black_pencil_skirt_001"
@@ -2307,8 +2598,20 @@ def test_production_pipeline_idempotency_and_output_contract(tmp_path: Path) -> 
             == "garment_khaki_slim_trousers_001"
         )
         assert (
+            identity_block["observation_to_garment"]["outfit_1_bottom"]
+            == "garment_tan_trousers_001"
+        )
+        assert (
+            identity_block["observation_to_garment"]["outfit_8_bottom"]
+            == "garment_tan_trousers_001"
+        )
+        assert (
             identity_block["observation_to_garment"]["outfit_3_bottom"]
-            == "garment_dark_gray_trousers_001"
+            == "garment_gray_trousers_002"
+        )
+        assert (
+            identity_block["observation_to_garment"]["outfit_4_bottom"]
+            == "garment_gray_trousers_002"
         )
     contact_sheets = final_manifest["contact_sheets"]
     assert contact_sheets["batch_size_outfits"] == 4

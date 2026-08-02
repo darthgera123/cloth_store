@@ -1,10 +1,16 @@
 {
   "items": [
     {
-      "alias_observation_ids": [],
+      "alias_observation_ids": [
+        "outfit_11_bottom",
+        "outfit_12_bottom",
+        "outfit_13_bottom",
+        "outfit_14_bottom"
+      ],
       "canonical_observation_id": "outfit_10_bottom",
       "catalog_id": "outfit_10_bottom",
-      "display_name": "dark gray trousers",
+      "display_category": "bottom",
+      "display_name": "gray trousers",
       "facets": {
         "closure": {
           "confidence": "high",
@@ -14,9 +20,9 @@
         },
         "colors": {
           "confidence": "high",
-          "evidence": "Uniform pixel tone across garment; no significant color variation or pattern.",
-          "source": "vlm_high_confidence",
-          "value": "dark gray"
+          "evidence": "Same physical neutral gray trousers worn in outfits 10, 11, 12, 13, and 14.",
+          "source": "user_confirmed_identity",
+          "value": "gray"
         },
         "finish": {
           "source": "unknown",
@@ -62,8 +68,17 @@
       },
       "fixture": "outfit_10",
       "garment_class_normalized": "trousers",
-      "garment_id": "outfit_10_bottom",
+      "garment_id": "garment_gray_trousers_001",
       "garment_subtype": null,
+      "identity": {
+        "alias_color_tokens": [
+          "gray"
+        ],
+        "canonical_selection_reason": "User-designated canonical catalog image for the shared neutral gray trousers identity.",
+        "merged_observation_count": 5,
+        "notes": "Same physical neutral gray trousers worn in outfits 10, 11, 12, 13, and 14.",
+        "reason": "user_confirmed"
+      },
       "images": {
         "output_1k": {
           "path": "outfit_10/bottom/output_1k.png",
@@ -75,7 +90,11 @@
         }
       },
       "observation_ids": [
-        "outfit_10_bottom"
+        "outfit_10_bottom",
+        "outfit_11_bottom",
+        "outfit_12_bottom",
+        "outfit_13_bottom",
+        "outfit_14_bottom"
       ],
       "provenance": {
         "artifact_path": "bench/catalog_generation/artifacts/outfit_10_bottom_pants.pipeline.request.json",
@@ -94,7 +113,7 @@
       },
       "retrieval": {
         "lexical_only": true,
-        "search_text": "dark gray trousers bottom dark gray outfit 10 pants solid trouser trousers dark gray solid front fly with button closure visible straight leg trousers trousers pants class evidence garment is trousers no sleeves cuffs or neckline present dark gray solid trousers two leg pants silhouette in cutout full length leg structure with waistband front fly and side seams visible no sleeves or collar present"
+        "search_text": "gray trousers bottom gray gray trousers outfit 10 outfit 10 bottom outfit 11 outfit 11 bottom outfit 12 outfit 12 bottom outfit 13 outfit 13 bottom outfit 14 outfit 14 bottom pants solid structured woven fabric trouser trousers gray solid front fly with button closure visible straight leg trousers"
       },
       "role": "bottom",
       "source_observations": [
@@ -145,14 +164,218 @@
             "trouser",
             "trousers"
           ]
+        },
+        {
+          "attributes_path": "outfit_11/bottom/attributes.json",
+          "canonical": false,
+          "display_name": "charcoal gray structured woven fabric trousers",
+          "fixture": "outfit_11",
+          "images": {
+            "input_segmented": {
+              "path": "outfit_11/bottom/input_segmented.png",
+              "sha256": "015b4cf6dae281da96c2e6875e16f3b69ff022eed59e0eaae5ab529a77f148b1"
+            },
+            "output_1k": {
+              "path": "outfit_11/bottom/output_1k.png",
+              "sha256": "f18bfb08af12f7d2720f7cba55ee7f747b12b1144233a0ec7a843408453c1c11"
+            },
+            "output_512": {
+              "path": "outfit_11/bottom/output.png",
+              "sha256": "54e8de60ba37ca8c50cc5375e06031ca4f1d6488c85e559af811d1933256068d"
+            }
+          },
+          "indexed": false,
+          "metadata_path": "outfit_11/bottom/metadata.json",
+          "observation_id": "outfit_11_bottom",
+          "provenance": {
+            "artifact_path": "bench/catalog_generation/artifacts/outfit_11_bottom_pants.pipeline.request.json",
+            "generated_or_reused": "generated",
+            "metadata_path": "outfit_11/bottom/metadata.json",
+            "model_id": "gemini-3.1-flash-image",
+            "output_1k_sha256": "f18bfb08af12f7d2720f7cba55ee7f747b12b1144233a0ec7a843408453c1c11",
+            "output_512_sha256": "54e8de60ba37ca8c50cc5375e06031ca4f1d6488c85e559af811d1933256068d",
+            "override_path": null,
+            "promoted_from_candidate": null,
+            "promoted_from_reference": null,
+            "prompt_policy_version": 5,
+            "prompt_sha256": "9d94c484cbb67cb3a8ff35f3ee834dae09247dcb455bcb32de5799806d9cce69",
+            "reuse_source": null,
+            "vlm_attributes_path": "outfit_11/bottom/attributes.json"
+          },
+          "role": "bottom",
+          "tags": [
+            "bottom",
+            "charcoal gray",
+            "outfit_11",
+            "pants",
+            "solid",
+            "structured woven fabric",
+            "trouser",
+            "trousers"
+          ]
+        },
+        {
+          "attributes_path": "outfit_12/bottom/attributes.json",
+          "canonical": false,
+          "display_name": "gray trousers",
+          "fixture": "outfit_12",
+          "images": {
+            "input_segmented": {
+              "path": "outfit_12/bottom/input_segmented.png",
+              "sha256": "9d83b1d556da8f58446ca2c932899cccb2b8b1f9ca55e72cdb5253d7cfc8d91a"
+            },
+            "output_1k": {
+              "path": "outfit_12/bottom/output_1k.png",
+              "sha256": "7b7b6f35aaaf2bffc4dcdfb206edc0905c3ce6b506385dbd84e894a220709ea8"
+            },
+            "output_512": {
+              "path": "outfit_12/bottom/output.png",
+              "sha256": "9fbc881a63f43c53f5f7c0f7173aa7884e704b12ff08009b3f016c4eabae4fe0"
+            }
+          },
+          "indexed": false,
+          "metadata_path": "outfit_12/bottom/metadata.json",
+          "observation_id": "outfit_12_bottom",
+          "provenance": {
+            "artifact_path": "bench/catalog_generation/artifacts/outfit_12_bottom_pants.pipeline.request.json",
+            "generated_or_reused": "generated",
+            "metadata_path": "outfit_12/bottom/metadata.json",
+            "model_id": "gemini-3.1-flash-image",
+            "output_1k_sha256": "7b7b6f35aaaf2bffc4dcdfb206edc0905c3ce6b506385dbd84e894a220709ea8",
+            "output_512_sha256": "9fbc881a63f43c53f5f7c0f7173aa7884e704b12ff08009b3f016c4eabae4fe0",
+            "override_path": null,
+            "promoted_from_candidate": null,
+            "promoted_from_reference": null,
+            "prompt_policy_version": 5,
+            "prompt_sha256": "0a0e729310555c4c507962738f35d630b49a86aa815b5685559833c4b1643c2f",
+            "reuse_source": null,
+            "vlm_attributes_path": "outfit_12/bottom/attributes.json"
+          },
+          "role": "bottom",
+          "tags": [
+            "bottom",
+            "gray",
+            "outfit_12",
+            "pants",
+            "solid",
+            "trouser",
+            "trousers"
+          ]
+        },
+        {
+          "attributes_path": "outfit_13/bottom/attributes.json",
+          "canonical": false,
+          "display_name": "gray trousers",
+          "fixture": "outfit_13",
+          "images": {
+            "input_segmented": {
+              "path": "outfit_13/bottom/input_segmented.png",
+              "sha256": "b0bf6667b066d61d3ce77f16a94fad131494072c769007add30376dacff21a79"
+            },
+            "output_1k": {
+              "path": "outfit_13/bottom/output_1k.png",
+              "sha256": "f660331fb60082246875bfa11747cf7aedd7b97684111bd24d7a77594aa49bc6"
+            },
+            "output_512": {
+              "path": "outfit_13/bottom/output.png",
+              "sha256": "90579e05162b226bddaac3f97c3562c4bf449be54e5f99670f2c83e6e64e248a"
+            }
+          },
+          "indexed": false,
+          "metadata_path": "outfit_13/bottom/metadata.json",
+          "observation_id": "outfit_13_bottom",
+          "provenance": {
+            "artifact_path": "bench/catalog_generation/artifacts/outfit_13_bottom_pants.pipeline.request.json",
+            "generated_or_reused": "generated",
+            "metadata_path": "outfit_13/bottom/metadata.json",
+            "model_id": "gemini-3.1-flash-image",
+            "output_1k_sha256": "f660331fb60082246875bfa11747cf7aedd7b97684111bd24d7a77594aa49bc6",
+            "output_512_sha256": "90579e05162b226bddaac3f97c3562c4bf449be54e5f99670f2c83e6e64e248a",
+            "override_path": null,
+            "promoted_from_candidate": null,
+            "promoted_from_reference": null,
+            "prompt_policy_version": 5,
+            "prompt_sha256": "c186406147d8026cb7cd9e70f5f39f0103071eb151f0461de30082a97aebf6ba",
+            "reuse_source": null,
+            "vlm_attributes_path": "outfit_13/bottom/attributes.json"
+          },
+          "role": "bottom",
+          "tags": [
+            "bottom",
+            "gray",
+            "outfit_13",
+            "pants",
+            "solid",
+            "trouser",
+            "trousers"
+          ]
+        },
+        {
+          "attributes_path": "outfit_14/bottom/attributes.json",
+          "canonical": false,
+          "display_name": "gray trousers",
+          "fixture": "outfit_14",
+          "images": {
+            "input_segmented": {
+              "path": "outfit_14/bottom/input_segmented.png",
+              "sha256": "677b1c474568c3aacfd74470c18a1a939966084a0d28014a170561877a004e6b"
+            },
+            "output_1k": {
+              "path": "outfit_14/bottom/output_1k.png",
+              "sha256": "3e47c8a6cd3783d7042ad9b48b6456a83c06b0eff70d804feeb44777f28b6030"
+            },
+            "output_512": {
+              "path": "outfit_14/bottom/output.png",
+              "sha256": "8a74b402f2b35bac1f4317031880cd87d47cc085d84054c15d141a26f38ba56e"
+            }
+          },
+          "indexed": false,
+          "metadata_path": "outfit_14/bottom/metadata.json",
+          "observation_id": "outfit_14_bottom",
+          "provenance": {
+            "artifact_path": "bench/catalog_generation/artifacts/outfit_14_bottom_pants.pipeline.request.json",
+            "generated_or_reused": "generated",
+            "metadata_path": "outfit_14/bottom/metadata.json",
+            "model_id": "gemini-3.1-flash-image",
+            "output_1k_sha256": "3e47c8a6cd3783d7042ad9b48b6456a83c06b0eff70d804feeb44777f28b6030",
+            "output_512_sha256": "8a74b402f2b35bac1f4317031880cd87d47cc085d84054c15d141a26f38ba56e",
+            "override_path": null,
+            "promoted_from_candidate": null,
+            "promoted_from_reference": null,
+            "prompt_policy_version": 5,
+            "prompt_sha256": "71c16fe5b9f5bf1f2d1dfeca3594a4ce9edea4ff6502eb1c5646b5ce9e0db62f",
+            "reuse_source": null,
+            "vlm_attributes_path": "outfit_14/bottom/attributes.json"
+          },
+          "role": "bottom",
+          "tags": [
+            "bottom",
+            "gray",
+            "outfit_14",
+            "pants",
+            "solid",
+            "trouser",
+            "trousers"
+          ]
         }
       ],
       "tags": [
         "bottom",
-        "dark gray",
+        "gray",
+        "gray trousers",
         "outfit_10",
+        "outfit_10_bottom",
+        "outfit_11",
+        "outfit_11_bottom",
+        "outfit_12",
+        "outfit_12_bottom",
+        "outfit_13",
+        "outfit_13_bottom",
+        "outfit_14",
+        "outfit_14_bottom",
         "pants",
         "solid",
+        "structured woven fabric",
         "trouser",
         "trousers"
       ],
@@ -168,6 +391,7 @@
       "alias_observation_ids": [],
       "canonical_observation_id": "outfit_10_top",
       "catalog_id": "outfit_10_top",
+      "display_category": "top",
       "display_name": "black waistcoat",
       "facets": {
         "closure": {
@@ -340,178 +564,9 @@
     },
     {
       "alias_observation_ids": [],
-      "canonical_observation_id": "outfit_11_bottom",
-      "catalog_id": "outfit_11_bottom",
-      "display_name": "charcoal gray structured woven fabric trousers",
-      "facets": {
-        "closure": {
-          "confidence": "high",
-          "evidence": "Vertical seam line at center front waist with small button visible above zipper tape.",
-          "source": "vlm_high_confidence",
-          "value": "zipper fly with button closure"
-        },
-        "colors": {
-          "confidence": "high",
-          "evidence": "Uniform dark gray tone across entire garment; slight tonal variation due to lighting and folds.",
-          "source": "vlm_high_confidence",
-          "value": "charcoal gray"
-        },
-        "finish": {
-          "source": "unknown",
-          "value": null
-        },
-        "garment_class": {
-          "confidence": "high",
-          "evidence": "Full-length leg structure with waistband and fly closure visible; no sleeves or collar present.",
-          "source": "vlm_high_confidence",
-          "value": "trousers"
-        },
-        "material": {
-          "confidence": "high",
-          "evidence": "Holds shape with defined creases and slight stiffness; no drape or sheen suggesting knit or soft fiber.",
-          "source": "vlm_high_confidence",
-          "value": "structured woven fabric"
-        },
-        "neckline_collar": {
-          "source": "unknown",
-          "value": null
-        },
-        "pattern": {
-          "confidence": "high",
-          "evidence": "No visible prints, embroidery, or patterns; uniform surface throughout.",
-          "source": "vlm_high_confidence",
-          "value": "solid"
-        },
-        "role": {
-          "source": "manifest",
-          "value": "bottom"
-        },
-        "sheen": {
-          "confidence": "high",
-          "evidence": "No specular highlights or reflective surfaces; light diffuses evenly across fabric.",
-          "source": "vlm_high_confidence",
-          "value": "matte"
-        },
-        "silhouette_style": {
-          "confidence": "high",
-          "source": "template_selection",
-          "value": "straight-leg trousers"
-        },
-        "sleeve_length": {
-          "source": "not_applicable",
-          "value": null
-        }
-      },
-      "fixture": "outfit_11",
-      "garment_class_normalized": "trousers",
-      "garment_id": "outfit_11_bottom",
-      "garment_subtype": null,
-      "images": {
-        "output_1k": {
-          "path": "outfit_11/bottom/output_1k.png",
-          "sha256": "f18bfb08af12f7d2720f7cba55ee7f747b12b1144233a0ec7a843408453c1c11"
-        },
-        "output_512": {
-          "path": "outfit_11/bottom/output.png",
-          "sha256": "54e8de60ba37ca8c50cc5375e06031ca4f1d6488c85e559af811d1933256068d"
-        }
-      },
-      "observation_ids": [
-        "outfit_11_bottom"
-      ],
-      "provenance": {
-        "artifact_path": "bench/catalog_generation/artifacts/outfit_11_bottom_pants.pipeline.request.json",
-        "generated_or_reused": "generated",
-        "metadata_path": "outfit_11/bottom/metadata.json",
-        "model_id": "gemini-3.1-flash-image",
-        "output_1k_sha256": "f18bfb08af12f7d2720f7cba55ee7f747b12b1144233a0ec7a843408453c1c11",
-        "output_512_sha256": "54e8de60ba37ca8c50cc5375e06031ca4f1d6488c85e559af811d1933256068d",
-        "override_path": null,
-        "promoted_from_candidate": null,
-        "promoted_from_reference": null,
-        "prompt_policy_version": 5,
-        "prompt_sha256": "9d94c484cbb67cb3a8ff35f3ee834dae09247dcb455bcb32de5799806d9cce69",
-        "reuse_source": null,
-        "vlm_attributes_path": "outfit_11/bottom/attributes.json"
-      },
-      "retrieval": {
-        "lexical_only": true,
-        "search_text": "charcoal gray structured woven fabric trousers bottom charcoal gray outfit 11 pants solid structured woven fabric trouser trousers charcoal gray structured woven fabric solid matte zipper fly with button closure straight leg trousers trousers pants class evidence garment is trousers no sleeves cuffs or neckline present charcoal gray solid trousers two leg pants silhouette in cutout full length leg structure with waistband and fly closure visible no sleeves or collar present"
-      },
-      "role": "bottom",
-      "source_observations": [
-        {
-          "attributes_path": "outfit_11/bottom/attributes.json",
-          "canonical": true,
-          "display_name": "charcoal gray structured woven fabric trousers",
-          "fixture": "outfit_11",
-          "images": {
-            "input_segmented": {
-              "path": "outfit_11/bottom/input_segmented.png",
-              "sha256": "015b4cf6dae281da96c2e6875e16f3b69ff022eed59e0eaae5ab529a77f148b1"
-            },
-            "output_1k": {
-              "path": "outfit_11/bottom/output_1k.png",
-              "sha256": "f18bfb08af12f7d2720f7cba55ee7f747b12b1144233a0ec7a843408453c1c11"
-            },
-            "output_512": {
-              "path": "outfit_11/bottom/output.png",
-              "sha256": "54e8de60ba37ca8c50cc5375e06031ca4f1d6488c85e559af811d1933256068d"
-            }
-          },
-          "indexed": true,
-          "metadata_path": "outfit_11/bottom/metadata.json",
-          "observation_id": "outfit_11_bottom",
-          "provenance": {
-            "artifact_path": "bench/catalog_generation/artifacts/outfit_11_bottom_pants.pipeline.request.json",
-            "generated_or_reused": "generated",
-            "metadata_path": "outfit_11/bottom/metadata.json",
-            "model_id": "gemini-3.1-flash-image",
-            "output_1k_sha256": "f18bfb08af12f7d2720f7cba55ee7f747b12b1144233a0ec7a843408453c1c11",
-            "output_512_sha256": "54e8de60ba37ca8c50cc5375e06031ca4f1d6488c85e559af811d1933256068d",
-            "override_path": null,
-            "promoted_from_candidate": null,
-            "promoted_from_reference": null,
-            "prompt_policy_version": 5,
-            "prompt_sha256": "9d94c484cbb67cb3a8ff35f3ee834dae09247dcb455bcb32de5799806d9cce69",
-            "reuse_source": null,
-            "vlm_attributes_path": "outfit_11/bottom/attributes.json"
-          },
-          "role": "bottom",
-          "tags": [
-            "bottom",
-            "charcoal gray",
-            "outfit_11",
-            "pants",
-            "solid",
-            "structured woven fabric",
-            "trouser",
-            "trousers"
-          ]
-        }
-      ],
-      "tags": [
-        "bottom",
-        "charcoal gray",
-        "outfit_11",
-        "pants",
-        "solid",
-        "structured woven fabric",
-        "trouser",
-        "trousers"
-      ],
-      "template": {
-        "override_applied": false,
-        "selection_confidence": "high",
-        "selection_reason": "Trousers/pants class. Evidence: Garment is trousers; no sleeves, cuffs, or neckline present. | Charcoal gray solid trousers; two-leg pants silhouette in cutout. | Full-length leg structure with waistband and fly closure visible; no sleeves or collar present.",
-        "template_id": "pants"
-      },
-      "user_override": null
-    },
-    {
-      "alias_observation_ids": [],
       "canonical_observation_id": "outfit_11_top",
       "catalog_id": "outfit_11_top",
+      "display_category": "top",
       "display_name": "black blouse",
       "facets": {
         "closure": {
@@ -682,6 +737,7 @@
       "alias_observation_ids": [],
       "canonical_observation_id": "outfit_12_top",
       "catalog_id": "outfit_12_top",
+      "display_category": "top",
       "display_name": "light pink satin-like woven fabric office_blouse",
       "facets": {
         "closure": {
@@ -855,239 +911,10 @@
       "user_override": null
     },
     {
-      "alias_observation_ids": [
-        "outfit_12_bottom"
-      ],
-      "canonical_observation_id": "outfit_13_bottom",
-      "catalog_id": "outfit_13_bottom",
-      "display_name": "gray trousers",
-      "facets": {
-        "closure": {
-          "confidence": "high",
-          "evidence": "Vertical seam line at center front suggests zipper; small protrusion near waistband indicates button.",
-          "source": "vlm_high_confidence",
-          "value": "front zipper and button placket visible"
-        },
-        "colors": {
-          "confidence": "high",
-          "evidence": "Same physical gray trousers worn in outfit 12 and outfit 13.",
-          "source": "user_confirmed_identity",
-          "value": "gray"
-        },
-        "finish": {
-          "source": "unknown",
-          "value": null
-        },
-        "garment_class": {
-          "confidence": "high",
-          "evidence": "Full-length lower-body garment with two legs, waistband, and front fly visible; consistent with trousers.",
-          "source": "vlm_high_confidence",
-          "value": "trousers"
-        },
-        "material": {
-          "source": "unknown",
-          "value": null
-        },
-        "neckline_collar": {
-          "source": "unknown",
-          "value": null
-        },
-        "pattern": {
-          "confidence": "high",
-          "evidence": "No prints, embroidery, or patterns visible; uniform color and surface.",
-          "source": "vlm_high_confidence",
-          "value": "solid"
-        },
-        "role": {
-          "source": "manifest",
-          "value": "bottom"
-        },
-        "sheen": {
-          "confidence": "high",
-          "evidence": "No specular highlights or reflective surfaces; light diffuses evenly across fabric.",
-          "source": "vlm_high_confidence",
-          "value": "matte"
-        },
-        "silhouette_style": {
-          "confidence": "high",
-          "source": "template_selection",
-          "value": "straight-leg trousers"
-        },
-        "sleeve_length": {
-          "source": "not_applicable",
-          "value": null
-        }
-      },
-      "fixture": "outfit_13",
-      "garment_class_normalized": "trousers",
-      "garment_id": "garment_gray_trousers_001",
-      "garment_subtype": null,
-      "identity": {
-        "alias_color_tokens": [
-          "gray"
-        ],
-        "canonical_selection_reason": "Lower texture QC mean_delta_e (0.857 vs 5.184); best approved output fidelity.",
-        "merged_observation_count": 2,
-        "notes": "Same physical gray trousers worn in outfit 12 and outfit 13.",
-        "reason": "user_confirmed"
-      },
-      "images": {
-        "output_1k": {
-          "path": "outfit_13/bottom/output_1k.png",
-          "sha256": "f660331fb60082246875bfa11747cf7aedd7b97684111bd24d7a77594aa49bc6"
-        },
-        "output_512": {
-          "path": "outfit_13/bottom/output.png",
-          "sha256": "90579e05162b226bddaac3f97c3562c4bf449be54e5f99670f2c83e6e64e248a"
-        }
-      },
-      "observation_ids": [
-        "outfit_12_bottom",
-        "outfit_13_bottom"
-      ],
-      "provenance": {
-        "artifact_path": "bench/catalog_generation/artifacts/outfit_13_bottom_pants.pipeline.request.json",
-        "generated_or_reused": "generated",
-        "metadata_path": "outfit_13/bottom/metadata.json",
-        "model_id": "gemini-3.1-flash-image",
-        "output_1k_sha256": "f660331fb60082246875bfa11747cf7aedd7b97684111bd24d7a77594aa49bc6",
-        "output_512_sha256": "90579e05162b226bddaac3f97c3562c4bf449be54e5f99670f2c83e6e64e248a",
-        "override_path": null,
-        "promoted_from_candidate": null,
-        "promoted_from_reference": null,
-        "prompt_policy_version": 5,
-        "prompt_sha256": "c186406147d8026cb7cd9e70f5f39f0103071eb151f0461de30082a97aebf6ba",
-        "reuse_source": null,
-        "vlm_attributes_path": "outfit_13/bottom/attributes.json"
-      },
-      "retrieval": {
-        "lexical_only": true,
-        "search_text": "gray trousers bottom gray gray trousers outfit 12 outfit 12 bottom outfit 13 outfit 13 bottom pants solid trouser trousers gray solid matte front zipper and button placket visible straight leg trousers"
-      },
-      "role": "bottom",
-      "source_observations": [
-        {
-          "attributes_path": "outfit_12/bottom/attributes.json",
-          "canonical": false,
-          "display_name": "gray trousers",
-          "fixture": "outfit_12",
-          "images": {
-            "input_segmented": {
-              "path": "outfit_12/bottom/input_segmented.png",
-              "sha256": "9d83b1d556da8f58446ca2c932899cccb2b8b1f9ca55e72cdb5253d7cfc8d91a"
-            },
-            "output_1k": {
-              "path": "outfit_12/bottom/output_1k.png",
-              "sha256": "7b7b6f35aaaf2bffc4dcdfb206edc0905c3ce6b506385dbd84e894a220709ea8"
-            },
-            "output_512": {
-              "path": "outfit_12/bottom/output.png",
-              "sha256": "9fbc881a63f43c53f5f7c0f7173aa7884e704b12ff08009b3f016c4eabae4fe0"
-            }
-          },
-          "indexed": false,
-          "metadata_path": "outfit_12/bottom/metadata.json",
-          "observation_id": "outfit_12_bottom",
-          "provenance": {
-            "artifact_path": "bench/catalog_generation/artifacts/outfit_12_bottom_pants.pipeline.request.json",
-            "generated_or_reused": "generated",
-            "metadata_path": "outfit_12/bottom/metadata.json",
-            "model_id": "gemini-3.1-flash-image",
-            "output_1k_sha256": "7b7b6f35aaaf2bffc4dcdfb206edc0905c3ce6b506385dbd84e894a220709ea8",
-            "output_512_sha256": "9fbc881a63f43c53f5f7c0f7173aa7884e704b12ff08009b3f016c4eabae4fe0",
-            "override_path": null,
-            "promoted_from_candidate": null,
-            "promoted_from_reference": null,
-            "prompt_policy_version": 5,
-            "prompt_sha256": "0a0e729310555c4c507962738f35d630b49a86aa815b5685559833c4b1643c2f",
-            "reuse_source": null,
-            "vlm_attributes_path": "outfit_12/bottom/attributes.json"
-          },
-          "role": "bottom",
-          "tags": [
-            "bottom",
-            "gray",
-            "outfit_12",
-            "pants",
-            "solid",
-            "trouser",
-            "trousers"
-          ]
-        },
-        {
-          "attributes_path": "outfit_13/bottom/attributes.json",
-          "canonical": true,
-          "display_name": "gray trousers",
-          "fixture": "outfit_13",
-          "images": {
-            "input_segmented": {
-              "path": "outfit_13/bottom/input_segmented.png",
-              "sha256": "b0bf6667b066d61d3ce77f16a94fad131494072c769007add30376dacff21a79"
-            },
-            "output_1k": {
-              "path": "outfit_13/bottom/output_1k.png",
-              "sha256": "f660331fb60082246875bfa11747cf7aedd7b97684111bd24d7a77594aa49bc6"
-            },
-            "output_512": {
-              "path": "outfit_13/bottom/output.png",
-              "sha256": "90579e05162b226bddaac3f97c3562c4bf449be54e5f99670f2c83e6e64e248a"
-            }
-          },
-          "indexed": true,
-          "metadata_path": "outfit_13/bottom/metadata.json",
-          "observation_id": "outfit_13_bottom",
-          "provenance": {
-            "artifact_path": "bench/catalog_generation/artifacts/outfit_13_bottom_pants.pipeline.request.json",
-            "generated_or_reused": "generated",
-            "metadata_path": "outfit_13/bottom/metadata.json",
-            "model_id": "gemini-3.1-flash-image",
-            "output_1k_sha256": "f660331fb60082246875bfa11747cf7aedd7b97684111bd24d7a77594aa49bc6",
-            "output_512_sha256": "90579e05162b226bddaac3f97c3562c4bf449be54e5f99670f2c83e6e64e248a",
-            "override_path": null,
-            "promoted_from_candidate": null,
-            "promoted_from_reference": null,
-            "prompt_policy_version": 5,
-            "prompt_sha256": "c186406147d8026cb7cd9e70f5f39f0103071eb151f0461de30082a97aebf6ba",
-            "reuse_source": null,
-            "vlm_attributes_path": "outfit_13/bottom/attributes.json"
-          },
-          "role": "bottom",
-          "tags": [
-            "bottom",
-            "gray",
-            "outfit_13",
-            "pants",
-            "solid",
-            "trouser",
-            "trousers"
-          ]
-        }
-      ],
-      "tags": [
-        "bottom",
-        "gray",
-        "gray trousers",
-        "outfit_12",
-        "outfit_12_bottom",
-        "outfit_13",
-        "outfit_13_bottom",
-        "pants",
-        "solid",
-        "trouser",
-        "trousers"
-      ],
-      "template": {
-        "override_applied": false,
-        "selection_confidence": "high",
-        "selection_reason": "Trousers/pants class. Evidence: Garment is trousers; no sleeves, cuffs, or neckline present. | Trousers/pants class. Evidence: Full-length lower-body garment with two legs, waistband, and front fly visible; consistent with trousers. | Garment is trousers; no sleeves, cuffs, or neckline present. | Full-length lower-body garment with two legs, waistband, and front fly visible; consistent with trousers.",
-        "template_id": "pants"
-      },
-      "user_override": null
-    },
-    {
       "alias_observation_ids": [],
       "canonical_observation_id": "outfit_13_top",
       "catalog_id": "outfit_13_top",
+      "display_category": "top",
       "display_name": "pastel pink sleeveless top",
       "facets": {
         "closure": {
@@ -1266,174 +1093,9 @@
     },
     {
       "alias_observation_ids": [],
-      "canonical_observation_id": "outfit_14_bottom",
-      "catalog_id": "outfit_14_bottom",
-      "display_name": "gray trousers",
-      "facets": {
-        "closure": {
-          "confidence": "high",
-          "evidence": "Vertical seam line at center front waist suggests fly; small dark element near top may be button.",
-          "source": "vlm_high_confidence",
-          "value": "front fly with button closure"
-        },
-        "colors": {
-          "confidence": "high",
-          "evidence": "Uniform mid-tone gray across entire garment; no color variation or pattern.",
-          "source": "vlm_high_confidence",
-          "value": "gray"
-        },
-        "finish": {
-          "source": "unknown",
-          "value": null
-        },
-        "garment_class": {
-          "confidence": "high",
-          "evidence": "Full-length leg structure with waistband and front fly visible; no sleeves or collar present.",
-          "source": "vlm_high_confidence",
-          "value": "trousers"
-        },
-        "material": {
-          "source": "unknown",
-          "value": null
-        },
-        "neckline_collar": {
-          "source": "unknown",
-          "value": null
-        },
-        "pattern": {
-          "confidence": "high",
-          "evidence": "No prints, embroidery, or patterns detected; uniform surface throughout.",
-          "source": "vlm_high_confidence",
-          "value": "solid"
-        },
-        "role": {
-          "source": "manifest",
-          "value": "bottom"
-        },
-        "sheen": {
-          "confidence": "high",
-          "evidence": "No specular highlights or reflective surfaces; light diffuses evenly across fabric.",
-          "source": "vlm_high_confidence",
-          "value": "matte"
-        },
-        "silhouette_style": {
-          "confidence": "high",
-          "source": "template_selection",
-          "value": "straight-leg trousers"
-        },
-        "sleeve_length": {
-          "source": "not_applicable",
-          "value": null
-        }
-      },
-      "fixture": "outfit_14",
-      "garment_class_normalized": "trousers",
-      "garment_id": "outfit_14_bottom",
-      "garment_subtype": null,
-      "images": {
-        "output_1k": {
-          "path": "outfit_14/bottom/output_1k.png",
-          "sha256": "3e47c8a6cd3783d7042ad9b48b6456a83c06b0eff70d804feeb44777f28b6030"
-        },
-        "output_512": {
-          "path": "outfit_14/bottom/output.png",
-          "sha256": "8a74b402f2b35bac1f4317031880cd87d47cc085d84054c15d141a26f38ba56e"
-        }
-      },
-      "observation_ids": [
-        "outfit_14_bottom"
-      ],
-      "provenance": {
-        "artifact_path": "bench/catalog_generation/artifacts/outfit_14_bottom_pants.pipeline.request.json",
-        "generated_or_reused": "generated",
-        "metadata_path": "outfit_14/bottom/metadata.json",
-        "model_id": "gemini-3.1-flash-image",
-        "output_1k_sha256": "3e47c8a6cd3783d7042ad9b48b6456a83c06b0eff70d804feeb44777f28b6030",
-        "output_512_sha256": "8a74b402f2b35bac1f4317031880cd87d47cc085d84054c15d141a26f38ba56e",
-        "override_path": null,
-        "promoted_from_candidate": null,
-        "promoted_from_reference": null,
-        "prompt_policy_version": 5,
-        "prompt_sha256": "71c16fe5b9f5bf1f2d1dfeca3594a4ce9edea4ff6502eb1c5646b5ce9e0db62f",
-        "reuse_source": null,
-        "vlm_attributes_path": "outfit_14/bottom/attributes.json"
-      },
-      "retrieval": {
-        "lexical_only": true,
-        "search_text": "gray trousers bottom gray outfit 14 pants solid trouser trousers gray solid matte front fly with button closure straight leg trousers trousers pants class evidence garment is trousers no sleeves cuffs or neckline present trousers pants class evidence full length leg structure with waistband and front fly visible no sleeves or collar present garment is trousers no sleeves cuffs or neckline present full length leg structure with waistband and front fly visible no sleeves or collar present"
-      },
-      "role": "bottom",
-      "source_observations": [
-        {
-          "attributes_path": "outfit_14/bottom/attributes.json",
-          "canonical": true,
-          "display_name": "gray trousers",
-          "fixture": "outfit_14",
-          "images": {
-            "input_segmented": {
-              "path": "outfit_14/bottom/input_segmented.png",
-              "sha256": "677b1c474568c3aacfd74470c18a1a939966084a0d28014a170561877a004e6b"
-            },
-            "output_1k": {
-              "path": "outfit_14/bottom/output_1k.png",
-              "sha256": "3e47c8a6cd3783d7042ad9b48b6456a83c06b0eff70d804feeb44777f28b6030"
-            },
-            "output_512": {
-              "path": "outfit_14/bottom/output.png",
-              "sha256": "8a74b402f2b35bac1f4317031880cd87d47cc085d84054c15d141a26f38ba56e"
-            }
-          },
-          "indexed": true,
-          "metadata_path": "outfit_14/bottom/metadata.json",
-          "observation_id": "outfit_14_bottom",
-          "provenance": {
-            "artifact_path": "bench/catalog_generation/artifacts/outfit_14_bottom_pants.pipeline.request.json",
-            "generated_or_reused": "generated",
-            "metadata_path": "outfit_14/bottom/metadata.json",
-            "model_id": "gemini-3.1-flash-image",
-            "output_1k_sha256": "3e47c8a6cd3783d7042ad9b48b6456a83c06b0eff70d804feeb44777f28b6030",
-            "output_512_sha256": "8a74b402f2b35bac1f4317031880cd87d47cc085d84054c15d141a26f38ba56e",
-            "override_path": null,
-            "promoted_from_candidate": null,
-            "promoted_from_reference": null,
-            "prompt_policy_version": 5,
-            "prompt_sha256": "71c16fe5b9f5bf1f2d1dfeca3594a4ce9edea4ff6502eb1c5646b5ce9e0db62f",
-            "reuse_source": null,
-            "vlm_attributes_path": "outfit_14/bottom/attributes.json"
-          },
-          "role": "bottom",
-          "tags": [
-            "bottom",
-            "gray",
-            "outfit_14",
-            "pants",
-            "solid",
-            "trouser",
-            "trousers"
-          ]
-        }
-      ],
-      "tags": [
-        "bottom",
-        "gray",
-        "outfit_14",
-        "pants",
-        "solid",
-        "trouser",
-        "trousers"
-      ],
-      "template": {
-        "override_applied": false,
-        "selection_confidence": "high",
-        "selection_reason": "Trousers/pants class. Evidence: Garment is trousers; no sleeves, cuffs, or neckline present. | Trousers/pants class. Evidence: Full-length leg structure with waistband and front fly visible; no sleeves or collar present. | Garment is trousers; no sleeves, cuffs, or neckline present. | Full-length leg structure with waistband and front fly visible; no sleeves or collar present.",
-        "template_id": "pants"
-      },
-      "user_override": null
-    },
-    {
-      "alias_observation_ids": [],
       "canonical_observation_id": "outfit_14_top",
       "catalog_id": "outfit_14_top",
+      "display_category": "top",
       "display_name": "green office_blouse",
       "facets": {
         "closure": {
@@ -1604,10 +1266,13 @@
     },
     {
       "alias_observation_ids": [
+        "outfit_3_bottom",
+        "outfit_4_bottom",
         "outfit_16_bottom"
       ],
       "canonical_observation_id": "outfit_15_bottom",
       "catalog_id": "outfit_15_bottom",
+      "display_category": "bottom",
       "display_name": "slim fit gray trousers",
       "facets": {
         "closure": {
@@ -1618,7 +1283,7 @@
         },
         "colors": {
           "confidence": "high",
-          "evidence": "Same physical slim-fit gray trousers worn in outfit 15 and outfit 16.",
+          "evidence": "Same physical slim-fit gray trousers worn in outfits 3, 4, 15, and 16.",
           "source": "user_confirmed_identity",
           "value": "gray"
         },
@@ -1628,7 +1293,7 @@
         },
         "fit": {
           "confidence": "high",
-          "evidence": "Same physical slim-fit gray trousers worn in outfit 15 and outfit 16.",
+          "evidence": "Same physical slim-fit gray trousers worn in outfits 3, 4, 15, and 16.",
           "source": "user_confirmed_identity",
           "value": "slim"
         },
@@ -1678,12 +1343,11 @@
       "garment_subtype": null,
       "identity": {
         "alias_color_tokens": [
-          "gray",
-          "dark gray"
+          "gray"
         ],
         "canonical_selection_reason": "Slightly lower texture QC mean_delta_e (3.926 vs 3.937); selected over ribbed VLM variant.",
-        "merged_observation_count": 2,
-        "notes": "Same physical slim-fit gray trousers worn in outfit 15 and outfit 16.",
+        "merged_observation_count": 4,
+        "notes": "Same physical slim-fit gray trousers worn in outfits 3, 4, 15, and 16.",
         "reason": "user_confirmed"
       },
       "images": {
@@ -1697,6 +1361,8 @@
         }
       },
       "observation_ids": [
+        "outfit_3_bottom",
+        "outfit_4_bottom",
         "outfit_15_bottom",
         "outfit_16_bottom"
       ],
@@ -1717,10 +1383,107 @@
       },
       "retrieval": {
         "lexical_only": true,
-        "search_text": "slim fit gray trousers bottom dark gray dark gray trousers gray gray trousers outfit 15 outfit 15 bottom outfit 16 outfit 16 bottom pants slim slim fit slim fit gray trousers slim fit trousers solid solid with fine vertical ribbing trouser trousers woven fabric with fine vertical ribbing gray solid matte belt loops and waistband visible closure mechanism not visible straight leg trousers slim"
+        "search_text": "slim fit gray trousers bottom gray gray trousers outfit 15 outfit 15 bottom outfit 16 outfit 16 bottom outfit 3 outfit 3 bottom outfit 4 outfit 4 bottom pants slim slim fit slim fit gray trousers slim fit trousers solid solid with fine vertical ribbing trouser trousers woven fabric with fine vertical ribbing woven fabric with subtle vertical ribbing gray solid matte belt loops and waistband visible closure mechanism not visible straight leg trousers slim"
       },
       "role": "bottom",
       "source_observations": [
+        {
+          "attributes_path": "outfit_3/bottom/attributes.json",
+          "canonical": false,
+          "display_name": "dark gray woven fabric with subtle vertical ribbing trousers",
+          "fixture": "outfit_3",
+          "images": {
+            "input_segmented": {
+              "path": "outfit_3/bottom/input_segmented.png",
+              "sha256": "8b2bd95c45deb4fa901f058f183365890d4c744686b59b53b7623cf0a41698c4"
+            },
+            "output_1k": {
+              "path": "outfit_3/bottom/output_1k.png",
+              "sha256": "ca3a9f9346d2a59f520285fb84c4cb952f1f7b1439a931120942a0a049980147"
+            },
+            "output_512": {
+              "path": "outfit_3/bottom/output.png",
+              "sha256": "deb39a4f9147e4276bd96b665cc3202541b2b74f6dc1ff10a2e3ec8373ce279f"
+            }
+          },
+          "indexed": false,
+          "metadata_path": "outfit_3/bottom/metadata.json",
+          "observation_id": "outfit_3_bottom",
+          "provenance": {
+            "artifact_path": "bench/catalog_generation/artifacts/outfit_3_bottom_pants.pipeline.request.json",
+            "generated_or_reused": "generated",
+            "metadata_path": "outfit_3/bottom/metadata.json",
+            "model_id": "gemini-3.1-flash-image",
+            "output_1k_sha256": "ca3a9f9346d2a59f520285fb84c4cb952f1f7b1439a931120942a0a049980147",
+            "output_512_sha256": "deb39a4f9147e4276bd96b665cc3202541b2b74f6dc1ff10a2e3ec8373ce279f",
+            "override_path": null,
+            "promoted_from_candidate": null,
+            "promoted_from_reference": null,
+            "prompt_policy_version": 5,
+            "prompt_sha256": "decad61714fcaccbc66aca650cf1b44ce59858fd0dccd083c2203f66a5a088b2",
+            "reuse_source": null,
+            "vlm_attributes_path": "outfit_3/bottom/attributes.json"
+          },
+          "role": "bottom",
+          "tags": [
+            "bottom",
+            "dark gray",
+            "outfit_3",
+            "pants",
+            "solid with fine vertical ribbing",
+            "trouser",
+            "trousers",
+            "woven fabric with subtle vertical ribbing"
+          ]
+        },
+        {
+          "attributes_path": "outfit_4/bottom/attributes.json",
+          "canonical": false,
+          "display_name": "dark gray trousers",
+          "fixture": "outfit_4",
+          "images": {
+            "input_segmented": {
+              "path": "outfit_4/bottom/input_segmented.png",
+              "sha256": "0a08615a2c3a089582b35dc2bcb70b9b5ec3163409bfe3ed068bb7eaf22bce90"
+            },
+            "output_1k": {
+              "path": "outfit_4/bottom/output_1k.png",
+              "sha256": "0e6aa1e7cb6c7dc2ab3e760ef39e808ac0e4541e027d35674ead4c7da73873ac"
+            },
+            "output_512": {
+              "path": "outfit_4/bottom/output.png",
+              "sha256": "33d826a1fb54da3cece89a61f6086d08aaab4c793f5b0ae05dee6fe8ea72c3ca"
+            }
+          },
+          "indexed": false,
+          "metadata_path": "outfit_4/bottom/metadata.json",
+          "observation_id": "outfit_4_bottom",
+          "provenance": {
+            "artifact_path": "bench/catalog_generation/artifacts/outfit_4_bottom_pants.pipeline.request.json",
+            "generated_or_reused": "generated",
+            "metadata_path": "outfit_4/bottom/metadata.json",
+            "model_id": "gemini-3.1-flash-image",
+            "output_1k_sha256": "0e6aa1e7cb6c7dc2ab3e760ef39e808ac0e4541e027d35674ead4c7da73873ac",
+            "output_512_sha256": "33d826a1fb54da3cece89a61f6086d08aaab4c793f5b0ae05dee6fe8ea72c3ca",
+            "override_path": null,
+            "promoted_from_candidate": null,
+            "promoted_from_reference": null,
+            "prompt_policy_version": 5,
+            "prompt_sha256": "d98a2205728b439e59ac0dc12add473b16275f2015fd086bcfd1319bdf921912",
+            "reuse_source": null,
+            "vlm_attributes_path": "outfit_4/bottom/attributes.json"
+          },
+          "role": "bottom",
+          "tags": [
+            "bottom",
+            "dark gray",
+            "outfit_4",
+            "pants",
+            "solid",
+            "trouser",
+            "trousers"
+          ]
+        },
         {
           "attributes_path": "outfit_15/bottom/attributes.json",
           "canonical": true,
@@ -1821,14 +1584,16 @@
       ],
       "tags": [
         "bottom",
-        "dark gray",
-        "dark gray trousers",
         "gray",
         "gray trousers",
         "outfit_15",
         "outfit_15_bottom",
         "outfit_16",
         "outfit_16_bottom",
+        "outfit_3",
+        "outfit_3_bottom",
+        "outfit_4",
+        "outfit_4_bottom",
         "pants",
         "slim",
         "slim fit",
@@ -1838,7 +1603,8 @@
         "solid with fine vertical ribbing",
         "trouser",
         "trousers",
-        "woven fabric with fine vertical ribbing"
+        "woven fabric with fine vertical ribbing",
+        "woven fabric with subtle vertical ribbing"
       ],
       "template": {
         "override_applied": false,
@@ -1852,6 +1618,7 @@
       "alias_observation_ids": [],
       "canonical_observation_id": "outfit_15_top",
       "catalog_id": "outfit_15_top",
+      "display_category": "top",
       "display_name": "black satin-like woven fabric office_blouse",
       "facets": {
         "closure": {
@@ -2028,6 +1795,7 @@
       "alias_observation_ids": [],
       "canonical_observation_id": "outfit_17_top",
       "catalog_id": "outfit_17_top",
+      "display_category": "top",
       "display_name": "navy office_blouse",
       "facets": {
         "closure": {
@@ -2200,6 +1968,7 @@
       "alias_observation_ids": [],
       "canonical_observation_id": "outfit_18_top",
       "catalog_id": "outfit_18_top",
+      "display_category": "top",
       "display_name": "cream satin-like woven fabric sleeveless top",
       "facets": {
         "closure": {
@@ -2389,769 +2158,10 @@
       }
     },
     {
-      "alias_observation_ids": [
-        "outfit_17_bottom",
-        "outfit_18_bottom",
-        "outfit_20_bottom",
-        "outfit_21_bottom"
-      ],
-      "canonical_observation_id": "outfit_19_bottom",
-      "catalog_id": "outfit_19_bottom",
-      "display_name": "white relaxed-fit trousers",
-      "facets": {
-        "closure": {
-          "confidence": "high",
-          "evidence": "Vertical placket with single button at waistband center; zipper track implied but not clearly visible.",
-          "source": "vlm_high_confidence",
-          "value": "fly with button visible"
-        },
-        "colors": {
-          "confidence": "high",
-          "evidence": "Same physical white relaxed-fit trousers worn in outfits 17, 18, 19, 20, and 21.",
-          "source": "user_confirmed_identity",
-          "value": "white"
-        },
-        "finish": {
-          "source": "unknown",
-          "value": null
-        },
-        "fit": {
-          "confidence": "high",
-          "evidence": "Same physical white relaxed-fit trousers worn in outfits 17, 18, 19, 20, and 21.",
-          "source": "user_confirmed_identity",
-          "value": "relaxed"
-        },
-        "garment_class": {
-          "confidence": "high",
-          "evidence": "Full-length leg structure with waistband and fly visible; no sleeves or collar present.",
-          "source": "vlm_high_confidence",
-          "value": "trousers"
-        },
-        "material": {
-          "confidence": "high",
-          "evidence": "Folds and drape suggest structured but flexible textile; no visible texture or sheen indicating synthetic or natural fiber.",
-          "source": "vlm_high_confidence",
-          "value": "smooth woven fabric"
-        },
-        "neckline_collar": {
-          "source": "unknown",
-          "value": null
-        },
-        "pattern": {
-          "confidence": "high",
-          "evidence": "No patterns, prints, or surface embellishments visible; uniform color and finish.",
-          "source": "vlm_high_confidence",
-          "value": "solid"
-        },
-        "role": {
-          "source": "manifest",
-          "value": "bottom"
-        },
-        "sheen": {
-          "confidence": "high",
-          "evidence": "No specular highlights or reflective surfaces; light diffuses evenly across fabric.",
-          "source": "vlm_high_confidence",
-          "value": "matte"
-        },
-        "silhouette_style": {
-          "confidence": "high",
-          "source": "template_selection",
-          "value": "straight-leg trousers"
-        },
-        "sleeve_length": {
-          "source": "not_applicable",
-          "value": null
-        }
-      },
-      "fixture": "outfit_19",
-      "garment_class_normalized": "trousers",
-      "garment_id": "garment_off_white_trousers_001",
-      "garment_subtype": null,
-      "identity": {
-        "alias_color_tokens": [
-          "white",
-          "off-white",
-          "beige"
-        ],
-        "canonical_selection_reason": "Lowest texture QC mean_delta_e (14.128) with no QC flags across five linked observations.",
-        "merged_observation_count": 5,
-        "notes": "Same physical white relaxed-fit trousers worn in outfits 17, 18, 19, 20, and 21.",
-        "reason": "user_confirmed"
-      },
-      "images": {
-        "output_1k": {
-          "path": "outfit_19/bottom/output_1k.png",
-          "sha256": "d68a69c7cd5eafd3d6821e3bc52b5f11a9d1c2f569c251639541033eee66ac33"
-        },
-        "output_512": {
-          "path": "outfit_19/bottom/output.png",
-          "sha256": "0604769a983e8c0f04ac980f5ef0f7417b9a001c8fbf58f34b7f12574d2d18e4"
-        }
-      },
-      "observation_ids": [
-        "outfit_17_bottom",
-        "outfit_18_bottom",
-        "outfit_19_bottom",
-        "outfit_20_bottom",
-        "outfit_21_bottom"
-      ],
-      "provenance": {
-        "artifact_path": "bench/catalog_generation/artifacts/outfit_19_bottom_pants.pipeline.request.json",
-        "generated_or_reused": "generated",
-        "metadata_path": "outfit_19/bottom/metadata.json",
-        "model_id": "gemini-3.1-flash-image",
-        "output_1k_sha256": "d68a69c7cd5eafd3d6821e3bc52b5f11a9d1c2f569c251639541033eee66ac33",
-        "output_512_sha256": "0604769a983e8c0f04ac980f5ef0f7417b9a001c8fbf58f34b7f12574d2d18e4",
-        "override_path": null,
-        "promoted_from_candidate": null,
-        "promoted_from_reference": null,
-        "prompt_policy_version": 5,
-        "prompt_sha256": "ed739e5e89a866c904c655c1a272dbcdb39a4fdc775e61bfb8880e9e888825b2",
-        "reuse_source": null,
-        "vlm_attributes_path": "outfit_19/bottom/attributes.json"
-      },
-      "retrieval": {
-        "lexical_only": true,
-        "search_text": "white relaxed fit trousers beige beige trousers bottom off white off white trousers outfit 17 outfit 17 bottom outfit 18 outfit 18 bottom outfit 19 outfit 19 bottom outfit 20 outfit 20 bottom outfit 21 outfit 21 bottom pants relaxed relaxed fit relaxed fit trousers satin like woven fabric smooth woven fabric solid trouser trousers white white relaxed fit trousers white trousers white smooth woven fabric solid matte fly with button visible straight leg trousers relaxed"
-      },
-      "role": "bottom",
-      "source_observations": [
-        {
-          "attributes_path": "outfit_17/bottom/attributes.json",
-          "canonical": false,
-          "display_name": "off-white satin-like woven fabric trousers",
-          "fixture": "outfit_17",
-          "images": {
-            "input_segmented": {
-              "path": "outfit_17/bottom/input_segmented.png",
-              "sha256": "6c7b62b40e6bc24887745bf8d1c01dab8be7a9fc07ab1da149f5546843f48de7"
-            },
-            "output_1k": {
-              "path": "outfit_17/bottom/output_1k.png",
-              "sha256": "b2760cfba6dba043e11e3c81c3b1de62ed411e45f9d30b35ee20b2ed17573695"
-            },
-            "output_512": {
-              "path": "outfit_17/bottom/output.png",
-              "sha256": "13e28e2f85a472057a482f973cbcfb5bb4b50a2b634f4190fc286d8b5b5c5fc6"
-            }
-          },
-          "indexed": false,
-          "metadata_path": "outfit_17/bottom/metadata.json",
-          "observation_id": "outfit_17_bottom",
-          "provenance": {
-            "artifact_path": "bench/catalog_generation/artifacts/outfit_17_bottom_pants.pipeline.request.json",
-            "generated_or_reused": "generated",
-            "metadata_path": "outfit_17/bottom/metadata.json",
-            "model_id": "gemini-3.1-flash-image",
-            "output_1k_sha256": "b2760cfba6dba043e11e3c81c3b1de62ed411e45f9d30b35ee20b2ed17573695",
-            "output_512_sha256": "13e28e2f85a472057a482f973cbcfb5bb4b50a2b634f4190fc286d8b5b5c5fc6",
-            "override_path": null,
-            "promoted_from_candidate": null,
-            "promoted_from_reference": null,
-            "prompt_policy_version": 5,
-            "prompt_sha256": "d74f25a196a7073c2af82d602c1b1666f6da400f3ea5f15251a3241acbdf0c84",
-            "reuse_source": null,
-            "vlm_attributes_path": "outfit_17/bottom/attributes.json"
-          },
-          "role": "bottom",
-          "tags": [
-            "bottom",
-            "off-white",
-            "outfit_17",
-            "pants",
-            "satin-like woven fabric",
-            "solid",
-            "trouser",
-            "trousers"
-          ]
-        },
-        {
-          "attributes_path": "outfit_18/bottom/attributes.json",
-          "canonical": false,
-          "display_name": "beige trousers",
-          "fixture": "outfit_18",
-          "images": {
-            "input_segmented": {
-              "path": "outfit_18/bottom/input_segmented.png",
-              "sha256": "d2111a359c913c967528cb3f19c39805ae3ca4f6bd1bf2b45a5f13e9af4648d5"
-            },
-            "output_1k": {
-              "path": "outfit_18/bottom/output_1k.png",
-              "sha256": "287f866c9b48cbae0deccbcdb9db9c3cd03ca34c9f648c064e105ff0bd6cfe78"
-            },
-            "output_512": {
-              "path": "outfit_18/bottom/output.png",
-              "sha256": "f3f307f229adcaf087b312943b5436956d3c1a6a2b7a502f3e0553bf6b4298e9"
-            }
-          },
-          "indexed": false,
-          "metadata_path": "outfit_18/bottom/metadata.json",
-          "observation_id": "outfit_18_bottom",
-          "provenance": {
-            "artifact_path": "bench/catalog_generation/artifacts/outfit_18_bottom_pants.pipeline.request.json",
-            "generated_or_reused": "generated",
-            "metadata_path": "outfit_18/bottom/metadata.json",
-            "model_id": "gemini-3.1-flash-image",
-            "output_1k_sha256": "287f866c9b48cbae0deccbcdb9db9c3cd03ca34c9f648c064e105ff0bd6cfe78",
-            "output_512_sha256": "f3f307f229adcaf087b312943b5436956d3c1a6a2b7a502f3e0553bf6b4298e9",
-            "override_path": null,
-            "promoted_from_candidate": null,
-            "promoted_from_reference": null,
-            "prompt_policy_version": 5,
-            "prompt_sha256": "b5cd12354fd8812dad783bb76cbb00e618af9fadedd567777e12b84914df1c1d",
-            "reuse_source": null,
-            "vlm_attributes_path": "outfit_18/bottom/attributes.json"
-          },
-          "role": "bottom",
-          "tags": [
-            "beige",
-            "bottom",
-            "outfit_18",
-            "pants",
-            "solid",
-            "trouser",
-            "trousers"
-          ]
-        },
-        {
-          "attributes_path": "outfit_19/bottom/attributes.json",
-          "canonical": true,
-          "display_name": "off-white smooth woven fabric trousers",
-          "fixture": "outfit_19",
-          "images": {
-            "input_segmented": {
-              "path": "outfit_19/bottom/input_segmented.png",
-              "sha256": "812b31f2835d66b93b7a47e6c05872a3000babecd8127303898e37164cc5d204"
-            },
-            "output_1k": {
-              "path": "outfit_19/bottom/output_1k.png",
-              "sha256": "d68a69c7cd5eafd3d6821e3bc52b5f11a9d1c2f569c251639541033eee66ac33"
-            },
-            "output_512": {
-              "path": "outfit_19/bottom/output.png",
-              "sha256": "0604769a983e8c0f04ac980f5ef0f7417b9a001c8fbf58f34b7f12574d2d18e4"
-            }
-          },
-          "indexed": true,
-          "metadata_path": "outfit_19/bottom/metadata.json",
-          "observation_id": "outfit_19_bottom",
-          "provenance": {
-            "artifact_path": "bench/catalog_generation/artifacts/outfit_19_bottom_pants.pipeline.request.json",
-            "generated_or_reused": "generated",
-            "metadata_path": "outfit_19/bottom/metadata.json",
-            "model_id": "gemini-3.1-flash-image",
-            "output_1k_sha256": "d68a69c7cd5eafd3d6821e3bc52b5f11a9d1c2f569c251639541033eee66ac33",
-            "output_512_sha256": "0604769a983e8c0f04ac980f5ef0f7417b9a001c8fbf58f34b7f12574d2d18e4",
-            "override_path": null,
-            "promoted_from_candidate": null,
-            "promoted_from_reference": null,
-            "prompt_policy_version": 5,
-            "prompt_sha256": "ed739e5e89a866c904c655c1a272dbcdb39a4fdc775e61bfb8880e9e888825b2",
-            "reuse_source": null,
-            "vlm_attributes_path": "outfit_19/bottom/attributes.json"
-          },
-          "role": "bottom",
-          "tags": [
-            "bottom",
-            "off-white",
-            "outfit_19",
-            "pants",
-            "smooth woven fabric",
-            "solid",
-            "trouser",
-            "trousers"
-          ]
-        },
-        {
-          "attributes_path": "outfit_20/bottom/attributes.json",
-          "canonical": false,
-          "display_name": "off-white trousers",
-          "fixture": "outfit_20",
-          "images": {
-            "input_segmented": {
-              "path": "outfit_20/bottom/input_segmented.png",
-              "sha256": "4e1c0e0d68c7ad70c08be1818d8d964f182fd9ceb7aeac607e3f26aadedd920c"
-            },
-            "output_1k": {
-              "path": "outfit_20/bottom/output_1k.png",
-              "sha256": "58121742e01e6e4391b8cd1ca86ec1504735a038bb3e41e0e512de2e48a8ec20"
-            },
-            "output_512": {
-              "path": "outfit_20/bottom/output.png",
-              "sha256": "4fb7681b2015d6adc20324a6596c11d37917cae3686109b906d497f4c8e4dd6d"
-            }
-          },
-          "indexed": false,
-          "metadata_path": "outfit_20/bottom/metadata.json",
-          "observation_id": "outfit_20_bottom",
-          "provenance": {
-            "artifact_path": "bench/catalog_generation/artifacts/outfit_20_bottom_pants.pipeline.request.json",
-            "generated_or_reused": "generated",
-            "metadata_path": "outfit_20/bottom/metadata.json",
-            "model_id": "gemini-3.1-flash-image",
-            "output_1k_sha256": "58121742e01e6e4391b8cd1ca86ec1504735a038bb3e41e0e512de2e48a8ec20",
-            "output_512_sha256": "4fb7681b2015d6adc20324a6596c11d37917cae3686109b906d497f4c8e4dd6d",
-            "override_path": null,
-            "promoted_from_candidate": null,
-            "promoted_from_reference": null,
-            "prompt_policy_version": 5,
-            "prompt_sha256": "8cbd120b9abea2b4ed813245df8428632ba7780516e8fe26e27676caa4e8edc9",
-            "reuse_source": null,
-            "vlm_attributes_path": "outfit_20/bottom/attributes.json"
-          },
-          "role": "bottom",
-          "tags": [
-            "bottom",
-            "off-white",
-            "outfit_20",
-            "pants",
-            "solid",
-            "trouser",
-            "trousers"
-          ]
-        },
-        {
-          "attributes_path": "outfit_21/bottom/attributes.json",
-          "canonical": false,
-          "display_name": "beige trousers",
-          "fixture": "outfit_21",
-          "images": {
-            "input_segmented": {
-              "path": "outfit_21/bottom/input_segmented.png",
-              "sha256": "f1ad67232bcecd64ba6f3dc63f353fef971767664c751738111fbf31bdc56968"
-            },
-            "output_1k": {
-              "path": "outfit_21/bottom/output_1k.png",
-              "sha256": "c94af9d0e69af8eb392e41f6192f484837e01a39bfafe767ff52beac93dc551e"
-            },
-            "output_512": {
-              "path": "outfit_21/bottom/output.png",
-              "sha256": "2b96e416febe1512a78b545e5116b1bcdc9ab9d89303f3cbce01768509ba17c8"
-            }
-          },
-          "indexed": false,
-          "metadata_path": "outfit_21/bottom/metadata.json",
-          "observation_id": "outfit_21_bottom",
-          "provenance": {
-            "artifact_path": "bench/catalog_generation/artifacts/outfit_21_bottom_pants.pipeline.request.json",
-            "generated_or_reused": "generated",
-            "metadata_path": "outfit_21/bottom/metadata.json",
-            "model_id": "gemini-3.1-flash-image",
-            "output_1k_sha256": "c94af9d0e69af8eb392e41f6192f484837e01a39bfafe767ff52beac93dc551e",
-            "output_512_sha256": "2b96e416febe1512a78b545e5116b1bcdc9ab9d89303f3cbce01768509ba17c8",
-            "override_path": null,
-            "promoted_from_candidate": null,
-            "promoted_from_reference": null,
-            "prompt_policy_version": 5,
-            "prompt_sha256": "9be7eb63fab1ece67648e822ad904939599c08cb3e02a7baaf65919dc8060c80",
-            "reuse_source": null,
-            "vlm_attributes_path": "outfit_21/bottom/attributes.json"
-          },
-          "role": "bottom",
-          "tags": [
-            "beige",
-            "bottom",
-            "outfit_21",
-            "pants",
-            "solid",
-            "trouser",
-            "trousers"
-          ]
-        }
-      ],
-      "tags": [
-        "beige",
-        "beige trousers",
-        "bottom",
-        "off-white",
-        "off-white trousers",
-        "outfit_17",
-        "outfit_17_bottom",
-        "outfit_18",
-        "outfit_18_bottom",
-        "outfit_19",
-        "outfit_19_bottom",
-        "outfit_20",
-        "outfit_20_bottom",
-        "outfit_21",
-        "outfit_21_bottom",
-        "pants",
-        "relaxed",
-        "relaxed fit",
-        "relaxed fit trousers",
-        "satin-like woven fabric",
-        "smooth woven fabric",
-        "solid",
-        "trouser",
-        "trousers",
-        "white",
-        "white relaxed-fit trousers",
-        "white trousers"
-      ],
-      "template": {
-        "override_applied": false,
-        "selection_confidence": "high",
-        "selection_reason": "Trousers/pants class. Evidence: Garment is trousers; no sleeves, cuffs, or neckline present. | Trousers/pants class. Evidence: Garment is trousers; no sleeves, cuffs, or neckline present. | Full-length leg structure with waistband and fly visible; no sleeves or collar present. | Full-length leg structure with waistband and fly visible; no sleeves or collar present.",
-        "template_id": "pants"
-      },
-      "user_override": null
-    },
-    {
-      "alias_observation_ids": [],
-      "canonical_observation_id": "outfit_19_top",
-      "catalog_id": "outfit_19_top",
-      "display_name": "green woven fabric with structured drape blazer",
-      "facets": {
-        "closure": {
-          "confidence": "high",
-          "evidence": "Two visible buttons on front placket; matching buttoned flap pockets on lower front panels.",
-          "source": "vlm_high_confidence",
-          "value": "two-button front closure with flap pockets"
-        },
-        "colors": {
-          "confidence": "high",
-          "evidence": "Primary color is medium green, forming part of a checkered pattern with white or light gray lines.",
-          "source": "vlm_high_confidence",
-          "value": "green"
-        },
-        "finish": {
-          "source": "unknown",
-          "value": null
-        },
-        "garment_class": {
-          "confidence": "high",
-          "evidence": "Structured lapels, notched collar, two-button front closure, flap pockets, and tailored silhouette consistent with blazer design.",
-          "source": "vlm_high_confidence",
-          "value": "blazer"
-        },
-        "material": {
-          "confidence": "high",
-          "evidence": "Holds shape at shoulders and sleeves; no visible sheen or stretch; consistent with wool-blend or cotton-blend suiting fabric.",
-          "source": "vlm_high_confidence",
-          "value": "woven fabric with structured drape"
-        },
-        "neckline_collar": {
-          "confidence": "high",
-          "evidence": "Sleeves extend to wrist area; cuffs not clearly defined or visible; neckline features classic notched lapels typical of blazers.",
-          "source": "vlm_high_confidence",
-          "value": "long sleeves, no visible cuff detail, notched lapel neckline"
-        },
-        "pattern": {
-          "confidence": "high",
-          "evidence": "Regular grid of intersecting green and white/light gray lines forming small squares across entire garment.",
-          "source": "vlm_high_confidence",
-          "value": "checkered"
-        },
-        "role": {
-          "source": "manifest",
-          "value": "top"
-        },
-        "sheen": {
-          "confidence": "high",
-          "evidence": "No specular highlights or reflective surfaces; light diffuses evenly across fabric surface.",
-          "source": "vlm_high_confidence",
-          "value": "matte"
-        },
-        "silhouette_style": {
-          "source": "unknown",
-          "value": null
-        },
-        "sleeve_length": {
-          "confidence": "high",
-          "source": "template_selection",
-          "value": "full"
-        }
-      },
-      "fixture": "outfit_19",
-      "garment_class_normalized": "blazer",
-      "garment_id": "outfit_19_top",
-      "garment_subtype": null,
-      "images": {
-        "output_1k": {
-          "path": "outfit_19/top/output_1k.png",
-          "sha256": "12c82d8182fb1f6cdce8e35e70d72a211c15b163c7d0d78d44a7a8059244e20b"
-        },
-        "output_512": {
-          "path": "outfit_19/top/output.png",
-          "sha256": "5afdd59ddc3a5e2d238821591ce4784c5ef562670699909aac2725f4de73dc6b"
-        }
-      },
-      "observation_ids": [
-        "outfit_19_top"
-      ],
-      "provenance": {
-        "artifact_path": "bench/catalog_generation/artifacts/outfit_19_top_blazer.pipeline.request.json",
-        "generated_or_reused": "generated",
-        "metadata_path": "outfit_19/top/metadata.json",
-        "model_id": "gemini-3.1-flash-image",
-        "output_1k_sha256": "12c82d8182fb1f6cdce8e35e70d72a211c15b163c7d0d78d44a7a8059244e20b",
-        "output_512_sha256": "5afdd59ddc3a5e2d238821591ce4784c5ef562670699909aac2725f4de73dc6b",
-        "override_path": null,
-        "promoted_from_candidate": null,
-        "promoted_from_reference": null,
-        "prompt_policy_version": 5,
-        "prompt_sha256": "d515cbe241a813f9bdda8bd39f43c9874744d3bcf427eb016a8655f751c711c4",
-        "reuse_source": null,
-        "vlm_attributes_path": "outfit_19/top/attributes.json"
-      },
-      "retrieval": {
-        "lexical_only": true,
-        "search_text": "green woven fabric with structured drape blazer blazer checkered full sleeve full sleeves green jacket outfit 19 suit jacket top woven fabric with structured drape green woven fabric with structured drape checkered matte long sleeves no visible cuff detail notched lapel neckline two button front closure with flap pockets full blazer suit jacket class mapped to blazer evidence sleeves extend to wrist area cuffs not clearly defined or visible neckline features classic notched lapels typical of blazers reviewed green gingham cropped blazer with notched lapels button front and full sleeves to wrist maps to blazer structured lapels notched collar two button front closure flap pockets and tailored silhouette consistent with blazer design"
-      },
-      "role": "top",
-      "source_observations": [
-        {
-          "attributes_path": "outfit_19/top/attributes.json",
-          "canonical": true,
-          "display_name": "green woven fabric with structured drape blazer",
-          "fixture": "outfit_19",
-          "images": {
-            "input_segmented": {
-              "path": "outfit_19/top/input_segmented.png",
-              "sha256": "05a9777d6248c496a009cafffac2f40c1a7f0f2400b27b658d19d285b43d4af4"
-            },
-            "output_1k": {
-              "path": "outfit_19/top/output_1k.png",
-              "sha256": "12c82d8182fb1f6cdce8e35e70d72a211c15b163c7d0d78d44a7a8059244e20b"
-            },
-            "output_512": {
-              "path": "outfit_19/top/output.png",
-              "sha256": "5afdd59ddc3a5e2d238821591ce4784c5ef562670699909aac2725f4de73dc6b"
-            }
-          },
-          "indexed": true,
-          "metadata_path": "outfit_19/top/metadata.json",
-          "observation_id": "outfit_19_top",
-          "provenance": {
-            "artifact_path": "bench/catalog_generation/artifacts/outfit_19_top_blazer.pipeline.request.json",
-            "generated_or_reused": "generated",
-            "metadata_path": "outfit_19/top/metadata.json",
-            "model_id": "gemini-3.1-flash-image",
-            "output_1k_sha256": "12c82d8182fb1f6cdce8e35e70d72a211c15b163c7d0d78d44a7a8059244e20b",
-            "output_512_sha256": "5afdd59ddc3a5e2d238821591ce4784c5ef562670699909aac2725f4de73dc6b",
-            "override_path": null,
-            "promoted_from_candidate": null,
-            "promoted_from_reference": null,
-            "prompt_policy_version": 5,
-            "prompt_sha256": "d515cbe241a813f9bdda8bd39f43c9874744d3bcf427eb016a8655f751c711c4",
-            "reuse_source": null,
-            "vlm_attributes_path": "outfit_19/top/attributes.json"
-          },
-          "role": "top",
-          "tags": [
-            "blazer",
-            "checkered",
-            "full sleeve",
-            "full sleeves",
-            "green",
-            "jacket",
-            "outfit_19",
-            "suit jacket",
-            "top",
-            "woven fabric with structured drape"
-          ]
-        }
-      ],
-      "tags": [
-        "blazer",
-        "checkered",
-        "full sleeve",
-        "full sleeves",
-        "green",
-        "jacket",
-        "outfit_19",
-        "suit jacket",
-        "top",
-        "woven fabric with structured drape"
-      ],
-      "template": {
-        "override_applied": false,
-        "selection_confidence": "high",
-        "selection_reason": "Blazer/suit jacket class mapped to blazer. Evidence: Sleeves extend to wrist area; cuffs not clearly defined or visible; neckline features classic notched lapels typical of blazers. | Reviewed: green gingham cropped blazer with notched lapels, button front, and full sleeves to wrist. Maps to blazer. | Structured lapels, notched collar, two-button front closure, flap pockets, and tailored silhouette consistent with blazer design.",
-        "template_id": "blazer"
-      },
-      "user_override": null
-    },
-    {
-      "alias_observation_ids": [],
-      "canonical_observation_id": "outfit_1_bottom",
-      "catalog_id": "outfit_1_bottom",
-      "display_name": "brown trousers",
-      "facets": {
-        "closure": {
-          "confidence": "high",
-          "evidence": "Center front seam line and waistband contour suggest standard trouser fly; no visible buttons or zippers in frame.",
-          "source": "vlm_high_confidence",
-          "value": "front fly with button closure implied"
-        },
-        "colors": {
-          "confidence": "high",
-          "evidence": "Uniform mid-tone brown hue across entire garment; no variation or secondary colors detected.",
-          "source": "vlm_high_confidence",
-          "value": "brown"
-        },
-        "finish": {
-          "source": "unknown",
-          "value": null
-        },
-        "fit": {
-          "confidence": "high",
-          "evidence": "User-confirmed straight-fit brown formal trousers.",
-          "source": "user_confirmed",
-          "value": "straight"
-        },
-        "garment_class": {
-          "confidence": "high",
-          "evidence": "Full-length lower-body garment with waistband, front fly, and two leg openings; no upper body or sleeves visible.",
-          "source": "vlm_high_confidence",
-          "value": "trousers"
-        },
-        "material": {
-          "source": "unknown",
-          "value": null
-        },
-        "neckline_collar": {
-          "source": "unknown",
-          "value": null
-        },
-        "pattern": {
-          "confidence": "high",
-          "evidence": "No visible patterns, prints, embroidery, or textural variation across garment surface.",
-          "source": "vlm_high_confidence",
-          "value": "solid"
-        },
-        "role": {
-          "source": "manifest",
-          "value": "bottom"
-        },
-        "sheen": {
-          "confidence": "high",
-          "evidence": "No specular highlights or light reflection; surface absorbs light uniformly.",
-          "source": "vlm_high_confidence",
-          "value": "matte"
-        },
-        "silhouette_style": {
-          "confidence": "high",
-          "source": "template_selection",
-          "value": "straight-leg trousers"
-        },
-        "sleeve_length": {
-          "source": "not_applicable",
-          "value": null
-        }
-      },
-      "fixture": "outfit_1",
-      "garment_class_normalized": "trousers",
-      "garment_id": "outfit_1_bottom",
-      "garment_subtype": null,
-      "images": {
-        "output_1k": {
-          "path": "outfit_1/bottom/output_1k.png",
-          "sha256": "dbfb912de2f04b05fb868c01752283cc82e130936ef6c18e5e1afcb5e5094a5c"
-        },
-        "output_512": {
-          "path": "outfit_1/bottom/output.png",
-          "sha256": "cf0ab814cc5e046d3a2d4c453826cd7de8e78181ea644567636df282b6856bab"
-        }
-      },
-      "observation_ids": [
-        "outfit_1_bottom"
-      ],
-      "provenance": {
-        "artifact_path": "bench/catalog_generation/artifacts/outfit_1_bottom_pants.pipeline.request.json",
-        "generated_or_reused": "generated",
-        "metadata_path": "outfit_1/bottom/metadata.json",
-        "model_id": "gemini-3.1-flash-image",
-        "output_1k_sha256": "dbfb912de2f04b05fb868c01752283cc82e130936ef6c18e5e1afcb5e5094a5c",
-        "output_512_sha256": "cf0ab814cc5e046d3a2d4c453826cd7de8e78181ea644567636df282b6856bab",
-        "override_path": null,
-        "promoted_from_candidate": null,
-        "promoted_from_reference": null,
-        "prompt_policy_version": 5,
-        "prompt_sha256": "76a7dba6819a2a086bc87055afeebbff3445383490c130c11506f828c5bba551",
-        "reuse_source": null,
-        "vlm_attributes_path": "outfit_1/bottom/attributes.json"
-      },
-      "retrieval": {
-        "lexical_only": true,
-        "search_text": "brown trousers bottom brown outfit 1 pants solid straight straight fit straight fit trousers trouser trousers brown solid matte front fly with button closure implied straight leg trousers straight"
-      },
-      "role": "bottom",
-      "search_text": "brown trousers bottom brown outfit 1 pants solid straight straight fit straight fit trousers trouser trousers brown solid matte front fly with button closure implied straight leg trousers straight",
-      "source_observations": [
-        {
-          "attributes_path": "outfit_1/bottom/attributes.json",
-          "canonical": true,
-          "display_name": "brown trousers",
-          "fixture": "outfit_1",
-          "images": {
-            "input_segmented": {
-              "path": "outfit_1/bottom/input_segmented.png",
-              "sha256": "c6a7f8216a951776b1846b674a033acacd3b1c24fd9e936b665bb019176c4675"
-            },
-            "output_1k": {
-              "path": "outfit_1/bottom/output_1k.png",
-              "sha256": "dbfb912de2f04b05fb868c01752283cc82e130936ef6c18e5e1afcb5e5094a5c"
-            },
-            "output_512": {
-              "path": "outfit_1/bottom/output.png",
-              "sha256": "cf0ab814cc5e046d3a2d4c453826cd7de8e78181ea644567636df282b6856bab"
-            }
-          },
-          "indexed": true,
-          "metadata_path": "outfit_1/bottom/metadata.json",
-          "observation_id": "outfit_1_bottom",
-          "provenance": {
-            "artifact_path": "bench/catalog_generation/artifacts/outfit_1_bottom_pants.pipeline.request.json",
-            "generated_or_reused": "generated",
-            "metadata_path": "outfit_1/bottom/metadata.json",
-            "model_id": "gemini-3.1-flash-image",
-            "output_1k_sha256": "dbfb912de2f04b05fb868c01752283cc82e130936ef6c18e5e1afcb5e5094a5c",
-            "output_512_sha256": "cf0ab814cc5e046d3a2d4c453826cd7de8e78181ea644567636df282b6856bab",
-            "override_path": null,
-            "promoted_from_candidate": null,
-            "promoted_from_reference": null,
-            "prompt_policy_version": 5,
-            "prompt_sha256": "76a7dba6819a2a086bc87055afeebbff3445383490c130c11506f828c5bba551",
-            "reuse_source": null,
-            "vlm_attributes_path": "outfit_1/bottom/attributes.json"
-          },
-          "role": "bottom",
-          "tags": [
-            "bottom",
-            "brown",
-            "outfit_1",
-            "pants",
-            "solid",
-            "trouser",
-            "trousers"
-          ]
-        }
-      ],
-      "tags": [
-        "bottom",
-        "brown",
-        "outfit_1",
-        "pants",
-        "solid",
-        "straight",
-        "straight fit",
-        "straight fit trousers",
-        "trouser",
-        "trousers"
-      ],
-      "template": {
-        "override_applied": false,
-        "selection_confidence": "high",
-        "selection_reason": "Trousers/pants class. Evidence: Garment is trousers; no sleeves, cuffs, or neckline present. | Brown formal straight-leg trousers with waistband and front fly. | Full-length lower-body garment with waistband, front fly, and two leg openings; no upper body or sleeves visible.",
-        "template_id": "pants"
-      },
-      "user_override": null
-    },
-    {
       "alias_observation_ids": [],
       "canonical_observation_id": "outfit_1_top",
       "catalog_id": "outfit_1_top",
+      "display_category": "top",
       "display_name": "white woven fabric with openwork detailing blouse",
       "facets": {
         "closure": {
@@ -3324,6 +2334,7 @@
       "alias_observation_ids": [],
       "canonical_observation_id": "outfit_21_top",
       "catalog_id": "outfit_21_top",
+      "display_category": "top",
       "display_name": "lavender satin-like woven fabric office_blouse",
       "facets": {
         "closure": {
@@ -3495,10 +2506,18 @@
       "user_override": null
     },
     {
-      "alias_observation_ids": [],
+      "alias_observation_ids": [
+        "outfit_5_bottom",
+        "outfit_17_bottom",
+        "outfit_18_bottom",
+        "outfit_19_bottom",
+        "outfit_20_bottom",
+        "outfit_21_bottom"
+      ],
       "canonical_observation_id": "outfit_22_bottom",
       "catalog_id": "outfit_22_bottom",
-      "display_name": "off-white satin-like woven fabric trousers",
+      "display_category": "bottom",
+      "display_name": "white relaxed-fit trousers",
       "facets": {
         "closure": {
           "source": "unknown",
@@ -3506,13 +2525,19 @@
         },
         "colors": {
           "confidence": "high",
-          "evidence": "Pixels show light neutral tone with slight cream/beige undertone; no other hues present.",
-          "source": "vlm_high_confidence",
-          "value": "off-white"
+          "evidence": "Same physical white relaxed-fit trousers worn in outfits 5, 17, 18, 19, 20, 21, and 22.",
+          "source": "user_confirmed_identity",
+          "value": "white"
         },
         "finish": {
           "source": "unknown",
           "value": null
+        },
+        "fit": {
+          "confidence": "high",
+          "evidence": "Same physical white relaxed-fit trousers worn in outfits 5, 17, 18, 19, 20, 21, and 22.",
+          "source": "user_confirmed_identity",
+          "value": "relaxed"
         },
         "garment_class": {
           "confidence": "high",
@@ -3558,8 +2583,17 @@
       },
       "fixture": "outfit_22",
       "garment_class_normalized": "trousers",
-      "garment_id": "outfit_22_bottom",
+      "garment_id": "garment_off_white_trousers_001",
       "garment_subtype": null,
+      "identity": {
+        "alias_color_tokens": [
+          "white"
+        ],
+        "canonical_selection_reason": "User-designated canonical catalog image for the shared white trousers identity.",
+        "merged_observation_count": 7,
+        "notes": "Same physical white relaxed-fit trousers worn in outfits 5, 17, 18, 19, 20, 21, and 22.",
+        "reason": "user_confirmed"
+      },
       "images": {
         "output_1k": {
           "path": "outfit_22/bottom/output_1k.png",
@@ -3571,6 +2605,12 @@
         }
       },
       "observation_ids": [
+        "outfit_5_bottom",
+        "outfit_17_bottom",
+        "outfit_18_bottom",
+        "outfit_19_bottom",
+        "outfit_20_bottom",
+        "outfit_21_bottom",
         "outfit_22_bottom"
       ],
       "provenance": {
@@ -3590,10 +2630,301 @@
       },
       "retrieval": {
         "lexical_only": true,
-        "search_text": "off white satin like woven fabric trousers bottom off white outfit 22 pants satin like woven fabric solid trouser trousers off white satin like woven fabric solid soft satin like straight leg trousers trousers pants class evidence garment is trousers no sleeves cuffs or neckline present trousers pants class evidence garment is trousers no sleeves cuffs or neckline present full length leg structure with waistband and two legs visible consistent with trousers full length leg structure with waistband and two legs visible consistent with trousers"
+        "search_text": "white relaxed fit trousers bottom outfit 17 outfit 17 bottom outfit 18 outfit 18 bottom outfit 19 outfit 19 bottom outfit 20 outfit 20 bottom outfit 21 outfit 21 bottom outfit 22 outfit 22 bottom outfit 5 outfit 5 bottom pants relaxed relaxed fit relaxed fit trousers satin like woven fabric smooth woven fabric solid trouser trousers white white relaxed fit trousers white trousers white satin like woven fabric solid soft satin like straight leg trousers relaxed"
       },
       "role": "bottom",
       "source_observations": [
+        {
+          "attributes_path": "outfit_5/bottom/attributes.json",
+          "canonical": false,
+          "display_name": "off-white smooth woven fabric trousers",
+          "fixture": "outfit_5",
+          "images": {
+            "input_segmented": {
+              "path": "outfit_5/bottom/input_segmented.png",
+              "sha256": "746ae3522dcd37a48284dc09b244fa31c3b54b0800e50967a4ea8a6025125aaa"
+            },
+            "output_1k": {
+              "path": "outfit_5/bottom/output_1k.png",
+              "sha256": "6360b865dd72ff34e09a99b1fc2487d55ea2ad1a8260bdfc0e13595c76033303"
+            },
+            "output_512": {
+              "path": "outfit_5/bottom/output.png",
+              "sha256": "3bbd5aa286955968f225356c999d181bd150e319b454682c34cff0b34ec4002b"
+            }
+          },
+          "indexed": false,
+          "metadata_path": "outfit_5/bottom/metadata.json",
+          "observation_id": "outfit_5_bottom",
+          "provenance": {
+            "artifact_path": "bench/catalog_generation/artifacts/outfit_5_bottom_pants.pipeline.request.json",
+            "generated_or_reused": "generated",
+            "metadata_path": "outfit_5/bottom/metadata.json",
+            "model_id": "gemini-3.1-flash-image",
+            "output_1k_sha256": "6360b865dd72ff34e09a99b1fc2487d55ea2ad1a8260bdfc0e13595c76033303",
+            "output_512_sha256": "3bbd5aa286955968f225356c999d181bd150e319b454682c34cff0b34ec4002b",
+            "override_path": null,
+            "promoted_from_candidate": null,
+            "promoted_from_reference": null,
+            "prompt_policy_version": 5,
+            "prompt_sha256": "81049816a24b0cc0acc7a922f4afe7396efbc25016c624115b92321d05257afe",
+            "reuse_source": null,
+            "vlm_attributes_path": "outfit_5/bottom/attributes.json"
+          },
+          "role": "bottom",
+          "tags": [
+            "bottom",
+            "off-white",
+            "outfit_5",
+            "pants",
+            "smooth woven fabric",
+            "solid",
+            "trouser",
+            "trousers"
+          ]
+        },
+        {
+          "attributes_path": "outfit_17/bottom/attributes.json",
+          "canonical": false,
+          "display_name": "off-white satin-like woven fabric trousers",
+          "fixture": "outfit_17",
+          "images": {
+            "input_segmented": {
+              "path": "outfit_17/bottom/input_segmented.png",
+              "sha256": "6c7b62b40e6bc24887745bf8d1c01dab8be7a9fc07ab1da149f5546843f48de7"
+            },
+            "output_1k": {
+              "path": "outfit_17/bottom/output_1k.png",
+              "sha256": "b2760cfba6dba043e11e3c81c3b1de62ed411e45f9d30b35ee20b2ed17573695"
+            },
+            "output_512": {
+              "path": "outfit_17/bottom/output.png",
+              "sha256": "13e28e2f85a472057a482f973cbcfb5bb4b50a2b634f4190fc286d8b5b5c5fc6"
+            }
+          },
+          "indexed": false,
+          "metadata_path": "outfit_17/bottom/metadata.json",
+          "observation_id": "outfit_17_bottom",
+          "provenance": {
+            "artifact_path": "bench/catalog_generation/artifacts/outfit_17_bottom_pants.pipeline.request.json",
+            "generated_or_reused": "generated",
+            "metadata_path": "outfit_17/bottom/metadata.json",
+            "model_id": "gemini-3.1-flash-image",
+            "output_1k_sha256": "b2760cfba6dba043e11e3c81c3b1de62ed411e45f9d30b35ee20b2ed17573695",
+            "output_512_sha256": "13e28e2f85a472057a482f973cbcfb5bb4b50a2b634f4190fc286d8b5b5c5fc6",
+            "override_path": null,
+            "promoted_from_candidate": null,
+            "promoted_from_reference": null,
+            "prompt_policy_version": 5,
+            "prompt_sha256": "d74f25a196a7073c2af82d602c1b1666f6da400f3ea5f15251a3241acbdf0c84",
+            "reuse_source": null,
+            "vlm_attributes_path": "outfit_17/bottom/attributes.json"
+          },
+          "role": "bottom",
+          "tags": [
+            "bottom",
+            "off-white",
+            "outfit_17",
+            "pants",
+            "satin-like woven fabric",
+            "solid",
+            "trouser",
+            "trousers"
+          ]
+        },
+        {
+          "attributes_path": "outfit_18/bottom/attributes.json",
+          "canonical": false,
+          "display_name": "beige trousers",
+          "fixture": "outfit_18",
+          "images": {
+            "input_segmented": {
+              "path": "outfit_18/bottom/input_segmented.png",
+              "sha256": "d2111a359c913c967528cb3f19c39805ae3ca4f6bd1bf2b45a5f13e9af4648d5"
+            },
+            "output_1k": {
+              "path": "outfit_18/bottom/output_1k.png",
+              "sha256": "287f866c9b48cbae0deccbcdb9db9c3cd03ca34c9f648c064e105ff0bd6cfe78"
+            },
+            "output_512": {
+              "path": "outfit_18/bottom/output.png",
+              "sha256": "f3f307f229adcaf087b312943b5436956d3c1a6a2b7a502f3e0553bf6b4298e9"
+            }
+          },
+          "indexed": false,
+          "metadata_path": "outfit_18/bottom/metadata.json",
+          "observation_id": "outfit_18_bottom",
+          "provenance": {
+            "artifact_path": "bench/catalog_generation/artifacts/outfit_18_bottom_pants.pipeline.request.json",
+            "generated_or_reused": "generated",
+            "metadata_path": "outfit_18/bottom/metadata.json",
+            "model_id": "gemini-3.1-flash-image",
+            "output_1k_sha256": "287f866c9b48cbae0deccbcdb9db9c3cd03ca34c9f648c064e105ff0bd6cfe78",
+            "output_512_sha256": "f3f307f229adcaf087b312943b5436956d3c1a6a2b7a502f3e0553bf6b4298e9",
+            "override_path": null,
+            "promoted_from_candidate": null,
+            "promoted_from_reference": null,
+            "prompt_policy_version": 5,
+            "prompt_sha256": "b5cd12354fd8812dad783bb76cbb00e618af9fadedd567777e12b84914df1c1d",
+            "reuse_source": null,
+            "vlm_attributes_path": "outfit_18/bottom/attributes.json"
+          },
+          "role": "bottom",
+          "tags": [
+            "beige",
+            "bottom",
+            "outfit_18",
+            "pants",
+            "solid",
+            "trouser",
+            "trousers"
+          ]
+        },
+        {
+          "attributes_path": "outfit_19/bottom/attributes.json",
+          "canonical": false,
+          "display_name": "off-white smooth woven fabric trousers",
+          "fixture": "outfit_19",
+          "images": {
+            "input_segmented": {
+              "path": "outfit_19/bottom/input_segmented.png",
+              "sha256": "812b31f2835d66b93b7a47e6c05872a3000babecd8127303898e37164cc5d204"
+            },
+            "output_1k": {
+              "path": "outfit_19/bottom/output_1k.png",
+              "sha256": "d68a69c7cd5eafd3d6821e3bc52b5f11a9d1c2f569c251639541033eee66ac33"
+            },
+            "output_512": {
+              "path": "outfit_19/bottom/output.png",
+              "sha256": "0604769a983e8c0f04ac980f5ef0f7417b9a001c8fbf58f34b7f12574d2d18e4"
+            }
+          },
+          "indexed": false,
+          "metadata_path": "outfit_19/bottom/metadata.json",
+          "observation_id": "outfit_19_bottom",
+          "provenance": {
+            "artifact_path": "bench/catalog_generation/artifacts/outfit_19_bottom_pants.pipeline.request.json",
+            "generated_or_reused": "generated",
+            "metadata_path": "outfit_19/bottom/metadata.json",
+            "model_id": "gemini-3.1-flash-image",
+            "output_1k_sha256": "d68a69c7cd5eafd3d6821e3bc52b5f11a9d1c2f569c251639541033eee66ac33",
+            "output_512_sha256": "0604769a983e8c0f04ac980f5ef0f7417b9a001c8fbf58f34b7f12574d2d18e4",
+            "override_path": null,
+            "promoted_from_candidate": null,
+            "promoted_from_reference": null,
+            "prompt_policy_version": 5,
+            "prompt_sha256": "ed739e5e89a866c904c655c1a272dbcdb39a4fdc775e61bfb8880e9e888825b2",
+            "reuse_source": null,
+            "vlm_attributes_path": "outfit_19/bottom/attributes.json"
+          },
+          "role": "bottom",
+          "tags": [
+            "bottom",
+            "off-white",
+            "outfit_19",
+            "pants",
+            "smooth woven fabric",
+            "solid",
+            "trouser",
+            "trousers"
+          ]
+        },
+        {
+          "attributes_path": "outfit_20/bottom/attributes.json",
+          "canonical": false,
+          "display_name": "off-white trousers",
+          "fixture": "outfit_20",
+          "images": {
+            "input_segmented": {
+              "path": "outfit_20/bottom/input_segmented.png",
+              "sha256": "4e1c0e0d68c7ad70c08be1818d8d964f182fd9ceb7aeac607e3f26aadedd920c"
+            },
+            "output_1k": {
+              "path": "outfit_20/bottom/output_1k.png",
+              "sha256": "58121742e01e6e4391b8cd1ca86ec1504735a038bb3e41e0e512de2e48a8ec20"
+            },
+            "output_512": {
+              "path": "outfit_20/bottom/output.png",
+              "sha256": "4fb7681b2015d6adc20324a6596c11d37917cae3686109b906d497f4c8e4dd6d"
+            }
+          },
+          "indexed": false,
+          "metadata_path": "outfit_20/bottom/metadata.json",
+          "observation_id": "outfit_20_bottom",
+          "provenance": {
+            "artifact_path": "bench/catalog_generation/artifacts/outfit_20_bottom_pants.pipeline.request.json",
+            "generated_or_reused": "generated",
+            "metadata_path": "outfit_20/bottom/metadata.json",
+            "model_id": "gemini-3.1-flash-image",
+            "output_1k_sha256": "58121742e01e6e4391b8cd1ca86ec1504735a038bb3e41e0e512de2e48a8ec20",
+            "output_512_sha256": "4fb7681b2015d6adc20324a6596c11d37917cae3686109b906d497f4c8e4dd6d",
+            "override_path": null,
+            "promoted_from_candidate": null,
+            "promoted_from_reference": null,
+            "prompt_policy_version": 5,
+            "prompt_sha256": "8cbd120b9abea2b4ed813245df8428632ba7780516e8fe26e27676caa4e8edc9",
+            "reuse_source": null,
+            "vlm_attributes_path": "outfit_20/bottom/attributes.json"
+          },
+          "role": "bottom",
+          "tags": [
+            "bottom",
+            "off-white",
+            "outfit_20",
+            "pants",
+            "solid",
+            "trouser",
+            "trousers"
+          ]
+        },
+        {
+          "attributes_path": "outfit_21/bottom/attributes.json",
+          "canonical": false,
+          "display_name": "beige trousers",
+          "fixture": "outfit_21",
+          "images": {
+            "input_segmented": {
+              "path": "outfit_21/bottom/input_segmented.png",
+              "sha256": "f1ad67232bcecd64ba6f3dc63f353fef971767664c751738111fbf31bdc56968"
+            },
+            "output_1k": {
+              "path": "outfit_21/bottom/output_1k.png",
+              "sha256": "c94af9d0e69af8eb392e41f6192f484837e01a39bfafe767ff52beac93dc551e"
+            },
+            "output_512": {
+              "path": "outfit_21/bottom/output.png",
+              "sha256": "2b96e416febe1512a78b545e5116b1bcdc9ab9d89303f3cbce01768509ba17c8"
+            }
+          },
+          "indexed": false,
+          "metadata_path": "outfit_21/bottom/metadata.json",
+          "observation_id": "outfit_21_bottom",
+          "provenance": {
+            "artifact_path": "bench/catalog_generation/artifacts/outfit_21_bottom_pants.pipeline.request.json",
+            "generated_or_reused": "generated",
+            "metadata_path": "outfit_21/bottom/metadata.json",
+            "model_id": "gemini-3.1-flash-image",
+            "output_1k_sha256": "c94af9d0e69af8eb392e41f6192f484837e01a39bfafe767ff52beac93dc551e",
+            "output_512_sha256": "2b96e416febe1512a78b545e5116b1bcdc9ab9d89303f3cbce01768509ba17c8",
+            "override_path": null,
+            "promoted_from_candidate": null,
+            "promoted_from_reference": null,
+            "prompt_policy_version": 5,
+            "prompt_sha256": "9be7eb63fab1ece67648e822ad904939599c08cb3e02a7baaf65919dc8060c80",
+            "reuse_source": null,
+            "vlm_attributes_path": "outfit_21/bottom/attributes.json"
+          },
+          "role": "bottom",
+          "tags": [
+            "beige",
+            "bottom",
+            "outfit_21",
+            "pants",
+            "solid",
+            "trouser",
+            "trousers"
+          ]
+        },
         {
           "attributes_path": "outfit_22/bottom/attributes.json",
           "canonical": true,
@@ -3646,13 +2977,32 @@
       ],
       "tags": [
         "bottom",
-        "off-white",
+        "outfit_17",
+        "outfit_17_bottom",
+        "outfit_18",
+        "outfit_18_bottom",
+        "outfit_19",
+        "outfit_19_bottom",
+        "outfit_20",
+        "outfit_20_bottom",
+        "outfit_21",
+        "outfit_21_bottom",
         "outfit_22",
+        "outfit_22_bottom",
+        "outfit_5",
+        "outfit_5_bottom",
         "pants",
+        "relaxed",
+        "relaxed fit",
+        "relaxed fit trousers",
         "satin-like woven fabric",
+        "smooth woven fabric",
         "solid",
         "trouser",
-        "trousers"
+        "trousers",
+        "white",
+        "white relaxed-fit trousers",
+        "white trousers"
       ],
       "template": {
         "override_applied": false,
@@ -3669,6 +3019,7 @@
       ],
       "canonical_observation_id": "outfit_22_top",
       "catalog_id": "outfit_22_top",
+      "display_category": "top",
       "display_name": "white long-sleeve button-down shirt",
       "facets": {
         "closure": {
@@ -3970,6 +3321,7 @@
       "alias_observation_ids": [],
       "canonical_observation_id": "outfit_23_top",
       "catalog_id": "outfit_23_top",
+      "display_category": "top",
       "display_name": "light blue office_blouse",
       "facets": {
         "closure": {
@@ -4145,6 +3497,7 @@
       ],
       "canonical_observation_id": "outfit_24_bottom",
       "catalog_id": "outfit_24_bottom",
+      "display_category": "bottom",
       "display_name": "straight-fit khaki trousers",
       "facets": {
         "closure": {
@@ -4215,9 +3568,7 @@
       "garment_subtype": null,
       "identity": {
         "alias_color_tokens": [
-          "khaki",
-          "tan",
-          "brown"
+          "khaki"
         ],
         "canonical_selection_reason": "No texture QC flags (outfit 23 flagged detail_loss_suspected); preferred approved output.",
         "merged_observation_count": 3,
@@ -4256,7 +3607,7 @@
       },
       "retrieval": {
         "lexical_only": true,
-        "search_text": "straight fit khaki trousers bottom brown brown trousers khaki khaki trousers outfit 23 outfit 23 bottom outfit 24 outfit 24 bottom outfit 25 outfit 25 bottom pants solid straight straight fit straight fit trousers straight fit khaki trousers tan tan trousers taupe trouser trousers khaki solid matte button fly with belt loops straight leg trousers straight"
+        "search_text": "straight fit khaki trousers bottom khaki khaki trousers outfit 23 outfit 23 bottom outfit 24 outfit 24 bottom outfit 25 outfit 25 bottom pants solid straight straight fit straight fit trousers straight fit khaki trousers taupe trouser trousers khaki solid matte button fly with belt loops straight leg trousers straight"
       },
       "role": "bottom",
       "source_observations": [
@@ -4407,8 +3758,6 @@
       ],
       "tags": [
         "bottom",
-        "brown",
-        "brown trousers",
         "khaki",
         "khaki trousers",
         "outfit_23",
@@ -4423,8 +3772,6 @@
         "straight fit",
         "straight fit trousers",
         "straight-fit khaki trousers",
-        "tan",
-        "tan trousers",
         "taupe",
         "trouser",
         "trousers"
@@ -4441,6 +3788,7 @@
       "alias_observation_ids": [],
       "canonical_observation_id": "outfit_24_top",
       "catalog_id": "outfit_24_top",
+      "display_category": "top",
       "display_name": "navy blue satin-like woven fabric office_blouse",
       "facets": {
         "closure": {
@@ -4615,6 +3963,7 @@
       "alias_observation_ids": [],
       "canonical_observation_id": "outfit_25_top",
       "catalog_id": "outfit_25_top",
+      "display_category": "top",
       "display_name": "deep purple tank top",
       "facets": {
         "closure": {
@@ -4781,6 +4130,7 @@
       "alias_observation_ids": [],
       "canonical_observation_id": "outfit_26_top",
       "catalog_id": "outfit_26_top",
+      "display_category": "top",
       "display_name": "taupe office_blouse",
       "facets": {
         "closure": {
@@ -4951,211 +4301,9 @@
     },
     {
       "alias_observation_ids": [],
-      "canonical_observation_id": "outfit_27_dress",
-      "catalog_id": "outfit_27_dress",
-      "display_name": "light blue-gray ribbed knit fabric knee-length dress",
-      "facets": {
-        "closure": {
-          "confidence": "high",
-          "evidence": "Metallic zipper visible down center front; two rectangular flap pockets on hips each secured with single button.",
-          "source": "vlm_high_confidence",
-          "value": "center front zipper with placket; two flap pockets with button closures"
-        },
-        "colors": {
-          "confidence": "high",
-          "evidence": "Overall hue is a muted, cool-toned grayish-blue across entire garment.",
-          "source": "vlm_high_confidence",
-          "value": "light blue-gray"
-        },
-        "finish": {
-          "source": "unknown",
-          "value": null
-        },
-        "garment_class": {
-          "confidence": "high",
-          "evidence": "Full-length silhouette with defined waist, skirt, and bodice; no separate top or bottom visible.",
-          "source": "vlm_high_confidence",
-          "value": "dress"
-        },
-        "material": {
-          "confidence": "high",
-          "evidence": "Vertical ribbing texture visible throughout; drape and stretch suggest knit construction.",
-          "source": "vlm_high_confidence",
-          "value": "ribbed knit fabric"
-        },
-        "neckline_collar": {
-          "confidence": "high",
-          "evidence": "Sleeves end mid-bicep; neckline forms high collar with vertical placket extending down chest.",
-          "source": "vlm_high_confidence",
-          "value": "short sleeves; mock neck with placket"
-        },
-        "pattern": {
-          "confidence": "high",
-          "evidence": "Uniform color with consistent vertical ribs; no prints, embroidery, or patterns.",
-          "source": "vlm_high_confidence",
-          "value": "solid with vertical ribbing"
-        },
-        "role": {
-          "source": "manifest",
-          "value": "dress"
-        },
-        "sheen": {
-          "confidence": "high",
-          "evidence": "No specular highlights or gloss; surface absorbs light uniformly.",
-          "source": "vlm_high_confidence",
-          "value": "matte"
-        },
-        "silhouette_style": {
-          "confidence": "high",
-          "evidence": "One-piece knee-length dress with half sleeves mapped to dress_knee_length_half_sleeve. Evidence: Sleeves end mid-bicep; neckline forms high collar with vertical placket extending down chest. | One-piece light blue ribbed knit polo dress with half-zip collar, short sleeves, front patch pockets, and knee-length hem; user-confirmed single garment. Catalog role=dress, garment_class=dress. | Full-length silhouette with defined waist, skirt, and bodice; no separate top or bottom visible.",
-          "source": "template_selection",
-          "value": "knee_length"
-        },
-        "sleeve_length": {
-          "confidence": "high",
-          "source": "template_selection",
-          "value": "half"
-        }
-      },
-      "fixture": "outfit_27",
-      "garment_class_normalized": "dress",
-      "garment_id": "outfit_27_dress",
-      "garment_subtype": "knee_length",
-      "images": {
-        "output_1k": {
-          "path": "outfit_27/dress/output_1k.png",
-          "sha256": "23690defedadc909ebba24a7c6c2b3f033cb79e55508accbd50c1ae1bf1dd656"
-        },
-        "output_512": {
-          "path": "outfit_27/dress/output.png",
-          "sha256": "24e77cfbc05c3ff20d57e55fd128c501507cab348e97ef870d70ed39b47d489a"
-        }
-      },
-      "legacy_catalog_ids": [
-        "outfit_27_top"
-      ],
-      "observation_ids": [
-        "outfit_27_dress"
-      ],
-      "provenance": {
-        "artifact_path": "bench/catalog_generation/artifacts/outfit_27_dress_dress_knee_length_half_sleeve.pipeline.request.json",
-        "generated_or_reused": "generated",
-        "metadata_path": "outfit_27/dress/metadata.json",
-        "model_id": "gemini-3.1-flash-image",
-        "output_1k_sha256": "23690defedadc909ebba24a7c6c2b3f033cb79e55508accbd50c1ae1bf1dd656",
-        "output_512_sha256": "24e77cfbc05c3ff20d57e55fd128c501507cab348e97ef870d70ed39b47d489a",
-        "override_path": null,
-        "promoted_from_candidate": null,
-        "promoted_from_reference": null,
-        "prompt_policy_version": 5,
-        "prompt_sha256": "369bfc435996d00386d6d980f1ed0f795a972c0954aa74d48316a5e59db8b2ca",
-        "reuse_source": null,
-        "vlm_attributes_path": "outfit_27/dress/attributes.json"
-      },
-      "retrieval": {
-        "lexical_only": true,
-        "search_text": "light blue gray ribbed knit fabric knee length dress dress dress knee length half sleeve half sleeve half sleeve dress half sleeves knee length knee length dress knee length skirt knee length knee length dress knee length knee length skirt light blue gray midi one piece one piece one piece dress outfit 27 ribbed knit fabric short sleeve dress solid with vertical ribbing light blue gray ribbed knit fabric solid with vertical ribbing matte short sleeves mock neck with placket center front zipper with placket two flap pockets with button closures knee length half one piece knee length dress with half sleeves mapped to dress knee length half sleeve evidence sleeves end mid bicep neckline forms high collar with vertical placket extending down chest one piece light blue ribbed knit polo dress with half zip collar short sleeves front patch pockets and knee length hem user confirmed single garment catalog role dress garment class dress full length silhouette with defined waist skirt and bodice no separate top or bottom visible outfit 27 top"
-      },
-      "role": "dress",
-      "source_observations": [
-        {
-          "attributes_path": "outfit_27/dress/attributes.json",
-          "canonical": true,
-          "display_name": "light blue-gray ribbed knit fabric knee-length dress",
-          "fixture": "outfit_27",
-          "images": {
-            "input_segmented": {
-              "path": "outfit_27/dress/input_segmented.png",
-              "sha256": "f5a4c84400d2bf0bf7cc768b3bca70a8143e003b7afee5db898bb89a0f5737f0"
-            },
-            "output_1k": {
-              "path": "outfit_27/dress/output_1k.png",
-              "sha256": "23690defedadc909ebba24a7c6c2b3f033cb79e55508accbd50c1ae1bf1dd656"
-            },
-            "output_512": {
-              "path": "outfit_27/dress/output.png",
-              "sha256": "24e77cfbc05c3ff20d57e55fd128c501507cab348e97ef870d70ed39b47d489a"
-            }
-          },
-          "indexed": true,
-          "metadata_path": "outfit_27/dress/metadata.json",
-          "observation_id": "outfit_27_dress",
-          "provenance": {
-            "artifact_path": "bench/catalog_generation/artifacts/outfit_27_dress_dress_knee_length_half_sleeve.pipeline.request.json",
-            "generated_or_reused": "generated",
-            "metadata_path": "outfit_27/dress/metadata.json",
-            "model_id": "gemini-3.1-flash-image",
-            "output_1k_sha256": "23690defedadc909ebba24a7c6c2b3f033cb79e55508accbd50c1ae1bf1dd656",
-            "output_512_sha256": "24e77cfbc05c3ff20d57e55fd128c501507cab348e97ef870d70ed39b47d489a",
-            "override_path": null,
-            "promoted_from_candidate": null,
-            "promoted_from_reference": null,
-            "prompt_policy_version": 5,
-            "prompt_sha256": "369bfc435996d00386d6d980f1ed0f795a972c0954aa74d48316a5e59db8b2ca",
-            "reuse_source": null,
-            "vlm_attributes_path": "outfit_27/dress/attributes.json"
-          },
-          "role": "dress",
-          "tags": [
-            "dress",
-            "dress_knee_length_half_sleeve",
-            "half sleeve",
-            "half sleeve dress",
-            "half sleeves",
-            "knee length",
-            "knee length dress",
-            "knee length skirt",
-            "knee-length",
-            "knee-length dress",
-            "knee_length",
-            "knee_length skirt",
-            "light blue-gray",
-            "midi",
-            "one piece",
-            "one-piece",
-            "one-piece dress",
-            "outfit_27",
-            "ribbed knit fabric",
-            "short sleeve dress",
-            "solid with vertical ribbing"
-          ]
-        }
-      ],
-      "tags": [
-        "dress",
-        "dress_knee_length_half_sleeve",
-        "half sleeve",
-        "half sleeve dress",
-        "half sleeves",
-        "knee length",
-        "knee length dress",
-        "knee length skirt",
-        "knee-length",
-        "knee-length dress",
-        "knee_length",
-        "knee_length skirt",
-        "light blue-gray",
-        "midi",
-        "one piece",
-        "one-piece",
-        "one-piece dress",
-        "outfit_27",
-        "ribbed knit fabric",
-        "short sleeve dress",
-        "solid with vertical ribbing"
-      ],
-      "template": {
-        "override_applied": false,
-        "selection_confidence": "high",
-        "selection_reason": "One-piece knee-length dress with half sleeves mapped to dress_knee_length_half_sleeve. Evidence: Sleeves end mid-bicep; neckline forms high collar with vertical placket extending down chest. | One-piece light blue ribbed knit polo dress with half-zip collar, short sleeves, front patch pockets, and knee-length hem; user-confirmed single garment. Catalog role=dress, garment_class=dress. | Full-length silhouette with defined waist, skirt, and bodice; no separate top or bottom visible.",
-        "template_id": "dress_knee_length_half_sleeve"
-      },
-      "user_override": null
-    },
-    {
-      "alias_observation_ids": [],
       "canonical_observation_id": "outfit_28_bottom",
       "catalog_id": "outfit_28_bottom",
+      "display_category": "bottom",
       "display_name": "navy blue and white long skirt",
       "facets": {
         "closure": {
@@ -5329,6 +4477,7 @@
       "alias_observation_ids": [],
       "canonical_observation_id": "outfit_28_top",
       "catalog_id": "outfit_28_top",
+      "display_category": "top",
       "display_name": "white office_blouse",
       "facets": {
         "closure": {
@@ -5499,6 +4648,7 @@
       "alias_observation_ids": [],
       "canonical_observation_id": "outfit_29_dress",
       "catalog_id": "outfit_29_dress",
+      "display_category": "dress",
       "display_name": "pastel pink lace knee-length dress",
       "facets": {
         "closure": {
@@ -5688,10 +4838,16 @@
       "user_override": null
     },
     {
-      "alias_observation_ids": [],
+      "alias_observation_ids": [
+        "outfit_1_bottom",
+        "outfit_7_bottom",
+        "outfit_8_bottom",
+        "outfit_9_bottom"
+      ],
       "canonical_observation_id": "outfit_2_bottom",
       "catalog_id": "outfit_2_bottom",
-      "display_name": "tan trousers",
+      "display_category": "bottom",
+      "display_name": "tan straight-fit trousers",
       "facets": {
         "closure": {
           "source": "unknown",
@@ -5699,8 +4855,8 @@
         },
         "colors": {
           "confidence": "high",
-          "evidence": "Uniform beige-brown hue across entire garment; no secondary colors or patterns.",
-          "source": "vlm_high_confidence",
+          "evidence": "Same physical tan straight-fit trousers worn in outfits 1, 2, 7, 8, and 9.",
+          "source": "user_confirmed_identity",
           "value": "tan"
         },
         "finish": {
@@ -5709,8 +4865,8 @@
         },
         "fit": {
           "confidence": "high",
-          "evidence": "User-confirmed straight-fit tan trousers.",
-          "source": "user_confirmed",
+          "evidence": "Same physical tan straight-fit trousers worn in outfits 1, 2, 7, 8, and 9.",
+          "source": "user_confirmed_identity",
           "value": "straight"
         },
         "garment_class": {
@@ -5755,8 +4911,17 @@
       },
       "fixture": "outfit_2",
       "garment_class_normalized": "trousers",
-      "garment_id": "outfit_2_bottom",
+      "garment_id": "garment_tan_trousers_001",
       "garment_subtype": null,
+      "identity": {
+        "alias_color_tokens": [
+          "tan"
+        ],
+        "canonical_selection_reason": "User-designated canonical catalog image for the shared tan straight-fit trousers identity.",
+        "merged_observation_count": 5,
+        "notes": "Same physical tan straight-fit trousers worn in outfits 1, 2, 7, 8, and 9.",
+        "reason": "user_confirmed"
+      },
       "images": {
         "output_1k": {
           "path": "outfit_2/bottom/output_1k.png",
@@ -5768,7 +4933,11 @@
         }
       },
       "observation_ids": [
-        "outfit_2_bottom"
+        "outfit_1_bottom",
+        "outfit_2_bottom",
+        "outfit_7_bottom",
+        "outfit_8_bottom",
+        "outfit_9_bottom"
       ],
       "provenance": {
         "artifact_path": "bench/catalog_generation/artifacts/outfit_2_bottom_pants.pipeline.request.json",
@@ -5787,11 +4956,58 @@
       },
       "retrieval": {
         "lexical_only": true,
-        "search_text": "tan trousers bottom outfit 2 pants solid straight straight fit straight fit trousers tan trouser trousers tan solid matte straight leg trousers straight"
+        "search_text": "tan straight fit trousers bottom outfit 1 outfit 1 bottom outfit 2 outfit 2 bottom outfit 7 outfit 7 bottom outfit 8 outfit 8 bottom outfit 9 outfit 9 bottom pants solid straight straight fit straight fit trousers tan tan straight fit trousers tan trousers trouser trousers tan solid matte straight leg trousers straight"
       },
       "role": "bottom",
-      "search_text": "tan trousers bottom outfit 2 pants solid straight straight fit straight fit trousers tan trouser trousers tan solid matte straight leg trousers straight",
       "source_observations": [
+        {
+          "attributes_path": "outfit_1/bottom/attributes.json",
+          "canonical": false,
+          "display_name": "brown trousers",
+          "fixture": "outfit_1",
+          "images": {
+            "input_segmented": {
+              "path": "outfit_1/bottom/input_segmented.png",
+              "sha256": "c6a7f8216a951776b1846b674a033acacd3b1c24fd9e936b665bb019176c4675"
+            },
+            "output_1k": {
+              "path": "outfit_1/bottom/output_1k.png",
+              "sha256": "dbfb912de2f04b05fb868c01752283cc82e130936ef6c18e5e1afcb5e5094a5c"
+            },
+            "output_512": {
+              "path": "outfit_1/bottom/output.png",
+              "sha256": "cf0ab814cc5e046d3a2d4c453826cd7de8e78181ea644567636df282b6856bab"
+            }
+          },
+          "indexed": false,
+          "metadata_path": "outfit_1/bottom/metadata.json",
+          "observation_id": "outfit_1_bottom",
+          "provenance": {
+            "artifact_path": "bench/catalog_generation/artifacts/outfit_1_bottom_pants.pipeline.request.json",
+            "generated_or_reused": "generated",
+            "metadata_path": "outfit_1/bottom/metadata.json",
+            "model_id": "gemini-3.1-flash-image",
+            "output_1k_sha256": "dbfb912de2f04b05fb868c01752283cc82e130936ef6c18e5e1afcb5e5094a5c",
+            "output_512_sha256": "cf0ab814cc5e046d3a2d4c453826cd7de8e78181ea644567636df282b6856bab",
+            "override_path": null,
+            "promoted_from_candidate": null,
+            "promoted_from_reference": null,
+            "prompt_policy_version": 5,
+            "prompt_sha256": "76a7dba6819a2a086bc87055afeebbff3445383490c130c11506f828c5bba551",
+            "reuse_source": null,
+            "vlm_attributes_path": "outfit_1/bottom/attributes.json"
+          },
+          "role": "bottom",
+          "tags": [
+            "bottom",
+            "brown",
+            "outfit_1",
+            "pants",
+            "solid",
+            "trouser",
+            "trousers"
+          ]
+        },
         {
           "attributes_path": "outfit_2/bottom/attributes.json",
           "canonical": true,
@@ -5839,17 +5055,172 @@
             "trouser",
             "trousers"
           ]
+        },
+        {
+          "attributes_path": "outfit_7/bottom/attributes.json",
+          "canonical": false,
+          "display_name": "brown trousers",
+          "fixture": "outfit_7",
+          "images": {
+            "input_segmented": {
+              "path": "outfit_7/bottom/input_segmented.png",
+              "sha256": "5e382e54ff9e5a698329fb6b8be3eab5a74488e9b0456f20e7487f22c02132cc"
+            },
+            "output_1k": {
+              "path": "outfit_7/bottom/output_1k.png",
+              "sha256": "d95813ee5b5235b1f82249b18685e86517b1f7d7b33e614ab0321faa10cdc115"
+            },
+            "output_512": {
+              "path": "outfit_7/bottom/output.png",
+              "sha256": "e626d6703175b373e3f058cf2efa09995981d380a37f8e47b127461660ffe491"
+            }
+          },
+          "indexed": false,
+          "metadata_path": "outfit_7/bottom/metadata.json",
+          "observation_id": "outfit_7_bottom",
+          "provenance": {
+            "artifact_path": "bench/catalog_generation/artifacts/outfit_7_bottom_pants.pipeline.request.json",
+            "generated_or_reused": "generated",
+            "metadata_path": "outfit_7/bottom/metadata.json",
+            "model_id": "gemini-3.1-flash-image",
+            "output_1k_sha256": "d95813ee5b5235b1f82249b18685e86517b1f7d7b33e614ab0321faa10cdc115",
+            "output_512_sha256": "e626d6703175b373e3f058cf2efa09995981d380a37f8e47b127461660ffe491",
+            "override_path": null,
+            "promoted_from_candidate": null,
+            "promoted_from_reference": null,
+            "prompt_policy_version": 5,
+            "prompt_sha256": "3b1a9675daa3498d32dc08739dcb2d1630b5a3a6089468d7dbd18b3b22cda5c9",
+            "reuse_source": null,
+            "vlm_attributes_path": "outfit_7/bottom/attributes.json"
+          },
+          "role": "bottom",
+          "tags": [
+            "bottom",
+            "brown",
+            "outfit_7",
+            "pants",
+            "solid",
+            "trouser",
+            "trousers"
+          ]
+        },
+        {
+          "attributes_path": "outfit_8/bottom/attributes.json",
+          "canonical": false,
+          "display_name": "taupe trousers",
+          "fixture": "outfit_8",
+          "images": {
+            "input_segmented": {
+              "path": "outfit_8/bottom/input_segmented.png",
+              "sha256": "862fbf5483c7be19cc2ffb72778e2d9a4af6b930cb7c0eecfc035ff541d8e59d"
+            },
+            "output_1k": {
+              "path": "outfit_8/bottom/output_1k.png",
+              "sha256": "ccebb0930aad1cc3702d1fba6acda9ce95b9b09221edbaf4dba2d4d97068642b"
+            },
+            "output_512": {
+              "path": "outfit_8/bottom/output.png",
+              "sha256": "1310aec51ced1ee1207d576896bd204231f0162844f3166dc1f4b4abe2cec9e0"
+            }
+          },
+          "indexed": false,
+          "metadata_path": "outfit_8/bottom/metadata.json",
+          "observation_id": "outfit_8_bottom",
+          "provenance": {
+            "artifact_path": "bench/catalog_generation/artifacts/outfit_8_bottom_pants.pipeline.request.json",
+            "generated_or_reused": "generated",
+            "metadata_path": "outfit_8/bottom/metadata.json",
+            "model_id": "gemini-3.1-flash-image",
+            "output_1k_sha256": "ccebb0930aad1cc3702d1fba6acda9ce95b9b09221edbaf4dba2d4d97068642b",
+            "output_512_sha256": "1310aec51ced1ee1207d576896bd204231f0162844f3166dc1f4b4abe2cec9e0",
+            "override_path": null,
+            "promoted_from_candidate": null,
+            "promoted_from_reference": null,
+            "prompt_policy_version": 5,
+            "prompt_sha256": "2cd53296c763bbb489b08390e5956eb80336e1ab55b897527688776f5da2d6e2",
+            "reuse_source": null,
+            "vlm_attributes_path": "outfit_8/bottom/attributes.json"
+          },
+          "role": "bottom",
+          "tags": [
+            "bottom",
+            "outfit_8",
+            "pants",
+            "solid",
+            "taupe",
+            "trouser",
+            "trousers"
+          ]
+        },
+        {
+          "attributes_path": "outfit_9/bottom/attributes.json",
+          "canonical": false,
+          "display_name": "brown trousers",
+          "fixture": "outfit_9",
+          "images": {
+            "input_segmented": {
+              "path": "outfit_9/bottom/input_segmented.png",
+              "sha256": "72edbaab2480b785210f001fa363d7109b48102957901ff5dee134f4fe29790c"
+            },
+            "output_1k": {
+              "path": "outfit_9/bottom/output_1k.png",
+              "sha256": "0c9544cf53ad0a48cdc5eb88f838bb1a1653d5addb3753675aa5b30e73ef7e4f"
+            },
+            "output_512": {
+              "path": "outfit_9/bottom/output.png",
+              "sha256": "e4332c8bc8e1a2fd715412700e0823494d0863ca1ecd6e9b02f35be341e23ef0"
+            }
+          },
+          "indexed": false,
+          "metadata_path": "outfit_9/bottom/metadata.json",
+          "observation_id": "outfit_9_bottom",
+          "provenance": {
+            "artifact_path": "bench/catalog_generation/artifacts/outfit_9_bottom_pants.pipeline.request.json",
+            "generated_or_reused": "generated",
+            "metadata_path": "outfit_9/bottom/metadata.json",
+            "model_id": "gemini-3.1-flash-image",
+            "output_1k_sha256": "0c9544cf53ad0a48cdc5eb88f838bb1a1653d5addb3753675aa5b30e73ef7e4f",
+            "output_512_sha256": "e4332c8bc8e1a2fd715412700e0823494d0863ca1ecd6e9b02f35be341e23ef0",
+            "override_path": null,
+            "promoted_from_candidate": null,
+            "promoted_from_reference": null,
+            "prompt_policy_version": 5,
+            "prompt_sha256": "71ddf01845abe7f90d28bfbe9bfdeff43ded0c6474dcf6103e5de76ee509d5f4",
+            "reuse_source": null,
+            "vlm_attributes_path": "outfit_9/bottom/attributes.json"
+          },
+          "role": "bottom",
+          "tags": [
+            "bottom",
+            "brown",
+            "outfit_9",
+            "pants",
+            "solid",
+            "trouser",
+            "trousers"
+          ]
         }
       ],
       "tags": [
         "bottom",
+        "outfit_1",
+        "outfit_1_bottom",
         "outfit_2",
+        "outfit_2_bottom",
+        "outfit_7",
+        "outfit_7_bottom",
+        "outfit_8",
+        "outfit_8_bottom",
+        "outfit_9",
+        "outfit_9_bottom",
         "pants",
         "solid",
         "straight",
         "straight fit",
         "straight fit trousers",
         "tan",
+        "tan straight-fit trousers",
+        "tan trousers",
         "trouser",
         "trousers"
       ],
@@ -5863,178 +5234,9 @@
     },
     {
       "alias_observation_ids": [],
-      "canonical_observation_id": "outfit_2_top",
-      "catalog_id": "outfit_2_top",
-      "display_name": "pink blouse",
-      "facets": {
-        "closure": {
-          "source": "unknown",
-          "value": null
-        },
-        "colors": {
-          "confidence": "high",
-          "evidence": "Pink is the most prevalent hue in the floral print, covering majority of visible fabric area.",
-          "source": "vlm_high_confidence",
-          "value": "pink"
-        },
-        "finish": {
-          "source": "unknown",
-          "value": null
-        },
-        "garment_class": {
-          "confidence": "high",
-          "evidence": "V-neckline, long sleeves, fitted bodice, and structured shoulders indicate a blouse; no collar or buttons visible.",
-          "source": "vlm_high_confidence",
-          "value": "blouse"
-        },
-        "material": {
-          "source": "unknown",
-          "value": null
-        },
-        "neckline_collar": {
-          "confidence": "high",
-          "evidence": "Sleeves extend to wrist area; neckline forms deep V shape; cuffs not clearly defined or present.",
-          "source": "vlm_high_confidence",
-          "value": "long sleeves, V-neckline, no visible cuffs"
-        },
-        "pattern": {
-          "confidence": "high",
-          "evidence": "Distinct pink, black, and beige floral motifs distributed across entire visible surface.",
-          "source": "vlm_high_confidence",
-          "value": "floral print"
-        },
-        "role": {
-          "source": "manifest",
-          "value": "top"
-        },
-        "sheen": {
-          "confidence": "high",
-          "evidence": "No specular highlights or reflective surfaces; light diffuses evenly across fabric.",
-          "source": "vlm_high_confidence",
-          "value": "matte"
-        },
-        "silhouette_style": {
-          "source": "unknown",
-          "value": null
-        },
-        "sleeve_length": {
-          "confidence": "high",
-          "source": "template_selection",
-          "value": "full"
-        }
-      },
-      "fixture": "outfit_2",
-      "garment_class_normalized": "blouse",
-      "garment_id": "outfit_2_top",
-      "garment_subtype": null,
-      "images": {
-        "output_1k": {
-          "path": "outfit_2/top/output_1k.png",
-          "sha256": "e57cdac8eac4f6518b1dc37fa93158abd9128b8241582394902ed86d25cfd59d"
-        },
-        "output_512": {
-          "path": "outfit_2/top/output.png",
-          "sha256": "fe46ca0da0f425bff20358f0d015d22ef9357e1b07b0664a97f57a378dc3f00f"
-        }
-      },
-      "observation_ids": [
-        "outfit_2_top"
-      ],
-      "provenance": {
-        "artifact_path": "bench/catalog_generation/artifacts/outfit_2_top_top_full_sleeve.pipeline.request.json",
-        "generated_or_reused": "generated",
-        "metadata_path": "outfit_2/top/metadata.json",
-        "model_id": "gemini-3.1-flash-image",
-        "output_1k_sha256": "e57cdac8eac4f6518b1dc37fa93158abd9128b8241582394902ed86d25cfd59d",
-        "output_512_sha256": "fe46ca0da0f425bff20358f0d015d22ef9357e1b07b0664a97f57a378dc3f00f",
-        "override_path": null,
-        "promoted_from_candidate": null,
-        "promoted_from_reference": null,
-        "prompt_policy_version": 5,
-        "prompt_sha256": "3dfdbfd72672909cad75ff1b6972e30003d2306a3950e7bf3e6c97d761455f72",
-        "reuse_source": null,
-        "vlm_attributes_path": "outfit_2/top/attributes.json"
-      },
-      "retrieval": {
-        "lexical_only": true,
-        "search_text": "pink blouse blouse floral print full sleeve full sleeves outfit 2 pink shirt top top full sleeve pink floral print matte long sleeves v neckline no visible cuffs full generic blouse shirt with full sleeves evidence sleeves extend to wrist area neckline forms deep v shape cuffs not clearly defined or present long sleeve floral print blouse sleeves to wrist in cutout v neckline long sleeves fitted bodice and structured shoulders indicate a blouse no collar or buttons visible"
-      },
-      "role": "top",
-      "source_observations": [
-        {
-          "attributes_path": "outfit_2/top/attributes.json",
-          "canonical": true,
-          "display_name": "pink blouse",
-          "fixture": "outfit_2",
-          "images": {
-            "input_segmented": {
-              "path": "outfit_2/top/input_segmented.png",
-              "sha256": "44decab8af52776250555c5d85b23173555068e0faed5dd4cfccd3cce6d147fd"
-            },
-            "output_1k": {
-              "path": "outfit_2/top/output_1k.png",
-              "sha256": "e57cdac8eac4f6518b1dc37fa93158abd9128b8241582394902ed86d25cfd59d"
-            },
-            "output_512": {
-              "path": "outfit_2/top/output.png",
-              "sha256": "fe46ca0da0f425bff20358f0d015d22ef9357e1b07b0664a97f57a378dc3f00f"
-            }
-          },
-          "indexed": true,
-          "metadata_path": "outfit_2/top/metadata.json",
-          "observation_id": "outfit_2_top",
-          "provenance": {
-            "artifact_path": "bench/catalog_generation/artifacts/outfit_2_top_top_full_sleeve.pipeline.request.json",
-            "generated_or_reused": "generated",
-            "metadata_path": "outfit_2/top/metadata.json",
-            "model_id": "gemini-3.1-flash-image",
-            "output_1k_sha256": "e57cdac8eac4f6518b1dc37fa93158abd9128b8241582394902ed86d25cfd59d",
-            "output_512_sha256": "fe46ca0da0f425bff20358f0d015d22ef9357e1b07b0664a97f57a378dc3f00f",
-            "override_path": null,
-            "promoted_from_candidate": null,
-            "promoted_from_reference": null,
-            "prompt_policy_version": 5,
-            "prompt_sha256": "3dfdbfd72672909cad75ff1b6972e30003d2306a3950e7bf3e6c97d761455f72",
-            "reuse_source": null,
-            "vlm_attributes_path": "outfit_2/top/attributes.json"
-          },
-          "role": "top",
-          "tags": [
-            "blouse",
-            "floral print",
-            "full sleeve",
-            "full sleeves",
-            "outfit_2",
-            "pink",
-            "shirt",
-            "top",
-            "top_full_sleeve"
-          ]
-        }
-      ],
-      "tags": [
-        "blouse",
-        "floral print",
-        "full sleeve",
-        "full sleeves",
-        "outfit_2",
-        "pink",
-        "shirt",
-        "top",
-        "top_full_sleeve"
-      ],
-      "template": {
-        "override_applied": false,
-        "selection_confidence": "high",
-        "selection_reason": "Generic blouse/shirt with full sleeves. Evidence: Sleeves extend to wrist area; neckline forms deep V shape; cuffs not clearly defined or present. | Long-sleeve floral print blouse; sleeves to wrist in cutout. | V-neckline, long sleeves, fitted bodice, and structured shoulders indicate a blouse; no collar or buttons visible.",
-        "template_id": "top_full_sleeve"
-      },
-      "user_override": null
-    },
-    {
-      "alias_observation_ids": [],
       "canonical_observation_id": "outfit_30_dress",
       "catalog_id": "outfit_30_dress",
+      "display_category": "dress",
       "display_name": "forest green stretch knit fabric knee-length dress",
       "facets": {
         "closure": {
@@ -6225,178 +5427,9 @@
     },
     {
       "alias_observation_ids": [],
-      "canonical_observation_id": "outfit_31_bottom",
-      "catalog_id": "outfit_31_bottom",
-      "display_name": "brown satin-like woven fabric trousers",
-      "facets": {
-        "closure": {
-          "confidence": "high",
-          "evidence": "Tied fabric cord at center front waist forming bow; no buttons, zippers, or plackets visible.",
-          "source": "vlm_high_confidence",
-          "value": "drawstring waist"
-        },
-        "colors": {
-          "confidence": "high",
-          "evidence": "Uniform earthy brown tone across entire garment; no secondary colors or patterns.",
-          "source": "vlm_high_confidence",
-          "value": "brown"
-        },
-        "finish": {
-          "source": "unknown",
-          "value": null
-        },
-        "garment_class": {
-          "confidence": "high",
-          "evidence": "Full-length leg openings, waistband with drawstring, and vertical drape consistent with trousers.",
-          "source": "vlm_high_confidence",
-          "value": "trousers"
-        },
-        "material": {
-          "confidence": "high",
-          "evidence": "Smooth surface with subtle sheen and fluid drape suggests satin or similar lustrous weave.",
-          "source": "vlm_high_confidence",
-          "value": "satin-like woven fabric"
-        },
-        "neckline_collar": {
-          "source": "unknown",
-          "value": null
-        },
-        "pattern": {
-          "confidence": "high",
-          "evidence": "No visible prints, embroidery, or textural variation; uniform surface.",
-          "source": "vlm_high_confidence",
-          "value": "solid"
-        },
-        "role": {
-          "source": "manifest",
-          "value": "bottom"
-        },
-        "sheen": {
-          "confidence": "high",
-          "evidence": "Light reflects softly along folds and curves, indicating low-to-moderate luster without gloss.",
-          "source": "vlm_high_confidence",
-          "value": "soft satin-like"
-        },
-        "silhouette_style": {
-          "confidence": "high",
-          "source": "template_selection",
-          "value": "straight-leg trousers"
-        },
-        "sleeve_length": {
-          "source": "not_applicable",
-          "value": null
-        }
-      },
-      "fixture": "outfit_31",
-      "garment_class_normalized": "trousers",
-      "garment_id": "outfit_31_bottom",
-      "garment_subtype": null,
-      "images": {
-        "output_1k": {
-          "path": "outfit_31/bottom/output_1k.png",
-          "sha256": "4b535bdb5311b48b8c52c710ef9598cab21dc6aeb00cd3f6633cbcca9f351730"
-        },
-        "output_512": {
-          "path": "outfit_31/bottom/output.png",
-          "sha256": "c859509de89b128ae99d3b0d7523a2817f2f1c445e3119e810814ac66fd3b57a"
-        }
-      },
-      "observation_ids": [
-        "outfit_31_bottom"
-      ],
-      "provenance": {
-        "artifact_path": "bench/catalog_generation/artifacts/outfit_31_bottom_pants.pipeline.request.json",
-        "generated_or_reused": "generated",
-        "metadata_path": "outfit_31/bottom/metadata.json",
-        "model_id": "gemini-3.1-flash-image",
-        "output_1k_sha256": "4b535bdb5311b48b8c52c710ef9598cab21dc6aeb00cd3f6633cbcca9f351730",
-        "output_512_sha256": "c859509de89b128ae99d3b0d7523a2817f2f1c445e3119e810814ac66fd3b57a",
-        "override_path": null,
-        "promoted_from_candidate": null,
-        "promoted_from_reference": null,
-        "prompt_policy_version": 5,
-        "prompt_sha256": "a1ad5b2cdb24e51ea8eff6c92cc986ed2bb8b5e6b9f8fad60f42764dae3f2ce3",
-        "reuse_source": null,
-        "vlm_attributes_path": "outfit_31/bottom/attributes.json"
-      },
-      "retrieval": {
-        "lexical_only": true,
-        "search_text": "brown satin like woven fabric trousers bottom brown outfit 31 pants satin like woven fabric solid trouser trousers brown satin like woven fabric solid soft satin like drawstring waist straight leg trousers trousers pants class evidence garment is trousers no sleeves cuffs or necklines present tan light beige ribbed wide leg trousers with matching fabric tie belt at high waist user reviewed cutout full length leg openings waistband with drawstring and vertical drape consistent with trousers"
-      },
-      "role": "bottom",
-      "source_observations": [
-        {
-          "attributes_path": "outfit_31/bottom/attributes.json",
-          "canonical": true,
-          "display_name": "brown satin-like woven fabric trousers",
-          "fixture": "outfit_31",
-          "images": {
-            "input_segmented": {
-              "path": "outfit_31/bottom/input_segmented.png",
-              "sha256": "d6d78ed854e71db4c56f24f1c01b86a9bf2f8a594145121c4e9897e44abf98dc"
-            },
-            "output_1k": {
-              "path": "outfit_31/bottom/output_1k.png",
-              "sha256": "4b535bdb5311b48b8c52c710ef9598cab21dc6aeb00cd3f6633cbcca9f351730"
-            },
-            "output_512": {
-              "path": "outfit_31/bottom/output.png",
-              "sha256": "c859509de89b128ae99d3b0d7523a2817f2f1c445e3119e810814ac66fd3b57a"
-            }
-          },
-          "indexed": true,
-          "metadata_path": "outfit_31/bottom/metadata.json",
-          "observation_id": "outfit_31_bottom",
-          "provenance": {
-            "artifact_path": "bench/catalog_generation/artifacts/outfit_31_bottom_pants.pipeline.request.json",
-            "generated_or_reused": "generated",
-            "metadata_path": "outfit_31/bottom/metadata.json",
-            "model_id": "gemini-3.1-flash-image",
-            "output_1k_sha256": "4b535bdb5311b48b8c52c710ef9598cab21dc6aeb00cd3f6633cbcca9f351730",
-            "output_512_sha256": "c859509de89b128ae99d3b0d7523a2817f2f1c445e3119e810814ac66fd3b57a",
-            "override_path": null,
-            "promoted_from_candidate": null,
-            "promoted_from_reference": null,
-            "prompt_policy_version": 5,
-            "prompt_sha256": "a1ad5b2cdb24e51ea8eff6c92cc986ed2bb8b5e6b9f8fad60f42764dae3f2ce3",
-            "reuse_source": null,
-            "vlm_attributes_path": "outfit_31/bottom/attributes.json"
-          },
-          "role": "bottom",
-          "tags": [
-            "bottom",
-            "brown",
-            "outfit_31",
-            "pants",
-            "satin-like woven fabric",
-            "solid",
-            "trouser",
-            "trousers"
-          ]
-        }
-      ],
-      "tags": [
-        "bottom",
-        "brown",
-        "outfit_31",
-        "pants",
-        "satin-like woven fabric",
-        "solid",
-        "trouser",
-        "trousers"
-      ],
-      "template": {
-        "override_applied": false,
-        "selection_confidence": "high",
-        "selection_reason": "Trousers/pants class. Evidence: Garment is trousers; no sleeves, cuffs, or necklines present. | Tan/light beige ribbed wide-leg trousers with matching fabric tie belt at high waist; user-reviewed cutout. | Full-length leg openings, waistband with drawstring, and vertical drape consistent with trousers.",
-        "template_id": "pants"
-      },
-      "user_override": null
-    },
-    {
-      "alias_observation_ids": [],
       "canonical_observation_id": "outfit_31_top",
       "catalog_id": "outfit_31_top",
+      "display_category": "top",
       "display_name": "black blouse",
       "facets": {
         "closure": {
@@ -6567,6 +5600,7 @@
       "alias_observation_ids": [],
       "canonical_observation_id": "outfit_3_top",
       "catalog_id": "outfit_3_top",
+      "display_category": "blazer",
       "display_name": "black blazer",
       "facets": {
         "closure": {
@@ -6750,238 +5784,10 @@
       }
     },
     {
-      "alias_observation_ids": [
-        "outfit_3_bottom"
-      ],
-      "canonical_observation_id": "outfit_4_bottom",
-      "catalog_id": "outfit_4_bottom",
-      "display_name": "dark gray trousers",
-      "facets": {
-        "closure": {
-          "source": "unknown",
-          "value": null
-        },
-        "colors": {
-          "confidence": "high",
-          "evidence": "Same physical dark gray trousers worn in outfit 3 and outfit 4.",
-          "source": "user_confirmed_identity",
-          "value": "dark gray"
-        },
-        "finish": {
-          "source": "unknown",
-          "value": null
-        },
-        "garment_class": {
-          "confidence": "high",
-          "evidence": "Two-legged lower-body garment with waistband, crotch seam, and leg openings; no upper body or sleeves visible.",
-          "source": "vlm_high_confidence",
-          "value": "trousers"
-        },
-        "material": {
-          "source": "unknown",
-          "value": null
-        },
-        "neckline_collar": {
-          "source": "unknown",
-          "value": null
-        },
-        "pattern": {
-          "confidence": "high",
-          "evidence": "No visible prints, embroidery, or patterns; surface appears uniformly colored with minor textural variation from weave.",
-          "source": "vlm_high_confidence",
-          "value": "solid"
-        },
-        "role": {
-          "source": "manifest",
-          "value": "bottom"
-        },
-        "sheen": {
-          "source": "unknown",
-          "value": null
-        },
-        "silhouette_style": {
-          "confidence": "high",
-          "source": "template_selection",
-          "value": "straight-leg trousers"
-        },
-        "sleeve_length": {
-          "source": "not_applicable",
-          "value": null
-        }
-      },
-      "fixture": "outfit_4",
-      "garment_class_normalized": "trousers",
-      "garment_id": "garment_dark_gray_trousers_001",
-      "garment_subtype": null,
-      "identity": {
-        "alias_color_tokens": [
-          "dark gray"
-        ],
-        "canonical_selection_reason": "Lower texture QC mean_delta_e (2.448 vs 3.040); no QC flags on either approved output.",
-        "merged_observation_count": 2,
-        "notes": "Same physical dark gray trousers worn in outfit 3 and outfit 4.",
-        "reason": "user_confirmed"
-      },
-      "images": {
-        "output_1k": {
-          "path": "outfit_4/bottom/output_1k.png",
-          "sha256": "0e6aa1e7cb6c7dc2ab3e760ef39e808ac0e4541e027d35674ead4c7da73873ac"
-        },
-        "output_512": {
-          "path": "outfit_4/bottom/output.png",
-          "sha256": "33d826a1fb54da3cece89a61f6086d08aaab4c793f5b0ae05dee6fe8ea72c3ca"
-        }
-      },
-      "observation_ids": [
-        "outfit_3_bottom",
-        "outfit_4_bottom"
-      ],
-      "provenance": {
-        "artifact_path": "bench/catalog_generation/artifacts/outfit_4_bottom_pants.pipeline.request.json",
-        "generated_or_reused": "generated",
-        "metadata_path": "outfit_4/bottom/metadata.json",
-        "model_id": "gemini-3.1-flash-image",
-        "output_1k_sha256": "0e6aa1e7cb6c7dc2ab3e760ef39e808ac0e4541e027d35674ead4c7da73873ac",
-        "output_512_sha256": "33d826a1fb54da3cece89a61f6086d08aaab4c793f5b0ae05dee6fe8ea72c3ca",
-        "override_path": null,
-        "promoted_from_candidate": null,
-        "promoted_from_reference": null,
-        "prompt_policy_version": 5,
-        "prompt_sha256": "d98a2205728b439e59ac0dc12add473b16275f2015fd086bcfd1319bdf921912",
-        "reuse_source": null,
-        "vlm_attributes_path": "outfit_4/bottom/attributes.json"
-      },
-      "retrieval": {
-        "lexical_only": true,
-        "search_text": "dark gray trousers bottom dark gray dark gray trousers outfit 3 outfit 3 bottom outfit 4 outfit 4 bottom pants solid solid with fine vertical ribbing trouser trousers woven fabric with subtle vertical ribbing dark gray solid straight leg trousers"
-      },
-      "role": "bottom",
-      "source_observations": [
-        {
-          "attributes_path": "outfit_3/bottom/attributes.json",
-          "canonical": false,
-          "display_name": "dark gray woven fabric with subtle vertical ribbing trousers",
-          "fixture": "outfit_3",
-          "images": {
-            "input_segmented": {
-              "path": "outfit_3/bottom/input_segmented.png",
-              "sha256": "8b2bd95c45deb4fa901f058f183365890d4c744686b59b53b7623cf0a41698c4"
-            },
-            "output_1k": {
-              "path": "outfit_3/bottom/output_1k.png",
-              "sha256": "ca3a9f9346d2a59f520285fb84c4cb952f1f7b1439a931120942a0a049980147"
-            },
-            "output_512": {
-              "path": "outfit_3/bottom/output.png",
-              "sha256": "deb39a4f9147e4276bd96b665cc3202541b2b74f6dc1ff10a2e3ec8373ce279f"
-            }
-          },
-          "indexed": false,
-          "metadata_path": "outfit_3/bottom/metadata.json",
-          "observation_id": "outfit_3_bottom",
-          "provenance": {
-            "artifact_path": "bench/catalog_generation/artifacts/outfit_3_bottom_pants.pipeline.request.json",
-            "generated_or_reused": "generated",
-            "metadata_path": "outfit_3/bottom/metadata.json",
-            "model_id": "gemini-3.1-flash-image",
-            "output_1k_sha256": "ca3a9f9346d2a59f520285fb84c4cb952f1f7b1439a931120942a0a049980147",
-            "output_512_sha256": "deb39a4f9147e4276bd96b665cc3202541b2b74f6dc1ff10a2e3ec8373ce279f",
-            "override_path": null,
-            "promoted_from_candidate": null,
-            "promoted_from_reference": null,
-            "prompt_policy_version": 5,
-            "prompt_sha256": "decad61714fcaccbc66aca650cf1b44ce59858fd0dccd083c2203f66a5a088b2",
-            "reuse_source": null,
-            "vlm_attributes_path": "outfit_3/bottom/attributes.json"
-          },
-          "role": "bottom",
-          "tags": [
-            "bottom",
-            "dark gray",
-            "outfit_3",
-            "pants",
-            "solid with fine vertical ribbing",
-            "trouser",
-            "trousers",
-            "woven fabric with subtle vertical ribbing"
-          ]
-        },
-        {
-          "attributes_path": "outfit_4/bottom/attributes.json",
-          "canonical": true,
-          "display_name": "dark gray trousers",
-          "fixture": "outfit_4",
-          "images": {
-            "input_segmented": {
-              "path": "outfit_4/bottom/input_segmented.png",
-              "sha256": "0a08615a2c3a089582b35dc2bcb70b9b5ec3163409bfe3ed068bb7eaf22bce90"
-            },
-            "output_1k": {
-              "path": "outfit_4/bottom/output_1k.png",
-              "sha256": "0e6aa1e7cb6c7dc2ab3e760ef39e808ac0e4541e027d35674ead4c7da73873ac"
-            },
-            "output_512": {
-              "path": "outfit_4/bottom/output.png",
-              "sha256": "33d826a1fb54da3cece89a61f6086d08aaab4c793f5b0ae05dee6fe8ea72c3ca"
-            }
-          },
-          "indexed": true,
-          "metadata_path": "outfit_4/bottom/metadata.json",
-          "observation_id": "outfit_4_bottom",
-          "provenance": {
-            "artifact_path": "bench/catalog_generation/artifacts/outfit_4_bottom_pants.pipeline.request.json",
-            "generated_or_reused": "generated",
-            "metadata_path": "outfit_4/bottom/metadata.json",
-            "model_id": "gemini-3.1-flash-image",
-            "output_1k_sha256": "0e6aa1e7cb6c7dc2ab3e760ef39e808ac0e4541e027d35674ead4c7da73873ac",
-            "output_512_sha256": "33d826a1fb54da3cece89a61f6086d08aaab4c793f5b0ae05dee6fe8ea72c3ca",
-            "override_path": null,
-            "promoted_from_candidate": null,
-            "promoted_from_reference": null,
-            "prompt_policy_version": 5,
-            "prompt_sha256": "d98a2205728b439e59ac0dc12add473b16275f2015fd086bcfd1319bdf921912",
-            "reuse_source": null,
-            "vlm_attributes_path": "outfit_4/bottom/attributes.json"
-          },
-          "role": "bottom",
-          "tags": [
-            "bottom",
-            "dark gray",
-            "outfit_4",
-            "pants",
-            "solid",
-            "trouser",
-            "trousers"
-          ]
-        }
-      ],
-      "tags": [
-        "bottom",
-        "dark gray",
-        "dark gray trousers",
-        "outfit_3",
-        "outfit_3_bottom",
-        "outfit_4",
-        "outfit_4_bottom",
-        "pants",
-        "solid",
-        "solid with fine vertical ribbing",
-        "trouser",
-        "trousers",
-        "woven fabric with subtle vertical ribbing"
-      ],
-      "template": {
-        "override_applied": false,
-        "selection_confidence": "high",
-        "selection_reason": "Trousers/pants class. Evidence: Garment is trousers; no sleeves, cuffs, or neckline present. | Dark pinstripe slim trousers with folded cuffs. | Two-legged lower-body garment with waistband, crotch seam, and leg openings; no upper body or sleeves visible.",
-        "template_id": "pants"
-      },
-      "user_override": null
-    },
-    {
       "alias_observation_ids": [],
       "canonical_observation_id": "outfit_4_top",
       "catalog_id": "outfit_4_top",
+      "display_category": "blazer",
       "display_name": "off-white satin-like woven fabric blazer",
       "facets": {
         "closure": {
@@ -7156,178 +5962,9 @@
     },
     {
       "alias_observation_ids": [],
-      "canonical_observation_id": "outfit_5_bottom",
-      "catalog_id": "outfit_5_bottom",
-      "display_name": "off-white smooth woven fabric trousers",
-      "facets": {
-        "closure": {
-          "confidence": "high",
-          "evidence": "Vertical seam line at center front with visible buttonhole and button near waistband.",
-          "source": "vlm_high_confidence",
-          "value": "front fly with button closure"
-        },
-        "colors": {
-          "confidence": "high",
-          "evidence": "Uniform light neutral tone across entire garment; slight warm undertone under lighting.",
-          "source": "vlm_high_confidence",
-          "value": "off-white"
-        },
-        "finish": {
-          "source": "unknown",
-          "value": null
-        },
-        "garment_class": {
-          "confidence": "high",
-          "evidence": "Full-length leg structure with waistband, front fly, and side seams visible; no sleeves or collar present.",
-          "source": "vlm_high_confidence",
-          "value": "trousers"
-        },
-        "material": {
-          "confidence": "high",
-          "evidence": "Folds and drape suggest structured but flexible textile; no visible texture or sheen indicating knit or synthetic.",
-          "source": "vlm_high_confidence",
-          "value": "smooth woven fabric"
-        },
-        "neckline_collar": {
-          "source": "unknown",
-          "value": null
-        },
-        "pattern": {
-          "confidence": "high",
-          "evidence": "No patterns, prints, or surface embellishments visible; uniform color and texture throughout.",
-          "source": "vlm_high_confidence",
-          "value": "solid"
-        },
-        "role": {
-          "source": "manifest",
-          "value": "bottom"
-        },
-        "sheen": {
-          "confidence": "high",
-          "evidence": "No specular highlights or reflective surfaces; light diffuses evenly across fabric.",
-          "source": "vlm_high_confidence",
-          "value": "matte"
-        },
-        "silhouette_style": {
-          "confidence": "high",
-          "source": "template_selection",
-          "value": "straight-leg trousers"
-        },
-        "sleeve_length": {
-          "source": "not_applicable",
-          "value": null
-        }
-      },
-      "fixture": "outfit_5",
-      "garment_class_normalized": "trousers",
-      "garment_id": "outfit_5_bottom",
-      "garment_subtype": null,
-      "images": {
-        "output_1k": {
-          "path": "outfit_5/bottom/output_1k.png",
-          "sha256": "6360b865dd72ff34e09a99b1fc2487d55ea2ad1a8260bdfc0e13595c76033303"
-        },
-        "output_512": {
-          "path": "outfit_5/bottom/output.png",
-          "sha256": "3bbd5aa286955968f225356c999d181bd150e319b454682c34cff0b34ec4002b"
-        }
-      },
-      "observation_ids": [
-        "outfit_5_bottom"
-      ],
-      "provenance": {
-        "artifact_path": "bench/catalog_generation/artifacts/outfit_5_bottom_pants.pipeline.request.json",
-        "generated_or_reused": "generated",
-        "metadata_path": "outfit_5/bottom/metadata.json",
-        "model_id": "gemini-3.1-flash-image",
-        "output_1k_sha256": "6360b865dd72ff34e09a99b1fc2487d55ea2ad1a8260bdfc0e13595c76033303",
-        "output_512_sha256": "3bbd5aa286955968f225356c999d181bd150e319b454682c34cff0b34ec4002b",
-        "override_path": null,
-        "promoted_from_candidate": null,
-        "promoted_from_reference": null,
-        "prompt_policy_version": 5,
-        "prompt_sha256": "81049816a24b0cc0acc7a922f4afe7396efbc25016c624115b92321d05257afe",
-        "reuse_source": null,
-        "vlm_attributes_path": "outfit_5/bottom/attributes.json"
-      },
-      "retrieval": {
-        "lexical_only": true,
-        "search_text": "off white smooth woven fabric trousers bottom off white outfit 5 pants smooth woven fabric solid trouser trousers off white smooth woven fabric solid matte front fly with button closure straight leg trousers trousers pants class evidence garment is trousers no sleeves cuffs or neckline present white wide leg high waist trousers full length leg structure with waistband front fly and side seams visible no sleeves or collar present"
-      },
-      "role": "bottom",
-      "source_observations": [
-        {
-          "attributes_path": "outfit_5/bottom/attributes.json",
-          "canonical": true,
-          "display_name": "off-white smooth woven fabric trousers",
-          "fixture": "outfit_5",
-          "images": {
-            "input_segmented": {
-              "path": "outfit_5/bottom/input_segmented.png",
-              "sha256": "746ae3522dcd37a48284dc09b244fa31c3b54b0800e50967a4ea8a6025125aaa"
-            },
-            "output_1k": {
-              "path": "outfit_5/bottom/output_1k.png",
-              "sha256": "6360b865dd72ff34e09a99b1fc2487d55ea2ad1a8260bdfc0e13595c76033303"
-            },
-            "output_512": {
-              "path": "outfit_5/bottom/output.png",
-              "sha256": "3bbd5aa286955968f225356c999d181bd150e319b454682c34cff0b34ec4002b"
-            }
-          },
-          "indexed": true,
-          "metadata_path": "outfit_5/bottom/metadata.json",
-          "observation_id": "outfit_5_bottom",
-          "provenance": {
-            "artifact_path": "bench/catalog_generation/artifacts/outfit_5_bottom_pants.pipeline.request.json",
-            "generated_or_reused": "generated",
-            "metadata_path": "outfit_5/bottom/metadata.json",
-            "model_id": "gemini-3.1-flash-image",
-            "output_1k_sha256": "6360b865dd72ff34e09a99b1fc2487d55ea2ad1a8260bdfc0e13595c76033303",
-            "output_512_sha256": "3bbd5aa286955968f225356c999d181bd150e319b454682c34cff0b34ec4002b",
-            "override_path": null,
-            "promoted_from_candidate": null,
-            "promoted_from_reference": null,
-            "prompt_policy_version": 5,
-            "prompt_sha256": "81049816a24b0cc0acc7a922f4afe7396efbc25016c624115b92321d05257afe",
-            "reuse_source": null,
-            "vlm_attributes_path": "outfit_5/bottom/attributes.json"
-          },
-          "role": "bottom",
-          "tags": [
-            "bottom",
-            "off-white",
-            "outfit_5",
-            "pants",
-            "smooth woven fabric",
-            "solid",
-            "trouser",
-            "trousers"
-          ]
-        }
-      ],
-      "tags": [
-        "bottom",
-        "off-white",
-        "outfit_5",
-        "pants",
-        "smooth woven fabric",
-        "solid",
-        "trouser",
-        "trousers"
-      ],
-      "template": {
-        "override_applied": false,
-        "selection_confidence": "high",
-        "selection_reason": "Trousers/pants class. Evidence: Garment is trousers; no sleeves, cuffs, or neckline present. | White wide-leg high-waist trousers. | Full-length leg structure with waistband, front fly, and side seams visible; no sleeves or collar present.",
-        "template_id": "pants"
-      },
-      "user_override": null
-    },
-    {
-      "alias_observation_ids": [],
       "canonical_observation_id": "outfit_5_top",
       "catalog_id": "outfit_5_top",
+      "display_category": "top",
       "display_name": "light blue woven fabric with eyelet perforations office_blouse",
       "facets": {
         "closure": {
@@ -7506,6 +6143,7 @@
       ],
       "canonical_observation_id": "outfit_6_bottom",
       "catalog_id": "outfit_6_bottom",
+      "display_category": "bottom",
       "display_name": "black pencil skirt",
       "facets": {
         "closure": {
@@ -7740,6 +6378,7 @@
       "alias_observation_ids": [],
       "canonical_observation_id": "outfit_6_top",
       "catalog_id": "outfit_6_top",
+      "display_category": "top",
       "display_name": "deep red satin-like woven fabric shirt",
       "facets": {
         "closure": {
@@ -7922,172 +6561,9 @@
     },
     {
       "alias_observation_ids": [],
-      "canonical_observation_id": "outfit_7_bottom",
-      "catalog_id": "outfit_7_bottom",
-      "display_name": "brown trousers",
-      "facets": {
-        "closure": {
-          "source": "unknown",
-          "value": null
-        },
-        "colors": {
-          "confidence": "high",
-          "evidence": "Uniform mid-tone brown hue across entire garment; no variation or secondary colors present.",
-          "source": "vlm_high_confidence",
-          "value": "brown"
-        },
-        "finish": {
-          "source": "unknown",
-          "value": null
-        },
-        "garment_class": {
-          "confidence": "high",
-          "evidence": "Full-length leg structure with waistband, front pockets, and straight-to-slight-flare silhouette visible.",
-          "source": "vlm_high_confidence",
-          "value": "trousers"
-        },
-        "material": {
-          "source": "unknown",
-          "value": null
-        },
-        "neckline_collar": {
-          "source": "unknown",
-          "value": null
-        },
-        "pattern": {
-          "confidence": "high",
-          "evidence": "No prints, embroidery, or patterns visible; uniform color and surface.",
-          "source": "vlm_high_confidence",
-          "value": "solid"
-        },
-        "role": {
-          "source": "manifest",
-          "value": "bottom"
-        },
-        "sheen": {
-          "confidence": "high",
-          "evidence": "No specular highlights or reflective surfaces; light diffuses evenly across fabric.",
-          "source": "vlm_high_confidence",
-          "value": "matte"
-        },
-        "silhouette_style": {
-          "confidence": "high",
-          "source": "template_selection",
-          "value": "straight-leg trousers"
-        },
-        "sleeve_length": {
-          "source": "not_applicable",
-          "value": null
-        }
-      },
-      "fixture": "outfit_7",
-      "garment_class_normalized": "trousers",
-      "garment_id": "outfit_7_bottom",
-      "garment_subtype": null,
-      "images": {
-        "output_1k": {
-          "path": "outfit_7/bottom/output_1k.png",
-          "sha256": "d95813ee5b5235b1f82249b18685e86517b1f7d7b33e614ab0321faa10cdc115"
-        },
-        "output_512": {
-          "path": "outfit_7/bottom/output.png",
-          "sha256": "e626d6703175b373e3f058cf2efa09995981d380a37f8e47b127461660ffe491"
-        }
-      },
-      "observation_ids": [
-        "outfit_7_bottom"
-      ],
-      "provenance": {
-        "artifact_path": "bench/catalog_generation/artifacts/outfit_7_bottom_pants.pipeline.request.json",
-        "generated_or_reused": "generated",
-        "metadata_path": "outfit_7/bottom/metadata.json",
-        "model_id": "gemini-3.1-flash-image",
-        "output_1k_sha256": "d95813ee5b5235b1f82249b18685e86517b1f7d7b33e614ab0321faa10cdc115",
-        "output_512_sha256": "e626d6703175b373e3f058cf2efa09995981d380a37f8e47b127461660ffe491",
-        "override_path": null,
-        "promoted_from_candidate": null,
-        "promoted_from_reference": null,
-        "prompt_policy_version": 5,
-        "prompt_sha256": "3b1a9675daa3498d32dc08739dcb2d1630b5a3a6089468d7dbd18b3b22cda5c9",
-        "reuse_source": null,
-        "vlm_attributes_path": "outfit_7/bottom/attributes.json"
-      },
-      "retrieval": {
-        "lexical_only": true,
-        "search_text": "brown trousers bottom brown outfit 7 pants solid trouser trousers brown solid matte straight leg trousers trousers pants class evidence garment is trousers no sleeves cuffs or neckline present brown solid trousers two leg pants silhouette in cutout full length leg structure with waistband front pockets and straight to slight flare silhouette visible"
-      },
-      "role": "bottom",
-      "source_observations": [
-        {
-          "attributes_path": "outfit_7/bottom/attributes.json",
-          "canonical": true,
-          "display_name": "brown trousers",
-          "fixture": "outfit_7",
-          "images": {
-            "input_segmented": {
-              "path": "outfit_7/bottom/input_segmented.png",
-              "sha256": "5e382e54ff9e5a698329fb6b8be3eab5a74488e9b0456f20e7487f22c02132cc"
-            },
-            "output_1k": {
-              "path": "outfit_7/bottom/output_1k.png",
-              "sha256": "d95813ee5b5235b1f82249b18685e86517b1f7d7b33e614ab0321faa10cdc115"
-            },
-            "output_512": {
-              "path": "outfit_7/bottom/output.png",
-              "sha256": "e626d6703175b373e3f058cf2efa09995981d380a37f8e47b127461660ffe491"
-            }
-          },
-          "indexed": true,
-          "metadata_path": "outfit_7/bottom/metadata.json",
-          "observation_id": "outfit_7_bottom",
-          "provenance": {
-            "artifact_path": "bench/catalog_generation/artifacts/outfit_7_bottom_pants.pipeline.request.json",
-            "generated_or_reused": "generated",
-            "metadata_path": "outfit_7/bottom/metadata.json",
-            "model_id": "gemini-3.1-flash-image",
-            "output_1k_sha256": "d95813ee5b5235b1f82249b18685e86517b1f7d7b33e614ab0321faa10cdc115",
-            "output_512_sha256": "e626d6703175b373e3f058cf2efa09995981d380a37f8e47b127461660ffe491",
-            "override_path": null,
-            "promoted_from_candidate": null,
-            "promoted_from_reference": null,
-            "prompt_policy_version": 5,
-            "prompt_sha256": "3b1a9675daa3498d32dc08739dcb2d1630b5a3a6089468d7dbd18b3b22cda5c9",
-            "reuse_source": null,
-            "vlm_attributes_path": "outfit_7/bottom/attributes.json"
-          },
-          "role": "bottom",
-          "tags": [
-            "bottom",
-            "brown",
-            "outfit_7",
-            "pants",
-            "solid",
-            "trouser",
-            "trousers"
-          ]
-        }
-      ],
-      "tags": [
-        "bottom",
-        "brown",
-        "outfit_7",
-        "pants",
-        "solid",
-        "trouser",
-        "trousers"
-      ],
-      "template": {
-        "override_applied": false,
-        "selection_confidence": "high",
-        "selection_reason": "Trousers/pants class. Evidence: Garment is trousers; no sleeves, cuffs, or neckline present. | Brown solid trousers; two-leg pants silhouette in cutout. | Full-length leg structure with waistband, front pockets, and straight-to-slight-flare silhouette visible.",
-        "template_id": "pants"
-      },
-      "user_override": null
-    },
-    {
-      "alias_observation_ids": [],
       "canonical_observation_id": "outfit_7_top",
       "catalog_id": "outfit_7_top",
+      "display_category": "top",
       "display_name": "beige blouse",
       "facets": {
         "closure": {
@@ -8258,6 +6734,7 @@
       "alias_observation_ids": [],
       "canonical_observation_id": "outfit_8_top",
       "catalog_id": "outfit_8_top",
+      "display_category": "top",
       "display_name": "navy blue top",
       "facets": {
         "closure": {
@@ -8445,238 +6922,10 @@
       }
     },
     {
-      "alias_observation_ids": [
-        "outfit_8_bottom"
-      ],
-      "canonical_observation_id": "outfit_9_bottom",
-      "catalog_id": "outfit_9_bottom",
-      "display_name": "brown trousers",
-      "facets": {
-        "closure": {
-          "source": "unknown",
-          "value": null
-        },
-        "colors": {
-          "confidence": "high",
-          "evidence": "Same physical brown trousers worn in outfit 8 and outfit 9.",
-          "source": "user_confirmed_identity",
-          "value": "brown"
-        },
-        "finish": {
-          "source": "unknown",
-          "value": null
-        },
-        "garment_class": {
-          "confidence": "high",
-          "evidence": "Full-length leg structure with waistband and crotch seam visible; no sleeves or collar present.",
-          "source": "vlm_high_confidence",
-          "value": "trousers"
-        },
-        "material": {
-          "source": "unknown",
-          "value": null
-        },
-        "neckline_collar": {
-          "source": "unknown",
-          "value": null
-        },
-        "pattern": {
-          "confidence": "high",
-          "evidence": "No prints, embroidery, or surface patterns detected; uniform color and finish throughout.",
-          "source": "vlm_high_confidence",
-          "value": "solid"
-        },
-        "role": {
-          "source": "manifest",
-          "value": "bottom"
-        },
-        "sheen": {
-          "source": "unknown",
-          "value": null
-        },
-        "silhouette_style": {
-          "confidence": "high",
-          "source": "template_selection",
-          "value": "straight-leg trousers"
-        },
-        "sleeve_length": {
-          "source": "not_applicable",
-          "value": null
-        }
-      },
-      "fixture": "outfit_9",
-      "garment_class_normalized": "trousers",
-      "garment_id": "garment_brown_trousers_001",
-      "garment_subtype": null,
-      "identity": {
-        "alias_color_tokens": [
-          "brown",
-          "taupe"
-        ],
-        "canonical_selection_reason": "Lower texture QC mean_delta_e (1.027 vs 4.648); best approved output fidelity.",
-        "merged_observation_count": 2,
-        "notes": "Same physical brown trousers worn in outfit 8 and outfit 9.",
-        "reason": "user_confirmed"
-      },
-      "images": {
-        "output_1k": {
-          "path": "outfit_9/bottom/output_1k.png",
-          "sha256": "0c9544cf53ad0a48cdc5eb88f838bb1a1653d5addb3753675aa5b30e73ef7e4f"
-        },
-        "output_512": {
-          "path": "outfit_9/bottom/output.png",
-          "sha256": "e4332c8bc8e1a2fd715412700e0823494d0863ca1ecd6e9b02f35be341e23ef0"
-        }
-      },
-      "observation_ids": [
-        "outfit_8_bottom",
-        "outfit_9_bottom"
-      ],
-      "provenance": {
-        "artifact_path": "bench/catalog_generation/artifacts/outfit_9_bottom_pants.pipeline.request.json",
-        "generated_or_reused": "generated",
-        "metadata_path": "outfit_9/bottom/metadata.json",
-        "model_id": "gemini-3.1-flash-image",
-        "output_1k_sha256": "0c9544cf53ad0a48cdc5eb88f838bb1a1653d5addb3753675aa5b30e73ef7e4f",
-        "output_512_sha256": "e4332c8bc8e1a2fd715412700e0823494d0863ca1ecd6e9b02f35be341e23ef0",
-        "override_path": null,
-        "promoted_from_candidate": null,
-        "promoted_from_reference": null,
-        "prompt_policy_version": 5,
-        "prompt_sha256": "71ddf01845abe7f90d28bfbe9bfdeff43ded0c6474dcf6103e5de76ee509d5f4",
-        "reuse_source": null,
-        "vlm_attributes_path": "outfit_9/bottom/attributes.json"
-      },
-      "retrieval": {
-        "lexical_only": true,
-        "search_text": "brown trousers bottom brown brown trousers outfit 8 outfit 8 bottom outfit 9 outfit 9 bottom pants solid taupe taupe trousers trouser trousers brown solid straight leg trousers"
-      },
-      "role": "bottom",
-      "source_observations": [
-        {
-          "attributes_path": "outfit_8/bottom/attributes.json",
-          "canonical": false,
-          "display_name": "taupe trousers",
-          "fixture": "outfit_8",
-          "images": {
-            "input_segmented": {
-              "path": "outfit_8/bottom/input_segmented.png",
-              "sha256": "862fbf5483c7be19cc2ffb72778e2d9a4af6b930cb7c0eecfc035ff541d8e59d"
-            },
-            "output_1k": {
-              "path": "outfit_8/bottom/output_1k.png",
-              "sha256": "ccebb0930aad1cc3702d1fba6acda9ce95b9b09221edbaf4dba2d4d97068642b"
-            },
-            "output_512": {
-              "path": "outfit_8/bottom/output.png",
-              "sha256": "1310aec51ced1ee1207d576896bd204231f0162844f3166dc1f4b4abe2cec9e0"
-            }
-          },
-          "indexed": false,
-          "metadata_path": "outfit_8/bottom/metadata.json",
-          "observation_id": "outfit_8_bottom",
-          "provenance": {
-            "artifact_path": "bench/catalog_generation/artifacts/outfit_8_bottom_pants.pipeline.request.json",
-            "generated_or_reused": "generated",
-            "metadata_path": "outfit_8/bottom/metadata.json",
-            "model_id": "gemini-3.1-flash-image",
-            "output_1k_sha256": "ccebb0930aad1cc3702d1fba6acda9ce95b9b09221edbaf4dba2d4d97068642b",
-            "output_512_sha256": "1310aec51ced1ee1207d576896bd204231f0162844f3166dc1f4b4abe2cec9e0",
-            "override_path": null,
-            "promoted_from_candidate": null,
-            "promoted_from_reference": null,
-            "prompt_policy_version": 5,
-            "prompt_sha256": "2cd53296c763bbb489b08390e5956eb80336e1ab55b897527688776f5da2d6e2",
-            "reuse_source": null,
-            "vlm_attributes_path": "outfit_8/bottom/attributes.json"
-          },
-          "role": "bottom",
-          "tags": [
-            "bottom",
-            "outfit_8",
-            "pants",
-            "solid",
-            "taupe",
-            "trouser",
-            "trousers"
-          ]
-        },
-        {
-          "attributes_path": "outfit_9/bottom/attributes.json",
-          "canonical": true,
-          "display_name": "brown trousers",
-          "fixture": "outfit_9",
-          "images": {
-            "input_segmented": {
-              "path": "outfit_9/bottom/input_segmented.png",
-              "sha256": "72edbaab2480b785210f001fa363d7109b48102957901ff5dee134f4fe29790c"
-            },
-            "output_1k": {
-              "path": "outfit_9/bottom/output_1k.png",
-              "sha256": "0c9544cf53ad0a48cdc5eb88f838bb1a1653d5addb3753675aa5b30e73ef7e4f"
-            },
-            "output_512": {
-              "path": "outfit_9/bottom/output.png",
-              "sha256": "e4332c8bc8e1a2fd715412700e0823494d0863ca1ecd6e9b02f35be341e23ef0"
-            }
-          },
-          "indexed": true,
-          "metadata_path": "outfit_9/bottom/metadata.json",
-          "observation_id": "outfit_9_bottom",
-          "provenance": {
-            "artifact_path": "bench/catalog_generation/artifacts/outfit_9_bottom_pants.pipeline.request.json",
-            "generated_or_reused": "generated",
-            "metadata_path": "outfit_9/bottom/metadata.json",
-            "model_id": "gemini-3.1-flash-image",
-            "output_1k_sha256": "0c9544cf53ad0a48cdc5eb88f838bb1a1653d5addb3753675aa5b30e73ef7e4f",
-            "output_512_sha256": "e4332c8bc8e1a2fd715412700e0823494d0863ca1ecd6e9b02f35be341e23ef0",
-            "override_path": null,
-            "promoted_from_candidate": null,
-            "promoted_from_reference": null,
-            "prompt_policy_version": 5,
-            "prompt_sha256": "71ddf01845abe7f90d28bfbe9bfdeff43ded0c6474dcf6103e5de76ee509d5f4",
-            "reuse_source": null,
-            "vlm_attributes_path": "outfit_9/bottom/attributes.json"
-          },
-          "role": "bottom",
-          "tags": [
-            "bottom",
-            "brown",
-            "outfit_9",
-            "pants",
-            "solid",
-            "trouser",
-            "trousers"
-          ]
-        }
-      ],
-      "tags": [
-        "bottom",
-        "brown",
-        "brown trousers",
-        "outfit_8",
-        "outfit_8_bottom",
-        "outfit_9",
-        "outfit_9_bottom",
-        "pants",
-        "solid",
-        "taupe",
-        "taupe trousers",
-        "trouser",
-        "trousers"
-      ],
-      "template": {
-        "override_applied": false,
-        "selection_confidence": "high",
-        "selection_reason": "Trousers/pants class. Evidence: Garment is trousers; no sleeves, cuffs, or neckline present. | Brown solid trousers; two-leg pants silhouette in cutout. | Full-length leg structure with waistband and crotch seam visible; no sleeves or collar present.",
-        "template_id": "pants"
-      },
-      "user_override": null
-    },
-    {
       "alias_observation_ids": [],
       "canonical_observation_id": "outfit_9_top",
       "catalog_id": "outfit_9_top",
+      "display_category": "top",
       "display_name": "black sleeveless top",
       "facets": {
         "closure": {
@@ -8853,22 +7102,71 @@
   "namespace": "catalog_production_v1",
   "schema_version": 2,
   "source_snapshot": {
+    "catalog_exclusion_registry_path": "bench/catalog_generation/catalog_exclusions.json",
+    "catalog_exclusion_registry_sha256": "f5cf9c628ef57c67d857b8161a4ab48f1f0ca165557fb0f1462ba29e25753a3b",
     "final_catalog_root": "final_catalog",
     "garment_identity_registry_path": "bench/catalog_generation/garment_identities.json",
-    "garment_identity_registry_sha256": "8fd4cc4cb39f10ef6ccc5abe083f356e1f50631baac4e5dcf69e52ab392f6814",
+    "garment_identity_registry_sha256": "3886eb56665f715288f53b3012a6c091ea644bfa0fcef0c63e864cac55800a77",
     "manifest_packaged_at_utc": "2026-08-02T03:26:33.658104+00:00",
     "manifest_schema_version": 1,
-    "manifest_sha256": "3b41b9378ddf09b0e7cf95666a6814213d9d1431b3c155668e8c4a1158503776"
+    "manifest_sha256": "51abf99532a89cbca0c3463ce2889f2072a18a1f2a1b2b2afa88cc23131e3ba4"
   },
   "summary": {
+    "display_category_counts": {
+      "blazer": 2,
+      "bottom": 7,
+      "dress": 2,
+      "top": 22
+    },
+    "display_sections": {
+      "blazer": [
+        "outfit_3_top",
+        "outfit_4_top"
+      ],
+      "bottom": [
+        "outfit_10_bottom",
+        "outfit_15_bottom",
+        "outfit_22_bottom",
+        "outfit_24_bottom",
+        "outfit_28_bottom",
+        "outfit_2_bottom",
+        "outfit_6_bottom"
+      ],
+      "dress": [
+        "outfit_29_dress",
+        "outfit_30_dress"
+      ],
+      "top": [
+        "outfit_10_top",
+        "outfit_11_top",
+        "outfit_12_top",
+        "outfit_13_top",
+        "outfit_14_top",
+        "outfit_15_top",
+        "outfit_17_top",
+        "outfit_18_top",
+        "outfit_1_top",
+        "outfit_21_top",
+        "outfit_22_top",
+        "outfit_23_top",
+        "outfit_24_top",
+        "outfit_25_top",
+        "outfit_26_top",
+        "outfit_28_top",
+        "outfit_31_top",
+        "outfit_5_top",
+        "outfit_6_top",
+        "outfit_7_top",
+        "outfit_8_top",
+        "outfit_9_top"
+      ]
+    },
+    "excluded_observation_count": 4,
     "facets": {
       "colors": [
         "beige",
         "black",
-        "brown",
-        "charcoal gray",
         "cream",
-        "dark gray",
         "deep purple",
         "deep red",
         "forest green",
@@ -8877,14 +7175,12 @@
         "khaki",
         "lavender",
         "light blue",
-        "light blue-gray",
         "light pink",
         "navy",
         "navy blue",
         "navy blue and white",
         "off-white",
         "pastel pink",
-        "pink",
         "tan",
         "taupe",
         "white"
@@ -8903,15 +7199,11 @@
       ],
       "materials": [
         "lace-like woven fabric",
-        "ribbed knit fabric",
         "satin-like woven fabric",
-        "smooth woven fabric",
         "stretch knit fabric",
-        "structured woven fabric",
         "woven fabric with eyelet perforations",
         "woven fabric with openwork detailing",
-        "woven fabric with slight drape",
-        "woven fabric with structured drape"
+        "woven fabric with slight drape"
       ],
       "roles": [
         "bottom",
@@ -8921,7 +7213,6 @@
       "template_ids": [
         "blazer",
         "dress_knee_length_full_sleeve",
-        "dress_knee_length_half_sleeve",
         "pants",
         "skirt_long",
         "skirt_pencil",
@@ -8931,35 +7222,24 @@
         "waistcoat_closed"
       ]
     },
-    "merged_identity_count": 8,
+    "merged_identity_count": 7,
     "observation_count": 59,
     "role_counts": {
-      "bottom": 17,
-      "dress": 3,
-      "top": 26
+      "bottom": 7,
+      "dress": 2,
+      "top": 24
     },
     "sections": {
       "bottom": [
         "outfit_10_bottom",
-        "outfit_11_bottom",
-        "outfit_13_bottom",
-        "outfit_14_bottom",
         "outfit_15_bottom",
-        "outfit_19_bottom",
-        "outfit_1_bottom",
         "outfit_22_bottom",
         "outfit_24_bottom",
         "outfit_28_bottom",
         "outfit_2_bottom",
-        "outfit_31_bottom",
-        "outfit_4_bottom",
-        "outfit_5_bottom",
-        "outfit_6_bottom",
-        "outfit_7_bottom",
-        "outfit_9_bottom"
+        "outfit_6_bottom"
       ],
       "dress": [
-        "outfit_27_dress",
         "outfit_29_dress",
         "outfit_30_dress"
       ],
@@ -8972,7 +7252,6 @@
         "outfit_15_top",
         "outfit_17_top",
         "outfit_18_top",
-        "outfit_19_top",
         "outfit_1_top",
         "outfit_21_top",
         "outfit_22_top",
@@ -8981,7 +7260,6 @@
         "outfit_25_top",
         "outfit_26_top",
         "outfit_28_top",
-        "outfit_2_top",
         "outfit_31_top",
         "outfit_3_top",
         "outfit_4_top",
@@ -8992,8 +7270,8 @@
         "outfit_9_top"
       ]
     },
-    "total_items": 46,
-    "unique_garment_count": 46,
+    "total_items": 33,
+    "unique_garment_count": 33,
     "user_override_count": 6
   }
 }

@@ -78,11 +78,16 @@ def _matches_filters(
     item: dict[str, Any],
     *,
     role: str | None,
+    display_category: str | None,
     color: str | None,
     garment_class: str | None,
 ) -> bool:
     if role is not None and item.get("role") != role:
         return False
+    if display_category is not None:
+        item_category = item.get("display_category", item.get("role"))
+        if item_category != display_category:
+            return False
     if garment_class is not None:
         normalized = str(item.get("garment_class_normalized", "")).lower()
         if garment_class.lower() not in normalized and garment_class.lower() not in {
@@ -183,6 +188,7 @@ def search_catalog(
     payload: dict[str, Any],
     query: str,
     role: str | None = None,
+    display_category: str | None = None,
     color: str | None = None,
     garment_class: str | None = None,
     limit: int | None = None,
@@ -198,7 +204,13 @@ def search_catalog(
     for item in payload.get("items", []):
         if not isinstance(item, dict):
             continue
-        if not _matches_filters(item, role=role, color=color, garment_class=garment_class):
+        if not _matches_filters(
+            item,
+            role=role,
+            display_category=display_category,
+            color=color,
+            garment_class=garment_class,
+        ):
             continue
 
         score = 0

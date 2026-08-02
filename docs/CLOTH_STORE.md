@@ -68,7 +68,10 @@ uv run cloth-store-web --repo-root . --host 0.0.0.0 --port 8080
 
 ## Catalogue and images
 
-- **46 items** across tops, dresses, and bottoms from `final_catalog/catalog.json`.
+- **33 indexed items** (37 logical garments from 59 manifest observations) across
+  tops, blazers, dresses, and bottoms from `final_catalog/catalog.json`.
+- Four role-level observations are excluded from indexing but remain in the
+  packaging bundle; see [Catalog curation](#catalog-curation).
 - Cards and detail modals use **512px** `output.png` images only (`/final_catalog/.../output.png`).
 - **1K masters** (`output_1k.png`) exist in the pipeline bundle but are not served by the storefront.
 - Descriptions are magazine-style copy generated under editorial constraints (see
@@ -125,7 +128,7 @@ and UI surfaces omit the selfie slide.
 | Mode | Selfie URL pattern |
 |------|-------------------|
 | Live (`cloth-store-web`) | `/final_selfies/outfit_N/crop_refocused.jpg` or `.../crop_only.jpg` |
-| Static bundle (`dist/cloth-store/`) | `assets/selfies/outfit_N/crop_refocused.jpg` or `.../crop_only.jpg` |
+| Static bundle (`dist/lavani-closet/`) | `assets/selfies/outfit_N/crop_refocused.jpg` or `.../crop_only.jpg` |
 
 Regenerate refocus deliverables: see [`final_selfies/README.md`](../final_selfies/README.md)
 and [`bench/selfie_refocus/README.md`](../bench/selfie_refocus/README.md).
@@ -134,9 +137,9 @@ and [`bench/selfie_refocus/README.md`](../bench/selfie_refocus/README.md).
 
 ### Browse and search
 
-- Sectioned grid: **Tops**, **Dresses**, **Bottoms**
+- Sectioned grid: **Tops**, **Blazers**, **Dresses**, **Bottoms**
 - Full-text search with debounced client-side filtering
-- Role tabs (All / Tops / Dresses / Bottoms)
+- Category tabs (All / Tops / Blazers / Dresses / Bottoms)
 
 ### Item detail modal
 
@@ -155,9 +158,40 @@ Uses a deterministic seed per session for reproducible "Regenerate" behavior.
 
 ### I'm Feeling Lucky
 
-Picks a random **cross-fixture top/bottom pair** that has **not** been photographed
-together (no documented fixture selfie). Shows catalogue images only — no reference
-selfie hero. Useful for exploring pairings outside the mirror-selfie corpus.
+Picks a random **catalogue-only look** that has **not** been photographed together on
+any documented fixture selfie. Supported look types:
+
+| Look type | Pieces |
+|-----------|--------|
+| Top + Bottom | non-blazer top, bottom |
+| Blazer + Top + Bottom | blazer, non-blazer top, bottom |
+| Blazer + Dress | blazer, dress |
+
+Shows catalogue images only — no reference selfie hero. Selection balances across
+look types when regenerating. Useful for exploring pairings outside the mirror-selfie
+corpus.
+
+This is distinct from **Generate an Outfit**, which requires a same-fixture selfie
+and always returns a documented top/bottom pair.
+
+## Catalog curation
+
+The storefront reflects **user-confirmed curation**, not raw VLM output:
+
+- **Identity deduplication** — manual groups in
+  `bench/catalog_generation/garment_identities.json` merge duplicate physical
+  garments to one canonical catalog card per group (e.g. tan straight-fit
+  trousers from outfits 1, 2, 7, 8, 9 → `outfit_2/bottom`; khaki straight-fit
+  trousers from outfits 23–25 → `outfit_24/bottom`, kept distinct from tan).
+- **Role-level exclusions** — four observations are omitted from indexing while
+  retained counterparts and fixture selfies stay usable:
+  `outfit_31/bottom`, `outfit_27/dress`, `outfit_19/top`, `outfit_2/top`.
+- **Blazers section** — `outfit_3/top` and `outfit_4/top` appear under Blazers
+  in the UI but remain `role=top` for pairing; `outfit_19/top` is excluded.
+
+Curation-only changes rebuild derived JSON deterministically — no model/API calls.
+See [`bench/catalog_generation/GARMENT_IDENTITIES.md`](../bench/catalog_generation/GARMENT_IDENTITIES.md)
+for the full identity table, expected counts, and rebuild commands.
 
 ## Limitations
 
@@ -167,17 +201,20 @@ selfie hero. Useful for exploring pairings outside the mirror-selfie corpus.
 - **Lexical search only** — no embedding or semantic retrieval in the storefront.
 - **Outfit generator scope** — separates with available fixture selfies only; dresses
   and items without partners are skipped.
-- **Lucky pairs** — catalogue views only; no composite or generative try-on imagery.
+- **Lucky looks** — catalogue views only (top+bottom, blazer+top+bottom, blazer+dress);
+  no composite or generative try-on imagery; no selfie hero.
 - **Selfie coverage** — refocus crops exist for packaged fixtures; fallback originals
   may differ in framing from catalogue renders.
 - **Offline bundle** — see [`static-bundle-guide.md`](static-bundle-guide.md); uses
-  embedded JSON and relative asset paths (`assets/catalogue/`, `assets/selfies/`).
+  embedded JSON, relative asset paths (`assets/catalogue/`, `assets/selfies/`), and
+  Windows launchers (`start-lavani.bat`, `start-lavani.ps1`) in `dist/lavani-closet/`.
 
 ## Related docs
 
 - [`README.md`](../README.md) — repository entry point
-- [`static-bundle-guide.md`](static-bundle-guide.md) — shareable `dist/cloth-store.zip`
+- [`static-bundle-guide.md`](static-bundle-guide.md) — shareable `dist/lavani-closet.zip`
 - [`final_catalog/README.md`](../final_catalog/README.md) — catalogue packaging
+- [`bench/catalog_generation/GARMENT_IDENTITIES.md`](../bench/catalog_generation/GARMENT_IDENTITIES.md) — identity/exclusion curation
 - [`RECONSTRUCTION_PIPELINE.md`](../RECONSTRUCTION_PIPELINE.md) — generation pipeline
 
 ## Verification

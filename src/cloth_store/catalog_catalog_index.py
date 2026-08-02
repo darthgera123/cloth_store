@@ -10,9 +10,21 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from cloth_store.catalog_display_categories import (
+    DISPLAY_CATEGORY_ORDER,
+    resolve_display_category,
+)
+from cloth_store.catalog_exclusions import (
+    EXPECTED_CATALOG_ITEM_COUNT,
+    EXPECTED_EXCLUDED_OBSERVATION_COUNT,
+    ResolvedExclusionMap,
+    default_exclusion_registry_path,
+    load_exclusion_registry,
+    resolve_exclusion_map,
+    validate_exclusion_registry,
+)
 from cloth_store.catalog_garment_identities import (
     EXPECTED_OBSERVATION_COUNT,
-    EXPECTED_UNIQUE_GARMENT_COUNT,
     IdentityGroup,
     ObservationEnrichment,
     ResolvedIdentityMap,
@@ -34,7 +46,7 @@ DEFAULT_FINAL_ROOT = Path("final_catalog")
 DEFAULT_CATALOG_JSON = DEFAULT_FINAL_ROOT / "catalog.json"
 DEFAULT_GARMENT_IDENTITIES_JSON = DEFAULT_FINAL_ROOT / "garment_identities.json"
 DEFAULT_MANIFEST = DEFAULT_FINAL_ROOT / "manifest.json"
-EXPECTED_ITEM_COUNT = EXPECTED_UNIQUE_GARMENT_COUNT
+EXPECTED_ITEM_COUNT = EXPECTED_CATALOG_ITEM_COUNT
 
 _ABSOLUTE_PATH_PATTERN = re.compile(r"^/|^[A-Za-z]:\\")
 _SECRET_PATTERN = re.compile(r"(?i)(api[_-]?key|secret|password|token)\s*[:=]")
@@ -751,6 +763,10 @@ def _build_item(
         item_record["legacy_catalog_ids"] = legacy_catalog_ids
         alias_search = " ".join(_normalize_token(alias) for alias in legacy_catalog_ids)
         item_record["retrieval"]["search_text"] = f"{search_text} {alias_search}".strip()
+    item_record["display_category"] = resolve_display_category(
+        role=role,
+        garment_class_normalized=garment_class.value,
+    )
     return item_record
 
 
@@ -969,13 +985,32 @@ def _merge_identity_group(
     )
     corrections = group.facet_corrections or {}
     color_tags = corrections.get("colors")
-    if isinstance(color_tags, list):
-        merged_tags = _merge_tags(merged_tags, [str(color) for color in color_tags])
-        garment_class_label = merged_item.get("garment_class_normalized") or "garment"
-        merged_tags = _merge_tags(
-            merged_tags,
-            [f"{color} {garment_class_label}" for color in color_tags if str(color).strip()],
-        )
+    stale_color_tags = corrections.get("stale_color_tags")
+    previous_color = (merged_item.get("facets", {}).get("colors") or {}).get("value")
+    garment_class_label = merged_item.get("garment_class_normalized") or "garment"
+    if isinstance(color_tags, list) or isinstance(stale_color_tags, list):
+        remove_tags = {
+            str(tag).strip().lower()
+            for tag in (
+                ([previous_color] if previous_color else [])
+                + (stale_color_tags if isinstance(stale_color_tags, list) else [])
+            )
+            if str(tag).strip()
+        }
+        merged_tags = [
+            tag
+            for tag in merged_tags
+            if tag.strip().lower() not in remove_tags
+            and not any(
+                tag.strip().lower() == f"{stale} {garment_class_label}" for stale in remove_tags
+            )
+        ]
+        if isinstance(color_tags, list):
+            color_tag_list = [str(color).strip() for color in color_tags if str(color).strip()]
+            merged_tags = _merge_tags(
+                merged_tags,
+                color_tag_list + [f"{color} {garment_class_label}" for color in color_tag_list],
+            )
     fit = corrections.get("fit")
     if isinstance(fit, str) and fit.strip():
         fit_label = fit.strip().lower()
@@ -1041,6 +1076,7 @@ def _apply_identity_deduplication(
     *,
     observation_items: list[dict[str, Any]],
     identity_map: ResolvedIdentityMap,
+    exclusion_map: ResolvedExclusionMap,
     final_root: Path,
 ) -> list[dict[str, Any]]:
     by_observation = {str(item["catalog_id"]): item for item in observation_items}
@@ -1054,6 +1090,8 @@ def _apply_identity_deduplication(
     unique_items: list[dict[str, Any]] = []
 
     for observation_id in sorted(by_observation.keys()):
+        if observation_id in exclusion_map.excluded_observations:
+            continue
         garment_id = identity_map.observation_to_garment[observation_id]
         if garment_id in emitted_garments:
             continue
@@ -1093,7 +1131,11 @@ def _apply_identity_deduplication(
     return unique_items
 
 
-def _build_summary(items: list[dict[str, Any]]) -> dict[str, Any]:
+def _build_summary(
+    items: list[dict[str, Any]],
+    *,
+    exclusion_map: ResolvedExclusionMap,
+) -> dict[str, Any]:
     roles: set[str] = set()
     classes: set[str] = set()
     colors: set[str] = set()
@@ -1101,6 +1143,8 @@ def _build_summary(items: list[dict[str, Any]]) -> dict[str, Any]:
     templates: set[str] = set()
     sections: dict[str, list[str]] = {role: [] for role in CATALOG_ROLE_ORDER}
     role_counts: dict[str, int] = {}
+    display_sections: dict[str, list[str]] = {category: [] for category in DISPLAY_CATEGORY_ORDER}
+    display_category_counts: dict[str, int] = {}
     overrides = 0
     merged_identities = 0
     for item in items:
@@ -1108,6 +1152,11 @@ def _build_summary(items: list[dict[str, Any]]) -> dict[str, Any]:
         roles.add(role)
         sections.setdefault(role, []).append(str(item["catalog_id"]))
         role_counts[role] = role_counts.get(role, 0) + 1
+        display_category = str(item.get("display_category", role))
+        display_sections.setdefault(display_category, []).append(str(item["catalog_id"]))
+        display_category_counts[display_category] = (
+            display_category_counts.get(display_category, 0) + 1
+        )
         if item.get("garment_class_normalized"):
             classes.add(str(item["garment_class_normalized"]))
         colors_field = item["facets"]["colors"]
@@ -1123,6 +1172,7 @@ def _build_summary(items: list[dict[str, Any]]) -> dict[str, Any]:
             merged_identities += 1
     return {
         "observation_count": EXPECTED_OBSERVATION_COUNT,
+        "excluded_observation_count": len(exclusion_map.excluded_observations),
         "unique_garment_count": len(items),
         "total_items": len(items),
         "merged_identity_count": merged_identities,
@@ -1138,6 +1188,12 @@ def _build_summary(items: list[dict[str, Any]]) -> dict[str, Any]:
             role: sorted(members) for role, members in sorted(sections.items()) if members
         },
         "role_counts": dict(sorted(role_counts.items())),
+        "display_sections": {
+            category: sorted(members)
+            for category, members in sorted(display_sections.items())
+            if members
+        },
+        "display_category_counts": dict(sorted(display_category_counts.items())),
     }
 
 
@@ -1146,6 +1202,7 @@ def build_catalog_index(
     repo_root: Path,
     final_root: Path = DEFAULT_FINAL_ROOT,
     registry_path: Path | None = None,
+    exclusion_registry_path: Path | None = None,
 ) -> dict[str, Any]:
     manifest_path = final_root / "manifest.json"
     if not manifest_path.is_file():
@@ -1168,9 +1225,17 @@ def build_catalog_index(
         final_root=final_root,
         repo_root=repo_root,
     )
+    resolved_exclusions = exclusion_registry_path or default_exclusion_registry_path(repo_root)
+    exclusion_payload = load_exclusion_registry(resolved_exclusions)
+    exclusion_map = validate_exclusion_registry(
+        payload=exclusion_payload,
+        final_root=final_root,
+        identity_map=identity_map,
+    )
     items = _apply_identity_deduplication(
         observation_items=observation_items,
         identity_map=identity_map,
+        exclusion_map=exclusion_map,
         final_root=final_root,
     )
 
@@ -1179,10 +1244,12 @@ def build_catalog_index(
         final_root=final_root,
         repo_root=repo_root,
         identity_map=identity_map,
+        exclusion_map=exclusion_map,
     )
 
     manifest_text = manifest_path.read_text(encoding="utf-8")
     registry_text = resolved_registry.read_text(encoding="utf-8")
+    exclusion_text = resolved_exclusions.read_text(encoding="utf-8")
     return {
         "schema_version": CATALOG_INDEX_SCHEMA_VERSION,
         "namespace": manifest.get("namespace", "catalog_production_v1"),
@@ -1193,8 +1260,10 @@ def build_catalog_index(
             "final_catalog_root": _repo_relative(final_root, repo_root),
             "garment_identity_registry_path": _repo_relative(resolved_registry, repo_root),
             "garment_identity_registry_sha256": sha256_text(registry_text),
+            "catalog_exclusion_registry_path": _repo_relative(resolved_exclusions, repo_root),
+            "catalog_exclusion_registry_sha256": sha256_text(exclusion_text),
         },
-        "summary": _build_summary(items),
+        "summary": _build_summary(items, exclusion_map=exclusion_map),
         "items": items,
     }
 
@@ -1205,6 +1274,7 @@ def validate_catalog_index(
     final_root: Path,
     repo_root: Path,
     identity_map: ResolvedIdentityMap | None = None,
+    exclusion_map: ResolvedExclusionMap | None = None,
 ) -> None:
     items = payload.get("items")
     if not isinstance(items, list):
@@ -1223,6 +1293,11 @@ def validate_catalog_index(
             raise CatalogIndexError(
                 f"expected unique_garment_count={EXPECTED_ITEM_COUNT}, "
                 f"got {summary.get('unique_garment_count')}"
+            )
+        if summary.get("excluded_observation_count") != EXPECTED_EXCLUDED_OBSERVATION_COUNT:
+            raise CatalogIndexError(
+                f"expected excluded_observation_count={EXPECTED_EXCLUDED_OBSERVATION_COUNT}, "
+                f"got {summary.get('excluded_observation_count')}"
             )
 
     ids = [item.get("catalog_id") for item in items]
@@ -1250,6 +1325,28 @@ def validate_catalog_index(
         if len(indexed_ids) != EXPECTED_ITEM_COUNT:
             raise CatalogIndexError(
                 f"expected {EXPECTED_ITEM_COUNT} indexed catalog items, got {len(indexed_ids)}"
+            )
+    if exclusion_map is not None:
+        indexed_ids = {str(item["catalog_id"]) for item in items}
+        overlap = indexed_ids.intersection(exclusion_map.excluded_observations)
+        if overlap:
+            raise CatalogIndexError(f"excluded observations must not be indexed: {sorted(overlap)}")
+
+    for item in items:
+        if not isinstance(item.get("display_category"), str):
+            raise CatalogIndexError(f"{item.get('catalog_id')!r} missing display_category")
+        expected_category = resolve_display_category(
+            role=str(item.get("role", "")),
+            garment_class_normalized=item.get("garment_class_normalized"),
+        )
+        if item["display_category"] != expected_category:
+            raise CatalogIndexError(
+                f"{item.get('catalog_id')!r} display_category="
+                f"{item['display_category']!r} expected {expected_category!r}"
+            )
+        if item["display_category"] == "blazer" and item.get("role") != "top":
+            raise CatalogIndexError(
+                f"{item.get('catalog_id')!r} blazer display_category requires role=top"
             )
 
     serialized = serialize_catalog_index(payload)
@@ -1308,11 +1405,17 @@ def write_catalog_index(
         final_root=final_root,
         registry_path=registry_path,
     )
+    exclusion_map = resolve_exclusion_map(
+        repo_root=repo_root,
+        final_root=final_root,
+        identity_registry_path=registry_path,
+    )
     validate_catalog_index(
         payload=payload,
         final_root=final_root,
         repo_root=repo_root,
         identity_map=identity_map,
+        exclusion_map=exclusion_map,
     )
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(serialize_catalog_index(payload), encoding="utf-8")
@@ -1325,6 +1428,7 @@ def write_catalog_index(
         registry_path=resolved_registry,
         repo_root=repo_root,
         final_root=final_root,
+        excluded_observations=exclusion_map.excluded_observations,
     )
     identities_path = identities_output_path
     if not identities_path.is_absolute():
@@ -1374,11 +1478,13 @@ def main(argv: list[str] | None = None) -> int:
                 raise CatalogIndexError(f"missing catalog index: {output_path}")
             payload = load_catalog_index(output_path)
             identity_map = resolve_identity_map(repo_root=repo_root, final_root=final_root)
+            exclusion_map = resolve_exclusion_map(repo_root=repo_root, final_root=final_root)
             validate_catalog_index(
                 payload=payload,
                 final_root=final_root,
                 repo_root=repo_root,
                 identity_map=identity_map,
+                exclusion_map=exclusion_map,
             )
             print(f"validated {output_path} ({len(payload['items'])} items)")
             return 0

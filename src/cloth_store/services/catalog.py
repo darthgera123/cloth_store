@@ -357,6 +357,22 @@ def _normalize_trouser_fit(fit: str | None) -> str | None:
     return normalized
 
 
+def _silhouette_to_trouser_fit(silhouette: str | None) -> str | None:
+    if not silhouette:
+        return None
+    lowered = silhouette.lower()
+    if "straight-leg" in lowered or "straight leg" in lowered:
+        return "straight"
+    return None
+
+
+def _trouser_fit_phrase(*, fit: str | None, silhouette: str | None) -> str | None:
+    normalized_fit = _normalize_trouser_fit(fit)
+    if normalized_fit:
+        return normalized_fit
+    return _silhouette_to_trouser_fit(silhouette)
+
+
 def _trouser_garment_noun(*, fit: str | None, silhouette: str | None) -> str:
     normalized_fit = _normalize_trouser_fit(fit)
     if normalized_fit:
@@ -366,6 +382,13 @@ def _trouser_garment_noun(*, fit: str | None, silhouette: str | None) -> str:
         if condensed:
             return condensed
     return "trousers"
+
+
+def _trouser_garment_phrase_for_display(*, fit: str | None, silhouette: str | None) -> str:
+    normalized_fit = _trouser_fit_phrase(fit=fit, silhouette=silhouette)
+    if normalized_fit:
+        return f"{normalized_fit.capitalize()}-Fit Trousers"
+    return "Trousers"
 
 
 def _trouser_noun_has_leg_shape(garment_noun: str) -> bool:
@@ -653,6 +676,7 @@ class CatalogItemView:
     catalog_id: str
     display_name: str
     role: str
+    display_category: str
     fixture: str
     description: str
     labels: tuple[CatalogLabel, ...]
@@ -667,6 +691,7 @@ class CatalogItemView:
             "catalog_id": self.catalog_id,
             "display_name": self.display_name,
             "role": self.role,
+            "display_category": self.display_category,
             "fixture": self.fixture,
             "description": self.description,
             "labels": [label.to_dict() for label in self.labels],
@@ -685,6 +710,7 @@ class CatalogItemView:
 class CatalogBrowseResult:
     query: str
     role: str | None
+    display_category: str | None
     color: str | None
     garment_class: str | None
     total: int
@@ -695,6 +721,7 @@ class CatalogBrowseResult:
             "query": self.query,
             "filters": {
                 "role": self.role,
+                "display_category": self.display_category,
                 "color": self.color,
                 "garment_class": self.garment_class,
             },
@@ -765,6 +792,7 @@ class CatalogService:
         *,
         query: str = "",
         role: str | None = None,
+        display_category: str | None = None,
         color: str | None = None,
         garment_class: str | None = None,
         limit: int | None = None,
@@ -774,6 +802,7 @@ class CatalogService:
             payload=payload,
             query=query,
             role=role,
+            display_category=display_category,
             color=color,
             garment_class=garment_class,
             limit=limit,
@@ -782,6 +811,7 @@ class CatalogService:
         return CatalogBrowseResult(
             query=query,
             role=role,
+            display_category=display_category,
             color=color,
             garment_class=garment_class,
             total=len(items),
@@ -819,6 +849,7 @@ class CatalogService:
             catalog_id=view.catalog_id,
             display_name=view.display_name,
             role=view.role,
+            display_category=view.display_category,
             fixture=view.fixture,
             description=view.description,
             labels=view.labels,
@@ -835,6 +866,7 @@ class CatalogService:
             catalog_id=str(item["catalog_id"]),
             display_name=product_name,
             role=str(item.get("role", "")),
+            display_category=str(item.get("display_category", item.get("role", ""))),
             fixture=str(item.get("fixture", "")),
             description=build_item_description(item),
             labels=tuple(build_item_labels(item)),
@@ -964,12 +996,18 @@ def build_product_name(item: dict[str, Any]) -> str:
     color = _facet_value(item, "colors")
     garment_class = _resolve_storefront_garment_class(item)
     subtype = _optional_str(item.get("garment_subtype"))
-    garment_phrase = _garment_phrase_for_display(
-        garment_class,
-        subtype,
-        sleeve_length=_facet_value(item, "sleeve_length"),
-        role=_optional_str(item.get("role")),
-    )
+    if _is_trouser_item(item):
+        garment_phrase = _trouser_garment_phrase_for_display(
+            fit=_facet_value(item, "fit"),
+            silhouette=_facet_value(item, "silhouette_style"),
+        )
+    else:
+        garment_phrase = _garment_phrase_for_display(
+            garment_class,
+            subtype,
+            sleeve_length=_facet_value(item, "sleeve_length"),
+            role=_optional_str(item.get("role")),
+        )
 
     if color:
         return f"{_title_phrase(color)} {garment_phrase}"

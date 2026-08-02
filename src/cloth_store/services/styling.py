@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Literal
 
+from cloth_store.catalog_display_categories import is_blazer_garment_class
 from cloth_store.catalog_paths import (
     DEFAULT_SOURCE_PHOTO_DIR,
     fixture_number,
@@ -154,24 +155,55 @@ class OutfitCandidateView:
         }
 
 
+LuckyLookType = Literal["top_bottom", "blazer_top_bottom", "blazer_dress"]
+
+LOOK_TYPE_LABELS: dict[LuckyLookType, str] = {
+    "top_bottom": "Top + Bottom",
+    "blazer_top_bottom": "Blazer + Top + Bottom",
+    "blazer_dress": "Blazer + Dress",
+}
+
+
 @dataclass(frozen=True, slots=True)
-class LuckyPairView:
-    top: OutfitGarmentRef
-    bottom: OutfitGarmentRef
+class LuckyLookPieceRef:
+    catalog_id: str
+    display_name: str
+    description: str
+    role: str
+    kind: str
+    image_url: str
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "catalog_id": self.catalog_id,
+            "display_name": self.display_name,
+            "description": self.description,
+            "role": self.role,
+            "kind": self.kind,
+            "image_url": self.image_url,
+        }
+
+
+@dataclass(frozen=True, slots=True)
+class LuckyLookView:
+    look_type: LuckyLookType
+    look_type_label: str
+    pieces: tuple[LuckyLookPieceRef, ...]
     summary: str
     note: str
 
     def to_dict(self) -> dict[str, Any]:
         return {
-            "top": self.top.to_dict(),
-            "bottom": self.bottom.to_dict(),
+            "look_type": self.look_type,
+            "look_type_label": self.look_type_label,
+            "pieces": [piece.to_dict() for piece in self.pieces],
             "summary": self.summary,
             "note": self.note,
         }
 
 
-LUCKY_PAIR_NOTE = (
-    "This top and bottom have not been photographed together. "
+LUCKY_LOOK_NOTE = (
+    "These pieces have not been photographed together. "
     "Explore the pairing from catalogue views only."
 )
 
@@ -518,68 +550,105 @@ class StylingResolver:
 
         return frozenset(pairs)
 
-    def list_lucky_pair_candidates(self) -> tuple[LuckyPairView, ...]:
-        """Return catalogue top/bottom pairs with no documented fixture selfie association."""
-        documented = self.documented_top_bottom_pairs()
-        tops: list[CatalogItemView] = []
-        bottoms: list[CatalogItemView] = []
+    def list_lucky_look_candidates(self) -> tuple[LuckyLookView, ...]:
+        """Return catalogue-only looks with no documented fixture selfie association."""
+        documented_pairs = self.documented_top_bottom_pairs()
+        blazers, tops, bottoms, dresses = self._lucky_garment_pools()
 
-        for item in self._catalog_service.iter_raw_items():
-            view = self._catalog_service.get_item(str(item["catalog_id"]))
-            if view is None or not self._is_complete_outfit_garment(view):
-                continue
-            if view.role == "top":
-                tops.append(view)
-            elif view.role == "bottom":
-                bottoms.append(view)
+        candidates: list[LuckyLookView] = []
 
-        candidates: list[LuckyPairView] = []
-        for top_view in sorted(tops, key=lambda view: view.catalog_id):
-            for bottom_view in sorted(bottoms, key=lambda view: view.catalog_id):
-                if (top_view.catalog_id, bottom_view.catalog_id) in documented:
+        for top_view in tops:
+            for bottom_view in bottoms:
+                if (top_view.catalog_id, bottom_view.catalog_id) in documented_pairs:
                     continue
-                summary = build_styling_advice_text(
-                    top_view.display_name,
-                    (bottom_view.display_name,),
-                )
+                if self._is_documented_combination((top_view.catalog_id, bottom_view.catalog_id)):
+                    continue
                 candidates.append(
-                    LuckyPairView(
-                        top=self._outfit_garment_ref(top_view),
-                        bottom=self._outfit_garment_ref(bottom_view),
-                        summary=summary,
-                        note=LUCKY_PAIR_NOTE,
+                    self._build_lucky_look(
+                        look_type="top_bottom",
+                        views=(top_view, bottom_view),
+                    )
+                )
+
+        for blazer_view in blazers:
+            for top_view in tops:
+                for bottom_view in bottoms:
+                    catalog_ids = (
+                        blazer_view.catalog_id,
+                        top_view.catalog_id,
+                        bottom_view.catalog_id,
+                    )
+                    if self._is_documented_combination(catalog_ids):
+                        continue
+                    candidates.append(
+                        self._build_lucky_look(
+                            look_type="blazer_top_bottom",
+                            views=(blazer_view, top_view, bottom_view),
+                        )
+                    )
+
+        for blazer_view in blazers:
+            for dress_view in dresses:
+                catalog_ids = (blazer_view.catalog_id, dress_view.catalog_id)
+                if self._is_documented_combination(catalog_ids):
+                    continue
+                candidates.append(
+                    self._build_lucky_look(
+                        look_type="blazer_dress",
+                        views=(blazer_view, dress_view),
                     )
                 )
 
         return tuple(candidates)
 
-    def select_lucky_pair(
+    def lucky_look_candidate_counts(self) -> dict[LuckyLookType, int]:
+        """Return candidate counts grouped by look type."""
+        counts: dict[LuckyLookType, int] = {
+            "top_bottom": 0,
+            "blazer_top_bottom": 0,
+            "blazer_dress": 0,
+        }
+        for candidate in self.list_lucky_look_candidates():
+            counts[candidate.look_type] += 1
+        return counts
+
+    def select_lucky_look(
         self,
         *,
-        exclude_top: str | None = None,
-        exclude_bottom: str | None = None,
+        exclude_catalog_ids: tuple[str, ...] | None = None,
         seed: int | None = None,
-    ) -> LuckyPairView | None:
-        """Pick one undocumented top/bottom pair, optionally avoiding immediate repeats."""
-        candidates = self.list_lucky_pair_candidates()
+    ) -> LuckyLookView | None:
+        """Pick one undocumented catalogue look, balancing across look types."""
+        candidates = self.list_lucky_look_candidates()
         if not candidates:
             return None
 
         pool = candidates
-        if exclude_top and exclude_bottom:
+        if exclude_catalog_ids:
+            excluded = frozenset(exclude_catalog_ids)
             filtered = tuple(
                 candidate
                 for candidate in candidates
-                if not (
-                    candidate.top.catalog_id == exclude_top
-                    and candidate.bottom.catalog_id == exclude_bottom
-                )
+                if frozenset(piece.catalog_id for piece in candidate.pieces) != excluded
             )
             if filtered:
                 pool = filtered
 
+        by_type: dict[LuckyLookType, list[LuckyLookView]] = {
+            "top_bottom": [],
+            "blazer_top_bottom": [],
+            "blazer_dress": [],
+        }
+        for candidate in pool:
+            by_type[candidate.look_type].append(candidate)
+
+        available_types = tuple(look_type for look_type in LOOK_TYPE_LABELS if by_type[look_type])
+        if not available_types:
+            return None
+
         rng = random.Random(seed)
-        return rng.choice(pool)
+        look_type = rng.choice(available_types)
+        return rng.choice(by_type[look_type])
 
     def _outfit_candidate_for_fixture(self, fixture_id: str) -> OutfitCandidateView | None:
         selfie = self._selfie_ref(fixture_id)
@@ -645,13 +714,86 @@ class StylingResolver:
             image_url=view.image_url,
         )
 
+    def _lucky_garment_pools(
+        self,
+    ) -> tuple[
+        tuple[CatalogItemView, ...],
+        tuple[CatalogItemView, ...],
+        tuple[CatalogItemView, ...],
+        tuple[CatalogItemView, ...],
+    ]:
+        blazers: list[CatalogItemView] = []
+        tops: list[CatalogItemView] = []
+        bottoms: list[CatalogItemView] = []
+        dresses: list[CatalogItemView] = []
+
+        for item in self._catalog_service.iter_raw_items():
+            view = self._catalog_service.get_item(str(item["catalog_id"]))
+            if view is None or not self._is_complete_lucky_garment(view):
+                continue
+            if view.role == "top":
+                if self._is_blazer(view):
+                    blazers.append(view)
+                else:
+                    tops.append(view)
+            elif view.role == "bottom":
+                bottoms.append(view)
+            elif view.role == "dress":
+                dresses.append(view)
+
+        return (
+            tuple(sorted(blazers, key=lambda view: view.catalog_id)),
+            tuple(sorted(tops, key=lambda view: view.catalog_id)),
+            tuple(sorted(bottoms, key=lambda view: view.catalog_id)),
+            tuple(sorted(dresses, key=lambda view: view.catalog_id)),
+        )
+
+    def _is_documented_combination(self, catalog_ids: tuple[str, ...]) -> bool:
+        selected = frozenset(catalog_ids)
+        for fixture_ids in self._fixture_catalog_ids.values():
+            if selected.issubset(fixture_ids):
+                return True
+        return False
+
+    def _build_lucky_look(
+        self,
+        *,
+        look_type: LuckyLookType,
+        views: tuple[CatalogItemView, ...],
+    ) -> LuckyLookView:
+        pieces = tuple(self._lucky_piece_ref(view) for view in views)
+        focus_name = pieces[0].display_name
+        partner_names = tuple(piece.display_name for piece in pieces[1:])
+        return LuckyLookView(
+            look_type=look_type,
+            look_type_label=LOOK_TYPE_LABELS[look_type],
+            pieces=pieces,
+            summary=build_styling_advice_text(focus_name, partner_names),
+            note=LUCKY_LOOK_NOTE,
+        )
+
+    def _lucky_piece_ref(self, view: CatalogItemView) -> LuckyLookPieceRef:
+        kind = ("blazer" if self._is_blazer(view) else "top") if view.role == "top" else view.role
+        return LuckyLookPieceRef(
+            catalog_id=view.catalog_id,
+            display_name=view.display_name,
+            description=view.description,
+            role=view.role,
+            kind=kind,
+            image_url=view.image_url,
+        )
+
     @staticmethod
-    def _is_complete_outfit_garment(view: CatalogItemView) -> bool:
+    def _is_blazer(view: CatalogItemView) -> bool:
+        return view.role == "top" and is_blazer_garment_class(view.garment_class)
+
+    @staticmethod
+    def _is_complete_lucky_garment(view: CatalogItemView) -> bool:
         if not view.display_name.strip() or not view.description.strip():
             return False
         if not view.image_url.endswith("/output.png"):
             return False
-        return view.role in {"top", "bottom"}
+        return view.role in {"top", "bottom", "dress"}
 
     def _associations_for_item(
         self,

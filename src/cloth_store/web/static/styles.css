@@ -1264,11 +1264,24 @@ input {
   margin: 1rem 0 0;
 }
 
+.lucky-look-type {
+  margin: 0.35rem 0 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--lavender-deep, #6b5b7a);
+}
+
 .lucky-pieces {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(0.85rem, 2vw, 1.25rem);
   margin-top: 1.15rem;
+}
+
+.lucky-pieces[data-piece-count="3"] {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .lucky-piece-card {
@@ -1322,7 +1335,8 @@ input {
     padding-top: 3rem;
   }
 
-  .lucky-pieces {
+  .lucky-pieces,
+  .lucky-pieces[data-piece-count="3"] {
     grid-template-columns: 1fr;
   }
 

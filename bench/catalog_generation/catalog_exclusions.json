@@ -1,0 +1,25 @@
+{
+  "excluded_observations": [
+    {
+      "notes": "User-discarded brown drawstring trousers; outfit_31 top remains cataloged.",
+      "observation_id": "outfit_31_bottom",
+      "reason": "user_confirmed"
+    },
+    {
+      "notes": "User-discarded knee-length polo dress; outfit_27 has no retained catalog garment.",
+      "observation_id": "outfit_27_dress",
+      "reason": "user_confirmed"
+    },
+    {
+      "notes": "User-discarded green checkered blazer; outfit_19 bottom remains represented by outfit_22_bottom.",
+      "observation_id": "outfit_19_top",
+      "reason": "user_confirmed"
+    },
+    {
+      "notes": "User-discarded pink floral blouse; outfit_2 bottom remains cataloged.",
+      "observation_id": "outfit_2_top",
+      "reason": "user_confirmed"
+    }
+  ],
+  "schema_version": 1
+}

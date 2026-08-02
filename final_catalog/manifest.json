@@ -130,14 +130,14 @@
         }
       ],
       "candidate_request_sha256": null,
-      "catalog_indexed": true,
+      "catalog_indexed": false,
       "derived_geometry_sha256": null,
       "estimated_cost_usd": 0.067,
       "fixture": "outfit_1",
-      "garment_id": "outfit_1_bottom",
+      "garment_id": "garment_tan_trousers_001",
       "generated_or_reused": "generated",
       "generation_calls": 1,
-      "identity_role": "default",
+      "identity_role": "alias",
       "model_id": "gemini-3.1-flash-image",
       "outputs": {
         "output_1k": {
@@ -239,14 +239,14 @@
         }
       ],
       "candidate_request_sha256": null,
-      "catalog_indexed": true,
+      "catalog_indexed": false,
       "derived_geometry_sha256": null,
       "estimated_cost_usd": 0.067,
       "fixture": "outfit_2",
       "garment_id": "outfit_2_top",
       "generated_or_reused": "generated",
       "generation_calls": 1,
-      "identity_role": "default",
+      "identity_role": "excluded",
       "model_id": "gemini-3.1-flash-image",
       "outputs": {
         "output_1k": {
@@ -354,10 +354,10 @@
       "derived_geometry_sha256": null,
       "estimated_cost_usd": 0.067,
       "fixture": "outfit_2",
-      "garment_id": "outfit_2_bottom",
+      "garment_id": "garment_tan_trousers_001",
       "generated_or_reused": "generated",
       "generation_calls": 1,
-      "identity_role": "default",
+      "identity_role": "canonical",
       "model_id": "gemini-3.1-flash-image",
       "outputs": {
         "output_1k": {
@@ -564,7 +564,7 @@
       "derived_geometry_sha256": null,
       "estimated_cost_usd": 0.067,
       "fixture": "outfit_3",
-      "garment_id": "garment_dark_gray_trousers_001",
+      "garment_id": "garment_gray_trousers_002",
       "generated_or_reused": "generated",
       "generation_calls": 1,
       "identity_role": "alias",
@@ -780,14 +780,14 @@
         }
       ],
       "candidate_request_sha256": null,
-      "catalog_indexed": true,
+      "catalog_indexed": false,
       "derived_geometry_sha256": null,
       "estimated_cost_usd": 0.067,
       "fixture": "outfit_4",
-      "garment_id": "garment_dark_gray_trousers_001",
+      "garment_id": "garment_gray_trousers_002",
       "generated_or_reused": "generated",
       "generation_calls": 1,
-      "identity_role": "canonical",
+      "identity_role": "alias",
       "model_id": "gemini-3.1-flash-image",
       "outputs": {
         "output_1k": {
@@ -1002,14 +1002,14 @@
         }
       ],
       "candidate_request_sha256": null,
-      "catalog_indexed": true,
+      "catalog_indexed": false,
       "derived_geometry_sha256": null,
       "estimated_cost_usd": 0.067,
       "fixture": "outfit_5",
-      "garment_id": "outfit_5_bottom",
+      "garment_id": "garment_off_white_trousers_001",
       "generated_or_reused": "generated",
       "generation_calls": 1,
-      "identity_role": "default",
+      "identity_role": "alias",
       "model_id": "gemini-3.1-flash-image",
       "outputs": {
         "output_1k": {
@@ -1444,14 +1444,14 @@
         }
       ],
       "candidate_request_sha256": null,
-      "catalog_indexed": true,
+      "catalog_indexed": false,
       "derived_geometry_sha256": null,
       "estimated_cost_usd": 0.067,
       "fixture": "outfit_7",
-      "garment_id": "outfit_7_bottom",
+      "garment_id": "garment_tan_trousers_001",
       "generated_or_reused": "generated",
       "generation_calls": 1,
-      "identity_role": "default",
+      "identity_role": "alias",
       "model_id": "gemini-3.1-flash-image",
       "outputs": {
         "output_1k": {
@@ -1670,7 +1670,7 @@
       "derived_geometry_sha256": null,
       "estimated_cost_usd": 0.067,
       "fixture": "outfit_8",
-      "garment_id": "garment_brown_trousers_001",
+      "garment_id": "garment_tan_trousers_001",
       "generated_or_reused": "generated",
       "generation_calls": 1,
       "identity_role": "alias",
@@ -1888,14 +1888,14 @@
         }
       ],
       "candidate_request_sha256": null,
-      "catalog_indexed": true,
+      "catalog_indexed": false,
       "derived_geometry_sha256": null,
       "estimated_cost_usd": 0.067,
       "fixture": "outfit_9",
-      "garment_id": "garment_brown_trousers_001",
+      "garment_id": "garment_tan_trousers_001",
       "generated_or_reused": "generated",
       "generation_calls": 1,
-      "identity_role": "canonical",
+      "identity_role": "alias",
       "model_id": "gemini-3.1-flash-image",
       "outputs": {
         "output_1k": {
@@ -2114,10 +2114,10 @@
       "derived_geometry_sha256": null,
       "estimated_cost_usd": 0.067,
       "fixture": "outfit_10",
-      "garment_id": "outfit_10_bottom",
+      "garment_id": "garment_gray_trousers_001",
       "generated_or_reused": "generated",
       "generation_calls": 1,
-      "identity_role": "default",
+      "identity_role": "canonical",
       "model_id": "gemini-3.1-flash-image",
       "outputs": {
         "output_1k": {
@@ -2330,14 +2330,14 @@
         }
       ],
       "candidate_request_sha256": null,
-      "catalog_indexed": true,
+      "catalog_indexed": false,
       "derived_geometry_sha256": null,
       "estimated_cost_usd": 0.067,
       "fixture": "outfit_11",
-      "garment_id": "outfit_11_bottom",
+      "garment_id": "garment_gray_trousers_001",
       "generated_or_reused": "generated",
       "generation_calls": 1,
-      "identity_role": "default",
+      "identity_role": "alias",
       "model_id": "gemini-3.1-flash-image",
       "outputs": {
         "output_1k": {
@@ -2657,14 +2657,14 @@
         }
       ],
       "candidate_request_sha256": null,
-      "catalog_indexed": true,
+      "catalog_indexed": false,
       "derived_geometry_sha256": null,
       "estimated_cost_usd": 0.067,
       "fixture": "outfit_13",
       "garment_id": "garment_gray_trousers_001",
       "generated_or_reused": "generated",
       "generation_calls": 1,
-      "identity_role": "canonical",
+      "identity_role": "alias",
       "model_id": "gemini-3.1-flash-image",
       "outputs": {
         "output_1k": {
@@ -2996,14 +2996,14 @@
         }
       ],
       "candidate_request_sha256": null,
-      "catalog_indexed": true,
+      "catalog_indexed": false,
       "derived_geometry_sha256": null,
       "estimated_cost_usd": 0.067,
       "fixture": "outfit_14",
-      "garment_id": "outfit_14_bottom",
+      "garment_id": "garment_gray_trousers_001",
       "generated_or_reused": "generated",
       "generation_calls": 1,
-      "identity_role": "default",
+      "identity_role": "alias",
       "model_id": "gemini-3.1-flash-image",
       "outputs": {
         "output_1k": {
@@ -3996,14 +3996,14 @@
         }
       ],
       "candidate_request_sha256": null,
-      "catalog_indexed": true,
+      "catalog_indexed": false,
       "derived_geometry_sha256": null,
       "estimated_cost_usd": 0.067,
       "fixture": "outfit_19",
       "garment_id": "outfit_19_top",
       "generated_or_reused": "generated",
       "generation_calls": 1,
-      "identity_role": "default",
+      "identity_role": "excluded",
       "model_id": "gemini-3.1-flash-image",
       "outputs": {
         "output_1k": {
@@ -4107,14 +4107,14 @@
         }
       ],
       "candidate_request_sha256": null,
-      "catalog_indexed": true,
+      "catalog_indexed": false,
       "derived_geometry_sha256": null,
       "estimated_cost_usd": 0.067,
       "fixture": "outfit_19",
       "garment_id": "garment_off_white_trousers_001",
       "generated_or_reused": "generated",
       "generation_calls": 1,
-      "identity_role": "canonical",
+      "identity_role": "alias",
       "model_id": "gemini-3.1-flash-image",
       "outputs": {
         "output_1k": {
@@ -4766,10 +4766,10 @@
       "derived_geometry_sha256": null,
       "estimated_cost_usd": 0.067,
       "fixture": "outfit_22",
-      "garment_id": "outfit_22_bottom",
+      "garment_id": "garment_off_white_trousers_001",
       "generated_or_reused": "generated",
       "generation_calls": 1,
-      "identity_role": "default",
+      "identity_role": "canonical",
       "model_id": "gemini-3.1-flash-image",
       "outputs": {
         "output_1k": {
@@ -5756,14 +5756,14 @@
         }
       ],
       "candidate_request_sha256": null,
-      "catalog_indexed": true,
+      "catalog_indexed": false,
       "derived_geometry_sha256": null,
       "estimated_cost_usd": 0.067,
       "fixture": "outfit_27",
       "garment_id": "outfit_27_dress",
       "generated_or_reused": "generated",
       "generation_calls": 1,
-      "identity_role": "default",
+      "identity_role": "excluded",
       "model_id": "gemini-3.1-flash-image",
       "outputs": {
         "output_1k": {
@@ -6439,14 +6439,14 @@
         }
       ],
       "candidate_request_sha256": null,
-      "catalog_indexed": true,
+      "catalog_indexed": false,
       "derived_geometry_sha256": null,
       "estimated_cost_usd": 0.067,
       "fixture": "outfit_31",
       "garment_id": "outfit_31_bottom",
       "generated_or_reused": "generated",
       "generation_calls": 1,
-      "identity_role": "default",
+      "identity_role": "excluded",
       "model_id": "gemini-3.1-flash-image",
       "outputs": {
         "output_1k": {
@@ -6530,6 +6530,34 @@
       "vlm_attribute_json_sha256": "30f33269bd15072965f0e041b193df61c246b04f98c0520ab79ba7953737fca6"
     }
   ],
+  "catalog_exclusions": {
+    "excluded_observation_count": 4,
+    "excluded_observations": [
+      {
+        "notes": "User-discarded brown drawstring trousers; outfit_31 top remains cataloged.",
+        "observation_id": "outfit_31_bottom",
+        "reason": "user_confirmed"
+      },
+      {
+        "notes": "User-discarded knee-length polo dress; outfit_27 has no retained catalog garment.",
+        "observation_id": "outfit_27_dress",
+        "reason": "user_confirmed"
+      },
+      {
+        "notes": "User-discarded green checkered blazer; outfit_19 bottom remains represented by outfit_22_bottom.",
+        "observation_id": "outfit_19_top",
+        "reason": "user_confirmed"
+      },
+      {
+        "notes": "User-discarded pink floral blouse; outfit_2 bottom remains cataloged.",
+        "observation_id": "outfit_2_top",
+        "reason": "user_confirmed"
+      }
+    ],
+    "registry_path": "bench/catalog_generation/catalog_exclusions.json",
+    "registry_sha256": "f5cf9c628ef57c67d857b8161a4ab48f1f0ca165557fb0f1462ba29e25753a3b",
+    "schema_version": 1
+  },
   "contact_sheets": {
     "batch_size_outfits": 4,
     "directory": "final_catalog/contact_sheets",
@@ -6664,43 +6692,64 @@
     ]
   },
   "garment_identities": {
+    "catalog_item_count": 33,
     "groups": [
       {
         "alias_observation_ids": [
-          "outfit_3_bottom"
+          "outfit_11_bottom",
+          "outfit_12_bottom",
+          "outfit_13_bottom",
+          "outfit_14_bottom"
         ],
-        "canonical_observation_id": "outfit_4_bottom",
-        "canonical_selection_reason": "Lower texture QC mean_delta_e (2.448 vs 3.040); no QC flags on either approved output.",
-        "display_name": "dark gray trousers",
+        "canonical_observation_id": "outfit_10_bottom",
+        "canonical_selection_reason": "User-designated canonical catalog image for the shared neutral gray trousers identity.",
+        "display_name": "gray trousers",
         "facet_corrections": {
           "colors": [
-            "dark gray"
+            "gray"
+          ],
+          "stale_color_tags": [
+            "dark gray",
+            "charcoal gray"
           ]
         },
-        "garment_id": "garment_dark_gray_trousers_001",
-        "notes": "Same physical dark gray trousers worn in outfit 3 and outfit 4.",
+        "garment_id": "garment_gray_trousers_001",
+        "notes": "Same physical neutral gray trousers worn in outfits 10, 11, 12, 13, and 14.",
         "observation_ids": [
-          "outfit_3_bottom",
-          "outfit_4_bottom"
+          "outfit_10_bottom",
+          "outfit_11_bottom",
+          "outfit_12_bottom",
+          "outfit_13_bottom",
+          "outfit_14_bottom"
         ],
         "reason": "user_confirmed"
       },
       {
         "alias_observation_ids": [
-          "outfit_8_bottom"
+          "outfit_1_bottom",
+          "outfit_7_bottom",
+          "outfit_8_bottom",
+          "outfit_9_bottom"
         ],
-        "canonical_observation_id": "outfit_9_bottom",
-        "canonical_selection_reason": "Lower texture QC mean_delta_e (1.027 vs 4.648); best approved output fidelity.",
-        "display_name": "brown trousers",
+        "canonical_observation_id": "outfit_2_bottom",
+        "canonical_selection_reason": "User-designated canonical catalog image for the shared tan straight-fit trousers identity.",
+        "display_name": "tan straight-fit trousers",
         "facet_corrections": {
           "colors": [
+            "tan"
+          ],
+          "fit": "straight",
+          "stale_color_tags": [
             "brown",
             "taupe"
           ]
         },
-        "garment_id": "garment_brown_trousers_001",
-        "notes": "Same physical brown trousers worn in outfit 8 and outfit 9.",
+        "garment_id": "garment_tan_trousers_001",
+        "notes": "Same physical tan straight-fit trousers worn in outfits 1, 2, 7, 8, and 9.",
         "observation_ids": [
+          "outfit_1_bottom",
+          "outfit_2_bottom",
+          "outfit_7_bottom",
           "outfit_8_bottom",
           "outfit_9_bottom"
         ],
@@ -6708,26 +6757,8 @@
       },
       {
         "alias_observation_ids": [
-          "outfit_12_bottom"
-        ],
-        "canonical_observation_id": "outfit_13_bottom",
-        "canonical_selection_reason": "Lower texture QC mean_delta_e (0.857 vs 5.184); best approved output fidelity.",
-        "display_name": "gray trousers",
-        "facet_corrections": {
-          "colors": [
-            "gray"
-          ]
-        },
-        "garment_id": "garment_gray_trousers_001",
-        "notes": "Same physical gray trousers worn in outfit 12 and outfit 13.",
-        "observation_ids": [
-          "outfit_12_bottom",
-          "outfit_13_bottom"
-        ],
-        "reason": "user_confirmed"
-      },
-      {
-        "alias_observation_ids": [
+          "outfit_3_bottom",
+          "outfit_4_bottom",
           "outfit_16_bottom"
         ],
         "canonical_observation_id": "outfit_15_bottom",
@@ -6735,14 +6766,18 @@
         "display_name": "slim fit gray trousers",
         "facet_corrections": {
           "colors": [
-            "gray",
-            "dark gray"
+            "gray"
           ],
-          "fit": "slim"
+          "fit": "slim",
+          "stale_color_tags": [
+            "dark gray"
+          ]
         },
         "garment_id": "garment_gray_trousers_002",
-        "notes": "Same physical slim-fit gray trousers worn in outfit 15 and outfit 16.",
+        "notes": "Same physical slim-fit gray trousers worn in outfits 3, 4, 15, and 16.",
         "observation_ids": [
+          "outfit_3_bottom",
+          "outfit_4_bottom",
           "outfit_15_bottom",
           "outfit_16_bottom"
         ],
@@ -6750,30 +6785,38 @@
       },
       {
         "alias_observation_ids": [
-          "outfit_17_bottom",
-          "outfit_18_bottom",
-          "outfit_20_bottom",
-          "outfit_21_bottom"
-        ],
-        "canonical_observation_id": "outfit_19_bottom",
-        "canonical_selection_reason": "Lowest texture QC mean_delta_e (14.128) with no QC flags across five linked observations.",
-        "display_name": "white relaxed-fit trousers",
-        "facet_corrections": {
-          "colors": [
-            "white",
-            "off-white",
-            "beige"
-          ],
-          "fit": "relaxed"
-        },
-        "garment_id": "garment_off_white_trousers_001",
-        "notes": "Same physical white relaxed-fit trousers worn in outfits 17, 18, 19, 20, and 21.",
-        "observation_ids": [
+          "outfit_5_bottom",
           "outfit_17_bottom",
           "outfit_18_bottom",
           "outfit_19_bottom",
           "outfit_20_bottom",
           "outfit_21_bottom"
+        ],
+        "canonical_observation_id": "outfit_22_bottom",
+        "canonical_selection_reason": "User-designated canonical catalog image for the shared white trousers identity.",
+        "display_name": "white relaxed-fit trousers",
+        "facet_corrections": {
+          "colors": [
+            "white"
+          ],
+          "fit": "relaxed",
+          "stale_color_tags": [
+            "off-white",
+            "off white",
+            "cream",
+            "beige"
+          ]
+        },
+        "garment_id": "garment_off_white_trousers_001",
+        "notes": "Same physical white relaxed-fit trousers worn in outfits 5, 17, 18, 19, 20, 21, and 22.",
+        "observation_ids": [
+          "outfit_5_bottom",
+          "outfit_17_bottom",
+          "outfit_18_bottom",
+          "outfit_19_bottom",
+          "outfit_20_bottom",
+          "outfit_21_bottom",
+          "outfit_22_bottom"
         ],
         "reason": "user_confirmed"
       },
@@ -6787,11 +6830,13 @@
         "display_name": "straight-fit khaki trousers",
         "facet_corrections": {
           "colors": [
-            "khaki",
+            "khaki"
+          ],
+          "fit": "straight",
+          "stale_color_tags": [
             "tan",
             "brown"
-          ],
-          "fit": "straight"
+          ]
         },
         "garment_id": "garment_khaki_slim_trousers_001",
         "notes": "Same physical straight-fit khaki trousers worn in outfits 23, 24, and 25.",
@@ -6849,20 +6894,14 @@
     "indexed_observations": [
       "outfit_10_bottom",
       "outfit_10_top",
-      "outfit_11_bottom",
       "outfit_11_top",
       "outfit_12_top",
-      "outfit_13_bottom",
       "outfit_13_top",
-      "outfit_14_bottom",
       "outfit_14_top",
       "outfit_15_bottom",
       "outfit_15_top",
       "outfit_17_top",
       "outfit_18_top",
-      "outfit_19_bottom",
-      "outfit_19_top",
-      "outfit_1_bottom",
       "outfit_1_top",
       "outfit_21_top",
       "outfit_22_bottom",
@@ -6872,37 +6911,36 @@
       "outfit_24_top",
       "outfit_25_top",
       "outfit_26_top",
-      "outfit_27_dress",
       "outfit_28_bottom",
       "outfit_28_top",
       "outfit_29_dress",
       "outfit_2_bottom",
-      "outfit_2_top",
       "outfit_30_dress",
-      "outfit_31_bottom",
       "outfit_31_top",
       "outfit_3_top",
-      "outfit_4_bottom",
       "outfit_4_top",
-      "outfit_5_bottom",
       "outfit_5_top",
       "outfit_6_bottom",
       "outfit_6_top",
-      "outfit_7_bottom",
       "outfit_7_top",
       "outfit_8_top",
-      "outfit_9_bottom",
       "outfit_9_top"
     ],
     "observation_count": 59,
     "observation_enrichments": [
       {
-        "display_name": null,
+        "display_name": "pastel pink sleeveless top",
         "facet_corrections": {
-          "fit": "straight"
+          "colors": [
+            "pastel pink",
+            "pink"
+          ],
+          "stale_color_tags": [
+            "dusty rose"
+          ]
         },
-        "notes": "User-confirmed straight-fit brown formal trousers.",
-        "observation_id": "outfit_1_bottom",
+        "notes": "User-confirmed pastel pink sleeveless halter lace top; VLM dominant_color dusty rose corrected from source/cutout.",
+        "observation_id": "outfit_13_top",
         "reason": "user_confirmed"
       },
       {
@@ -6918,15 +6956,6 @@
         },
         "notes": "User-confirmed pastel pink lace overlay dress; VLM dominant_color dusty rose corrected from source/cutout.",
         "observation_id": "outfit_29_dress",
-        "reason": "user_confirmed"
-      },
-      {
-        "display_name": null,
-        "facet_corrections": {
-          "fit": "straight"
-        },
-        "notes": "User-confirmed straight-fit tan trousers.",
-        "observation_id": "outfit_2_bottom",
         "reason": "user_confirmed"
       },
       {
@@ -6947,15 +6976,15 @@
       }
     ],
     "observation_to_garment": {
-      "outfit_10_bottom": "outfit_10_bottom",
+      "outfit_10_bottom": "garment_gray_trousers_001",
       "outfit_10_top": "outfit_10_top",
-      "outfit_11_bottom": "outfit_11_bottom",
+      "outfit_11_bottom": "garment_gray_trousers_001",
       "outfit_11_top": "outfit_11_top",
       "outfit_12_bottom": "garment_gray_trousers_001",
       "outfit_12_top": "outfit_12_top",
       "outfit_13_bottom": "garment_gray_trousers_001",
       "outfit_13_top": "outfit_13_top",
-      "outfit_14_bottom": "outfit_14_bottom",
+      "outfit_14_bottom": "garment_gray_trousers_001",
       "outfit_14_top": "outfit_14_top",
       "outfit_15_bottom": "garment_gray_trousers_002",
       "outfit_15_top": "outfit_15_top",
@@ -6967,13 +6996,13 @@
       "outfit_18_top": "outfit_18_top",
       "outfit_19_bottom": "garment_off_white_trousers_001",
       "outfit_19_top": "outfit_19_top",
-      "outfit_1_bottom": "outfit_1_bottom",
+      "outfit_1_bottom": "garment_tan_trousers_001",
       "outfit_1_top": "outfit_1_top",
       "outfit_20_bottom": "garment_off_white_trousers_001",
       "outfit_20_top": "garment_white_button_down_shirt_001",
       "outfit_21_bottom": "garment_off_white_trousers_001",
       "outfit_21_top": "outfit_21_top",
-      "outfit_22_bottom": "outfit_22_bottom",
+      "outfit_22_bottom": "garment_off_white_trousers_001",
       "outfit_22_top": "garment_white_button_down_shirt_001",
       "outfit_23_bottom": "garment_khaki_slim_trousers_001",
       "outfit_23_top": "outfit_23_top",
@@ -6987,30 +7016,30 @@
       "outfit_28_bottom": "outfit_28_bottom",
       "outfit_28_top": "outfit_28_top",
       "outfit_29_dress": "outfit_29_dress",
-      "outfit_2_bottom": "outfit_2_bottom",
+      "outfit_2_bottom": "garment_tan_trousers_001",
       "outfit_2_top": "outfit_2_top",
       "outfit_30_dress": "outfit_30_dress",
       "outfit_31_bottom": "outfit_31_bottom",
       "outfit_31_top": "outfit_31_top",
-      "outfit_3_bottom": "garment_dark_gray_trousers_001",
+      "outfit_3_bottom": "garment_gray_trousers_002",
       "outfit_3_top": "outfit_3_top",
-      "outfit_4_bottom": "garment_dark_gray_trousers_001",
+      "outfit_4_bottom": "garment_gray_trousers_002",
       "outfit_4_top": "outfit_4_top",
-      "outfit_5_bottom": "outfit_5_bottom",
+      "outfit_5_bottom": "garment_off_white_trousers_001",
       "outfit_5_top": "outfit_5_top",
       "outfit_6_bottom": "garment_black_pencil_skirt_001",
       "outfit_6_top": "outfit_6_top",
-      "outfit_7_bottom": "outfit_7_bottom",
+      "outfit_7_bottom": "garment_tan_trousers_001",
       "outfit_7_top": "outfit_7_top",
-      "outfit_8_bottom": "garment_brown_trousers_001",
+      "outfit_8_bottom": "garment_tan_trousers_001",
       "outfit_8_top": "outfit_8_top",
-      "outfit_9_bottom": "garment_brown_trousers_001",
+      "outfit_9_bottom": "garment_tan_trousers_001",
       "outfit_9_top": "outfit_9_top"
     },
     "registry_path": "bench/catalog_generation/garment_identities.json",
-    "registry_sha256": "805eb54e351a7a253a5ac01f1b23ff9cea1488110a443a56c4d9f5c8726d8086",
+    "registry_sha256": "3886eb56665f715288f53b3012a6c091ea644bfa0fcef0c63e864cac55800a77",
     "schema_version": 1,
-    "unique_garment_count": 46
+    "unique_garment_count": 37
   },
   "namespace": "catalog_production_v1",
   "packaged_at_utc": "2026-08-02T03:26:33.658104+00:00",

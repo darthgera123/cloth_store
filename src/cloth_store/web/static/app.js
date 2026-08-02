@@ -13,6 +13,7 @@ const elements = {
   stateTitle: document.getElementById("state-title"),
   stateMessage: document.getElementById("state-message"),
   gridTop: document.getElementById("grid-top"),
+  gridBlazer: document.getElementById("grid-blazer"),
   gridDress: document.getElementById("grid-dress"),
   gridBottom: document.getElementById("grid-bottom"),
   sectionCounts: document.querySelectorAll("[data-count-for]"),
@@ -54,19 +55,15 @@ const elements = {
   luckyPairClose: document.querySelector(".lucky-close"),
   luckyRegenerate: document.getElementById("lucky-regenerate"),
   luckyStageMessage: document.getElementById("lucky-stage-message"),
+  luckyLookType: document.getElementById("lucky-look-type"),
   luckySummary: document.getElementById("lucky-summary"),
   luckyPieces: document.getElementById("lucky-pieces"),
-  luckyTopImage: document.getElementById("lucky-top-image"),
-  luckyTopName: document.getElementById("lucky-top-name"),
-  luckyTopDescription: document.getElementById("lucky-top-description"),
-  luckyBottomImage: document.getElementById("lucky-bottom-image"),
-  luckyBottomName: document.getElementById("lucky-bottom-name"),
-  luckyBottomDescription: document.getElementById("lucky-bottom-description"),
+  luckyPieceTemplate: document.getElementById("lucky-piece-template"),
   luckyError: document.getElementById("lucky-error"),
 };
 
 const state = {
-  role: "",
+  category: "",
   query: "",
   loading: false,
   requestToken: 0,
@@ -93,10 +90,16 @@ const generatorState = {
 
 const luckyState = {
   fetchToken: 0,
-  currentTopId: null,
-  currentBottomId: null,
+  currentCatalogIds: [],
   totalCandidates: 0,
   lastFocusedElement: null,
+};
+
+const LUCKY_PIECE_KIND_LABELS = {
+  top: "Top",
+  blazer: "Blazer",
+  bottom: "Bottom",
+  dress: "Dress",
 };
 
 function setStatePanel({ visible, title, message }) {
@@ -115,13 +118,25 @@ function setStatusBanner(message) {
   elements.statusBanner.textContent = message;
 }
 
-function updateRoleFilters(activeRole) {
+function updateCategoryFilters(activeCategory) {
   elements.roleFilters.forEach((button) => {
-    const isActive = button.dataset.role === activeRole;
+    const isActive = button.dataset.category === activeCategory;
     button.classList.toggle("is-active", isActive);
     button.setAttribute("aria-selected", String(isActive));
   });
 }
+
+function itemDisplayCategory(item) {
+  return item.display_category || item.role;
+}
+
+const CATEGORY_LABELS = {
+  "": "pieces",
+  top: "tops",
+  blazer: "blazers",
+  dress: "dresses",
+  bottom: "bottoms",
+};
 
 function normalizeSearchText(text) {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
@@ -140,10 +155,10 @@ function itemSearchText(item) {
   return normalizeSearchText(parts.filter(Boolean).join(" "));
 }
 
-function filterItems(items, { query, role }) {
+function filterItems(items, { query, category }) {
   let filtered = items;
-  if (role) {
-    filtered = filtered.filter((item) => item.role === role);
+  if (category) {
+    filtered = filtered.filter((item) => itemDisplayCategory(item) === category);
   }
   if (query) {
     const needle = normalizeSearchText(query);
@@ -178,26 +193,49 @@ function pickRandom(items, { excludeKey, excludeValue, seed } = {}) {
   return pool[index];
 }
 
-function pickLuckyPair({ excludeTop, excludeBottom, seed } = {}) {
-  const candidates = storefrontData?.lucky_pair_candidates || [];
+function pickLuckyLook({ excludeCatalogIds, seed } = {}) {
+  const candidates = storefrontData?.lucky_look_candidates || [];
   if (!candidates.length) {
     return null;
   }
+
   let pool = candidates;
-  if (excludeTop && excludeBottom) {
-    const filtered = candidates.filter(
-      (pair) =>
-        !(
-          pair.top.catalog_id === excludeTop && pair.bottom.catalog_id === excludeBottom
-        ),
-    );
+  if (excludeCatalogIds?.length) {
+    const excluded = new Set(excludeCatalogIds);
+    const filtered = candidates.filter((look) => {
+      const ids = look.pieces.map((piece) => piece.catalog_id);
+      if (ids.length !== excluded.size) {
+        return true;
+      }
+      return !ids.every((id) => excluded.has(id));
+    });
     if (filtered.length) {
       pool = filtered;
     }
   }
+
+  const byType = {
+    top_bottom: [],
+    blazer_top_bottom: [],
+    blazer_dress: [],
+  };
+  for (const look of pool) {
+    if (byType[look.look_type]) {
+      byType[look.look_type].push(look);
+    }
+  }
+
+  const availableTypes = Object.keys(byType).filter((type) => byType[type].length);
+  if (!availableTypes.length) {
+    return null;
+  }
+
   const rng = seed == null ? Math.random : seededRandom(seed);
-  const index = Math.floor(rng() * pool.length);
-  return pool[index];
+  const typeIndex = Math.floor(rng() * availableTypes.length);
+  const lookType = availableTypes[typeIndex];
+  const typePool = byType[lookType];
+  const lookIndex = Math.floor(rng() * typePool.length);
+  return typePool[lookIndex];
 }
 
 async function loadStorefront() {
@@ -235,25 +273,33 @@ function buildCard(item) {
   return card;
 }
 
-function renderItems(items, activeRole) {
+function renderItems(items, activeCategory) {
   catalogItemsById.clear();
 
-  const tops = items.filter((item) => item.role === "top");
+  const tops = items.filter((item) => itemDisplayCategory(item) === "top");
+  const blazers = items.filter((item) => itemDisplayCategory(item) === "blazer");
   const dresses = items.filter((item) => item.role === "dress");
   const bottoms = items.filter((item) => item.role === "bottom");
 
   elements.gridTop.replaceChildren(...tops.map(buildCard));
+  elements.gridBlazer.replaceChildren(...blazers.map(buildCard));
   elements.gridDress.replaceChildren(...dresses.map(buildCard));
   elements.gridBottom.replaceChildren(...bottoms.map(buildCard));
 
   document.querySelector('[data-section="top"]').dataset.empty = String(tops.length === 0);
+  document.querySelector('[data-section="blazer"]').dataset.empty = String(blazers.length === 0);
   document.querySelector('[data-section="dress"]').dataset.empty = String(dresses.length === 0);
   document.querySelector('[data-section="bottom"]').dataset.empty = String(bottoms.length === 0);
 
   elements.sectionCounts.forEach((node) => {
-    const role = node.dataset.countFor;
-    const counts = { top: tops.length, dress: dresses.length, bottom: bottoms.length };
-    const count = counts[role] ?? 0;
+    const category = node.dataset.countFor;
+    const counts = {
+      top: tops.length,
+      blazer: blazers.length,
+      dress: dresses.length,
+      bottom: bottoms.length,
+    };
+    const count = counts[category] ?? 0;
     node.textContent = `${count} piece${count === 1 ? "" : "s"}`;
   });
 
@@ -272,9 +318,9 @@ function renderItems(items, activeRole) {
 
   setStatePanel({ visible: false, title: "", message: "" });
 
-  const roleLabel = activeRole ? `${activeRole}s` : "pieces";
+  const categoryLabel = CATEGORY_LABELS[activeCategory] || "pieces";
   const queryLabel = state.query ? ` for “${state.query}”` : "";
-  elements.resultsMeta.textContent = `Showing ${items.length} ${roleLabel}${queryLabel}`;
+  elements.resultsMeta.textContent = `Showing ${items.length} ${categoryLabel}${queryLabel}`;
 }
 
 function buildDetailSlides(item, styling) {
@@ -601,12 +647,35 @@ function regenerateOutfit() {
   loadGeneratedOutfit({ excludeFixture: generatorState.currentFixture });
 }
 
+function buildLuckyPieceCard(piece) {
+  const fragment = elements.luckyPieceTemplate.content.cloneNode(true);
+  const card = fragment.querySelector(".lucky-piece-card");
+  const image = fragment.querySelector(".lucky-piece-image");
+  const label = fragment.querySelector(".generator-piece-label");
+  const name = fragment.querySelector(".generator-piece-name");
+  const description = fragment.querySelector(".generator-piece-description");
+
+  const kindLabel = LUCKY_PIECE_KIND_LABELS[piece.kind] || piece.kind;
+  card.setAttribute("aria-labelledby", `lucky-piece-${piece.catalog_id}`);
+  name.id = `lucky-piece-${piece.catalog_id}`;
+  label.textContent = kindLabel;
+  image.src = piece.image_url;
+  image.alt = piece.display_name;
+  name.textContent = piece.display_name;
+  description.textContent = piece.description;
+
+  return card;
+}
+
 function setLuckyLoading() {
   elements.luckyStageMessage.hidden = false;
   elements.luckyStageMessage.textContent = "Finding a new pairing…";
+  elements.luckyLookType.hidden = true;
+  elements.luckyLookType.textContent = "";
   elements.luckySummary.hidden = true;
   elements.luckySummary.textContent = "";
   elements.luckyPieces.hidden = true;
+  elements.luckyPieces.replaceChildren();
   elements.luckyError.hidden = true;
   elements.luckyError.textContent = "";
   elements.luckyRegenerate.disabled = true;
@@ -615,42 +684,39 @@ function setLuckyLoading() {
 function setLuckyError(message) {
   elements.luckyStageMessage.hidden = false;
   elements.luckyStageMessage.textContent = "Unable to suggest a pairing.";
+  elements.luckyLookType.hidden = true;
   elements.luckySummary.hidden = true;
   elements.luckyPieces.hidden = true;
+  elements.luckyPieces.replaceChildren();
   elements.luckyError.hidden = true;
   elements.luckyError.textContent = message;
   elements.luckyRegenerate.disabled = luckyState.totalCandidates > 1;
 }
 
-function renderLuckyPair(pair) {
-  luckyState.totalCandidates = storefrontData?.lucky_pair_candidates?.length || 0;
+function renderLuckyLook(look) {
+  luckyState.totalCandidates = storefrontData?.lucky_look_candidates?.length || 0;
 
-  if (!pair) {
+  if (!look) {
     setLuckyError("No new catalogue pairings are available right now.");
-    luckyState.currentTopId = null;
-    luckyState.currentBottomId = null;
+    luckyState.currentCatalogIds = [];
     return;
   }
 
-  luckyState.currentTopId = pair.top.catalog_id;
-  luckyState.currentBottomId = pair.bottom.catalog_id;
+  luckyState.currentCatalogIds = look.pieces.map((piece) => piece.catalog_id);
 
   elements.luckyStageMessage.hidden = true;
 
+  elements.luckyLookType.hidden = false;
+  elements.luckyLookType.textContent = look.look_type_label || look.look_type;
+
   elements.luckySummary.hidden = false;
   elements.luckySummary.textContent =
-    pair.summary || `${pair.top.display_name} with ${pair.bottom.display_name.toLowerCase()}.`;
+    look.summary ||
+    look.pieces.map((piece) => piece.display_name).join(" with ");
 
   elements.luckyPieces.hidden = false;
-  elements.luckyTopImage.src = pair.top.image_url;
-  elements.luckyTopImage.alt = pair.top.display_name;
-  elements.luckyTopName.textContent = pair.top.display_name;
-  elements.luckyTopDescription.textContent = pair.top.description;
-
-  elements.luckyBottomImage.src = pair.bottom.image_url;
-  elements.luckyBottomImage.alt = pair.bottom.display_name;
-  elements.luckyBottomName.textContent = pair.bottom.display_name;
-  elements.luckyBottomDescription.textContent = pair.bottom.description;
+  elements.luckyPieces.dataset.pieceCount = String(look.pieces.length);
+  elements.luckyPieces.replaceChildren(...look.pieces.map(buildLuckyPieceCard));
 
   elements.luckyError.hidden = true;
   elements.luckyError.textContent = "";
@@ -659,20 +725,19 @@ function renderLuckyPair(pair) {
 
 function resetLuckyState() {
   luckyState.fetchToken += 1;
-  luckyState.currentTopId = null;
-  luckyState.currentBottomId = null;
+  luckyState.currentCatalogIds = [];
   luckyState.totalCandidates = 0;
 }
 
-function loadLuckyPair({ excludeTop, excludeBottom, seed } = {}) {
+function loadLuckyLook({ excludeCatalogIds, seed } = {}) {
   const token = ++luckyState.fetchToken;
   setLuckyLoading();
 
-  const pair = pickLuckyPair({ excludeTop, excludeBottom, seed });
+  const look = pickLuckyLook({ excludeCatalogIds, seed });
   if (token !== luckyState.fetchToken) {
     return;
   }
-  renderLuckyPair(pair);
+  renderLuckyLook(look);
 }
 
 function openLuckyPairModal() {
@@ -684,7 +749,7 @@ function openLuckyPairModal() {
   resetLuckyState();
   elements.luckyPairModal.showModal();
   elements.luckyPairClose.focus();
-  loadLuckyPair();
+  loadLuckyLook();
 }
 
 function closeLuckyPairModal() {
@@ -702,9 +767,8 @@ function closeLuckyPairModal() {
 }
 
 function regenerateLuckyPair() {
-  loadLuckyPair({
-    excludeTop: luckyState.currentTopId,
-    excludeBottom: luckyState.currentBottomId,
+  loadLuckyLook({
+    excludeCatalogIds: luckyState.currentCatalogIds,
   });
 }
 
@@ -728,9 +792,9 @@ async function loadCatalog() {
     }
     const items = filterItems(storefrontData.items || [], {
       query: state.query,
-      role: state.role,
+      category: state.category,
     });
-    renderItems(items, state.role);
+    renderItems(items, state.category);
   } catch (error) {
     if (token !== state.requestToken) {
       return;
@@ -763,9 +827,9 @@ elements.searchInput.addEventListener("input", scheduleSearch);
 
 elements.roleFilters.forEach((button) => {
   button.addEventListener("click", () => {
-    const role = button.dataset.role || "";
-    state.role = role;
-    updateRoleFilters(role);
+    const category = button.dataset.category || "";
+    state.category = category;
+    updateCategoryFilters(category);
     loadCatalog();
   });
 });

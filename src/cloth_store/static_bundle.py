@@ -17,12 +17,14 @@ from typing import Any
 from cloth_store.web import STATIC_ROOT, WEB_ROOT
 from cloth_store.web_storefront import build_storefront_bundle, write_storefront_bundle
 
-BUNDLE_NAME = "cloth-store"
+BUNDLE_NAME = "lavani-closet"
 BUNDLE_VERSION = "1"
 CATALOGUE_PREFIX = "assets/catalogue"
 SELFIE_PREFIX = "assets/selfies"
-DEFAULT_OUTPUT_DIR = Path("dist/cloth-store")
-DEFAULT_ZIP_PATH = Path("dist/cloth-store.zip")
+DEFAULT_OUTPUT_DIR = Path("dist/lavani-closet")
+DEFAULT_ZIP_PATH = Path("dist/lavani-closet.zip")
+LAUNCHER_DIR = Path(__file__).resolve().parent / "bundle_launchers"
+LAUNCHER_FILES = ("start-lavani.bat", "start-lavani.ps1")
 
 FORBIDDEN_BUNDLE_PARTS = (
     "output_1k.png",
@@ -37,11 +39,11 @@ PROMPT_SOURCE = Path("prompts/catalogue_description_system.md")
 STATIC_BUNDLE_GUIDE_SOURCE = Path("docs/static-bundle-guide.md")
 CLOTH_STORE_DOC_SOURCE = Path("docs/CLOTH_STORE.md")
 
-README_TEMPLATE = """# Cloth Store — Static Snapshot
+README_TEMPLATE = """# Lavani's Closet — Static Snapshot
 
-This folder is a **standalone static snapshot** of the Cloth Store storefront.
-It does not require the Cloth Store repository, FastAPI, uv, or any ML/runtime
-dependencies.
+This folder is a **standalone static snapshot** of Lavani's Closet.
+It does not require the Cloth Store repository, FastAPI, uv, bash, or any
+ML/runtime dependencies.
 
 ## Contents
 
@@ -49,21 +51,38 @@ dependencies.
 |------|---------|
 | `index.html` | Storefront shell (embedded catalogue data for offline use) |
 | `static/` | CSS and JavaScript |
-| `data/storefront.json` | Pre-computed catalogue, styling, outfit, and lucky-pair data |
+| `data/storefront.json` | Pre-computed catalogue, styling, outfit, and lucky-look data |
 | `assets/catalogue/` | 512px catalogue `output.png` images referenced by the snapshot |
 | `assets/selfies/` | Refocused crops per `outfit_N/` (`crop_refocused.jpg` or `crop_only.jpg`) |
 | `docs/` | Storefront and description-prompt documentation |
+| `start-lavani.bat` | Windows double-click launcher (Python stdlib HTTP server) |
+| `start-lavani.ps1` | Windows PowerShell launcher |
 | `manifest.json` | Build metadata and packaged asset inventory |
 
 ## Run locally
 
+### Windows
+
+1. Install [Python 3](https://www.python.org/downloads/) if needed. During setup,
+   check **Add python.exe to PATH**.
+2. Unzip the bundle to any folder (for example `Downloads\\lavani-closet`).
+3. Double-click **`start-lavani.bat`**, or right-click **`start-lavani.ps1`** →
+   **Run with PowerShell**.
+4. Your browser opens **http://127.0.0.1:8080/** automatically.
+5. To stop the server, close the console window or press **Ctrl+C** in it.
+
+No FastAPI, uv, bash, or repository checkout is required on Windows.
+
+### macOS / Linux
+
 From this directory:
 
 ```bash
-python3 -m http.server 8080
+python3 -m http.server 8080 --bind 127.0.0.1
 ```
 
-Then open **http://127.0.0.1:8080/** in your browser.
+Then open **http://127.0.0.1:8080/** in your browser. Press **Ctrl+C** in the
+terminal to stop the server.
 
 ### Direct file open
 
@@ -73,11 +92,11 @@ local HTTP server above.
 
 ## Supported features (offline)
 
-- Browse tops, dresses, and bottoms
+- Browse tops, blazers, dresses, and bottoms
 - Search and role filters
 - Item detail modal with catalogue carousel and styling selfies
 - **Generate an Outfit** — same-fixture top/bottom pairs with selfie hero
-- **I'm Feeling Lucky** — cross-fixture top/bottom pairings from catalogue views
+- **I'm Feeling Lucky** — catalogue-only looks (top+bottom, blazer+top+bottom, blazer+dress)
 
 ## Image policy
 
@@ -124,10 +143,9 @@ def collect_bundle_image_urls(bundle: dict[str, Any]) -> set[str]:
         if url := selfie.get("image_url"):
             urls.add(str(url))
 
-    for pair in bundle.get("lucky_pair_candidates", []):
-        for key in ("top", "bottom"):
-            garment = pair.get(key) or {}
-            if url := garment.get("image_url"):
+    for look in bundle.get("lucky_look_candidates", []):
+        for piece in look.get("pieces", []):
+            if url := piece.get("image_url"):
                 urls.add(str(url))
 
     return urls
@@ -186,6 +204,24 @@ def _prepare_bundle_storefront_doc(source_text: str) -> str:
         r"\1 (repository only)",
         text,
     )
+
+
+def _write_bundle_launchers(output_dir: Path) -> list[dict[str, Any]]:
+    entries: list[dict[str, Any]] = []
+    for name in LAUNCHER_FILES:
+        source = LAUNCHER_DIR / name
+        if not source.is_file():
+            raise FileNotFoundError(f"Missing bundle launcher template: {source}")
+        dest = output_dir / name
+        shutil.copy2(source, dest)
+        entries.append(
+            {
+                "path": dest.relative_to(output_dir).as_posix(),
+                "source": source.as_posix(),
+                "size_bytes": dest.stat().st_size,
+            }
+        )
+    return entries
 
 
 def _write_bundle_docs(output_dir: Path, repo_root: Path) -> list[dict[str, Any]]:
@@ -283,6 +319,7 @@ def build_static_bundle(
     index_path.write_text(index_html, encoding="utf-8")
 
     (output_dir / "README.md").write_text(README_TEMPLATE, encoding="utf-8")
+    launcher_entries = _write_bundle_launchers(output_dir)
     doc_entries = _write_bundle_docs(output_dir, repo_root)
 
     build_timestamp = datetime.now(tz=UTC).isoformat()
@@ -293,7 +330,8 @@ def build_static_bundle(
         "repo_root": str(repo_root),
         "total_items": bundle.get("total_items", 0),
         "outfit_candidates": len(bundle.get("outfit_candidates", [])),
-        "lucky_pair_candidates": len(bundle.get("lucky_pair_candidates", [])),
+        "lucky_look_candidates": len(bundle.get("lucky_look_candidates", [])),
+        "lucky_look_candidate_counts": bundle.get("lucky_look_candidate_counts", {}),
         "data_files": [
             {
                 "path": storefront_path.relative_to(output_dir).as_posix(),
@@ -305,6 +343,7 @@ def build_static_bundle(
         "catalogue_images": catalogue_entries,
         "selfie_images": selfie_entries,
         "docs": doc_entries,
+        "launchers": launcher_entries,
     }
     manifest_path = output_dir / "manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
@@ -352,6 +391,62 @@ def _collect_html_asset_refs(index_html: str) -> set[str]:
     return refs
 
 
+def _validate_bundle_launchers(bundle_dir: Path) -> None:
+    required_markers = (
+        "127.0.0.1:8080",
+        "http.server",
+        "8080",
+        "127.0.0.1",
+    )
+    forbidden_patterns = (
+        "/users/",
+        "/home/",
+        "/path/to/",
+        "cloth_store",
+        "dist/lavani-closet",
+    )
+    for name in LAUNCHER_FILES:
+        launcher_path = bundle_dir / name
+        if not launcher_path.is_file():
+            raise AssertionError(f"Missing launcher: {name}")
+        text = launcher_path.read_text(encoding="utf-8")
+        for marker in required_markers:
+            if marker not in text:
+                raise AssertionError(f"Launcher {name} missing expected marker: {marker!r}")
+        lowered = text.lower()
+        if "py" not in lowered and "python" not in lowered:
+            raise AssertionError(f"Launcher {name} must reference py or python")
+        for forbidden in forbidden_patterns:
+            if forbidden in text:
+                raise AssertionError(f"Launcher {name} contains hardcoded path: {forbidden!r}")
+    bat_text = (bundle_dir / "start-lavani.bat").read_text(encoding="utf-8")
+    assert "%~dp0" in bat_text or 'cd /d "%~dp0"' in bat_text
+    ps1_text = (bundle_dir / "start-lavani.ps1").read_text(encoding="utf-8")
+    assert "$PSScriptRoot" in ps1_text
+
+
+def _validate_featured_bundle_assets(bundle_dir: Path, bundle: dict[str, Any]) -> None:
+    dress_ids = {
+        item["catalog_id"] for item in bundle.get("items", []) if item.get("role") == "dress"
+    }
+    assert "outfit_30_dress" in dress_ids, "outfit_30_dress must be in the bundle payload"
+
+    outfit_30_catalogue = bundle_dir / "assets/catalogue/outfit_30/dress/output.png"
+    if not outfit_30_catalogue.is_file():
+        raise AssertionError("Missing outfit_30 catalogue image")
+
+    outfit_30_refocus = bundle_dir / "assets/selfies/outfit_30/crop_refocused.jpg"
+    if not outfit_30_refocus.is_file():
+        raise AssertionError("Missing outfit_30 refocus selfie asset")
+
+    outfit_10_refocus = bundle_dir / "assets/selfies/outfit_10/crop_refocused.jpg"
+    outfit_14_crop_only = bundle_dir / "assets/selfies/outfit_14/crop_only.jpg"
+    if not outfit_10_refocus.is_file():
+        raise AssertionError("Missing outfit_10 crop_refocused.jpg")
+    if not outfit_14_crop_only.is_file():
+        raise AssertionError("Missing outfit_14 crop_only.jpg (review-required variant)")
+
+
 def _http_smoke(base_url: str, path: str) -> tuple[int, bytes]:
     url = f"{base_url.rstrip('/')}{path}"
     with urllib.request.urlopen(url, timeout=10) as response:
@@ -376,7 +471,10 @@ def validate_static_bundle(bundle_dir: Path, *, run_http_smoke: bool = True) -> 
     bundle = json.loads(storefront_path.read_text(encoding="utf-8"))
     assert int(bundle.get("total_items", 0)) > 0
     assert bundle.get("outfit_candidates")
-    assert bundle.get("lucky_pair_candidates")
+    assert bundle.get("lucky_look_candidates")
+
+    _validate_bundle_launchers(bundle_dir)
+    _validate_featured_bundle_assets(bundle_dir, bundle)
 
     for url in collect_bundle_image_urls(bundle):
         asset_path = bundle_dir / url
@@ -450,7 +548,8 @@ def validate_static_bundle(bundle_dir: Path, *, run_http_smoke: bool = True) -> 
         "file_count": len(files),
         "total_items": bundle["total_items"],
         "outfit_candidates": len(bundle["outfit_candidates"]),
-        "lucky_pair_candidates": len(bundle["lucky_pair_candidates"]),
+        "lucky_look_candidates": len(bundle["lucky_look_candidates"]),
+        "lucky_look_candidate_counts": bundle.get("lucky_look_candidate_counts", {}),
         "manifest": manifest,
         "http_smoke": smoke,
     }
