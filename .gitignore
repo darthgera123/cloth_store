@@ -10,6 +10,9 @@ __pycache__/
 # Private wardrobe data
 data/
 
+# Local final selfie delivery bundle
+/final_selfies/
+
 # Local mirror-selfie fixtures and bench outputs
 outfit_*.jpeg
 bench/plan1_localization/outputs/
