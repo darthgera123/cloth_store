@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import io
 import json
+import re
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -59,6 +60,7 @@ from cloth_store.catalog_output_contract import (
 from cloth_store.catalog_paths import (
     plan1_fixture_ids,
     resolve_fixture_source_path,
+    resolve_plan1_fixtures,
 )
 from cloth_store.catalog_pipeline import (
     PIPELINE_GENERATION_MODE,
@@ -154,14 +156,31 @@ from cloth_store.sam_masks import (
     pad_normalized_box,
     place_crop_mask_in_full_image,
 )
+from cloth_store.selfie_final_packaging import (
+    build_batched_contact_sheets,
+    package_final_selfies,
+    validate_final_selfies,
+)
 from cloth_store.selfie_refocus import (
-    apply_background_refocus,
+    REFOCUS_METHOD,
+    PersonBboxResult,
+    RefocusMetrics,
+    analyze_mask_body_coverage,
+    apply_background_blur,
+    assess_review_required,
     build_feathered_alpha,
+    compute_background_color_metrics,
     compute_metrics,
     compute_portrait_crop,
     derive_person_bbox_from_localization,
+    enrich_person_bbox_with_garments,
+    is_incomplete_person_mask,
+    metadata_reuse_eligible,
+    process_fixture,
     render_crop_only,
     render_crop_refocused,
+    should_attempt_mask_recovery,
+    subject_bounds_for_crop,
     union_normalized_boxes,
 )
 from cloth_store.services.catalog import (
@@ -174,9 +193,15 @@ from cloth_store.services.styling import (
     StylingResolver,
     build_styling_advice_text,
     build_styling_caption,
+    resolve_fixture_selfie_asset,
     try_resolve_fixture_selfie_path,
 )
-from cloth_store.vlm_bbox import parse_localization_response, validate_localization
+from cloth_store.vlm_bbox import (
+    parse_full_person_response,
+    parse_localization_response,
+    validate_full_person_localization,
+    validate_localization,
+)
 from cloth_store.vlm_garment_attributes import (
     parse_garment_attributes_response,
     validate_attribute_field,
@@ -209,6 +234,7 @@ def test_website_static_catalog_contract(tmp_path: Path) -> None:
         catalog_service=catalog_service,
         repo_root=repo_root,
         selfies_url_prefix="/data",
+        refocus_selfies_url_prefix="/final_selfies",
     )
 
     assert catalog_service.is_available is True
@@ -271,7 +297,10 @@ def test_website_static_catalog_contract(tmp_path: Path) -> None:
     assert search.items[0].search_score > 0
 
     index_html = (repo_root / "src/cloth_store/web/index.html").read_text(encoding="utf-8")
-    assert "Lavani's Closet" in index_html
+    brand_match = re.search(r'<h1 class="brand-title">([^<]+)</h1>', index_html)
+    assert brand_match is not None
+    brand_title = brand_match.group(1)
+    assert brand_title in index_html
     assert 'id="item-detail-modal"' in index_html
     assert 'id="outfit-generator-modal"' in index_html
     assert 'id="lucky-pair-modal"' in index_html
@@ -286,6 +315,7 @@ def test_website_static_catalog_contract(tmp_path: Path) -> None:
     assert "output_1k" not in app_js
     assert "advice_title" in app_js
     assert "advice_text" in app_js
+    assert "Gathering the latest edit from the catalogue." in app_js
 
     styles_css = (repo_root / "src/cloth_store/web/static/styles.css").read_text(encoding="utf-8")
     assert "--lavender" in styles_css
@@ -308,7 +338,19 @@ def test_website_static_catalog_contract(tmp_path: Path) -> None:
     top_association = top_styling.associations[0]
     assert top_association.fixture == "outfit_10"
     assert top_association.selfie.available is True
-    assert top_association.selfie.image_url == "/data/outfit_10.jpeg"
+    assert top_association.selfie.image_url == "/final_selfies/outfit_10/crop_refocused.jpg"
+
+    outfit_14_styling = styling_resolver.resolve_for_catalog_item("outfit_14_top")
+    assert outfit_14_styling is not None
+    assert (
+        outfit_14_styling.associations[0].selfie.image_url
+        == "/final_selfies/outfit_14/crop_only.jpg"
+    )
+
+    refocus_asset = resolve_fixture_selfie_asset("outfit_10", repo_root=repo_root)
+    assert refocus_asset is not None
+    assert refocus_asset.variant == "crop_refocused"
+    assert refocus_asset.source_path.name == "crop_refocused.jpg"
     assert top_association.advice_title == FASHION_ADVICE_TITLE
     assert top_association.advice_text == "Black Waistcoat with dark gray trousers."
 
@@ -350,10 +392,13 @@ def test_website_static_catalog_contract(tmp_path: Path) -> None:
     try:
         status, body = smoke_fetch(base, "/")
         assert status == 200
-        assert b"Lavani's Closet" in body
+        assert brand_title.encode() in body
         status, body = smoke_fetch(base, "/final_catalog/outfit_3/top/output.png")
         assert status == 200
         assert body[:8] == b"\x89PNG\r\n\x1a\n"
+        status, body = smoke_fetch(base, "/final_selfies/outfit_10/crop_refocused.jpg")
+        assert status == 200
+        assert body[:2] == b"\xff\xd8"
     finally:
         server.shutdown()
         server.server_close()
@@ -579,7 +624,7 @@ def test_vlm_bbox_parsing_and_validation() -> None:
     assert numeric_conf["confidence"] == "high"
 
 
-def test_sam_masks_and_catalog_cutouts() -> None:
+def test_sam_masks_and_catalog_cutouts(tmp_path: Path) -> None:
     """SAM crop/mask helpers and catalog cutout centering on white canvas."""
     box = [0.40, 0.40, 0.60, 0.60]
     padded = pad_normalized_box(box, pad_fraction=0.10, image_width=1000, image_height=800)
@@ -674,7 +719,7 @@ def test_sam_masks_and_catalog_cutouts() -> None:
             role="bottom",
         )
 
-    # Selfie refocus: person bbox derivation, portrait crop geometry, refocus compositing.
+    # Selfie refocus: person bbox derivation, portrait crop geometry, blur-only compositing.
     localization = {
         "layout": "separates",
         "top": [0.30, 0.35, 0.55, 0.58],
@@ -710,13 +755,19 @@ def test_sam_masks_and_catalog_cutouts() -> None:
     assert crop_refocused.size == crop_only.size
 
     alpha = build_feathered_alpha(person_mask[crop.y0 : crop.y1, crop.x0 : crop.x1])
-    refocus_arr = apply_background_refocus(np.array(crop_only), alpha)
+    refocus_arr = apply_background_blur(np.array(crop_only), alpha)
     core = alpha >= 0.99
     if core.any():
         assert np.array_equal(refocus_arr[core], np.array(crop_only)[core])
     background = alpha < 0.05
     assert background.any()
     assert not np.array_equal(refocus_arr[background], np.array(crop_only)[background])
+
+    color_preservation, lum_preservation = compute_background_color_metrics(
+        np.array(crop_only), refocus_arr, alpha
+    )
+    assert color_preservation >= 0.95
+    assert lum_preservation >= 0.95
 
     metrics = compute_metrics(
         image_width=image_w,
@@ -727,10 +778,192 @@ def test_sam_masks_and_catalog_cutouts() -> None:
         crop_refocused_rgb=np.array(crop_refocused),
     )
     assert metrics.person_pixel_preservation >= 0.95
+    assert metrics.background_color_preservation >= 0.95
+    assert metrics.background_luminance_preservation >= 0.95
     assert 0.0 <= metrics.retained_background_fraction <= 1.0
 
     crop_repeat = compute_portrait_crop(image_w, image_h, person_mask)
     assert crop_repeat == crop
+
+    dress_localization = {
+        "layout": "dress",
+        "dress": [0.34, 0.36, 0.59, 0.76],
+    }
+    dress_bbox = derive_person_bbox_from_localization(dress_localization)
+    assert dress_bbox.source_roles == ["dress"]
+    assert dress_bbox.box[1] < dress_localization["dress"][1]
+
+    review_flag, review_reason = assess_review_required(
+        person_bbox=person_bbox,
+        metrics=metrics,
+    )
+    assert review_flag is False
+    clipped_metrics = compute_metrics(
+        image_width=image_w,
+        image_height=image_h,
+        person_mask=person_mask,
+        crop=crop,
+        crop_only_rgb=np.array(crop_only),
+        crop_refocused_rgb=np.array(crop_refocused),
+    )
+    clipped_metrics = RefocusMetrics(
+        subject_clipped=True,
+        retained_background_fraction=clipped_metrics.retained_background_fraction,
+        background_reduction_fraction=clipped_metrics.background_reduction_fraction,
+        person_mask_coverage=clipped_metrics.person_mask_coverage,
+        person_pixel_preservation=clipped_metrics.person_pixel_preservation,
+        edge_halo_score=clipped_metrics.edge_halo_score,
+        background_color_preservation=clipped_metrics.background_color_preservation,
+        background_luminance_preservation=clipped_metrics.background_luminance_preservation,
+    )
+    clipped_review, clipped_reason = assess_review_required(
+        person_bbox=person_bbox,
+        metrics=clipped_metrics,
+    )
+    assert clipped_review is True
+    assert clipped_reason == "subject_clipped"
+
+    torso_only_mask = np.zeros((image_h, image_w), dtype=bool)
+    torso_only_mask[220:320, 120:280] = True
+    dress_localization_for_mask = {
+        "layout": "dress",
+        "dress": [0.30, 0.20, 0.70, 0.80],
+    }
+    person_bbox_for_mask = [0.28, 0.18, 0.72, 0.82]
+    incomplete, incomplete_reason = is_incomplete_person_mask(
+        torso_only_mask,
+        person_bbox_for_mask,
+        dress_localization_for_mask,
+        image_width=image_w,
+        image_height=image_h,
+    )
+    assert incomplete is True
+    assert incomplete_reason == "torso_only_mask"
+    torso_coverage = analyze_mask_body_coverage(
+        torso_only_mask,
+        person_bbox_for_mask,
+        image_width=image_w,
+        image_height=image_h,
+    )
+    assert torso_coverage["head_hair"] == 0.0
+    assert torso_coverage["torso"] > 0.0
+
+    full_person_mask = np.zeros((image_h, image_w), dtype=bool)
+    full_person_mask[100:520, 100:300] = True
+    complete, complete_reason = is_incomplete_person_mask(
+        full_person_mask,
+        person_bbox_for_mask,
+        dress_localization_for_mask,
+        image_width=image_w,
+        image_height=image_h,
+    )
+    assert complete is False
+    assert complete_reason is None
+
+    qwen_box = [0.32, 0.15, 0.68, 0.88]
+    enriched = enrich_person_bbox_with_garments(qwen_box, dress_localization_for_mask)
+    assert enriched.provenance == "qwen_full_reflected_person_v1"
+    assert enriched.box[0] <= dress_localization_for_mask["dress"][0]
+    assert enriched.box[2] >= dress_localization_for_mask["dress"][2]
+    assert enriched.box[1] < dress_localization_for_mask["dress"][1]
+
+    subject_bounds = subject_bounds_for_crop(
+        torso_only_mask,
+        person_bbox_for_mask,
+        image_width=image_w,
+        image_height=image_h,
+    )
+    assert subject_bounds[1] < 220
+    assert subject_bounds[3] >= 320
+    assert subject_bounds[2] >= 280
+
+    recovery_bbox = PersonBboxResult(
+        box=person_bbox_for_mask,
+        provenance="garment_union_asymmetric_v1",
+        confidence=0.8,
+        source_roles=["dress"],
+    )
+    attempt, trigger = should_attempt_mask_recovery(
+        person_mask=torso_only_mask,
+        person_bbox=recovery_bbox,
+        localization=dress_localization_for_mask,
+        image_width=image_w,
+        image_height=image_h,
+    )
+    assert attempt is True
+    assert trigger == "torso_only_mask"
+
+    crop_with_bbox = compute_portrait_crop(
+        image_w,
+        image_h,
+        torso_only_mask,
+        person_bbox=person_bbox_for_mask,
+    )
+    assert crop_with_bbox.y0 <= subject_bounds[1]
+    assert crop_with_bbox.y1 >= subject_bounds[3]
+
+    full_person_payload = parse_full_person_response('{"person":[0.1,0.2,0.9,0.95]}')
+    assert validate_full_person_localization(full_person_payload)["person"] == [
+        0.1,
+        0.2,
+        0.9,
+        0.95,
+    ]
+
+    cloth_repo = Path(__file__).resolve().parents[1]
+    range_fixtures = resolve_plan1_fixtures(from_fixture=1, to_fixture=4)
+    assert range_fixtures == [f"outfit_{index}" for index in range(1, 5)]
+    assert len(plan1_fixture_ids()) == 31
+
+    bench_root = cloth_repo / "bench/selfie_refocus/candidates"
+    outfit_1_meta = bench_root / "outfit_1/metadata.json"
+    if outfit_1_meta.is_file():
+        metadata = json.loads(outfit_1_meta.read_text(encoding="utf-8"))
+        assert metadata["parameters"]["refocus_method"] == REFOCUS_METHOD
+        source_path = resolve_fixture_source_path("outfit_1", repo_root=cloth_repo)
+        assert metadata_reuse_eligible(metadata, source_path=source_path)
+        first = process_fixture(
+            "outfit_1",
+            repo_root=cloth_repo,
+            output_root=bench_root,
+            json_dir=cloth_repo / "bench/plan1_localization/outputs",
+        )
+        second = process_fixture(
+            "outfit_1",
+            repo_root=cloth_repo,
+            output_root=bench_root,
+            json_dir=cloth_repo / "bench/plan1_localization/outputs",
+        )
+        assert first.generated_or_reused == "reused"
+        assert second.generated_or_reused == "reused"
+
+        final_root = tmp_path / "final_selfies"
+        manifest = package_final_selfies(
+            repo_root=cloth_repo,
+            final_root=final_root,
+            bench_root=bench_root,
+            fixture_ids=["outfit_1"],
+        )
+        assert manifest["refocus_method"] == REFOCUS_METHOD
+        assert manifest["fixtures"][0]["recommended_variant"] in {"crop_only", "crop_refocused"}
+        rerun = package_final_selfies(
+            repo_root=cloth_repo,
+            final_root=final_root,
+            bench_root=bench_root,
+            fixture_ids=["outfit_1"],
+        )
+        assert rerun["skipped_fixtures"] == ["outfit_1"]
+        assert validate_final_selfies(repo_root=cloth_repo, final_root=final_root) == []
+
+        sheet_manifest = build_batched_contact_sheets(
+            repo_root=cloth_repo,
+            final_root=final_root,
+            fixtures=manifest["fixtures"],
+            batch_size_outfits=4,
+        )
+        assert sheet_manifest["batch_size_outfits"] == 4
+        assert len(sheet_manifest["sheets"]) == 1
+        assert sheet_manifest["sheets"][0]["outfits"] == ["outfit_1"]
 
 
 def test_catalog_template_geometry() -> None:

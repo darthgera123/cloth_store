@@ -40,6 +40,11 @@ def build_storefront_bundle(
         catalog_service=catalog_service,
         repo_root=root,
         selfies_url_prefix=selfies_url_prefix,
+        refocus_selfies_url_prefix=(
+            "/final_selfies"
+            if selfies_url_prefix.rstrip("/") == DEFAULT_SELFIES_PREFIX.rstrip("/")
+            else selfies_url_prefix
+        ),
     )
 
     items: list[dict[str, Any]] = []

@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+import json
 import random
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Literal
 
 from cloth_store.catalog_paths import (
     DEFAULT_SOURCE_PHOTO_DIR,
@@ -13,6 +14,9 @@ from cloth_store.catalog_paths import (
     resolve_fixture_source_path,
 )
 from cloth_store.services.catalog import CatalogItemView, build_product_name
+
+DEFAULT_FINAL_SELFIES_ROOT = Path("final_selfies")
+SelfieDisplayVariant = Literal["crop_refocused", "crop_only", "original"]
 
 if TYPE_CHECKING:
     from cloth_store.services.catalog import CatalogService
@@ -282,6 +286,88 @@ def try_resolve_fixture_selfie_path(
     return None
 
 
+@dataclass(frozen=True, slots=True)
+class FixtureSelfieAsset:
+    """Resolved on-disk selfie asset for storefront display."""
+
+    source_path: Path
+    url_path: str
+    variant: SelfieDisplayVariant
+    live_url_prefix: str
+
+    @property
+    def image_url(self) -> str:
+        prefix = self.live_url_prefix.rstrip("/")
+        return f"{prefix}/{self.url_path}"
+
+
+def _load_final_selfie_metadata(
+    fixture_id: str,
+    *,
+    repo_root: Path,
+    final_selfies_root: Path,
+) -> dict[str, Any] | None:
+    metadata_path = repo_root / final_selfies_root / fixture_id / "metadata.json"
+    if not metadata_path.is_file():
+        return None
+    try:
+        payload = json.loads(metadata_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    return payload if isinstance(payload, dict) else None
+
+
+def _preferred_refocus_variant(metadata: dict[str, Any]) -> SelfieDisplayVariant:
+    if metadata.get("review_required"):
+        return "crop_only"
+    recommended = metadata.get("recommended_variant")
+    if recommended == "crop_only":
+        return "crop_only"
+    return "crop_refocused"
+
+
+def resolve_fixture_selfie_asset(
+    fixture_id: str,
+    *,
+    repo_root: Path,
+    final_selfies_root: Path = DEFAULT_FINAL_SELFIES_ROOT,
+    live_refocus_url_prefix: str = "/final_selfies",
+    live_original_url_prefix: str = "/data",
+) -> FixtureSelfieAsset | None:
+    """Resolve the best available per-outfit selfie for storefront display.
+
+    Prefers packaged refocus crops from ``final_selfies/`` (``crop_refocused`` by
+    default, ``crop_only`` when review is required). Falls back to the original
+    source mirror selfie under ``data/`` when no refocus deliverable exists.
+    """
+    root = repo_root.resolve()
+    metadata = _load_final_selfie_metadata(
+        fixture_id,
+        repo_root=root,
+        final_selfies_root=final_selfies_root,
+    )
+    if metadata is not None:
+        variant = _preferred_refocus_variant(metadata)
+        variant_path = root / final_selfies_root / fixture_id / f"{variant}.jpg"
+        if variant_path.is_file():
+            return FixtureSelfieAsset(
+                source_path=variant_path.resolve(),
+                url_path=f"{fixture_id}/{variant}.jpg",
+                variant=variant,
+                live_url_prefix=live_refocus_url_prefix,
+            )
+
+    original = try_resolve_fixture_selfie_path(fixture_id, repo_root=root)
+    if original is None:
+        return None
+    return FixtureSelfieAsset(
+        source_path=original,
+        url_path=original.name,
+        variant="original",
+        live_url_prefix=live_original_url_prefix,
+    )
+
+
 def fixtures_for_item(item: dict[str, Any]) -> tuple[str, ...]:
     fixtures: list[str] = []
     seen: set[str] = set()
@@ -311,10 +397,16 @@ class StylingResolver:
         catalog_service: CatalogService,
         repo_root: Path,
         selfies_url_prefix: str = "/fixture-selfies",
+        refocus_selfies_url_prefix: str | None = None,
     ) -> None:
         self._catalog_service = catalog_service
         self._repo_root = repo_root.resolve()
         self._selfies_url_prefix = selfies_url_prefix.rstrip("/")
+        self._refocus_selfies_url_prefix = (
+            refocus_selfies_url_prefix.rstrip("/")
+            if refocus_selfies_url_prefix is not None
+            else self._selfies_url_prefix
+        )
         self._fixture_catalog_ids: dict[str, tuple[str, ...]] = {}
         self._rebuild_indices()
 
@@ -625,13 +717,21 @@ class StylingResolver:
         return tuple(partners)
 
     def _selfie_ref(self, fixture_id: str) -> StylingSelfieRef:
-        source_path = try_resolve_fixture_selfie_path(fixture_id, repo_root=self._repo_root)
-        if source_path is None:
+        asset = resolve_fixture_selfie_asset(
+            fixture_id,
+            repo_root=self._repo_root,
+        )
+        if asset is None:
             return StylingSelfieRef(fixture=fixture_id, image_url=None, available=False)
-        filename = source_path.name
+
+        prefix = (
+            self._refocus_selfies_url_prefix
+            if asset.variant in {"crop_refocused", "crop_only"}
+            else self._selfies_url_prefix
+        )
         return StylingSelfieRef(
             fixture=fixture_id,
-            image_url=f"{self._selfies_url_prefix}/{filename}",
+            image_url=f"{prefix}/{asset.url_path}",
             available=True,
         )
 

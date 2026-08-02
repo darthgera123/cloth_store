@@ -1,0 +1,68 @@
+{
+  "fixture_id": "outfit_13",
+  "status": "ok",
+  "review_required": false,
+  "review_reason": null,
+  "recommended_variant": "crop_refocused",
+  "source_path": "data/outfit_13.jpeg",
+  "source_sha256": "d5be7ad87297d3bfde014871d9cac470e26b1344cecd54ec4e06c1f7bfc0c5bc",
+  "person_bbox": {
+    "box": [
+      0.26954,
+      0.3466,
+      0.51146,
+      0.98276
+    ],
+    "provenance": "garment_union_asymmetric_v1",
+    "confidence": 0.812,
+    "source_roles": [
+      "top",
+      "bottom"
+    ]
+  },
+  "crop": {
+    "x0": 22,
+    "y0": 492,
+    "x1": 908,
+    "y1": 1600,
+    "aspect_ratio": 0.7996,
+    "aspect_label": "4:5",
+    "padding_fraction": 0.06,
+    "output_width": 886,
+    "output_height": 1108
+  },
+  "metrics": {
+    "subject_clipped": false,
+    "retained_background_fraction": 0.8211,
+    "background_reduction_fraction": 0.0963,
+    "person_mask_coverage": 0.1789,
+    "person_pixel_preservation": 0.9999,
+    "edge_halo_score": 0.0385,
+    "background_color_preservation": 0.9999,
+    "background_luminance_preservation": 1.0
+  },
+  "variants": {
+    "crop_only": "final_selfies/outfit_13/crop_only.jpg",
+    "crop_refocused": "final_selfies/outfit_13/crop_refocused.jpg"
+  },
+  "variant_sha256": {
+    "crop_only": "e55485d16e07aadc0006980511502d0b351b1c53f112fc1603cea44628a424c5",
+    "crop_refocused": "fe98f2fcb8200815b20e2eaa789132e635d1c93a347188485cb33910abf055c9"
+  },
+  "parameters": {
+    "refocus_method": "blur_only_v2",
+    "primary_aspect": "4:5",
+    "fallback_aspect": "3:4",
+    "crop_padding_fraction": 0.06,
+    "blur_radius_px": 8,
+    "background_brightness": 1.0,
+    "background_saturation": 1.0,
+    "feather_radius_px": 5
+  },
+  "bench_artifacts": {
+    "person_mask": "bench/selfie_refocus/candidates/outfit_13/person_mask.png",
+    "bbox_mask_overlay": "bench/selfie_refocus/candidates/outfit_13/bbox_mask_overlay.jpg",
+    "comparison_sheet": "bench/selfie_refocus/candidates/outfit_13/comparison_sheet.jpg"
+  },
+  "generated_or_reused": "processed"
+}

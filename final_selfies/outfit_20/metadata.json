@@ -1,0 +1,68 @@
+{
+  "fixture_id": "outfit_20",
+  "status": "ok",
+  "review_required": false,
+  "review_reason": null,
+  "recommended_variant": "crop_refocused",
+  "source_path": "data/outfit_20.jpeg",
+  "source_sha256": "1273025cfffd40f8c2c8cf99a8d888a4ce6e4d6717a4cb6f802b60bb9201a5d9",
+  "person_bbox": {
+    "box": [
+      0.3592,
+      0.29400000000000004,
+      0.6408,
+      0.9084
+    ],
+    "provenance": "garment_union_asymmetric_v1",
+    "confidence": 0.819,
+    "source_roles": [
+      "top",
+      "bottom"
+    ]
+  },
+  "crop": {
+    "x0": 166,
+    "y0": 436,
+    "x1": 1036,
+    "y1": 1524,
+    "aspect_ratio": 0.7996,
+    "aspect_label": "4:5",
+    "padding_fraction": 0.06,
+    "output_width": 870,
+    "output_height": 1088
+  },
+  "metrics": {
+    "subject_clipped": false,
+    "retained_background_fraction": 0.8247,
+    "background_reduction_fraction": 0.0973,
+    "person_mask_coverage": 0.1753,
+    "person_pixel_preservation": 0.9999,
+    "edge_halo_score": 0.0551,
+    "background_color_preservation": 0.9994,
+    "background_luminance_preservation": 0.9997
+  },
+  "variants": {
+    "crop_only": "final_selfies/outfit_20/crop_only.jpg",
+    "crop_refocused": "final_selfies/outfit_20/crop_refocused.jpg"
+  },
+  "variant_sha256": {
+    "crop_only": "34aadc752d623d9b37b9b901aea167353ff97c8733161854596c38944c204d06",
+    "crop_refocused": "c29ba17ec443bdd1139111e4aeb721e156a4e490b925d2e791c2d457f6396e6a"
+  },
+  "parameters": {
+    "refocus_method": "blur_only_v2",
+    "primary_aspect": "4:5",
+    "fallback_aspect": "3:4",
+    "crop_padding_fraction": 0.06,
+    "blur_radius_px": 8,
+    "background_brightness": 1.0,
+    "background_saturation": 1.0,
+    "feather_radius_px": 5
+  },
+  "bench_artifacts": {
+    "person_mask": "bench/selfie_refocus/candidates/outfit_20/person_mask.png",
+    "bbox_mask_overlay": "bench/selfie_refocus/candidates/outfit_20/bbox_mask_overlay.jpg",
+    "comparison_sheet": "bench/selfie_refocus/candidates/outfit_20/comparison_sheet.jpg"
+  },
+  "generated_or_reused": "processed"
+}

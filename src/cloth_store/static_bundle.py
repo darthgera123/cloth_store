@@ -1,4 +1,4 @@
-"""Build a shareable static-site bundle for Lavani's Closet."""
+"""Build a shareable static-site bundle for Cloth Store."""
 
 from __future__ import annotations
 
@@ -17,12 +17,12 @@ from typing import Any
 from cloth_store.web import STATIC_ROOT, WEB_ROOT
 from cloth_store.web_storefront import build_storefront_bundle, write_storefront_bundle
 
-BUNDLE_NAME = "lavani-closet"
+BUNDLE_NAME = "cloth-store"
 BUNDLE_VERSION = "1"
 CATALOGUE_PREFIX = "assets/catalogue"
 SELFIE_PREFIX = "assets/selfies"
-DEFAULT_OUTPUT_DIR = Path("dist/lavani-closet")
-DEFAULT_ZIP_PATH = Path("dist/lavani-closet.zip")
+DEFAULT_OUTPUT_DIR = Path("dist/cloth-store")
+DEFAULT_ZIP_PATH = Path("dist/cloth-store.zip")
 
 FORBIDDEN_BUNDLE_PARTS = (
     "output_1k.png",
@@ -35,10 +35,11 @@ FORBIDDEN_BUNDLE_PARTS = (
 
 PROMPT_SOURCE = Path("prompts/catalogue_description_system.md")
 STATIC_BUNDLE_GUIDE_SOURCE = Path("docs/static-bundle-guide.md")
+CLOTH_STORE_DOC_SOURCE = Path("docs/CLOTH_STORE.md")
 
-README_TEMPLATE = """# Lavani's Closet — Static Snapshot
+README_TEMPLATE = """# Cloth Store — Static Snapshot
 
-This folder is a **standalone static snapshot** of the Lavani's Closet storefront.
+This folder is a **standalone static snapshot** of the Cloth Store storefront.
 It does not require the Cloth Store repository, FastAPI, uv, or any ML/runtime
 dependencies.
 
@@ -50,7 +51,7 @@ dependencies.
 | `static/` | CSS and JavaScript |
 | `data/storefront.json` | Pre-computed catalogue, styling, outfit, and lucky-pair data |
 | `assets/catalogue/` | 512px catalogue `output.png` images referenced by the snapshot |
-| `assets/selfies/` | Source mirror selfies referenced by styling and outfit generator |
+| `assets/selfies/` | Refocused crops per `outfit_N/` (`crop_refocused.jpg` or `crop_only.jpg`) |
 | `docs/` | Storefront and description-prompt documentation |
 | `manifest.json` | Build metadata and packaged asset inventory |
 
@@ -81,7 +82,10 @@ local HTTP server above.
 ## Image policy
 
 - Catalogue cards and modals use **512px** `output.png` derivatives only.
-- Selfies are the original source mirror photos bundled for styling context.
+- Selfies prefer blur-only refocused portrait crops from `final_selfies/`:
+  - normal outfits → `assets/selfies/outfit_N/crop_refocused.jpg`
+  - review-required outfits → `assets/selfies/outfit_N/crop_only.jpg`
+  - no refocus deliverable → original `assets/selfies/outfit_N.jpeg`
 - No 1K masters, pipeline inputs, or private database files are included.
 
 ## Snapshot notice
@@ -135,8 +139,11 @@ def _catalogue_source_path(repo_root: Path, bundle_url: str) -> Path:
 
 
 def _selfie_source_path(repo_root: Path, bundle_url: str) -> Path:
-    filename = bundle_url.removeprefix(f"{SELFIE_PREFIX}/")
-    return repo_root / "data" / filename
+    rel = bundle_url.removeprefix(f"{SELFIE_PREFIX}/")
+    refocus_path = repo_root / "final_selfies" / rel
+    if refocus_path.is_file():
+        return refocus_path
+    return repo_root / "data" / rel
 
 
 def _copy_asset(source: Path, destination: Path, *, manifest_root: Path) -> dict[str, Any]:
@@ -167,6 +174,20 @@ def prepare_bundle_index_html(source_html: str, bundle: dict[str, Any]) -> str:
     return html
 
 
+def _prepare_bundle_storefront_doc(source_text: str) -> str:
+    """Rewrite repo-root links for the self-contained bundle docs tree."""
+    text = source_text.replace(
+        "../prompts/catalogue_description_system.md",
+        "catalogue_description_system.md",
+    )
+    # Drop repo-only relative links (targets not shipped in the bundle).
+    return re.sub(
+        r"\[([^\]]+)\]\(\.\./(?:final_selfies|bench/selfie_refocus|final_catalog|RECONSTRUCTION_PIPELINE)[^)]*\)",
+        r"\1 (repository only)",
+        text,
+    )
+
+
 def _write_bundle_docs(output_dir: Path, repo_root: Path) -> list[dict[str, Any]]:
     docs_dir = output_dir / "docs"
     docs_dir.mkdir(parents=True, exist_ok=True)
@@ -178,6 +199,20 @@ def _write_bundle_docs(output_dir: Path, repo_root: Path) -> list[dict[str, Any]
         shutil.copy2(guide_source, dest)
         entries.append(
             {"path": dest.relative_to(output_dir).as_posix(), "source": guide_source.as_posix()}
+        )
+
+    storefront_doc_source = repo_root / CLOTH_STORE_DOC_SOURCE
+    if storefront_doc_source.is_file():
+        dest = docs_dir / "CLOTH_STORE.md"
+        dest.write_text(
+            _prepare_bundle_storefront_doc(storefront_doc_source.read_text(encoding="utf-8")),
+            encoding="utf-8",
+        )
+        entries.append(
+            {
+                "path": dest.relative_to(output_dir).as_posix(),
+                "source": storefront_doc_source.as_posix(),
+            }
         )
 
     prompt_source = repo_root / PROMPT_SOURCE
@@ -366,6 +401,7 @@ def validate_static_bundle(bundle_dir: Path, *, run_http_smoke: bool = True) -> 
     app_js = (bundle_dir / "static/app.js").read_text(encoding="utf-8")
     assert "storefront-data" in app_js
     assert "/api/v1" not in app_js
+    assert "Gathering the latest edit from the catalogue." in app_js
 
     smoke: dict[str, Any] | None = None
     if run_http_smoke:
@@ -391,9 +427,14 @@ def validate_static_bundle(bundle_dir: Path, *, run_http_smoke: bool = True) -> 
         time.sleep(0.1)
         base = f"http://127.0.0.1:{port}"
         try:
+            brand_match = re.search(
+                r'<h1 class="brand-title">([^<]+)</h1>',
+                index_html,
+            )
+            assert brand_match is not None
             status, body = _http_smoke(base, "/")
             assert status == 200
-            assert b"Lavani's Closet" in body
+            assert brand_match.group(1).encode() in body
             status, body = _http_smoke(base, "/data/storefront.json")
             assert status == 200
             assert b'"outfit_candidates"' in body
@@ -417,7 +458,7 @@ def validate_static_bundle(bundle_dir: Path, *, run_http_smoke: bool = True) -> 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Build a shareable static Lavani's Closet bundle (directory + zip).",
+        description="Build a shareable static Cloth Store bundle (directory + zip).",
     )
     parser.add_argument(
         "--repo-root",

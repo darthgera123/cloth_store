@@ -1,0 +1,67 @@
+{
+  "fixture_id": "outfit_29",
+  "source_path": "data/outfit_29.jpeg",
+  "source_sha256": "fbee3d32c46dadb29939979705247fab4b6fd6b65e6590d4b91e77654cb3070e",
+  "localization_sha256": "233b572f823479220891b0f2afb11e1e7a31ad1c951e6b4557b13994475f5fca",
+  "person_bbox": {
+    "box": [
+      0.3222,
+      0.27799999999999997,
+      0.6678000000000001,
+      0.7388
+    ],
+    "provenance": "garment_union_asymmetric_v1",
+    "confidence": 0.814,
+    "source_roles": [
+      "dress"
+    ]
+  },
+  "crop": {
+    "x0": 331,
+    "y0": 405,
+    "x1": 881,
+    "y1": 1093,
+    "aspect_ratio": 0.7994,
+    "aspect_label": "4:5",
+    "padding_fraction": 0.06,
+    "output_width": 550,
+    "output_height": 688
+  },
+  "metrics": {
+    "subject_clipped": false,
+    "retained_background_fraction": 0.9506,
+    "background_reduction_fraction": 0.0401,
+    "person_mask_coverage": 0.0494,
+    "person_pixel_preservation": 0.9997,
+    "edge_halo_score": 0.0596,
+    "background_color_preservation": 0.997,
+    "background_luminance_preservation": 0.9982
+  },
+  "review_required": true,
+  "review_reason": "low_mask_coverage",
+  "recommended_variant": "crop_only",
+  "generated_or_reused": "processed",
+  "variants": {
+    "crop_only": "bench/selfie_refocus/candidates/outfit_29/crop_only.jpg",
+    "crop_refocused": "bench/selfie_refocus/candidates/outfit_29/crop_refocused.jpg"
+  },
+  "variant_sha256": {
+    "crop_only": "cd1ff929251292f89ddc1f5c4db1013ccb386ae8f50791fc2daab368e5528731",
+    "crop_refocused": "a136df165596142f7a016366176bba819f19ac48f607265d230de85e71833abc"
+  },
+  "artifacts": {
+    "person_mask": "bench/selfie_refocus/candidates/outfit_29/person_mask.png",
+    "bbox_mask_overlay": "bench/selfie_refocus/candidates/outfit_29/bbox_mask_overlay.jpg",
+    "comparison_sheet": "bench/selfie_refocus/candidates/outfit_29/comparison_sheet.jpg"
+  },
+  "parameters": {
+    "refocus_method": "blur_only_v2",
+    "primary_aspect": "4:5",
+    "fallback_aspect": "3:4",
+    "crop_padding_fraction": 0.06,
+    "blur_radius_px": 8,
+    "background_brightness": 1.0,
+    "background_saturation": 1.0,
+    "feather_radius_px": 5
+  }
+}

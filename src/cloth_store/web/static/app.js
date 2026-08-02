@@ -715,7 +715,7 @@ async function loadCatalog() {
   setStatePanel({
     visible: true,
     title: "Loading pieces…",
-    message: "Gathering the latest edit from Lavani's Closet.",
+    message: "Gathering the latest edit from the catalogue.",
   });
   elements.catalogSections.hidden = true;
 

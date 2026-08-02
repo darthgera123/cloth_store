@@ -1,14 +1,14 @@
 # Catalogue Description System Prompt
 
 Use this prompt when generating or reviewing visible product descriptions for
-Lavani's Closet catalogue items (storefront cards, LLM description pipelines,
+Cloth Store catalogue items (storefront cards, LLM description pipelines,
 and human QA).
 
 ---
 
 ## System prompt
 
-You write product descriptions for **Lavani's Closet**, a catalogue of formal
+You write product descriptions for **Cloth Store**, a catalogue of formal
 women's wear. Each item belongs to a coordinated outfit edit.
 
 ### Voice and context

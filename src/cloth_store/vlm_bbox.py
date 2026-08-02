@@ -39,6 +39,16 @@ Return ONLY valid JSON with no markdown fences. Format:
 or {"layout":"dress","dress":[x_min,y_min,x_max,y_max]}
 Coordinates are normalized floats in [0,1] with x_min < x_max and y_min < y_max."""
 
+FULL_PERSON_LOCALIZATION_PROMPT = """Localize the full reflected person in a mirror selfie.
+
+Draw a tight bounding box around the complete person reflected in the mirror: head and hair \
+through any visible feet, including arms, hands, and the full worn garment. Ignore background \
+people, hanging clothes, and objects outside the reflected person.
+
+Return ONLY valid JSON with no markdown fences. Format:
+{"person":[x_min,y_min,x_max,y_max]}
+Coordinates are normalized floats in [0,1] with x_min < x_max and y_min < y_max."""
+
 
 def strip_markdown_fences(text: str) -> str:
     stripped = text.strip()
@@ -122,6 +132,32 @@ def parse_localization_response(text: str) -> dict[str, Any]:
     return validate_localization(payload)
 
 
+def validate_full_person_localization(payload: Any) -> dict[str, Any]:
+    if not isinstance(payload, dict):
+        raise ValueError(f"full-person payload must be a JSON object, got {type(payload).__name__}")
+
+    extra_keys = set(payload) - {"person"}
+    if extra_keys:
+        raise ValueError(f"unexpected keys for full-person localization: {sorted(extra_keys)}")
+    if "person" not in payload:
+        raise ValueError("full-person localization requires key 'person'")
+
+    return {"person": normalize_box(payload["person"])}
+
+
+def parse_full_person_response(text: str) -> dict[str, Any]:
+    cleaned = strip_markdown_fences(text)
+    if not cleaned:
+        raise ValueError("model response was empty")
+
+    try:
+        payload = json.loads(cleaned)
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"model response is not valid JSON: {exc}") from exc
+
+    return validate_full_person_localization(payload)
+
+
 def extract_response_text(raw_text: str) -> str:
     think_end = "<" + "/think>"
     if think_end in raw_text:
@@ -173,6 +209,55 @@ def localize_garments(image_path: str | Path, *, model_id: str = DEFAULT_MODEL) 
     prompt_length = inputs["input_ids"].shape[-1]
     decoded = processor.decode(generated[0][prompt_length:], skip_special_tokens=True)
     return parse_localization_response(extract_response_text(decoded))
+
+
+def localize_full_reflected_person(
+    image_path: str | Path, *, model_id: str = DEFAULT_MODEL
+) -> dict[str, Any]:
+    """Localize the full reflected person bbox with Qwen3.5 vision."""
+    import torch
+    from transformers import AutoModelForImageTextToText, AutoProcessor
+
+    resolved = Path(image_path).expanduser().resolve()
+    if not resolved.is_file():
+        raise FileNotFoundError(f"image not found: {resolved}")
+
+    processor = AutoProcessor.from_pretrained(model_id)
+    model = AutoModelForImageTextToText.from_pretrained(
+        model_id,
+        dtype=torch.bfloat16,
+        device_map="auto",
+    )
+    model.eval()
+
+    messages = [
+        {
+            "role": "user",
+            "content": [
+                {"type": "image", "image": str(resolved)},
+                {"type": "text", "text": FULL_PERSON_LOCALIZATION_PROMPT},
+            ],
+        }
+    ]
+    inputs = processor.apply_chat_template(
+        messages,
+        tokenize=True,
+        add_generation_prompt=True,
+        return_dict=True,
+        return_tensors="pt",
+        enable_thinking=False,
+    )
+    inputs = {
+        key: value.to(model.device) if hasattr(value, "to") else value
+        for key, value in inputs.items()
+    }
+
+    with torch.inference_mode():
+        generated = model.generate(**inputs, max_new_tokens=256, do_sample=False)
+
+    prompt_length = inputs["input_ids"].shape[-1]
+    decoded = processor.decode(generated[0][prompt_length:], skip_special_tokens=True)
+    return parse_full_person_response(extract_response_text(decoded))
 
 
 def main() -> None:

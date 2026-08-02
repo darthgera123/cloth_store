@@ -1,55 +1,42 @@
 {
   "fixture_ids": [
-    "outfit_1",
-    "outfit_2"
+    "outfit_30"
   ],
   "output_root": "bench/selfie_refocus/candidates",
+  "processed": [],
+  "reused": [
+    "outfit_30"
+  ],
+  "failed": [],
+  "review_required": [],
   "results": [
     {
-      "fixture_id": "outfit_1",
+      "fixture_id": "outfit_30",
+      "generated_or_reused": "reused",
+      "review_required": false,
+      "review_reason": null,
       "crop_box": [
-        0,
-        486,
-        891,
-        1600
+        61,
+        71,
+        784,
+        1356
       ],
       "output_size": [
-        891,
-        1114
+        723,
+        1285
       ],
-      "aspect_label": "4:5",
+      "aspect_label": "source",
       "metrics": {
         "subject_clipped": false,
-        "retained_background_fraction": 0.8086,
-        "background_reduction_fraction": 0.1026,
-        "person_mask_coverage": 0.1914,
+        "retained_background_fraction": 0.8804,
+        "background_reduction_fraction": 0.046,
+        "person_mask_coverage": 0.1196,
         "person_pixel_preservation": 0.9999,
-        "edge_halo_score": 0.05
+        "edge_halo_score": 0.0383,
+        "background_color_preservation": 0.9996,
+        "background_luminance_preservation": 0.9998
       },
-      "recommendation": "crop_refocused"
-    },
-    {
-      "fixture_id": "outfit_2",
-      "crop_box": [
-        142,
-        424,
-        962,
-        1449
-      ],
-      "output_size": [
-        820,
-        1025
-      ],
-      "aspect_label": "4:5",
-      "metrics": {
-        "subject_clipped": false,
-        "retained_background_fraction": 0.8508,
-        "background_reduction_fraction": 0.0897,
-        "person_mask_coverage": 0.1492,
-        "person_pixel_preservation": 0.9998,
-        "edge_halo_score": 0.0628
-      },
-      "recommendation": "crop_refocused"
+      "recommended_variant": "crop_refocused"
     }
   ]
 }

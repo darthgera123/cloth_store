@@ -167,15 +167,53 @@ Batch regeneration for fixture ranges is documented in `bench/catalog_generation
 
 ## Selfie refocus
 
-Optional background refocus stage for mirror selfies: `uv run cloth-store-selfie-refocus`. See `bench/selfie_refocus/README.md`.
+Optional blur-only background refocus stage for mirror selfies used in the storefront
+styling modal. Canonical method: `blur_only_v2`.
+
+### Flow
+
+1. **Garment-union bbox** — derive person bounds from Plan1 localization with deterministic padding.
+2. **SAM person mask** — segment reflected person inside padded crop.
+3. **Quality validation** — detect torso-only masks, incomplete garment coverage, low vertical extent.
+4. **Qwen full-person recovery** — when validation fails, localize full reflected person with Qwen3.5,
+   merge bbox with garment union, re-segment with SAM (see `localize_full_reflected_person` in `vlm_bbox.py`).
+5. **Aspect-safe portrait crop** — prefer 4:5, fallback 3:4 or source aspect; head in upper third.
+6. **Blur-only refocus** — Gaussian blur on background only; person pixels and background color/brightness preserved.
+7. **Review assessment** — metrics recommend `crop_refocused` or fallback `crop_only`.
+8. **Packaging** — copy to `final_selfies/` with batched 4-outfit contact sheets.
+
+### Commands
+
+```bash
+# Full range (bench + package)
+bench/selfie_refocus/run.sh --from-fixture 1 --to-fixture 31
+
+# Validate existing deliverables only
+bench/selfie_refocus/run.sh --validate-only --from-fixture 1 --to-fixture 31
+
+# Direct CLIs
+uv run cloth-store-selfie-refocus --from-fixture 1 --to-fixture 31
+uv run cloth-store-selfie-final-packaging --from-fixture 1 --to-fixture 31
+uv run cloth-store-selfie-final-packaging --validate-only
+```
+
+| Location | Purpose |
+|----------|---------|
+| `bench/selfie_refocus/candidates/` | Bench workspace (masks, overlays, comparison sheets, recovery diagnostics) |
+| `final_selfies/` | Self-contained review/delivery bundle (manifest, variants, contact sheets) |
+
+Idempotent rerun skips fixtures whose `blur_only_v2` outputs match current source/localization hashes.
+Fixtures marked `review_required: true` (e.g. outfit_14, outfit_29) should use `crop_only` until manually corrected.
+
+See `bench/selfie_refocus/README.md` and `final_selfies/README.md`.
 
 ## Production outputs vs `final_catalog`
 
-| | `catalog_production_v1` | `final_catalog/` |
-|-|-------------------------|------------------|
-| **Purpose** | Authoritative generation workspace and idempotent reuse store | Self-contained review/delivery bundle |
-| **Location** | `bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/` | `final_catalog/` (repo root) |
-| **When to use** | Regenerate, hash-reuse, inspect artifacts | Share, review, or serve the static storefront |
+| | `catalog_production_v1` | `final_catalog/` | `bench/selfie_refocus/candidates` | `final_selfies/` |
+|-|-------------------------|------------------|-----------------------------------|------------------|
+| **Purpose** | Authoritative generation workspace and idempotent reuse store | Self-contained catalog review/delivery bundle | Selfie refocus bench workspace | Self-contained selfie review/delivery bundle |
+| **Location** | `bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/` | `final_catalog/` (repo root) | `bench/selfie_refocus/candidates/` | `final_selfies/` (repo root) |
+| **When to use** | Regenerate, hash-reuse, inspect artifacts | Share, review, or serve the static storefront | Regenerate SAM masks and refocus candidates | Share/review portrait crops and contact sheets |
 
 Regenerate in production, then repackage:
 
@@ -188,6 +226,8 @@ uv run cloth-store-web-build --repo-root .
 
 ## Further reading
 
+- [`docs/CLOTH_STORE.md`](docs/CLOTH_STORE.md) — storefront features, selfie refocus URLs, live server
+- [`docs/static-bundle-guide.md`](docs/static-bundle-guide.md) — offline `dist/cloth-store.zip` bundle
 - [`bench/catalog_generation/README.md`](bench/catalog_generation/README.md) — override schema, artifact naming, module map
 - [`bench/plan1_localization/README.md`](bench/plan1_localization/README.md) — bbox/mask/cutout bench details
 - [`final_catalog/README.md`](final_catalog/README.md) — packaging layout and schema

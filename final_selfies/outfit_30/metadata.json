@@ -1,0 +1,67 @@
+{
+  "fixture_id": "outfit_30",
+  "status": "ok",
+  "review_required": false,
+  "review_reason": null,
+  "recommended_variant": "crop_refocused",
+  "source_path": "data/outfit_30.jpeg",
+  "source_sha256": "1140f2c1386095c182bd38dfcb9cbe3f359156eb67f4f9fc3e64ca4290ed0bb8",
+  "person_bbox": {
+    "box": [
+      0.31639999999999996,
+      0.088,
+      0.6235999999999999,
+      0.8048
+    ],
+    "provenance": "qwen_full_reflected_person_v1",
+    "confidence": 0.894,
+    "source_roles": [
+      "dress"
+    ]
+  },
+  "crop": {
+    "x0": 61,
+    "y0": 71,
+    "x1": 784,
+    "y1": 1356,
+    "aspect_ratio": 0.5626,
+    "aspect_label": "source",
+    "padding_fraction": 0.06,
+    "output_width": 723,
+    "output_height": 1285
+  },
+  "metrics": {
+    "subject_clipped": false,
+    "retained_background_fraction": 0.8804,
+    "background_reduction_fraction": 0.046,
+    "person_mask_coverage": 0.1196,
+    "person_pixel_preservation": 0.9999,
+    "edge_halo_score": 0.0383,
+    "background_color_preservation": 0.9996,
+    "background_luminance_preservation": 0.9998
+  },
+  "variants": {
+    "crop_only": "final_selfies/outfit_30/crop_only.jpg",
+    "crop_refocused": "final_selfies/outfit_30/crop_refocused.jpg"
+  },
+  "variant_sha256": {
+    "crop_only": "c5bb08900ceeef56f729c6792d392848e91a5c9b74fca5aa62ccd6d8ec281e06",
+    "crop_refocused": "eb1c08e654e632e0f77b8df8d70d760aef2f2c4711c209fa36ae34c3d34b614e"
+  },
+  "parameters": {
+    "refocus_method": "blur_only_v2",
+    "primary_aspect": "4:5",
+    "fallback_aspect": "3:4",
+    "crop_padding_fraction": 0.06,
+    "blur_radius_px": 8,
+    "background_brightness": 1.0,
+    "background_saturation": 1.0,
+    "feather_radius_px": 5
+  },
+  "bench_artifacts": {
+    "person_mask": "bench/selfie_refocus/candidates/outfit_30/person_mask.png",
+    "bbox_mask_overlay": "bench/selfie_refocus/candidates/outfit_30/bbox_mask_overlay.jpg",
+    "comparison_sheet": "bench/selfie_refocus/candidates/outfit_30/comparison_sheet.jpg"
+  },
+  "generated_or_reused": "processed"
+}

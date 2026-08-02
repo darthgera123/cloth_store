@@ -2560,7 +2560,7 @@
       "display_name": "Black Sleeveless Top",
       "role": "top",
       "fixture": "outfit_9",
-      "description": "A black sleeveless top is sleeveless with a high mock neckline.",
+      "description": "A black sleeveless top has a sleeveless halter neckline.",
       "labels": [
         {
           "kind": "role",
@@ -2627,7 +2627,7 @@
           "caption": "Dark Gray Trousers with a black waistcoat.",
           "selfie": {
             "fixture": "outfit_10",
-            "image_url": "/data/outfit_10.jpeg",
+            "image_url": "/final_selfies/outfit_10/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -2663,7 +2663,7 @@
           "caption": "Black Waistcoat with dark gray trousers.",
           "selfie": {
             "fixture": "outfit_10",
-            "image_url": "/data/outfit_10.jpeg",
+            "image_url": "/final_selfies/outfit_10/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -2699,7 +2699,7 @@
           "caption": "Charcoal Gray Trousers with a black t-shirt.",
           "selfie": {
             "fixture": "outfit_11",
-            "image_url": "/data/outfit_11.jpeg",
+            "image_url": "/final_selfies/outfit_11/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -2735,7 +2735,7 @@
           "caption": "Black T-Shirt with charcoal gray trousers.",
           "selfie": {
             "fixture": "outfit_11",
-            "image_url": "/data/outfit_11.jpeg",
+            "image_url": "/final_selfies/outfit_11/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -2771,7 +2771,7 @@
           "caption": "Light Pink Office Blouse with gray trousers.",
           "selfie": {
             "fixture": "outfit_12",
-            "image_url": "/data/outfit_12.jpeg",
+            "image_url": "/final_selfies/outfit_12/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -2808,7 +2808,7 @@
           "caption": "Gray Trousers with a light pink office blouse.",
           "selfie": {
             "fixture": "outfit_12",
-            "image_url": "/data/outfit_12.jpeg",
+            "image_url": "/final_selfies/outfit_12/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -2831,7 +2831,7 @@
           "caption": "Gray Trousers with a pastel pink sleeveless top.",
           "selfie": {
             "fixture": "outfit_13",
-            "image_url": "/data/outfit_13.jpeg",
+            "image_url": "/final_selfies/outfit_13/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -2867,7 +2867,7 @@
           "caption": "Pastel Pink Sleeveless Top with gray trousers.",
           "selfie": {
             "fixture": "outfit_13",
-            "image_url": "/data/outfit_13.jpeg",
+            "image_url": "/final_selfies/outfit_13/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -2903,7 +2903,7 @@
           "caption": "Gray Trousers with a green office blouse.",
           "selfie": {
             "fixture": "outfit_14",
-            "image_url": "/data/outfit_14.jpeg",
+            "image_url": "/final_selfies/outfit_14/crop_only.jpg",
             "available": true
           },
           "partners": [
@@ -2939,7 +2939,7 @@
           "caption": "Green Office Blouse with gray trousers.",
           "selfie": {
             "fixture": "outfit_14",
-            "image_url": "/data/outfit_14.jpeg",
+            "image_url": "/final_selfies/outfit_14/crop_only.jpg",
             "available": true
           },
           "partners": [
@@ -2976,7 +2976,7 @@
           "caption": "Gray Trousers with a black office blouse.",
           "selfie": {
             "fixture": "outfit_15",
-            "image_url": "/data/outfit_15.jpeg",
+            "image_url": "/final_selfies/outfit_15/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -2999,7 +2999,7 @@
           "caption": "Gray Trousers with a white office blouse.",
           "selfie": {
             "fixture": "outfit_16",
-            "image_url": "/data/outfit_16.jpeg",
+            "image_url": "/final_selfies/outfit_16/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3035,7 +3035,7 @@
           "caption": "Black Office Blouse with gray trousers.",
           "selfie": {
             "fixture": "outfit_15",
-            "image_url": "/data/outfit_15.jpeg",
+            "image_url": "/final_selfies/outfit_15/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3071,7 +3071,7 @@
           "caption": "Navy Office Blouse with white trousers.",
           "selfie": {
             "fixture": "outfit_17",
-            "image_url": "/data/outfit_17.jpeg",
+            "image_url": "/final_selfies/outfit_17/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3107,7 +3107,7 @@
           "caption": "Cream Sleeveless Top with white trousers.",
           "selfie": {
             "fixture": "outfit_18",
-            "image_url": "/data/outfit_18.jpeg",
+            "image_url": "/final_selfies/outfit_18/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3147,7 +3147,7 @@
           "caption": "White Trousers with a navy office blouse.",
           "selfie": {
             "fixture": "outfit_17",
-            "image_url": "/data/outfit_17.jpeg",
+            "image_url": "/final_selfies/outfit_17/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3170,7 +3170,7 @@
           "caption": "White Trousers with a cream sleeveless top.",
           "selfie": {
             "fixture": "outfit_18",
-            "image_url": "/data/outfit_18.jpeg",
+            "image_url": "/final_selfies/outfit_18/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3193,7 +3193,7 @@
           "caption": "White Trousers with a green blazer.",
           "selfie": {
             "fixture": "outfit_19",
-            "image_url": "/data/outfit_19.jpeg",
+            "image_url": "/final_selfies/outfit_19/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3216,7 +3216,7 @@
           "caption": "White Trousers with a white office blouse.",
           "selfie": {
             "fixture": "outfit_20",
-            "image_url": "/data/outfit_20.jpeg",
+            "image_url": "/final_selfies/outfit_20/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3239,7 +3239,7 @@
           "caption": "White Trousers with a lavender office blouse.",
           "selfie": {
             "fixture": "outfit_21",
-            "image_url": "/data/outfit_21.jpeg",
+            "image_url": "/final_selfies/outfit_21/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3275,7 +3275,7 @@
           "caption": "Green Blazer with white trousers.",
           "selfie": {
             "fixture": "outfit_19",
-            "image_url": "/data/outfit_19.jpeg",
+            "image_url": "/final_selfies/outfit_19/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3311,7 +3311,7 @@
           "caption": "Brown Trousers with a white blouse.",
           "selfie": {
             "fixture": "outfit_1",
-            "image_url": "/data/outfit_1.jpeg",
+            "image_url": "/final_selfies/outfit_1/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3347,7 +3347,7 @@
           "caption": "White Blouse with brown trousers.",
           "selfie": {
             "fixture": "outfit_1",
-            "image_url": "/data/outfit_1.jpeg",
+            "image_url": "/final_selfies/outfit_1/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3383,7 +3383,7 @@
           "caption": "Lavender Office Blouse with white trousers.",
           "selfie": {
             "fixture": "outfit_21",
-            "image_url": "/data/outfit_21.jpeg",
+            "image_url": "/final_selfies/outfit_21/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3419,7 +3419,7 @@
           "caption": "Off-White Trousers with a white office blouse.",
           "selfie": {
             "fixture": "outfit_22",
-            "image_url": "/data/outfit_22.jpeg",
+            "image_url": "/final_selfies/outfit_22/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3457,7 +3457,7 @@
           "caption": "White Office Blouse with gray trousers.",
           "selfie": {
             "fixture": "outfit_16",
-            "image_url": "/data/outfit_16.jpeg",
+            "image_url": "/final_selfies/outfit_16/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3480,7 +3480,7 @@
           "caption": "White Office Blouse with white trousers.",
           "selfie": {
             "fixture": "outfit_20",
-            "image_url": "/data/outfit_20.jpeg",
+            "image_url": "/final_selfies/outfit_20/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3503,7 +3503,7 @@
           "caption": "White Office Blouse with off-white trousers.",
           "selfie": {
             "fixture": "outfit_22",
-            "image_url": "/data/outfit_22.jpeg",
+            "image_url": "/final_selfies/outfit_22/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3539,7 +3539,7 @@
           "caption": "Light Blue Office Blouse with khaki trousers.",
           "selfie": {
             "fixture": "outfit_23",
-            "image_url": "/data/outfit_23.jpeg",
+            "image_url": "/final_selfies/outfit_23/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3577,7 +3577,7 @@
           "caption": "Khaki Trousers with a light blue office blouse.",
           "selfie": {
             "fixture": "outfit_23",
-            "image_url": "/data/outfit_23.jpeg",
+            "image_url": "/final_selfies/outfit_23/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3600,7 +3600,7 @@
           "caption": "Khaki Trousers with a navy blue office blouse.",
           "selfie": {
             "fixture": "outfit_24",
-            "image_url": "/data/outfit_24.jpeg",
+            "image_url": "/final_selfies/outfit_24/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3623,7 +3623,7 @@
           "caption": "Khaki Trousers with a deep purple tank top.",
           "selfie": {
             "fixture": "outfit_25",
-            "image_url": "/data/outfit_25.jpeg",
+            "image_url": "/final_selfies/outfit_25/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3659,7 +3659,7 @@
           "caption": "Navy Blue Office Blouse with khaki trousers.",
           "selfie": {
             "fixture": "outfit_24",
-            "image_url": "/data/outfit_24.jpeg",
+            "image_url": "/final_selfies/outfit_24/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3695,7 +3695,7 @@
           "caption": "Deep Purple Tank Top with khaki trousers.",
           "selfie": {
             "fixture": "outfit_25",
-            "image_url": "/data/outfit_25.jpeg",
+            "image_url": "/final_selfies/outfit_25/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3731,7 +3731,7 @@
           "caption": "Taupe Office Blouse with a black pencil skirt.",
           "selfie": {
             "fixture": "outfit_26",
-            "image_url": "/data/outfit_26.jpeg",
+            "image_url": "/final_selfies/outfit_26/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3767,7 +3767,7 @@
           "caption": "Light Blue-gray Dress.",
           "selfie": {
             "fixture": "outfit_27",
-            "image_url": "/data/outfit_27.jpeg",
+            "image_url": "/final_selfies/outfit_27/crop_refocused.jpg",
             "available": true
           },
           "partners": [],
@@ -3795,7 +3795,7 @@
           "caption": "Navy Blue And White Long Skirt with a white office blouse.",
           "selfie": {
             "fixture": "outfit_28",
-            "image_url": "/data/outfit_28.jpeg",
+            "image_url": "/final_selfies/outfit_28/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3831,7 +3831,7 @@
           "caption": "White Office Blouse with a navy blue and white long skirt.",
           "selfie": {
             "fixture": "outfit_28",
-            "image_url": "/data/outfit_28.jpeg",
+            "image_url": "/final_selfies/outfit_28/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3867,7 +3867,7 @@
           "caption": "Pastel Pink Dress.",
           "selfie": {
             "fixture": "outfit_29",
-            "image_url": "/data/outfit_29.jpeg",
+            "image_url": "/final_selfies/outfit_29/crop_only.jpg",
             "available": true
           },
           "partners": [],
@@ -3895,7 +3895,7 @@
           "caption": "Tan Trousers with a pink blouse.",
           "selfie": {
             "fixture": "outfit_2",
-            "image_url": "/data/outfit_2.jpeg",
+            "image_url": "/final_selfies/outfit_2/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3931,7 +3931,7 @@
           "caption": "Pink Blouse with tan trousers.",
           "selfie": {
             "fixture": "outfit_2",
-            "image_url": "/data/outfit_2.jpeg",
+            "image_url": "/final_selfies/outfit_2/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -3967,7 +3967,7 @@
           "caption": "Forest Green Dress.",
           "selfie": {
             "fixture": "outfit_30",
-            "image_url": "/data/outfit_30.jpeg",
+            "image_url": "/final_selfies/outfit_30/crop_refocused.jpg",
             "available": true
           },
           "partners": [],
@@ -3995,7 +3995,7 @@
           "caption": "Brown Trousers with a black blouse.",
           "selfie": {
             "fixture": "outfit_31",
-            "image_url": "/data/outfit_31.jpeg",
+            "image_url": "/final_selfies/outfit_31/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -4031,7 +4031,7 @@
           "caption": "Black Blouse with brown trousers.",
           "selfie": {
             "fixture": "outfit_31",
-            "image_url": "/data/outfit_31.jpeg",
+            "image_url": "/final_selfies/outfit_31/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -4067,7 +4067,7 @@
           "caption": "Black Blazer with dark gray trousers.",
           "selfie": {
             "fixture": "outfit_3",
-            "image_url": "/data/outfit_3.jpeg",
+            "image_url": "/final_selfies/outfit_3/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -4104,7 +4104,7 @@
           "caption": "Dark Gray Trousers with a black blazer.",
           "selfie": {
             "fixture": "outfit_3",
-            "image_url": "/data/outfit_3.jpeg",
+            "image_url": "/final_selfies/outfit_3/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -4127,7 +4127,7 @@
           "caption": "Dark Gray Trousers with an off-white blazer.",
           "selfie": {
             "fixture": "outfit_4",
-            "image_url": "/data/outfit_4.jpeg",
+            "image_url": "/final_selfies/outfit_4/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -4163,7 +4163,7 @@
           "caption": "Off-White Blazer with dark gray trousers.",
           "selfie": {
             "fixture": "outfit_4",
-            "image_url": "/data/outfit_4.jpeg",
+            "image_url": "/final_selfies/outfit_4/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -4199,7 +4199,7 @@
           "caption": "Off-White Trousers with a light blue office blouse.",
           "selfie": {
             "fixture": "outfit_5",
-            "image_url": "/data/outfit_5.jpeg",
+            "image_url": "/final_selfies/outfit_5/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -4235,7 +4235,7 @@
           "caption": "Light Blue Office Blouse with off-white trousers.",
           "selfie": {
             "fixture": "outfit_5",
-            "image_url": "/data/outfit_5.jpeg",
+            "image_url": "/final_selfies/outfit_5/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -4272,7 +4272,7 @@
           "caption": "Black Pencil Skirt with a deep red shirt.",
           "selfie": {
             "fixture": "outfit_6",
-            "image_url": "/data/outfit_6.jpeg",
+            "image_url": "/final_selfies/outfit_6/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -4295,7 +4295,7 @@
           "caption": "Black Pencil Skirt with a taupe office blouse.",
           "selfie": {
             "fixture": "outfit_26",
-            "image_url": "/data/outfit_26.jpeg",
+            "image_url": "/final_selfies/outfit_26/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -4331,7 +4331,7 @@
           "caption": "Deep Red Shirt with a black pencil skirt.",
           "selfie": {
             "fixture": "outfit_6",
-            "image_url": "/data/outfit_6.jpeg",
+            "image_url": "/final_selfies/outfit_6/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -4367,7 +4367,7 @@
           "caption": "Brown Trousers with a beige blouse.",
           "selfie": {
             "fixture": "outfit_7",
-            "image_url": "/data/outfit_7.jpeg",
+            "image_url": "/final_selfies/outfit_7/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -4403,7 +4403,7 @@
           "caption": "Beige Blouse with brown trousers.",
           "selfie": {
             "fixture": "outfit_7",
-            "image_url": "/data/outfit_7.jpeg",
+            "image_url": "/final_selfies/outfit_7/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -4439,7 +4439,7 @@
           "caption": "Navy Blue Top with brown trousers.",
           "selfie": {
             "fixture": "outfit_8",
-            "image_url": "/data/outfit_8.jpeg",
+            "image_url": "/final_selfies/outfit_8/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -4476,7 +4476,7 @@
           "caption": "Brown Trousers with a navy blue top.",
           "selfie": {
             "fixture": "outfit_8",
-            "image_url": "/data/outfit_8.jpeg",
+            "image_url": "/final_selfies/outfit_8/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -4499,7 +4499,7 @@
           "caption": "Brown Trousers with a black sleeveless top.",
           "selfie": {
             "fixture": "outfit_9",
-            "image_url": "/data/outfit_9.jpeg",
+            "image_url": "/final_selfies/outfit_9/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -4522,7 +4522,7 @@
       "display_name": "Black Sleeveless Top",
       "role": "top",
       "fixture": "outfit_9",
-      "description": "A black sleeveless top is sleeveless with a high mock neckline.",
+      "description": "A black sleeveless top has a sleeveless halter neckline.",
       "garment_id": "outfit_9_top",
       "observation_ids": [
         "outfit_9_top"
@@ -4535,7 +4535,7 @@
           "caption": "Black Sleeveless Top with brown trousers.",
           "selfie": {
             "fixture": "outfit_9",
-            "image_url": "/data/outfit_9.jpeg",
+            "image_url": "/final_selfies/outfit_9/crop_refocused.jpg",
             "available": true
           },
           "partners": [
@@ -4559,7 +4559,7 @@
       "fixture": "outfit_1",
       "selfie": {
         "fixture": "outfit_1",
-        "image_url": "/data/outfit_1.jpeg",
+        "image_url": "/final_selfies/outfit_1/crop_refocused.jpg",
         "available": true
       },
       "top": {
@@ -4584,7 +4584,7 @@
       "fixture": "outfit_2",
       "selfie": {
         "fixture": "outfit_2",
-        "image_url": "/data/outfit_2.jpeg",
+        "image_url": "/final_selfies/outfit_2/crop_refocused.jpg",
         "available": true
       },
       "top": {
@@ -4609,7 +4609,7 @@
       "fixture": "outfit_3",
       "selfie": {
         "fixture": "outfit_3",
-        "image_url": "/data/outfit_3.jpeg",
+        "image_url": "/final_selfies/outfit_3/crop_refocused.jpg",
         "available": true
       },
       "top": {
@@ -4634,7 +4634,7 @@
       "fixture": "outfit_4",
       "selfie": {
         "fixture": "outfit_4",
-        "image_url": "/data/outfit_4.jpeg",
+        "image_url": "/final_selfies/outfit_4/crop_refocused.jpg",
         "available": true
       },
       "top": {
@@ -4659,7 +4659,7 @@
       "fixture": "outfit_5",
       "selfie": {
         "fixture": "outfit_5",
-        "image_url": "/data/outfit_5.jpeg",
+        "image_url": "/final_selfies/outfit_5/crop_refocused.jpg",
         "available": true
       },
       "top": {
@@ -4684,7 +4684,7 @@
       "fixture": "outfit_6",
       "selfie": {
         "fixture": "outfit_6",
-        "image_url": "/data/outfit_6.jpeg",
+        "image_url": "/final_selfies/outfit_6/crop_refocused.jpg",
         "available": true
       },
       "top": {
@@ -4709,7 +4709,7 @@
       "fixture": "outfit_7",
       "selfie": {
         "fixture": "outfit_7",
-        "image_url": "/data/outfit_7.jpeg",
+        "image_url": "/final_selfies/outfit_7/crop_refocused.jpg",
         "available": true
       },
       "top": {
@@ -4734,7 +4734,7 @@
       "fixture": "outfit_8",
       "selfie": {
         "fixture": "outfit_8",
-        "image_url": "/data/outfit_8.jpeg",
+        "image_url": "/final_selfies/outfit_8/crop_refocused.jpg",
         "available": true
       },
       "top": {
@@ -4759,13 +4759,13 @@
       "fixture": "outfit_9",
       "selfie": {
         "fixture": "outfit_9",
-        "image_url": "/data/outfit_9.jpeg",
+        "image_url": "/final_selfies/outfit_9/crop_refocused.jpg",
         "available": true
       },
       "top": {
         "catalog_id": "outfit_9_top",
         "display_name": "Black Sleeveless Top",
-        "description": "A black sleeveless top is sleeveless with a high mock neckline.",
+        "description": "A black sleeveless top has a sleeveless halter neckline.",
         "role": "top",
         "image_url": "/final_catalog/outfit_9/top/output.png"
       },
@@ -4784,7 +4784,7 @@
       "fixture": "outfit_10",
       "selfie": {
         "fixture": "outfit_10",
-        "image_url": "/data/outfit_10.jpeg",
+        "image_url": "/final_selfies/outfit_10/crop_refocused.jpg",
         "available": true
       },
       "top": {
@@ -4809,7 +4809,7 @@
       "fixture": "outfit_11",
       "selfie": {
         "fixture": "outfit_11",
-        "image_url": "/data/outfit_11.jpeg",
+        "image_url": "/final_selfies/outfit_11/crop_refocused.jpg",
         "available": true
       },
       "top": {
@@ -4834,7 +4834,7 @@
       "fixture": "outfit_12",
       "selfie": {
         "fixture": "outfit_12",
-        "image_url": "/data/outfit_12.jpeg",
+        "image_url": "/final_selfies/outfit_12/crop_refocused.jpg",
         "available": true
       },
       "top": {
@@ -4859,7 +4859,7 @@
       "fixture": "outfit_13",
       "selfie": {
         "fixture": "outfit_13",
-        "image_url": "/data/outfit_13.jpeg",
+        "image_url": "/final_selfies/outfit_13/crop_refocused.jpg",
         "available": true
       },
       "top": {
@@ -4884,7 +4884,7 @@
       "fixture": "outfit_14",
       "selfie": {
         "fixture": "outfit_14",
-        "image_url": "/data/outfit_14.jpeg",
+        "image_url": "/final_selfies/outfit_14/crop_only.jpg",
         "available": true
       },
       "top": {
@@ -4909,7 +4909,7 @@
       "fixture": "outfit_15",
       "selfie": {
         "fixture": "outfit_15",
-        "image_url": "/data/outfit_15.jpeg",
+        "image_url": "/final_selfies/outfit_15/crop_refocused.jpg",
         "available": true
       },
       "top": {
@@ -4934,7 +4934,7 @@
       "fixture": "outfit_16",
       "selfie": {
         "fixture": "outfit_16",
-        "image_url": "/data/outfit_16.jpeg",
+        "image_url": "/final_selfies/outfit_16/crop_refocused.jpg",
         "available": true
       },
       "top": {
@@ -4959,7 +4959,7 @@
       "fixture": "outfit_17",
       "selfie": {
         "fixture": "outfit_17",
-        "image_url": "/data/outfit_17.jpeg",
+        "image_url": "/final_selfies/outfit_17/crop_refocused.jpg",
         "available": true
       },
       "top": {
@@ -4984,7 +4984,7 @@
       "fixture": "outfit_18",
       "selfie": {
         "fixture": "outfit_18",
-        "image_url": "/data/outfit_18.jpeg",
+        "image_url": "/final_selfies/outfit_18/crop_refocused.jpg",
         "available": true
       },
       "top": {
@@ -5009,7 +5009,7 @@
       "fixture": "outfit_19",
       "selfie": {
         "fixture": "outfit_19",
-        "image_url": "/data/outfit_19.jpeg",
+        "image_url": "/final_selfies/outfit_19/crop_refocused.jpg",
         "available": true
       },
       "top": {
@@ -5034,7 +5034,7 @@
       "fixture": "outfit_20",
       "selfie": {
         "fixture": "outfit_20",
-        "image_url": "/data/outfit_20.jpeg",
+        "image_url": "/final_selfies/outfit_20/crop_refocused.jpg",
         "available": true
       },
       "top": {
@@ -5059,7 +5059,7 @@
       "fixture": "outfit_21",
       "selfie": {
         "fixture": "outfit_21",
-        "image_url": "/data/outfit_21.jpeg",
+        "image_url": "/final_selfies/outfit_21/crop_refocused.jpg",
         "available": true
       },
       "top": {
@@ -5084,7 +5084,7 @@
       "fixture": "outfit_22",
       "selfie": {
         "fixture": "outfit_22",
-        "image_url": "/data/outfit_22.jpeg",
+        "image_url": "/final_selfies/outfit_22/crop_refocused.jpg",
         "available": true
       },
       "top": {
@@ -5109,7 +5109,7 @@
       "fixture": "outfit_23",
       "selfie": {
         "fixture": "outfit_23",
-        "image_url": "/data/outfit_23.jpeg",
+        "image_url": "/final_selfies/outfit_23/crop_refocused.jpg",
         "available": true
       },
       "top": {
@@ -5134,7 +5134,7 @@
       "fixture": "outfit_24",
       "selfie": {
         "fixture": "outfit_24",
-        "image_url": "/data/outfit_24.jpeg",
+        "image_url": "/final_selfies/outfit_24/crop_refocused.jpg",
         "available": true
       },
       "top": {
@@ -5159,7 +5159,7 @@
       "fixture": "outfit_25",
       "selfie": {
         "fixture": "outfit_25",
-        "image_url": "/data/outfit_25.jpeg",
+        "image_url": "/final_selfies/outfit_25/crop_refocused.jpg",
         "available": true
       },
       "top": {
@@ -5184,7 +5184,7 @@
       "fixture": "outfit_26",
       "selfie": {
         "fixture": "outfit_26",
-        "image_url": "/data/outfit_26.jpeg",
+        "image_url": "/final_selfies/outfit_26/crop_refocused.jpg",
         "available": true
       },
       "top": {
@@ -5209,7 +5209,7 @@
       "fixture": "outfit_28",
       "selfie": {
         "fixture": "outfit_28",
-        "image_url": "/data/outfit_28.jpeg",
+        "image_url": "/final_selfies/outfit_28/crop_refocused.jpg",
         "available": true
       },
       "top": {
@@ -5234,7 +5234,7 @@
       "fixture": "outfit_31",
       "selfie": {
         "fixture": "outfit_31",
-        "image_url": "/data/outfit_31.jpeg",
+        "image_url": "/final_selfies/outfit_31/crop_refocused.jpg",
         "available": true
       },
       "top": {
@@ -12425,7 +12425,7 @@
       "top": {
         "catalog_id": "outfit_9_top",
         "display_name": "Black Sleeveless Top",
-        "description": "A black sleeveless top is sleeveless with a high mock neckline.",
+        "description": "A black sleeveless top has a sleeveless halter neckline.",
         "role": "top",
         "image_url": "/final_catalog/outfit_9/top/output.png"
       },
@@ -12443,7 +12443,7 @@
       "top": {
         "catalog_id": "outfit_9_top",
         "display_name": "Black Sleeveless Top",
-        "description": "A black sleeveless top is sleeveless with a high mock neckline.",
+        "description": "A black sleeveless top has a sleeveless halter neckline.",
         "role": "top",
         "image_url": "/final_catalog/outfit_9/top/output.png"
       },
@@ -12461,7 +12461,7 @@
       "top": {
         "catalog_id": "outfit_9_top",
         "display_name": "Black Sleeveless Top",
-        "description": "A black sleeveless top is sleeveless with a high mock neckline.",
+        "description": "A black sleeveless top has a sleeveless halter neckline.",
         "role": "top",
         "image_url": "/final_catalog/outfit_9/top/output.png"
       },
@@ -12479,7 +12479,7 @@
       "top": {
         "catalog_id": "outfit_9_top",
         "display_name": "Black Sleeveless Top",
-        "description": "A black sleeveless top is sleeveless with a high mock neckline.",
+        "description": "A black sleeveless top has a sleeveless halter neckline.",
         "role": "top",
         "image_url": "/final_catalog/outfit_9/top/output.png"
       },
@@ -12497,7 +12497,7 @@
       "top": {
         "catalog_id": "outfit_9_top",
         "display_name": "Black Sleeveless Top",
-        "description": "A black sleeveless top is sleeveless with a high mock neckline.",
+        "description": "A black sleeveless top has a sleeveless halter neckline.",
         "role": "top",
         "image_url": "/final_catalog/outfit_9/top/output.png"
       },
@@ -12515,7 +12515,7 @@
       "top": {
         "catalog_id": "outfit_9_top",
         "display_name": "Black Sleeveless Top",
-        "description": "A black sleeveless top is sleeveless with a high mock neckline.",
+        "description": "A black sleeveless top has a sleeveless halter neckline.",
         "role": "top",
         "image_url": "/final_catalog/outfit_9/top/output.png"
       },
@@ -12533,7 +12533,7 @@
       "top": {
         "catalog_id": "outfit_9_top",
         "display_name": "Black Sleeveless Top",
-        "description": "A black sleeveless top is sleeveless with a high mock neckline.",
+        "description": "A black sleeveless top has a sleeveless halter neckline.",
         "role": "top",
         "image_url": "/final_catalog/outfit_9/top/output.png"
       },
@@ -12551,7 +12551,7 @@
       "top": {
         "catalog_id": "outfit_9_top",
         "display_name": "Black Sleeveless Top",
-        "description": "A black sleeveless top is sleeveless with a high mock neckline.",
+        "description": "A black sleeveless top has a sleeveless halter neckline.",
         "role": "top",
         "image_url": "/final_catalog/outfit_9/top/output.png"
       },
@@ -12569,7 +12569,7 @@
       "top": {
         "catalog_id": "outfit_9_top",
         "display_name": "Black Sleeveless Top",
-        "description": "A black sleeveless top is sleeveless with a high mock neckline.",
+        "description": "A black sleeveless top has a sleeveless halter neckline.",
         "role": "top",
         "image_url": "/final_catalog/outfit_9/top/output.png"
       },
@@ -12587,7 +12587,7 @@
       "top": {
         "catalog_id": "outfit_9_top",
         "display_name": "Black Sleeveless Top",
-        "description": "A black sleeveless top is sleeveless with a high mock neckline.",
+        "description": "A black sleeveless top has a sleeveless halter neckline.",
         "role": "top",
         "image_url": "/final_catalog/outfit_9/top/output.png"
       },
@@ -12605,7 +12605,7 @@
       "top": {
         "catalog_id": "outfit_9_top",
         "display_name": "Black Sleeveless Top",
-        "description": "A black sleeveless top is sleeveless with a high mock neckline.",
+        "description": "A black sleeveless top has a sleeveless halter neckline.",
         "role": "top",
         "image_url": "/final_catalog/outfit_9/top/output.png"
       },
@@ -12623,7 +12623,7 @@
       "top": {
         "catalog_id": "outfit_9_top",
         "display_name": "Black Sleeveless Top",
-        "description": "A black sleeveless top is sleeveless with a high mock neckline.",
+        "description": "A black sleeveless top has a sleeveless halter neckline.",
         "role": "top",
         "image_url": "/final_catalog/outfit_9/top/output.png"
       },
@@ -12641,7 +12641,7 @@
       "top": {
         "catalog_id": "outfit_9_top",
         "display_name": "Black Sleeveless Top",
-        "description": "A black sleeveless top is sleeveless with a high mock neckline.",
+        "description": "A black sleeveless top has a sleeveless halter neckline.",
         "role": "top",
         "image_url": "/final_catalog/outfit_9/top/output.png"
       },
@@ -12659,7 +12659,7 @@
       "top": {
         "catalog_id": "outfit_9_top",
         "display_name": "Black Sleeveless Top",
-        "description": "A black sleeveless top is sleeveless with a high mock neckline.",
+        "description": "A black sleeveless top has a sleeveless halter neckline.",
         "role": "top",
         "image_url": "/final_catalog/outfit_9/top/output.png"
       },
@@ -12677,7 +12677,7 @@
       "top": {
         "catalog_id": "outfit_9_top",
         "display_name": "Black Sleeveless Top",
-        "description": "A black sleeveless top is sleeveless with a high mock neckline.",
+        "description": "A black sleeveless top has a sleeveless halter neckline.",
         "role": "top",
         "image_url": "/final_catalog/outfit_9/top/output.png"
       },
@@ -12695,7 +12695,7 @@
       "top": {
         "catalog_id": "outfit_9_top",
         "display_name": "Black Sleeveless Top",
-        "description": "A black sleeveless top is sleeveless with a high mock neckline.",
+        "description": "A black sleeveless top has a sleeveless halter neckline.",
         "role": "top",
         "image_url": "/final_catalog/outfit_9/top/output.png"
       },

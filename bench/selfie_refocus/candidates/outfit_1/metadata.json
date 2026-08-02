@@ -33,7 +33,9 @@
     "background_reduction_fraction": 0.1026,
     "person_mask_coverage": 0.1914,
     "person_pixel_preservation": 0.9999,
-    "edge_halo_score": 0.05
+    "edge_halo_score": 0.0407,
+    "background_color_preservation": 0.9995,
+    "background_luminance_preservation": 0.9997
   },
   "variants": {
     "crop_only": "bench/selfie_refocus/candidates/outfit_1/crop_only.jpg",
@@ -45,12 +47,13 @@
     "comparison_sheet": "bench/selfie_refocus/candidates/outfit_1/comparison_sheet.jpg"
   },
   "parameters": {
+    "refocus_method": "blur_only_v2",
     "primary_aspect": "4:5",
     "fallback_aspect": "3:4",
     "crop_padding_fraction": 0.06,
     "blur_radius_px": 8,
-    "background_dim_factor": 0.88,
-    "background_desaturation": 0.65,
+    "background_brightness": 1.0,
+    "background_saturation": 1.0,
     "feather_radius_px": 5
   }
 }

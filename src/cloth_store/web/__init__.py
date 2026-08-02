@@ -1,4 +1,4 @@
-"""Storefront static assets for Lavani's Closet."""
+"""Storefront static assets for Cloth Store."""
 
 from pathlib import Path
 

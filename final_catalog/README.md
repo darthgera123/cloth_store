@@ -77,3 +77,14 @@ uv run cloth-store-catalog-final-packaging --repo-root . --contact-sheet-batch-s
 - Cases ok: 59 / 59
 - Cases missing/error: 0
 - Estimated output cost (new generations): $0.067 per 1K call
+
+## Storefront
+
+The Cloth Store website serves **512px** `output.png` images from this bundle
+via `/final_catalog/...`. Rebuild the storefront payload after catalogue changes:
+
+```bash
+uv run cloth-store-web-build --repo-root .
+```
+
+See [`docs/CLOTH_STORE.md`](../docs/CLOTH_STORE.md) for the full storefront guide.

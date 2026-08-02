@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the shareable Lavani's Closet static-site bundle."""
+"""Build the shareable Cloth Store static-site bundle."""
 
 from cloth_store.static_bundle import main
 

@@ -1,10 +1,11 @@
-"""Lightweight stdlib HTTP server for the Lavani's Closet static storefront."""
+"""Lightweight stdlib HTTP server for the Cloth Store static storefront."""
 
 from __future__ import annotations
 
 import argparse
 import functools
 import http.server
+import re
 import socketserver
 import sys
 import threading
@@ -69,6 +70,11 @@ class ClothStoreHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             self._serve_file(self._repo_root / "data" / rel)
             return
 
+        if path.startswith("/final_selfies/"):
+            rel = path.removeprefix("/final_selfies/")
+            self._serve_file(self._repo_root / "final_selfies" / rel)
+            return
+
         self.send_error(http.HTTPStatus.NOT_FOUND, "Not Found")
 
     def _serve_file(self, file_path: Path, content_type: str | None = None) -> None:
@@ -79,7 +85,7 @@ class ClothStoreHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
         body = resolved.read_bytes()
         if content_type is None:
-            content_type = self.guess_type(str(resolved))[0] or "application/octet-stream"
+            content_type = self.guess_type(str(resolved)) or "application/octet-stream"
 
         self.send_response(http.HTTPStatus.OK)
         self.send_header("Content-Type", content_type)
@@ -126,7 +132,7 @@ def smoke_fetch(
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Serve Lavani's Closet static storefront (stdlib HTTP, no FastAPI/SQLite).",
+        description="Serve Cloth Store static storefront (stdlib HTTP, no FastAPI/SQLite).",
     )
     parser.add_argument(
         "--repo-root",
@@ -151,9 +157,12 @@ def main(argv: list[str] | None = None) -> int:
         thread.start()
         base = f"http://{args.host}:{args.port}"
         try:
+            index_html = (WEB_ROOT / "index.html").read_text(encoding="utf-8")
+            brand_match = re.search(r'<h1 class="brand-title">([^<]+)</h1>', index_html)
+            assert brand_match is not None
             status, body = smoke_fetch(base, "/")
             assert status == 200
-            assert b"Lavani's Closet" in body
+            assert brand_match.group(1).encode() in body
             status, body = smoke_fetch(base, "/final_catalog/storefront.json")
             assert status == 200
             assert b'"items"' in body
@@ -163,7 +172,7 @@ def main(argv: list[str] | None = None) -> int:
         print("Smoke OK")
         return 0
 
-    print(f"Serving Lavani's Closet at http://{args.host}:{args.port}/")
+    print(f"Serving Cloth Store at http://{args.host}:{args.port}/")
     try:
         server.serve_forever()
     except KeyboardInterrupt:

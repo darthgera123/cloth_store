@@ -1,0 +1,68 @@
+{
+  "fixture_id": "outfit_12",
+  "status": "ok",
+  "review_required": false,
+  "review_reason": null,
+  "recommended_variant": "crop_refocused",
+  "source_path": "data/outfit_12.jpeg",
+  "source_sha256": "f60ebd6260e38590ab0a410516f0a5d7d52826ed47181e984901acf44ca117e3",
+  "person_bbox": {
+    "box": [
+      0.215,
+      0.30999999999999994,
+      0.535,
+      0.9500000000000001
+    ],
+    "provenance": "garment_union_asymmetric_v1",
+    "confidence": 0.832,
+    "source_roles": [
+      "top",
+      "bottom"
+    ]
+  },
+  "crop": {
+    "x0": 0,
+    "y0": 440,
+    "x1": 908,
+    "y1": 1575,
+    "aspect_ratio": 0.8,
+    "aspect_label": "4:5",
+    "padding_fraction": 0.06,
+    "output_width": 908,
+    "output_height": 1135
+  },
+  "metrics": {
+    "subject_clipped": false,
+    "retained_background_fraction": 0.8154,
+    "background_reduction_fraction": 0.0949,
+    "person_mask_coverage": 0.1846,
+    "person_pixel_preservation": 0.9999,
+    "edge_halo_score": 0.0425,
+    "background_color_preservation": 0.9998,
+    "background_luminance_preservation": 1.0
+  },
+  "variants": {
+    "crop_only": "final_selfies/outfit_12/crop_only.jpg",
+    "crop_refocused": "final_selfies/outfit_12/crop_refocused.jpg"
+  },
+  "variant_sha256": {
+    "crop_only": "f0b2d069f954a14312bfd68c0b1718b0bac9516e6fca3305a87acb141bbc65bc",
+    "crop_refocused": "5ac779626785f16eeca2e1c6afc48ba6326d325fcc68dad458e2cb624649809b"
+  },
+  "parameters": {
+    "refocus_method": "blur_only_v2",
+    "primary_aspect": "4:5",
+    "fallback_aspect": "3:4",
+    "crop_padding_fraction": 0.06,
+    "blur_radius_px": 8,
+    "background_brightness": 1.0,
+    "background_saturation": 1.0,
+    "feather_radius_px": 5
+  },
+  "bench_artifacts": {
+    "person_mask": "bench/selfie_refocus/candidates/outfit_12/person_mask.png",
+    "bbox_mask_overlay": "bench/selfie_refocus/candidates/outfit_12/bbox_mask_overlay.jpg",
+    "comparison_sheet": "bench/selfie_refocus/candidates/outfit_12/comparison_sheet.jpg"
+  },
+  "generated_or_reused": "processed"
+}

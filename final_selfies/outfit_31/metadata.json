@@ -1,0 +1,68 @@
+{
+  "fixture_id": "outfit_31",
+  "status": "ok",
+  "review_required": false,
+  "review_reason": null,
+  "recommended_variant": "crop_refocused",
+  "source_path": "data/outfit_31.jpeg",
+  "source_sha256": "44f5ea43816cbb2c1dd51ef08d89740f3d536ef1b06a9f6fb4d9816f1cbe5d99",
+  "person_bbox": {
+    "box": [
+      0.2806,
+      0.20599999999999996,
+      0.5494,
+      0.7435999999999999
+    ],
+    "provenance": "garment_union_asymmetric_v1",
+    "confidence": 0.808,
+    "source_roles": [
+      "top",
+      "bottom"
+    ]
+  },
+  "crop": {
+    "x0": 0,
+    "y0": 272,
+    "x1": 782,
+    "y1": 1250,
+    "aspect_ratio": 0.7996,
+    "aspect_label": "4:5",
+    "padding_fraction": 0.06,
+    "output_width": 782,
+    "output_height": 978
+  },
+  "metrics": {
+    "subject_clipped": false,
+    "retained_background_fraction": 0.8377,
+    "background_reduction_fraction": 0.0833,
+    "person_mask_coverage": 0.1623,
+    "person_pixel_preservation": 0.9999,
+    "edge_halo_score": 0.044,
+    "background_color_preservation": 0.9996,
+    "background_luminance_preservation": 0.9998
+  },
+  "variants": {
+    "crop_only": "final_selfies/outfit_31/crop_only.jpg",
+    "crop_refocused": "final_selfies/outfit_31/crop_refocused.jpg"
+  },
+  "variant_sha256": {
+    "crop_only": "dc1b1525c4c75eb99d508bb1bb86e943081755a3ff835f8b728bfbdf275e2dcd",
+    "crop_refocused": "4f1e4181113b5a9ddf9b72b4cf91e8829ca3a81f06a40db132a0cb1a5e3ad97e"
+  },
+  "parameters": {
+    "refocus_method": "blur_only_v2",
+    "primary_aspect": "4:5",
+    "fallback_aspect": "3:4",
+    "crop_padding_fraction": 0.06,
+    "blur_radius_px": 8,
+    "background_brightness": 1.0,
+    "background_saturation": 1.0,
+    "feather_radius_px": 5
+  },
+  "bench_artifacts": {
+    "person_mask": "bench/selfie_refocus/candidates/outfit_31/person_mask.png",
+    "bbox_mask_overlay": "bench/selfie_refocus/candidates/outfit_31/bbox_mask_overlay.jpg",
+    "comparison_sheet": "bench/selfie_refocus/candidates/outfit_31/comparison_sheet.jpg"
+  },
+  "generated_or_reused": "processed"
+}
