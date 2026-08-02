@@ -1,6 +1,6 @@
 # Static bundle guide
 
-The **Lavani's Closet static bundle** is a portable snapshot of the storefront
+The **My GFs Closet static bundle** is a portable snapshot of the storefront
 that runs without the Cloth Store Python services, ML stack, or repository
 checkout. It is a **static website** — HTML, CSS, JavaScript, JSON, and images
 only.

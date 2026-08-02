@@ -1,4 +1,4 @@
-# Lavani's Closet — local static preview (Python stdlib HTTP server).
+# My GFs Closet — local static preview (Python stdlib HTTP server).
 $ErrorActionPreference = 'Stop'
 Set-Location -LiteralPath $PSScriptRoot
 
@@ -21,7 +21,7 @@ if (Get-Command py -ErrorAction SilentlyContinue) {
 }
 
 Write-Host ''
-Write-Host "Lavani's Closet - local preview at http://127.0.0.1:8080/"
+Write-Host "My GFs Closet - local preview at http://127.0.0.1:8080/"
 Write-Host 'Press Ctrl+C to stop the server.'
 Write-Host ''
 Start-Process 'http://127.0.0.1:8080/'

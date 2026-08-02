@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# Lavani's Closet — local static preview (Python stdlib HTTP server).
+# My GFs Closet — local static preview (Python stdlib HTTP server).
 set -eu
 
 cd "$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
@@ -21,7 +21,7 @@ PORT=8080
 URL="http://127.0.0.1:${PORT}/"
 
 echo ""
-echo "Lavani's Closet - local preview at http://127.0.0.1:8080/"
+echo "My GFs Closet - local preview at http://127.0.0.1:8080/"
 echo "Press Ctrl+C to stop the server."
 echo ""
 

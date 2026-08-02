@@ -326,6 +326,7 @@ def test_website_static_catalog_contract(tmp_path: Path) -> None:
     brand_match = re.search(r'<h1 class="brand-title">([^<]+)</h1>', index_html)
     assert brand_match is not None
     brand_title = brand_match.group(1)
+    assert brand_title == "My GFs Closet"
     assert brand_title in index_html
     assert 'id="item-detail-modal"' in index_html
     assert 'id="outfit-generator-modal"' in index_html

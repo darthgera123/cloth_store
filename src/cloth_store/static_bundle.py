@@ -43,9 +43,9 @@ PROMPT_SOURCE = Path("prompts/catalogue_description_system.md")
 STATIC_BUNDLE_GUIDE_SOURCE = Path("docs/static-bundle-guide.md")
 CLOTH_STORE_DOC_SOURCE = Path("docs/CLOTH_STORE.md")
 
-README_TEMPLATE = """# Lavani's Closet — Static Snapshot
+README_TEMPLATE = """# My GFs Closet — Static Snapshot
 
-This folder is a **standalone static snapshot** of Lavani's Closet.
+This folder is a **standalone static snapshot** of My GFs Closet.
 It does not require the Cloth Store repository, FastAPI, uv, Python, bash, or
 any ML/runtime dependencies.
 
