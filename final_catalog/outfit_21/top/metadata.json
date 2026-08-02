@@ -1,0 +1,113 @@
+{
+  "artifact_image_roles": [
+    {
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "5d46fc5ab524af867085cb1174268898611ab61352ffe4c445038807da9bd4ef"
+    },
+    {
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "e26886ae087ebcfae196049581aeb8e8e308fe84e3dcc522863f0c4c3db1f6fc"
+    },
+    {
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "c6401b09b7a1162b71d11902ff18a6f9d6d700263ffb84b290b5f247dad02970"
+    }
+  ],
+  "candidate_request_sha256": null,
+  "derived_geometry_sha256": null,
+  "estimated_cost_usd": 0.067,
+  "fixture": "outfit_21",
+  "generated_or_reused": "generated",
+  "generation_calls": 1,
+  "model_id": "gemini-3.1-flash-image",
+  "outputs": {
+    "output_1k": {
+      "path": "outfit_21/top/output_1k.png",
+      "sha256": "641922456b20c2cbf6f356d2785438f4a073f11069e68d9b9ae43d317adfd6ac"
+    },
+    "output_512": {
+      "path": "outfit_21/top/output.png",
+      "sha256": "26ff11f41c331f49482d0894053a495287a8e94f7a7e84d33e501b46cb3e52e8"
+    }
+  },
+  "packaged_inputs": [
+    {
+      "filename": "input_segmented.png",
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "5d46fc5ab524af867085cb1174268898611ab61352ffe4c445038807da9bd4ef",
+      "source_path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_21/catalog_top.png"
+    },
+    {
+      "filename": "input_template.png",
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "e26886ae087ebcfae196049581aeb8e8e308fe84e3dcc522863f0c4c3db1f6fc",
+      "source_path": "bench/catalog_templates/generated/top_full_sleeve.png"
+    },
+    {
+      "filename": "input_detail.png",
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "c6401b09b7a1162b71d11902ff18a6f9d6d700263ffb84b290b5f247dad02970",
+      "source_path": "bench/catalog_generation/detail_crops/outfit_21_top_detail.png"
+    },
+    {
+      "filename": "attributes.json",
+      "role": "vlm_attributes",
+      "sha256": "6f7558b430708dd8a7a04c9db28c5a9bb66e92c3ce3136400e291ec1f440c919",
+      "source_path": "bench/catalog_generation/vlm_attributes/outfit_21_top.attributes.json"
+    }
+  ],
+  "promoted_from_candidate": null,
+  "promoted_from_reference": null,
+  "prompt_policy_version": 5,
+  "prompt_sha256": "00c3776620d18bf95e809727ed29f7259f061bfcb73749d0ee5b42d0228d726d",
+  "request_settings": {
+    "aspect_ratio": "1:1",
+    "image_size": "1K",
+    "model_id": "gemini-3.1-flash-image",
+    "response_modalities": [
+      "TEXT",
+      "IMAGE"
+    ]
+  },
+  "reuse_source": null,
+  "review_required": false,
+  "role": "top",
+  "source_paths": {
+    "artifact": "bench/catalog_generation/artifacts/outfit_21_top_top_full_sleeve.pipeline.request.json",
+    "override": null,
+    "production_metadata": "bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/outfit_21/top.run.json",
+    "vlm_attributes": "bench/catalog_generation/vlm_attributes/outfit_21_top.attributes.json"
+  },
+  "status": "ok",
+  "template_id": "top_full_sleeve",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "office_blouse",
+    "override_applied": false,
+    "reason": "Generic blouse/shirt with full sleeves. Evidence: Sleeves extend to wrist with elasticized or gathered cuffs; neckline dips in center with fabric bow tied at bust. | Reviewed: lavender peplum office blouse with sweetheart neckline bow, gathered cuffs, and full sleeves. | Structured bodice with peplum hem, long sleeves, and formal silhouette consistent with office blouse; no pants or skirt visible to suggest full dress.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": null,
+    "sleeve_length_normalized": "full",
+    "template_id": "top_full_sleeve"
+  },
+  "texture_qc": {
+    "edge_density_ratio": 1.114,
+    "flags": [],
+    "heuristic": true,
+    "luminance_std_ratio": 0.611,
+    "mean_delta_e": 17.193,
+    "note": "Heuristic metrics only. Source and output garment geometry differ; pixelwise comparison is invalid. Do not auto-regenerate from these scores.",
+    "output_garment_pixel_count": 115614,
+    "palette_delta_e_mean": 17.786,
+    "role": "top",
+    "source_garment_pixel_count": 42586
+  },
+  "user_override_applied": false,
+  "vlm_attribute_json_sha256": "179ce935dd40c45df9fa07f2775ee8c3495557ed0094b44cc45f898dae55eba5"
+}

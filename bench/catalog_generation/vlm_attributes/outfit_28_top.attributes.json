@@ -1,0 +1,71 @@
+{
+  "attributes": {
+    "closures_details": {
+      "confidence": "medium",
+      "evidence": "Front center placket present with visible buttonholes; actual buttons obscured by lighting and angle.",
+      "observation_type": "observed",
+      "value": "placket with buttonholes visible; buttons not clearly seen"
+    },
+    "dominant_color": {
+      "confidence": "high",
+      "evidence": "Entire visible garment is uniformly white across all regions including collar, body, and sleeves.",
+      "observation_type": "observed",
+      "value": "white"
+    },
+    "garment_class": {
+      "confidence": "high",
+      "evidence": "Structured collar, front placket, long sleeves, and tailored fit consistent with office-style blouse; no visible pockets or casual details.",
+      "observation_type": "inferred",
+      "value": "office_blouse"
+    },
+    "likely_material": {
+      "confidence": "medium",
+      "evidence": "Surface exhibits smooth, slightly reflective sheen typical of satin or sateen weaves; no visible texture or weave pattern to confirm fiber.",
+      "observation_type": "inferred",
+      "value": "satin-like woven fabric"
+    },
+    "sleeve_cuff_neckline": {
+      "confidence": "high",
+      "evidence": "Sleeves extend to wrist area with defined cuffs; neckline features a classic pointed collar structure.",
+      "observation_type": "observed",
+      "value": "long sleeves, standard cuffs, pointed collar"
+    },
+    "surface_sheen": {
+      "confidence": "high",
+      "evidence": "Light reflects softly along folds and seams, indicating a lustrous but not glossy surface finish.",
+      "observation_type": "observed",
+      "value": "soft satin-like"
+    },
+    "texture_pattern": {
+      "confidence": "high",
+      "evidence": "No prints, embroidery, or patterns visible; surface is uniformly plain.",
+      "observation_type": "observed",
+      "value": "solid"
+    },
+    "weave_finish": {
+      "confidence": "medium",
+      "evidence": "Image resolution insufficient to resolve individual weave structure or finish characteristics beyond general sheen.",
+      "observation_type": "inferred",
+      "value": "not discernible at this resolution"
+    }
+  },
+  "case": {
+    "fixture": "outfit_28",
+    "role": "top"
+  },
+  "extracted_at_utc": "2026-08-02T01:39:53.783694+00:00",
+  "inputs": [
+    {
+      "path": "/users/pg00807/cloth_store/bench/plan1_localization/outputs/catalog_cutouts/outfit_28/catalog_top.png",
+      "role": "segmented_cutout",
+      "sha256": "8292022ad683d3ad417f8f4e41716e996305052c8ba417fc12e99b632f223638"
+    },
+    {
+      "path": "/users/pg00807/cloth_store/data/outfit_28.jpeg",
+      "role": "source_photo",
+      "sha256": "fa3493caa5c84b029ed229946711ebcc84d68fa72129c2b6b2841905cae70b58"
+    }
+  ],
+  "model_id": "Qwen/Qwen3.5-9B",
+  "schema_version": 1
+}

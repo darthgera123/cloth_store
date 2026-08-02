@@ -1,0 +1,113 @@
+{
+  "artifact_image_roles": [
+    {
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "05dde84dd7cc746fa6451d03dfb19cd956ced6d9a324ddf56bf42ed8634e2636"
+    },
+    {
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "e26886ae087ebcfae196049581aeb8e8e308fe84e3dcc522863f0c4c3db1f6fc"
+    },
+    {
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "f1bb49f6b6a1bc75e34966efa52c892edce5207f4ddf52540099971228f51b7f"
+    }
+  ],
+  "candidate_request_sha256": null,
+  "derived_geometry_sha256": null,
+  "estimated_cost_usd": 0.067,
+  "fixture": "outfit_26",
+  "generated_or_reused": "generated",
+  "generation_calls": 1,
+  "model_id": "gemini-3.1-flash-image",
+  "outputs": {
+    "output_1k": {
+      "path": "outfit_26/top/output_1k.png",
+      "sha256": "3fc3fb7080bb9fea84eba739d2e0ba40192d501d53e2a28ebecf663e6284ac95"
+    },
+    "output_512": {
+      "path": "outfit_26/top/output.png",
+      "sha256": "fb2abe61d2418f45fd9ae9a018fe83cdabb1b679d35ec4799f99e0ce85971568"
+    }
+  },
+  "packaged_inputs": [
+    {
+      "filename": "input_segmented.png",
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "05dde84dd7cc746fa6451d03dfb19cd956ced6d9a324ddf56bf42ed8634e2636",
+      "source_path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_26/catalog_top.png"
+    },
+    {
+      "filename": "input_template.png",
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "e26886ae087ebcfae196049581aeb8e8e308fe84e3dcc522863f0c4c3db1f6fc",
+      "source_path": "bench/catalog_templates/generated/top_full_sleeve.png"
+    },
+    {
+      "filename": "input_detail.png",
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "f1bb49f6b6a1bc75e34966efa52c892edce5207f4ddf52540099971228f51b7f",
+      "source_path": "bench/catalog_generation/detail_crops/outfit_26_top_detail.png"
+    },
+    {
+      "filename": "attributes.json",
+      "role": "vlm_attributes",
+      "sha256": "1d43d0e19462b51d650e31664a0a5f3b473937249a43b0ab26e2a35152a20eaa",
+      "source_path": "bench/catalog_generation/vlm_attributes/outfit_26_top.attributes.json"
+    }
+  ],
+  "promoted_from_candidate": null,
+  "promoted_from_reference": null,
+  "prompt_policy_version": 5,
+  "prompt_sha256": "056d97f8c8daaf5a370f7b99aac62526436d844483c5ab45c6d0030a5b919c67",
+  "request_settings": {
+    "aspect_ratio": "1:1",
+    "image_size": "1K",
+    "model_id": "gemini-3.1-flash-image",
+    "response_modalities": [
+      "TEXT",
+      "IMAGE"
+    ]
+  },
+  "reuse_source": null,
+  "review_required": false,
+  "role": "top",
+  "source_paths": {
+    "artifact": "bench/catalog_generation/artifacts/outfit_26_top_top_full_sleeve.pipeline.request.json",
+    "override": null,
+    "production_metadata": "bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/outfit_26/top.run.json",
+    "vlm_attributes": "bench/catalog_generation/vlm_attributes/outfit_26_top.attributes.json"
+  },
+  "status": "ok",
+  "template_id": "top_full_sleeve",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "office_blouse",
+    "override_applied": true,
+    "reason": "Explicit reviewed override to 'top_full_sleeve'.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": null,
+    "sleeve_length_normalized": "full",
+    "template_id": "top_full_sleeve"
+  },
+  "texture_qc": {
+    "edge_density_ratio": 0.572,
+    "flags": [],
+    "heuristic": true,
+    "luminance_std_ratio": 0.475,
+    "mean_delta_e": 19.534,
+    "note": "Heuristic metrics only. Source and output garment geometry differ; pixelwise comparison is invalid. Do not auto-regenerate from these scores.",
+    "output_garment_pixel_count": 119604,
+    "palette_delta_e_mean": 18.377,
+    "role": "top",
+    "source_garment_pixel_count": 39650
+  },
+  "user_override_applied": false,
+  "vlm_attribute_json_sha256": "547dd3e76d3ed0c3c85b13a7d27615c3b708a152942d3c88985a545ce2ad2d6a"
+}

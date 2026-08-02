@@ -1,0 +1,66 @@
+{
+  "attributes": {
+    "closures_details": {
+      "confidence": "high",
+      "evidence": "No buttons, zippers, snaps, or plackets visible in frame; neckline appears open without fastening.",
+      "observation_type": "observed",
+      "value": "no visible closures"
+    },
+    "dominant_color": {
+      "confidence": "high",
+      "evidence": "Entire garment is uniformly light blue with no other dominant hues.",
+      "observation_type": "observed",
+      "value": "light blue"
+    },
+    "garment_class": {
+      "confidence": "high",
+      "evidence": "V-neckline, short sleeves, structured fit, and decorative front panel suggest formal or semi-formal women\u2019s top.",
+      "observation_type": "inferred",
+      "value": "office_blouse"
+    },
+    "likely_material": {
+      "confidence": "high",
+      "evidence": "Visible small circular holes (eyelets) and structured drape suggest woven textile, possibly cotton or blend.",
+      "observation_type": "inferred",
+      "value": "woven fabric with eyelet perforations"
+    },
+    "sleeve_cuff_neckline": {
+      "confidence": "high",
+      "evidence": "Sleeves end above elbow with no cuff detailing; neckline forms shallow V-shape with no collar or button placket.",
+      "observation_type": "observed",
+      "value": "short sleeves, rounded neckline with V-cut, no cuffs"
+    },
+    "surface_sheen": {
+      "confidence": "high",
+      "evidence": "No specular highlights or gloss; surface absorbs light diffusely.",
+      "observation_type": "observed",
+      "value": "matte"
+    },
+    "texture_pattern": {
+      "confidence": "high",
+      "evidence": "Regularly spaced small holes across body and sleeves; vertical embroidered panel down center front.",
+      "observation_type": "observed",
+      "value": "eyelet perforation pattern with embroidered trim"
+    },
+    "weave_finish": {
+      "confidence": "medium",
+      "evidence": "Image resolution insufficient to resolve individual weave structure or finish details.",
+      "observation_type": "inferred",
+      "value": "not discernible at this resolution"
+    }
+  },
+  "case": {
+    "fixture": "outfit_5",
+    "role": "top"
+  },
+  "extracted_at_utc": "2026-08-01T18:53:05.180863+00:00",
+  "inputs": [
+    {
+      "path": "/users/pg00807/cloth_store/bench/plan1_localization/outputs/catalog_cutouts/outfit_5/catalog_top.png",
+      "role": "segmented_cutout",
+      "sha256": "318ea002c4c25b3e8b4b1016f820927b411b924a8ddfd12e1812667bfbc69fd0"
+    }
+  ],
+  "model_id": "Qwen/Qwen3.5-9B",
+  "schema_version": 1
+}

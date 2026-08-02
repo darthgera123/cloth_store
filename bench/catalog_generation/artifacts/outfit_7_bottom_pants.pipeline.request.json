@@ -1,0 +1,53 @@
+{
+  "artifact_version": 1,
+  "bench": "catalog_generation",
+  "case": {
+    "fixture": "outfit_7",
+    "role": "bottom"
+  },
+  "gemini_model_id": "gemini-3.1-flash-image",
+  "images": [
+    {
+      "description": "Plan 1 segmented catalog cutout (identity/color/texture reference)",
+      "height": 512,
+      "mode": "RGB",
+      "order": 1,
+      "path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_7/catalog_bottom.png",
+      "role": "garment_identity",
+      "sha256": "5e382e54ff9e5a698329fb6b8be3eab5a74488e9b0456f20e7487f22c02132cc",
+      "width": 512
+    },
+    {
+      "description": "Canonical template silhouette (geometry/layout reference)",
+      "height": 512,
+      "mode": "RGB",
+      "order": 2,
+      "path": "bench/catalog_templates/generated/pants.png",
+      "role": "template_geometry",
+      "sha256": "91c8cc4a84b5cd4b24a3c9e8b8fab561f2c34b93860a234e9c5f06c3b95c3ce7",
+      "width": 512
+    }
+  ],
+  "prompt": "Create a catalog product image for fixture outfit_7 (bottom) using separate reference images.\n\nImage 1 is the garment identity reference. Preserve correct trouser geometry with two distinct legs. Image 1 is authoritative for color and material. Do not invent pockets, fly, buttons, hardware, center creases, pressed creases, vertical seams, or texture unless clearly visible in Image 1.\n\nImage 2 is the geometry and silhouette reference (pants). Use Image 2 only for garment shape, proportions, sleeve length, hem line, and overall layout. The flat gray fill in Image 2 is a placeholder silhouette \u2014 do not copy that gray color or treat it as fabric. Image 2 controls shape, not appearance.\n\nImage 1 is authoritative for visible color, material, and weave. Ignore hands, phone, and any non-garment segmentation artifacts from Image 1. The template gray color must never transfer to the output.\n\nOutput a single 512\u00d7512 front-facing catalog photograph on a pure white background (255, 255, 255). Fit the garment to the silhouette of Image 2 while preserving the color and material of Image 1. Reconstruct only missing or occluded regions implied by the target silhouette; do not invent new design elements. Exclude any person, mannequin, hanger, gray template color, grids, checkers, text, shadows, or diagnostic artifacts. The template controls shape, not appearance.",
+  "prompt_policy_version": 5,
+  "request_layout": {
+    "no_composite_input": true,
+    "part_order": [
+      "garment_identity",
+      "template_geometry"
+    ],
+    "separate_parts": true
+  },
+  "runner_model_id": "nano_banana_2",
+  "template_id": "pants",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "trousers",
+    "override_applied": false,
+    "reason": "Trousers/pants class. Evidence: Garment is trousers; no sleeves, cuffs, or neckline present. | Brown solid trousers; two-leg pants silhouette in cutout. | Full-length leg structure with waistband, front pockets, and straight-to-slight-flare silhouette visible.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": null,
+    "sleeve_length_normalized": null,
+    "template_id": "pants"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "attributes": {
+    "closures_details": {
+      "confidence": "high",
+      "evidence": "No buttons, zippers, plackets, or trim visible on front or side of garment in frame.",
+      "observation_type": "observed",
+      "value": "none visible"
+    },
+    "dominant_color": {
+      "confidence": "high",
+      "evidence": "Vertical stripes of navy blue and white dominate upper portion; lower section features horizontal navy and white stripes.",
+      "observation_type": "observed",
+      "value": "navy blue and white"
+    },
+    "garment_class": {
+      "confidence": "high",
+      "evidence": "Garment has a single continuous panel with waistband and hem, consistent with skirt silhouette; no sleeves, collar, or trouser legs visible.",
+      "observation_type": "observed",
+      "value": "skirt"
+    },
+    "likely_material": {
+      "confidence": "medium",
+      "evidence": "Fabric drapes softly with visible folds and slight translucency in creases, suggesting lightweight woven construction.",
+      "observation_type": "inferred",
+      "value": "lightweight woven fabric"
+    },
+    "sleeve_cuff_neckline": {
+      "confidence": "high",
+      "evidence": "Garment is a skirt; no sleeves, cuffs, or neckline present.",
+      "observation_type": "observed",
+      "value": "not applicable"
+    },
+    "surface_sheen": {
+      "confidence": "high",
+      "evidence": "No specular highlights or gloss observed; surface appears non-reflective under even lighting.",
+      "observation_type": "observed",
+      "value": "matte"
+    },
+    "texture_pattern": {
+      "confidence": "high",
+      "evidence": "Upper section displays vertical navy/white stripes; lower section shows horizontal navy/white stripes \u2014 distinct pattern zones.",
+      "observation_type": "observed",
+      "value": "striped"
+    },
+    "weave_finish": {
+      "confidence": "high",
+      "evidence": "Image resolution insufficient to resolve individual weave structure or finish details.",
+      "observation_type": "inferred",
+      "value": "not discernible at this resolution"
+    }
+  },
+  "case": {
+    "fixture": "outfit_28",
+    "role": "bottom"
+  },
+  "extracted_at_utc": "2026-08-02T01:40:30.527306+00:00",
+  "inputs": [
+    {
+      "path": "/users/pg00807/cloth_store/bench/plan1_localization/outputs/catalog_cutouts/outfit_28/catalog_bottom.png",
+      "role": "segmented_cutout",
+      "sha256": "5a0dac1167eed20749641978020d24ab023fb5df8e94de1cf7b346075f0d444b"
+    },
+    {
+      "path": "/users/pg00807/cloth_store/data/outfit_28.jpeg",
+      "role": "source_photo",
+      "sha256": "fa3493caa5c84b029ed229946711ebcc84d68fa72129c2b6b2841905cae70b58"
+    }
+  ],
+  "model_id": "Qwen/Qwen3.5-9B",
+  "schema_version": 1
+}

@@ -1,0 +1,66 @@
+{
+  "attributes": {
+    "closures_details": {
+      "confidence": "high",
+      "evidence": "No buttons, zippers, plackets, or trim are visible in the frame; waistband area is cropped.",
+      "observation_type": "observed",
+      "value": "none visible"
+    },
+    "dominant_color": {
+      "confidence": "high",
+      "evidence": "Overall pixel tone is dark gray with subtle tonal variation due to lighting and fabric texture.",
+      "observation_type": "observed",
+      "value": "dark gray"
+    },
+    "garment_class": {
+      "confidence": "high",
+      "evidence": "Two-legged lower-body garment with waistband, crotch seam, and leg openings; no upper body or sleeves visible.",
+      "observation_type": "observed",
+      "value": "trousers"
+    },
+    "likely_material": {
+      "confidence": "medium",
+      "evidence": "Fabric drapes with soft folds and reflects light subtly along creases, suggesting a smooth woven textile.",
+      "observation_type": "inferred",
+      "value": "woven fabric with slight sheen"
+    },
+    "sleeve_cuff_neckline": {
+      "confidence": "high",
+      "evidence": "Garment is trousers; no sleeves, cuffs, or neckline present.",
+      "observation_type": "observed",
+      "value": "not applicable"
+    },
+    "surface_sheen": {
+      "confidence": "medium",
+      "evidence": "Light reflects gently along leg seams and knee areas without sharp gloss, indicating low-to-moderate luster.",
+      "observation_type": "inferred",
+      "value": "soft satin-like"
+    },
+    "texture_pattern": {
+      "confidence": "high",
+      "evidence": "No visible prints, embroidery, or patterns; surface appears uniformly colored with minor textural variation from weave.",
+      "observation_type": "observed",
+      "value": "solid"
+    },
+    "weave_finish": {
+      "confidence": "high",
+      "evidence": "Image resolution insufficient to resolve individual weave structure or finish details.",
+      "observation_type": "inferred",
+      "value": "not discernible at this resolution"
+    }
+  },
+  "case": {
+    "fixture": "outfit_4",
+    "role": "bottom"
+  },
+  "extracted_at_utc": "2026-08-01T18:52:25.043827+00:00",
+  "inputs": [
+    {
+      "path": "/users/pg00807/cloth_store/bench/plan1_localization/outputs/catalog_cutouts/outfit_4/catalog_bottom.png",
+      "role": "segmented_cutout",
+      "sha256": "0a08615a2c3a089582b35dc2bcb70b9b5ec3163409bfe3ed068bb7eaf22bce90"
+    }
+  ],
+  "model_id": "Qwen/Qwen3.5-9B",
+  "schema_version": 1
+}

@@ -1,0 +1,71 @@
+{
+  "attributes": {
+    "closures_details": {
+      "confidence": "high",
+      "evidence": "Visible button at waistband center and vertical placket line indicating fly closure.",
+      "observation_type": "observed",
+      "value": "front fly with button closure"
+    },
+    "dominant_color": {
+      "confidence": "high",
+      "evidence": "Uniform light neutral tone across entire garment; slight warm undertone under lighting.",
+      "observation_type": "observed",
+      "value": "off-white"
+    },
+    "garment_class": {
+      "confidence": "high",
+      "evidence": "Full-length leg structure with waistband and front fly visible; no sleeves or collar present.",
+      "observation_type": "observed",
+      "value": "trousers"
+    },
+    "likely_material": {
+      "confidence": "high",
+      "evidence": "High sheen and fluid drape suggest smooth, lustrous textile; not matte or textured.",
+      "observation_type": "inferred",
+      "value": "satin-like woven fabric"
+    },
+    "sleeve_cuff_neckline": {
+      "confidence": "high",
+      "evidence": "Garment is trousers; no sleeves, cuffs, or neckline present.",
+      "observation_type": "observed",
+      "value": "not applicable"
+    },
+    "surface_sheen": {
+      "confidence": "high",
+      "evidence": "Subtle specular highlights along folds and seams indicate low-to-moderate reflectivity.",
+      "observation_type": "observed",
+      "value": "soft satin-like"
+    },
+    "texture_pattern": {
+      "confidence": "high",
+      "evidence": "No visible prints, embroidery, or patterns; uniform surface throughout.",
+      "observation_type": "observed",
+      "value": "solid"
+    },
+    "weave_finish": {
+      "confidence": "medium",
+      "evidence": "Image resolution insufficient to resolve weave structure or finish details.",
+      "observation_type": "inferred",
+      "value": "not discernible at this resolution"
+    }
+  },
+  "case": {
+    "fixture": "outfit_17",
+    "role": "bottom"
+  },
+  "extracted_at_utc": "2026-08-01T23:57:38.870571+00:00",
+  "inputs": [
+    {
+      "path": "/users/pg00807/cloth_store/bench/plan1_localization/outputs/catalog_cutouts/outfit_17/catalog_bottom.png",
+      "role": "segmented_cutout",
+      "sha256": "6c7b62b40e6bc24887745bf8d1c01dab8be7a9fc07ab1da149f5546843f48de7"
+    },
+    {
+      "path": "/users/pg00807/cloth_store/data/outfit_17.jpeg",
+      "role": "source_photo",
+      "sha256": "0e0b645fa2da1e01af1d208bf8f08eb5a92f5040da4091634f1c11a073c4ee7f"
+    }
+  ],
+  "model_id": "Qwen/Qwen3.5-9B",
+  "schema_version": 1
+}

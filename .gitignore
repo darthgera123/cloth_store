@@ -1,4 +1,6 @@
+.uv-cache/
 .env
+credentials.env
 .venv/
 .pytest_cache/
 .ruff_cache/
@@ -7,6 +9,14 @@ __pycache__/
 
 # Private wardrobe data
 data/
+
+# Local mirror-selfie fixtures and bench outputs
+outfit_*.jpeg
+bench/plan1_localization/outputs/
+bench/catalog_generation/outputs/
+
+# Catalog batch logs
+bench/catalog_generation/*.log
 
 # Local editor and OS files
 .DS_Store

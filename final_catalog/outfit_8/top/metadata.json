@@ -1,0 +1,115 @@
+{
+  "artifact_image_roles": [
+    {
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "5d1ad376efe1e4a7e6accf960f738360880e6119079e9806c4b7b513107c6c10"
+    },
+    {
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "7f5ac10ceb46a20a636972bdbc10ec1e48dd6a395f2fa94e98c9ba4d450e29bd"
+    },
+    {
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "2cd6c516cabc4f69e8901f07e7cd2b4a129fff7470aee106005c5c523106e0f8"
+    }
+  ],
+  "candidate_request_sha256": null,
+  "derived_geometry_sha256": null,
+  "estimated_cost_usd": 0.067,
+  "fixture": "outfit_8",
+  "generated_or_reused": "generated",
+  "generation_calls": 1,
+  "model_id": "gemini-3.1-flash-image",
+  "outputs": {
+    "output_1k": {
+      "path": "outfit_8/top/output_1k.png",
+      "sha256": "96a708c6f9b47915bd643bcdd10f435d28f466ae908b5edd477fcf009813dd3a"
+    },
+    "output_512": {
+      "path": "outfit_8/top/output.png",
+      "sha256": "a128a6c11ce0b7fcda815e24088967bb18c3509823a508f59cbf4568086da3b8"
+    }
+  },
+  "packaged_inputs": [
+    {
+      "filename": "input_segmented.png",
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "5d1ad376efe1e4a7e6accf960f738360880e6119079e9806c4b7b513107c6c10",
+      "source_path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_8/catalog_top.png"
+    },
+    {
+      "filename": "input_template.png",
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "7f5ac10ceb46a20a636972bdbc10ec1e48dd6a395f2fa94e98c9ba4d450e29bd",
+      "source_path": "bench/catalog_templates/generated/top_half_sleeve.png"
+    },
+    {
+      "filename": "input_detail.png",
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "2cd6c516cabc4f69e8901f07e7cd2b4a129fff7470aee106005c5c523106e0f8",
+      "source_path": "bench/catalog_generation/detail_crops/outfit_8_top_detail.png"
+    },
+    {
+      "filename": "attributes.json",
+      "role": "vlm_attributes",
+      "sha256": "132b840d826572099281db65bb9cbc5ddead1207d1eb6c0ce9cc77d2886161df",
+      "source_path": "bench/catalog_generation/vlm_attributes/outfit_8_top.attributes.json"
+    }
+  ],
+  "promoted_from_candidate": null,
+  "promoted_from_reference": null,
+  "prompt_policy_version": 6,
+  "prompt_sha256": "df9a93e0a918b649d3a5868fef73ae2efc992a02d9f65594227e3b57e5fe56bd",
+  "request_settings": {
+    "aspect_ratio": "1:1",
+    "image_size": "1K",
+    "model_id": "gemini-3.1-flash-image",
+    "response_modalities": [
+      "TEXT",
+      "IMAGE"
+    ]
+  },
+  "reuse_source": null,
+  "review_required": false,
+  "role": "top",
+  "source_paths": {
+    "artifact": "bench/catalog_generation/artifacts/outfit_8_top_top_half_sleeve.user_corrected.request.json",
+    "override": "bench/catalog_generation/overrides/outfit_8_top.override.json",
+    "production_metadata": "bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/outfit_8/top.run.json",
+    "vlm_attributes": "bench/catalog_generation/vlm_attributes/outfit_8_top.attributes.json"
+  },
+  "status": "ok",
+  "template_id": "top_half_sleeve",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "top",
+    "override_applied": true,
+    "reason": "Explicit reviewed override to 'top_half_sleeve'.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": null,
+    "sleeve_length_normalized": "half",
+    "template_id": "top_half_sleeve"
+  },
+  "texture_qc": {
+    "edge_density_ratio": 0.261,
+    "flags": [
+      "detail_loss_suspected"
+    ],
+    "heuristic": true,
+    "luminance_std_ratio": 0.735,
+    "mean_delta_e": 1.865,
+    "note": "Heuristic metrics only. Source and output garment geometry differ; pixelwise comparison is invalid. Do not auto-regenerate from these scores.",
+    "output_garment_pixel_count": 140723,
+    "palette_delta_e_mean": 6.413,
+    "role": "top",
+    "source_garment_pixel_count": 25354
+  },
+  "user_override_applied": true,
+  "vlm_attribute_json_sha256": "132b840d826572099281db65bb9cbc5ddead1207d1eb6c0ce9cc77d2886161df"
+}

@@ -1,0 +1,66 @@
+{
+  "attributes": {
+    "closures_details": {
+      "confidence": "high",
+      "evidence": "Single button visible near collar base; placket implied by collar structure and garment form.",
+      "observation_type": "observed",
+      "value": "placket with button visible"
+    },
+    "dominant_color": {
+      "confidence": "high",
+      "evidence": "Uniform deep red hue across entire visible garment; no secondary colors or patterns detected.",
+      "observation_type": "observed",
+      "value": "deep red"
+    },
+    "garment_class": {
+      "confidence": "high",
+      "evidence": "Structured collar, long sleeves, and tailored silhouette consistent with formal or business casual blouse design.",
+      "observation_type": "inferred",
+      "value": "office_blouse"
+    },
+    "likely_material": {
+      "confidence": "high",
+      "evidence": "High sheen and fluid drape suggest smooth, lustrous woven material typical of satin or similar finishes.",
+      "observation_type": "inferred",
+      "value": "satin-like woven fabric"
+    },
+    "sleeve_cuff_neckline": {
+      "confidence": "high",
+      "evidence": "Sleeve extends to wrist with elasticized or gathered cuff; neckline is high and rounded without full collar stand.",
+      "observation_type": "observed",
+      "value": "long sleeve, gathered cuff, mock neck"
+    },
+    "surface_sheen": {
+      "confidence": "high",
+      "evidence": "Strong specular highlights on shoulder and sleeve indicate high surface reflectivity.",
+      "observation_type": "observed",
+      "value": "glossy"
+    },
+    "texture_pattern": {
+      "confidence": "high",
+      "evidence": "No visible prints, embroidery, or textural variation; surface is uniformly colored.",
+      "observation_type": "observed",
+      "value": "solid"
+    },
+    "weave_finish": {
+      "confidence": "medium",
+      "evidence": "Image resolution insufficient to resolve individual weave structure or finish details.",
+      "observation_type": "inferred",
+      "value": "not discernible at this resolution"
+    }
+  },
+  "case": {
+    "fixture": "outfit_6",
+    "role": "top"
+  },
+  "extracted_at_utc": "2026-08-01T14:19:29.988913+00:00",
+  "inputs": [
+    {
+      "path": "/users/pg00807/cloth_store/bench/plan1_localization/outputs/catalog_cutouts/outfit_6/catalog_top.png",
+      "role": "segmented_cutout",
+      "sha256": "33723ec434f11cfb106e17a0e0e6ec281f6ad73fa59efae2816e80d41d358711"
+    }
+  ],
+  "model_id": "Qwen/Qwen3.5-9B",
+  "schema_version": 1
+}

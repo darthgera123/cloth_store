@@ -1,0 +1,117 @@
+{
+  "artifact_version": 1,
+  "bench": "catalog_generation",
+  "case": {
+    "fixture": "outfit_8",
+    "role": "top"
+  },
+  "detail_reference_provenance": {
+    "crop_bbox": [
+      187,
+      270,
+      295,
+      354
+    ],
+    "included": true,
+    "reason": "low-variance garment texture window; native resolution centered on white canvas without upscaling",
+    "source_bbox": [
+      147,
+      150,
+      364,
+      362
+    ]
+  },
+  "gemini_model_id": "gemini-3.1-flash-image",
+  "images": [
+    {
+      "description": "Plan 1 segmented catalog cutout (identity/color/texture reference)",
+      "height": 512,
+      "mode": "RGB",
+      "order": 1,
+      "path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_8/catalog_top.png",
+      "role": "garment_identity",
+      "sha256": "5d1ad376efe1e4a7e6accf960f738360880e6119079e9806c4b7b513107c6c10",
+      "width": 512
+    },
+    {
+      "description": "Canonical template silhouette (geometry/layout reference)",
+      "height": 512,
+      "mode": "RGB",
+      "order": 2,
+      "path": "bench/catalog_templates/generated/top_half_sleeve.png",
+      "role": "template_geometry",
+      "sha256": "7f5ac10ceb46a20a636972bdbc10ec1e48dd6a395f2fa94e98c9ba4d450e29bd",
+      "width": 512
+    },
+    {
+      "description": "Source-derived garment detail crop (texture/pattern/trim reinforcement only)",
+      "height": 512,
+      "mode": "RGB",
+      "order": 3,
+      "path": "bench/catalog_generation/detail_crops/outfit_8_top_detail.png",
+      "role": "garment_detail",
+      "sha256": "2cd6c516cabc4f69e8901f07e7cd2b4a129fff7470aee106005c5c523106e0f8",
+      "width": 512
+    }
+  ],
+  "prompt": "Create a catalog product image for fixture outfit_8 (top) using separate reference images.\n\nImage 1 is the garment identity reference. Present a closed, symmetric, front-facing lay-flat garment. Reconstruct any pose-induced gaps, wrap, or drape from Image 1 as a closed garment. Image 1 is authoritative for exact color, material, weave, pattern, embroidery, lace, print, trim, buttons, seams, lapels, pockets, and every other surface feature clearly visible in the segmented source. Preserving source-visible texture and color fidelity is the highest priority. Do not simplify, replace, or invent texture, hardware, or details absent from Image 1. Never copy the template gray fill as fabric.\n\nImage 2 is the geometry and silhouette reference (top_half_sleeve). Use Image 2 only for garment shape, proportions, sleeve length, hem line, and overall layout. The flat gray fill in Image 2 is a placeholder silhouette \u2014 do not copy that gray color or treat it as fabric. Image 2 controls shape, not appearance.\n\nImage 3 is an optional close-up detail reference cropped from the same segmented source as Image 1. Use Image 3 only to reinforce exact texture, weave, pattern, embroidery, and trim visible in the source. Image 3 does not change the target silhouette.\n\nUser override (highest precedence):\n- Garment class: navy zip-front knit top. This is a short-sleeve zip-neck top with a visible center zipper and metallic/O-ring pull, NOT a button placket office blouse or polo.\n- Preserve the center front zipper with visible metallic/O-ring zipper pull wherever supported by Image 1 or Image 3.\n- Preserve an adjustable/deeper V neckline that can open from the zip; do NOT replace with a button placket or closed polo collar.\n- Preserve navy/blue color, knit texture, short sleeves, and all source-visible details from Image 1 and Image 3.\n- Do NOT convert to: button placket, button-front blouse, office blouse, polo buttons, collared button shirt, fake button placket.\n- Closed, symmetric, front-facing lay-flat catalog presentation using half-sleeve outer geometry only.\n- Do not invent buttons, plackets, or hardware absent from Image 1 or Image 3.\n\nVLM-derived material cues (supplement Image 1; do not override visible source):\n- surface sheen: matte (high confidence, observed; No specular highlights or gloss detected on garment surface under uniform lighting.)\n- dominant color: navy blue (high confidence, observed; Garment pixels uniformly display deep blue hue across body and sleeves.)\n- texture pattern: solid (high confidence, observed; No visible prints, embroidery, or patterns; uniform color field.)\n- weave finish: not discernible at this resolution (high confidence, inferred; Image resolution insufficient to resolve weave structure or finish details.)\n\nSheen constraint: Image 1 shows matte. Keep this low reflectivity. Do not add satin, gloss, metallic, vinyl, or plastic shine absent from Image 1.\nThese cues clarify Image 1; they must not override pixels visible in Image 1 or Image 3.\n\nImage 1 is authoritative for visible color, material, and weave. Ignore hands, phone, and any non-garment segmentation artifacts from Image 1. The template gray color must never transfer to the output.\n\nOutput a single 512\u00d7512 front-facing catalog photograph on a pure white background (255, 255, 255). Fit the garment to the silhouette of Image 2 while preserving the color and material of Image 1. Reconstruct only missing or occluded regions implied by the target silhouette; do not invent new design elements. Exclude any person, mannequin, hanger, gray template color, grids, checkers, text, shadows, or diagnostic artifacts. The template controls shape, not appearance.",
+  "prompt_policy_version": 6,
+  "request_layout": {
+    "no_composite_input": true,
+    "part_order": [
+      "garment_identity",
+      "template_geometry",
+      "garment_detail"
+    ],
+    "separate_parts": true
+  },
+  "runner_model_id": "nano_banana_2",
+  "template_id": "top_half_sleeve",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "top",
+    "override_applied": false,
+    "reason": "Generic blouse/shirt with half sleeves. Evidence: User correction: navy/blue short-sleeve zip-front knit top with visible center zipper and adjustable deeper V neckline, not a button office blouse or polo. | User-confirmed: navy/blue short-sleeve zip-front knit top with center zipper and adjustable V neckline, not button office blouse.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": null,
+    "sleeve_length_normalized": "half",
+    "template_id": "top_half_sleeve"
+  },
+  "user_override": {
+    "garment_class": "top",
+    "injected_high_confidence_fields": [
+      "surface_sheen",
+      "dominant_color",
+      "texture_pattern",
+      "weave_finish"
+    ],
+    "namespace": "user_corrected_zip_top_v1",
+    "overridden_vlm_fields": [
+      "closures_details",
+      "garment_class",
+      "sleeve_cuff_neckline"
+    ],
+    "precedence": "user_override > high_confidence_source_vlm > template_geometry_only",
+    "presentation_mode": "text_only",
+    "prohibited_conversions": [
+      "button placket",
+      "button-front blouse",
+      "office blouse",
+      "polo buttons",
+      "collared button shirt",
+      "fake button placket"
+    ],
+    "prompt_lines": [
+      "Garment class: navy zip-front knit top. This is a short-sleeve zip-neck top with a visible center zipper and metallic/O-ring pull, NOT a button placket office blouse or polo.",
+      "Preserve the center front zipper with visible metallic/O-ring zipper pull wherever supported by Image 1 or Image 3.",
+      "Preserve an adjustable/deeper V neckline that can open from the zip; do NOT replace with a button placket or closed polo collar.",
+      "Preserve navy/blue color, knit texture, short sleeves, and all source-visible details from Image 1 and Image 3.",
+      "Do NOT convert to: button placket, button-front blouse, office blouse, polo buttons, collared button shirt, fake button placket.",
+      "Closed, symmetric, front-facing lay-flat catalog presentation using half-sleeve outer geometry only.",
+      "Do not invent buttons, plackets, or hardware absent from Image 1 or Image 3."
+    ],
+    "reason": "User correction: navy/blue short-sleeve zip-front knit top with visible center zipper and adjustable deeper V neckline, not a button office blouse or polo.",
+    "sheen_constraint": "Image 1 shows matte. Keep this low reflectivity. Do not add satin, gloss, metallic, vinyl, or plastic shine absent from Image 1.",
+    "vlm_attribute_json_sha256": "132b840d826572099281db65bb9cbc5ddead1207d1eb6c0ce9cc77d2886161df"
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "artifact_image_roles": [
+    {
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "bb27f3ee9feca8f5e0df6f8a75120fe1bc829d875751c69bf866427cec3faa5a"
+    },
+    {
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "5915aea94afb1433c00ab23a096004f64d380746b8619a8b25d3730363f91029"
+    },
+    {
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "af21aa01d5de45acda3090bb5bca022fc187fc78e6ae1ad78e69a1ca28744039"
+    }
+  ],
+  "candidate_request_sha256": null,
+  "derived_geometry_sha256": null,
+  "estimated_cost_usd": 0.067,
+  "fixture": "outfit_4",
+  "generated_or_reused": "generated",
+  "generation_calls": 1,
+  "model_id": "gemini-3.1-flash-image",
+  "outputs": {
+    "output_1k": {
+      "path": "outfit_4/top/output_1k.png",
+      "sha256": "0c0a12aff3e27032829b3a0125b306562fba39a5cfd211e369c0751036a31591"
+    },
+    "output_512": {
+      "path": "outfit_4/top/output.png",
+      "sha256": "841a8d470fc1ec7ce03f6d56c9d8091ae7196e5196ad6f33d54cfeffbb4892fd"
+    }
+  },
+  "packaged_inputs": [
+    {
+      "filename": "input_segmented.png",
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "bb27f3ee9feca8f5e0df6f8a75120fe1bc829d875751c69bf866427cec3faa5a",
+      "source_path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_4/catalog_top.png"
+    },
+    {
+      "filename": "input_template.png",
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "5915aea94afb1433c00ab23a096004f64d380746b8619a8b25d3730363f91029",
+      "source_path": "bench/catalog_templates/generated/blazer.png"
+    },
+    {
+      "filename": "input_detail.png",
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "af21aa01d5de45acda3090bb5bca022fc187fc78e6ae1ad78e69a1ca28744039",
+      "source_path": "bench/catalog_generation/detail_crops/outfit_4_top_detail.png"
+    },
+    {
+      "filename": "attributes.json",
+      "role": "vlm_attributes",
+      "sha256": "a52e27e76980885b74bb4c65d6b5076f296f3b91dac1789b04e3652a397f3e41",
+      "source_path": "bench/catalog_generation/vlm_attributes/outfit_4_top.attributes.json"
+    }
+  ],
+  "promoted_from_candidate": null,
+  "promoted_from_reference": null,
+  "prompt_policy_version": 5,
+  "prompt_sha256": "827be372f8f825932ffed1c0d2d2dda37759b707a94255b8d0e497e6b0bffd5c",
+  "request_settings": {
+    "aspect_ratio": "1:1",
+    "image_size": "1K",
+    "model_id": "gemini-3.1-flash-image",
+    "response_modalities": [
+      "TEXT",
+      "IMAGE"
+    ]
+  },
+  "reuse_source": null,
+  "review_required": false,
+  "role": "top",
+  "source_paths": {
+    "artifact": "bench/catalog_generation/artifacts/outfit_4_top_blazer.pipeline.request.json",
+    "override": null,
+    "production_metadata": "bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/outfit_4/top.run.json",
+    "vlm_attributes": "bench/catalog_generation/vlm_attributes/outfit_4_top.attributes.json"
+  },
+  "status": "ok",
+  "template_id": "blazer",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "blazer",
+    "override_applied": false,
+    "reason": "Blazer/suit jacket class mapped to blazer. Evidence: Sleeves extend to wrist area but cuffs are not clearly defined; neckline is open with no collar attachment or trim visible. | Plan 1 notes: dominant outer blazer; white single-breasted blazer with lapels. | Single-breasted jacket with notched lapels, two front flap pockets, and a single visible button closure \u2014 consistent with blazer silhouette.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": null,
+    "sleeve_length_normalized": "full",
+    "template_id": "blazer"
+  },
+  "texture_qc": {
+    "edge_density_ratio": 0.765,
+    "flags": [],
+    "heuristic": true,
+    "luminance_std_ratio": 0.621,
+    "mean_delta_e": 11.498,
+    "note": "Heuristic metrics only. Source and output garment geometry differ; pixelwise comparison is invalid. Do not auto-regenerate from these scores.",
+    "output_garment_pixel_count": 116799,
+    "palette_delta_e_mean": 8.703,
+    "role": "top",
+    "source_garment_pixel_count": 60755
+  },
+  "user_override_applied": false,
+  "vlm_attribute_json_sha256": "5fef35c8adca87eb07a164c8426125953cf287db73399753fea9197a1adb0052"
+}

@@ -1,0 +1,113 @@
+{
+  "artifact_image_roles": [
+    {
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "e52e6a68f3239a9068a553de91bbff880642007de56d371222852e11de239bac"
+    },
+    {
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "e26886ae087ebcfae196049581aeb8e8e308fe84e3dcc522863f0c4c3db1f6fc"
+    },
+    {
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "18e312ce90eb3925d8406baec09207ea4319b2a54c64e42678d3873e61d10089"
+    }
+  ],
+  "candidate_request_sha256": null,
+  "derived_geometry_sha256": null,
+  "estimated_cost_usd": 0.067,
+  "fixture": "outfit_22",
+  "generated_or_reused": "generated",
+  "generation_calls": 1,
+  "model_id": "gemini-3.1-flash-image",
+  "outputs": {
+    "output_1k": {
+      "path": "outfit_22/top/output_1k.png",
+      "sha256": "ead872fdeb6343091a5e734861a93146070562c550d7546e42b0aee844994f1c"
+    },
+    "output_512": {
+      "path": "outfit_22/top/output.png",
+      "sha256": "31fd0004a72734d8d9ad4f685a903a4eac2222157b5839178861e22da14c7e9e"
+    }
+  },
+  "packaged_inputs": [
+    {
+      "filename": "input_segmented.png",
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "e52e6a68f3239a9068a553de91bbff880642007de56d371222852e11de239bac",
+      "source_path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_22/catalog_top.png"
+    },
+    {
+      "filename": "input_template.png",
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "e26886ae087ebcfae196049581aeb8e8e308fe84e3dcc522863f0c4c3db1f6fc",
+      "source_path": "bench/catalog_templates/generated/top_full_sleeve.png"
+    },
+    {
+      "filename": "input_detail.png",
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "18e312ce90eb3925d8406baec09207ea4319b2a54c64e42678d3873e61d10089",
+      "source_path": "bench/catalog_generation/detail_crops/outfit_22_top_detail.png"
+    },
+    {
+      "filename": "attributes.json",
+      "role": "vlm_attributes",
+      "sha256": "ad3359f4f8325df8bbb842fcb8ebfb11b650beccbda7b0e28d9d02e5f33bbd9b",
+      "source_path": "bench/catalog_generation/vlm_attributes/outfit_22_top.attributes.json"
+    }
+  ],
+  "promoted_from_candidate": null,
+  "promoted_from_reference": null,
+  "prompt_policy_version": 5,
+  "prompt_sha256": "d5c7eb5085d1f93eb60a0b11bb6ade0d7d715a18f8beec14967f80789ba3539d",
+  "request_settings": {
+    "aspect_ratio": "1:1",
+    "image_size": "1K",
+    "model_id": "gemini-3.1-flash-image",
+    "response_modalities": [
+      "TEXT",
+      "IMAGE"
+    ]
+  },
+  "reuse_source": null,
+  "review_required": false,
+  "role": "top",
+  "source_paths": {
+    "artifact": "bench/catalog_generation/artifacts/outfit_22_top_top_full_sleeve.pipeline.request.json",
+    "override": null,
+    "production_metadata": "bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/outfit_22/top.run.json",
+    "vlm_attributes": "bench/catalog_generation/vlm_attributes/outfit_22_top.attributes.json"
+  },
+  "status": "ok",
+  "template_id": "top_full_sleeve",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "office_blouse",
+    "override_applied": false,
+    "reason": "Generic blouse/shirt with full sleeves. Evidence: Sleeves extend to wrist with buttoned cuffs; neckline features gathered ruffles under collar. | Reviewed: light gray office blouse with ruffled collar, button front, and long sleeves with buttoned cuffs. | Long sleeves, button-front closure, structured collar, cropped hemline consistent with office-style blouse.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": null,
+    "sleeve_length_normalized": "full",
+    "template_id": "top_full_sleeve"
+  },
+  "texture_qc": {
+    "edge_density_ratio": 0.985,
+    "flags": [],
+    "heuristic": true,
+    "luminance_std_ratio": 0.703,
+    "mean_delta_e": 8.608,
+    "note": "Heuristic metrics only. Source and output garment geometry differ; pixelwise comparison is invalid. Do not auto-regenerate from these scores.",
+    "output_garment_pixel_count": 139931,
+    "palette_delta_e_mean": 6.993,
+    "role": "top",
+    "source_garment_pixel_count": 47751
+  },
+  "user_override_applied": false,
+  "vlm_attribute_json_sha256": "000b3c83fb6313208d4518effc3ff2b0fbb50b5ab6de8cf9a1779d6f32bce459"
+}

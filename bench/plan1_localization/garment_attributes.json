@@ -1,0 +1,479 @@
+{
+  "schema_version": 1,
+  "description": "Structured garment class and sleeve/style attributes per Plan 1 fixture role. Plan 1 VLM bbox JSON provides layout roles only; these attributes are derived from reviewed cutout/visual evidence, Plan 1 notes, and Plan 2 captions.",
+  "vlm_bbox_schema_note": "bench/plan1_localization/outputs/outfit_N.json exposes layout + top/bottom bboxes only (no garment taxonomy).",
+  "cases": [
+    {
+      "fixture": "outfit_1",
+      "role": "top",
+      "garment_class": "blouse",
+      "sleeve_length": "full",
+      "skirt_style": null,
+      "source_evidence": "Long-sleeve white eyelet-embroidered blouse; plan2 template_projection_specs."
+    },
+    {
+      "fixture": "outfit_1",
+      "role": "bottom",
+      "garment_class": "trousers",
+      "sleeve_length": null,
+      "skirt_style": null,
+      "source_evidence": "Brown formal straight-leg trousers with waistband and front fly."
+    },
+    {
+      "fixture": "outfit_2",
+      "role": "top",
+      "garment_class": "blouse",
+      "sleeve_length": "full",
+      "skirt_style": null,
+      "source_evidence": "Long-sleeve floral print blouse; sleeves to wrist in cutout."
+    },
+    {
+      "fixture": "outfit_2",
+      "role": "bottom",
+      "garment_class": "trousers",
+      "sleeve_length": null,
+      "skirt_style": null,
+      "source_evidence": "Tan straight-leg trousers with slanted pockets and cuffed hem."
+    },
+    {
+      "fixture": "outfit_3",
+      "role": "top",
+      "garment_class": "blazer",
+      "sleeve_length": "full",
+      "skirt_style": null,
+      "source_evidence": "Plan 1 notes: dominant outer blazer; plan2 TEMU caption structured blazer with lapels."
+    },
+    {
+      "fixture": "outfit_3",
+      "role": "bottom",
+      "garment_class": "trousers",
+      "sleeve_length": null,
+      "skirt_style": null,
+      "source_evidence": "Dark pinstripe full-length trousers; two-leg pants silhouette."
+    },
+    {
+      "fixture": "outfit_4",
+      "role": "top",
+      "garment_class": "blazer",
+      "sleeve_length": "full",
+      "skirt_style": null,
+      "source_evidence": "Plan 1 notes: dominant outer blazer; white single-breasted blazer with lapels."
+    },
+    {
+      "fixture": "outfit_4",
+      "role": "bottom",
+      "garment_class": "trousers",
+      "sleeve_length": null,
+      "skirt_style": null,
+      "source_evidence": "Dark pinstripe slim trousers with folded cuffs."
+    },
+    {
+      "fixture": "outfit_5",
+      "role": "top",
+      "garment_class": "blouse",
+      "sleeve_length": "half",
+      "skirt_style": null,
+      "source_evidence": "Light blue eyelet blouse with short sleeves ending mid-upper arm."
+    },
+    {
+      "fixture": "outfit_5",
+      "role": "bottom",
+      "garment_class": "trousers",
+      "sleeve_length": null,
+      "skirt_style": null,
+      "source_evidence": "White wide-leg high-waist trousers."
+    },
+    {
+      "fixture": "outfit_6",
+      "role": "top",
+      "garment_class": "office_blouse",
+      "sleeve_length": "full",
+      "skirt_style": null,
+      "source_evidence": "Red satin long-sleeve office blouse with standing collar and gathered cuff."
+    },
+    {
+      "fixture": "outfit_6",
+      "role": "bottom",
+      "garment_class": "skirt",
+      "sleeve_length": null,
+      "skirt_style": "pencil",
+      "source_evidence": "Straight black pencil skirt; dark cutout with low appearance detail."
+    },
+    {
+      "fixture": "outfit_7",
+      "role": "top",
+      "garment_class": "blouse",
+      "sleeve_length": "half",
+      "skirt_style": null,
+      "source_evidence": "Beige printed blouse with short sleeves and rounded neckline; VLM high-confidence."
+    },
+    {
+      "fixture": "outfit_7",
+      "role": "bottom",
+      "garment_class": "trousers",
+      "sleeve_length": null,
+      "skirt_style": null,
+      "source_evidence": "Brown solid trousers; two-leg pants silhouette in cutout."
+    },
+    {
+      "fixture": "outfit_8",
+      "role": "top",
+      "garment_class": "top",
+      "sleeve_length": "half",
+      "skirt_style": null,
+      "source_evidence": "User-confirmed: navy/blue short-sleeve zip-front knit top with center zipper and adjustable V neckline, not button office blouse."
+    },
+    {
+      "fixture": "outfit_8",
+      "role": "bottom",
+      "garment_class": "trousers",
+      "sleeve_length": null,
+      "skirt_style": null,
+      "source_evidence": "Taupe solid trousers; two-leg pants silhouette in cutout."
+    },
+    {
+      "fixture": "outfit_9",
+      "role": "top",
+      "garment_class": "blouse",
+      "sleeve_length": "sleeveless",
+      "skirt_style": null,
+      "source_evidence": "User correction: black sleeveless top/blouse with open armholes; segmented source shows no sleeves."
+    },
+    {
+      "fixture": "outfit_9",
+      "role": "bottom",
+      "garment_class": "trousers",
+      "sleeve_length": null,
+      "skirt_style": null,
+      "source_evidence": "Brown solid trousers; two-leg pants silhouette in cutout."
+    },
+    {
+      "fixture": "outfit_10",
+      "role": "top",
+      "garment_class": "waistcoat",
+      "sleeve_length": null,
+      "skirt_style": null,
+      "source_evidence": "Black sleeveless waistcoat/vest over shirt; V-neck, three front buttons, closed/buttoned presentation; maps to waistcoat_closed."
+    },
+    {
+      "fixture": "outfit_10",
+      "role": "bottom",
+      "garment_class": "trousers",
+      "sleeve_length": null,
+      "skirt_style": null,
+      "source_evidence": "Dark gray solid trousers; two-leg pants silhouette in cutout."
+    },
+    {
+      "fixture": "outfit_11",
+      "role": "top",
+      "garment_class": "blouse",
+      "sleeve_length": "full",
+      "skirt_style": null,
+      "source_evidence": "Black blouse with long sleeves and V-neckline; VLM high-confidence."
+    },
+    {
+      "fixture": "outfit_11",
+      "role": "bottom",
+      "garment_class": "trousers",
+      "sleeve_length": null,
+      "skirt_style": null,
+      "source_evidence": "Charcoal gray solid trousers; two-leg pants silhouette in cutout."
+    },
+    {
+      "fixture": "outfit_12",
+      "role": "top",
+      "garment_class": "office_blouse",
+      "sleeve_length": "full",
+      "skirt_style": null,
+      "source_evidence": "Light pink office blouse with long sleeves, buttoned cuffs, and pointed collar."
+    },
+    {
+      "fixture": "outfit_12",
+      "role": "bottom",
+      "garment_class": "trousers",
+      "sleeve_length": null,
+      "skirt_style": null,
+      "source_evidence": "Gray solid trousers; two-leg pants silhouette in cutout."
+    },
+    {
+      "fixture": "outfit_13",
+      "role": "bottom",
+      "garment_class": "trousers",
+      "sleeve_length": null,
+      "skirt_style": null,
+      "source_evidence": "Trousers/pants class. Evidence: Full-length lower-body garment with two legs, waistband, and front fly visible; consistent with trousers. | Garment is trousers; no sleeves, cuffs, or neckline present."
+    },
+    {
+      "fixture": "outfit_13",
+      "role": "top",
+      "garment_class": "blouse",
+      "sleeve_length": "sleeveless",
+      "skirt_style": null,
+      "source_evidence": "User correction: dusty rose sleeveless halter-neck lace blouse/top."
+    },
+    {
+      "fixture": "outfit_14",
+      "role": "top",
+      "garment_class": "office_blouse",
+      "sleeve_length": "full",
+      "skirt_style": null,
+      "source_evidence": "Generic blouse/shirt with full sleeves. Evidence: Collared, button-front, long sleeves, cropped hemline \u2014 consistent with structured office blouse silhouette. | Full-length sleeves ending in buttoned cuffs; neckline features a classic pointed collar with visible collar points."
+    },
+    {
+      "fixture": "outfit_14",
+      "role": "bottom",
+      "garment_class": "trousers",
+      "sleeve_length": null,
+      "skirt_style": null,
+      "source_evidence": "Trousers/pants class. Evidence: Full-length leg structure with waistband and front fly visible; no sleeves or collar present. | Garment is trousers; no sleeves, cuffs, or neckline present."
+    },
+    {
+      "fixture": "outfit_15",
+      "role": "top",
+      "garment_class": "office_blouse",
+      "sleeve_length": "full",
+      "skirt_style": null,
+      "source_evidence": "Generic blouse/shirt with full sleeves. Evidence: Collared, button-front, long sleeves, structured fit typical of office wear. | Sleeves extend to wrist area; cuffs appear simple and unadorned; collar points visible at neckline."
+    },
+    {
+      "fixture": "outfit_15",
+      "role": "bottom",
+      "garment_class": "trousers",
+      "sleeve_length": null,
+      "skirt_style": null,
+      "source_evidence": "Trousers/pants class. Evidence: Full-length leg structure with waistband, belt loops, and cuffed hems visible; consistent with trousers. | Garment is trousers; no sleeves, cuffs, or neckline present."
+    },
+    {
+      "fixture": "outfit_16",
+      "role": "top",
+      "garment_class": "office_blouse",
+      "sleeve_length": "full",
+      "skirt_style": null,
+      "source_evidence": "Generic blouse/shirt with full sleeves. Evidence: Long sleeves, structured collar, front placket with visible button alignment, cropped hemline \u2014 consistent with formal or business-casual blouse styling. | Sleeves extend to wrist with visible cuff buttons; collar has sharp points extending toward shoulders; neckline is open at top."
+    },
+    {
+      "fixture": "outfit_16",
+      "role": "bottom",
+      "garment_class": "trousers",
+      "sleeve_length": null,
+      "skirt_style": null,
+      "source_evidence": "Trousers/pants class. Evidence: Full-length lower-body garment with waistband, front fly, and two leg openings; consistent with trousers. | Garment is trousers; no sleeves, cuffs, or neckline present."
+    },
+    {
+      "fixture": "outfit_17",
+      "role": "top",
+      "garment_class": "office_blouse",
+      "sleeve_length": "full",
+      "skirt_style": null,
+      "source_evidence": "Generic blouse/shirt with full sleeves. Evidence: Structured collar, front button placket, long sleeves, tailored fit consistent with office blouse. | Sleeves extend to wrist area; cuffs appear buttoned or folded; collar has sharp points typical of dress shirts."
+    },
+    {
+      "fixture": "outfit_17",
+      "role": "bottom",
+      "garment_class": "trousers",
+      "sleeve_length": null,
+      "skirt_style": null,
+      "source_evidence": "Trousers/pants class. Evidence: Full-length leg structure with waistband and front fly visible; no sleeves or collar present. | Garment is trousers; no sleeves, cuffs, or neckline present."
+    },
+    {
+      "fixture": "outfit_18",
+      "role": "bottom",
+      "garment_class": "trousers",
+      "sleeve_length": null,
+      "skirt_style": null,
+      "source_evidence": "Trousers/pants class. Evidence: Full-length leg structure with waistband, front pleats, and straight-to-slight-flare silhouette visible. | Garment is trousers; no sleeves, cuffs, or neckline present."
+    },
+    {
+      "fixture": "outfit_18",
+      "role": "top",
+      "garment_class": "blouse",
+      "sleeve_length": "sleeveless",
+      "skirt_style": null,
+      "source_evidence": "User-confirmed: sleeveless cream/lemon-print top with large prominent collar neckline; not half-sleeve."
+    },
+    {
+      "fixture": "outfit_19",
+      "role": "top",
+      "garment_class": "blazer",
+      "sleeve_length": "full",
+      "skirt_style": null,
+      "source_evidence": "Reviewed: green gingham cropped blazer with notched lapels, button front, and full sleeves to wrist. Maps to blazer."
+    },
+    {
+      "fixture": "outfit_19",
+      "role": "bottom",
+      "garment_class": "trousers",
+      "sleeve_length": null,
+      "skirt_style": null,
+      "source_evidence": "Trousers/pants class. Evidence: Garment is trousers; no sleeves, cuffs, or neckline present. | Full-length leg structure with waistband and fly visible; no sleeves or collar present."
+    },
+    {
+      "fixture": "outfit_20",
+      "role": "top",
+      "garment_class": "office_blouse",
+      "sleeve_length": "full",
+      "skirt_style": null,
+      "source_evidence": "Reviewed: white office blouse with pointed collar, button front, and long sleeves with cuffs."
+    },
+    {
+      "fixture": "outfit_20",
+      "role": "bottom",
+      "garment_class": "trousers",
+      "sleeve_length": null,
+      "skirt_style": null,
+      "source_evidence": "Trousers/pants class. Evidence: Garment is trousers; no sleeves, cuffs, or neckline present. | Full-length leg structure with waistband and belt loops visible; no sleeves or collar present."
+    },
+    {
+      "fixture": "outfit_21",
+      "role": "top",
+      "garment_class": "office_blouse",
+      "sleeve_length": "full",
+      "skirt_style": null,
+      "source_evidence": "Reviewed: lavender peplum office blouse with sweetheart neckline bow, gathered cuffs, and full sleeves."
+    },
+    {
+      "fixture": "outfit_21",
+      "role": "bottom",
+      "garment_class": "trousers",
+      "sleeve_length": null,
+      "skirt_style": null,
+      "source_evidence": "Trousers/pants class. Evidence: Garment is trousers; sleeves, cuffs, and necklines are not present. | Two-legged lower-body garment with waistband and leg openings; cut and drape consistent with trousers."
+    },
+    {
+      "fixture": "outfit_22",
+      "role": "top",
+      "garment_class": "office_blouse",
+      "sleeve_length": "full",
+      "skirt_style": null,
+      "source_evidence": "Reviewed: light gray office blouse with ruffled collar, button front, and long sleeves with buttoned cuffs."
+    },
+    {
+      "fixture": "outfit_22",
+      "role": "bottom",
+      "garment_class": "trousers",
+      "sleeve_length": null,
+      "skirt_style": null,
+      "source_evidence": "Trousers/pants class. Evidence: Garment is trousers; no sleeves, cuffs, or neckline present. | Full-length leg structure with waistband and two legs visible; consistent with trousers."
+    },
+    {
+      "fixture": "outfit_23",
+      "role": "top",
+      "garment_class": "office_blouse",
+      "sleeve_length": "full",
+      "skirt_style": null,
+      "source_evidence": "Reviewed: light blue office blouse with pointed collar, button front, and long sleeves with folded buttoned cuffs."
+    },
+    {
+      "fixture": "outfit_23",
+      "role": "bottom",
+      "garment_class": "trousers",
+      "sleeve_length": null,
+      "skirt_style": null,
+      "source_evidence": "Trousers/pants class. Evidence: Garment is lower-body only; no sleeves, cuffs, or necklines present. | Full-length legwear with waistband, front fly, and cuffed hems; silhouette consistent with fitted trousers."
+    },
+    {
+      "fixture": "outfit_24",
+      "role": "top",
+      "garment_class": "office_blouse",
+      "sleeve_length": "half",
+      "skirt_style": null,
+      "source_evidence": "Reviewed: navy blue office blouse with short sleeves, rounded neckline, and decorative shoulder trim."
+    },
+    {
+      "fixture": "outfit_24",
+      "role": "bottom",
+      "garment_class": "trousers",
+      "sleeve_length": null,
+      "skirt_style": null,
+      "source_evidence": "Trousers/pants class. Evidence: Garment is lower-body only; no sleeves, cuffs, or neckline present in frame. | Full-length leg structure with waistband, belt loops, and front fly visible; consistent with trousers silhouette."
+    },
+    {
+      "fixture": "outfit_25",
+      "role": "top",
+      "garment_class": "blouse",
+      "sleeve_length": "sleeveless",
+      "skirt_style": null,
+      "source_evidence": "Plum/mauve sleeveless round-neck blouse with relaxed fit; user-reviewed cutout."
+    },
+    {
+      "fixture": "outfit_25",
+      "role": "bottom",
+      "garment_class": "trousers",
+      "sleeve_length": null,
+      "skirt_style": null,
+      "source_evidence": "User-confirmed: same physical khaki slim trousers as outfit 23/24 bottoms."
+    },
+    {
+      "fixture": "outfit_26",
+      "role": "top",
+      "garment_class": "blouse",
+      "sleeve_length": "full",
+      "skirt_style": null,
+      "source_evidence": "Taupe/light brown long-sleeve blouse with V-neck ruffle front and gathered cuffs; user-reviewed cutout."
+    },
+    {
+      "fixture": "outfit_26",
+      "role": "bottom",
+      "garment_class": "skirt",
+      "sleeve_length": null,
+      "skirt_style": "pencil",
+      "source_evidence": "User-confirmed: same physical black pencil skirt as outfit_6 bottom."
+    },
+    {
+      "fixture": "outfit_27",
+      "role": "dress",
+      "garment_class": "dress",
+      "sleeve_length": "half",
+      "skirt_style": "knee_length",
+      "source_evidence": "One-piece light blue ribbed knit polo dress with half-zip collar, short sleeves, front patch pockets, and knee-length hem; user-confirmed single garment. Catalog role=dress, garment_class=dress."
+    },
+    {
+      "fixture": "outfit_28",
+      "role": "top",
+      "garment_class": "shirt",
+      "sleeve_length": "full",
+      "skirt_style": null,
+      "source_evidence": "White long-sleeve button-down collared shirt tucked at waist; user-reviewed cutout."
+    },
+    {
+      "fixture": "outfit_28",
+      "role": "bottom",
+      "garment_class": "skirt",
+      "sleeve_length": null,
+      "skirt_style": "long",
+      "source_evidence": "User-confirmed new long/maxi skirt; navy and white vertical/horizontal striped A-line ankle-length skirt."
+    },
+    {
+      "fixture": "outfit_29",
+      "role": "dress",
+      "garment_class": "dress",
+      "sleeve_length": "full",
+      "skirt_style": "knee_length",
+      "source_evidence": "One-piece blush pink lace overlay dress with high round neckline, full-length sheer lace sleeves, and above-knee scalloped hem; user-confirmed single connected garment."
+    },
+    {
+      "fixture": "outfit_30",
+      "role": "dress",
+      "garment_class": "dress",
+      "sleeve_length": "full",
+      "skirt_style": "knee_length",
+      "source_evidence": "One-piece dark green ribbed knit bodycon dress with cowl neck, full-length sleeves, and knee-length hem; user-confirmed single connected garment."
+    },
+    {
+      "fixture": "outfit_31",
+      "role": "top",
+      "garment_class": "top",
+      "sleeve_length": "full",
+      "skirt_style": null,
+      "source_evidence": "Black long-sleeve slim turtleneck/mock-neck top; user-reviewed cutout."
+    },
+    {
+      "fixture": "outfit_31",
+      "role": "bottom",
+      "garment_class": "pants",
+      "sleeve_length": null,
+      "skirt_style": null,
+      "source_evidence": "Tan/light beige ribbed wide-leg trousers with matching fabric tie belt at high waist; user-reviewed cutout."
+    }
+  ]
+}

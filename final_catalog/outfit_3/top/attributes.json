@@ -1,0 +1,66 @@
+{
+  "attributes": {
+    "closures_details": {
+      "confidence": "high",
+      "evidence": "One dark button centered on placket; no zipper or additional fasteners visible.",
+      "observation_type": "observed",
+      "value": "single-button closure visible"
+    },
+    "dominant_color": {
+      "confidence": "high",
+      "evidence": "Garment is uniformly dark across all visible areas; no other hues present.",
+      "observation_type": "observed",
+      "value": "black"
+    },
+    "garment_class": {
+      "confidence": "high",
+      "evidence": "Structured lapels, notched collar, single-breasted front, and tailored silhouette consistent with blazer design.",
+      "observation_type": "observed",
+      "value": "blazer"
+    },
+    "likely_material": {
+      "confidence": "medium",
+      "evidence": "Fabric shows soft folds and minimal stiffness, suggesting a medium-weight woven textile.",
+      "observation_type": "inferred",
+      "value": "woven fabric with slight drape"
+    },
+    "sleeve_cuff_neckline": {
+      "confidence": "high",
+      "evidence": "Sleeves extend to wrist area; collar features classic notched lapel typical of blazers.",
+      "observation_type": "observed",
+      "value": "long sleeves, notched lapel neckline"
+    },
+    "surface_sheen": {
+      "confidence": "high",
+      "evidence": "No specular highlights or reflective surfaces; light diffuses evenly across fabric.",
+      "observation_type": "observed",
+      "value": "matte"
+    },
+    "texture_pattern": {
+      "confidence": "high",
+      "evidence": "No visible patterns, prints, or textures; surface appears uniform.",
+      "observation_type": "observed",
+      "value": "solid"
+    },
+    "weave_finish": {
+      "confidence": "medium",
+      "evidence": "Image resolution insufficient to resolve weave structure or finish details.",
+      "observation_type": "inferred",
+      "value": "not discernible at this resolution"
+    }
+  },
+  "case": {
+    "fixture": "outfit_3",
+    "role": "top"
+  },
+  "extracted_at_utc": "2026-08-01T18:50:27.265157+00:00",
+  "inputs": [
+    {
+      "path": "/users/pg00807/cloth_store/bench/plan1_localization/outputs/catalog_cutouts/outfit_3/catalog_top.png",
+      "role": "segmented_cutout",
+      "sha256": "73072af0a5da74b7f9fa39cb011167b3310eeacc8c5fdf56bbc9a48f2a0840a8"
+    }
+  ],
+  "model_id": "Qwen/Qwen3.5-9B",
+  "schema_version": 1
+}

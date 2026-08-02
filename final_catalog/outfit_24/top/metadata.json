@@ -1,0 +1,113 @@
+{
+  "artifact_image_roles": [
+    {
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "629eabca886babf70e9683ba123202b8906f8cd4f0115a970625560a429e33e1"
+    },
+    {
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "7f5ac10ceb46a20a636972bdbc10ec1e48dd6a395f2fa94e98c9ba4d450e29bd"
+    },
+    {
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "15781dfcb30cc8e873ac5c43f70a73ca678c3c07e1170d30b828bbfc0aab9fd1"
+    }
+  ],
+  "candidate_request_sha256": null,
+  "derived_geometry_sha256": null,
+  "estimated_cost_usd": 0.067,
+  "fixture": "outfit_24",
+  "generated_or_reused": "generated",
+  "generation_calls": 1,
+  "model_id": "gemini-3.1-flash-image",
+  "outputs": {
+    "output_1k": {
+      "path": "outfit_24/top/output_1k.png",
+      "sha256": "7a3ea79012a63690bb55660634f6680b50b7e4c1f9d9c9ee6f5ba07a264a9dc5"
+    },
+    "output_512": {
+      "path": "outfit_24/top/output.png",
+      "sha256": "735eb5a66b1147d680e54de3f973ef128495ffe1e4a895dd0ab5f6ef33a41e95"
+    }
+  },
+  "packaged_inputs": [
+    {
+      "filename": "input_segmented.png",
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "629eabca886babf70e9683ba123202b8906f8cd4f0115a970625560a429e33e1",
+      "source_path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_24/catalog_top.png"
+    },
+    {
+      "filename": "input_template.png",
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "7f5ac10ceb46a20a636972bdbc10ec1e48dd6a395f2fa94e98c9ba4d450e29bd",
+      "source_path": "bench/catalog_templates/generated/top_half_sleeve.png"
+    },
+    {
+      "filename": "input_detail.png",
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "15781dfcb30cc8e873ac5c43f70a73ca678c3c07e1170d30b828bbfc0aab9fd1",
+      "source_path": "bench/catalog_generation/detail_crops/outfit_24_top_detail.png"
+    },
+    {
+      "filename": "attributes.json",
+      "role": "vlm_attributes",
+      "sha256": "663219f5f8b9c987d57c3f207c4b63c086933048b5d9ea0ec3f65139cedb101d",
+      "source_path": "bench/catalog_generation/vlm_attributes/outfit_24_top.attributes.json"
+    }
+  ],
+  "promoted_from_candidate": null,
+  "promoted_from_reference": null,
+  "prompt_policy_version": 5,
+  "prompt_sha256": "b77d13c72fa45545f1d75a68cb5d8d93a11917e1d1c0c919ab5c83a5d7ac2e38",
+  "request_settings": {
+    "aspect_ratio": "1:1",
+    "image_size": "1K",
+    "model_id": "gemini-3.1-flash-image",
+    "response_modalities": [
+      "TEXT",
+      "IMAGE"
+    ]
+  },
+  "reuse_source": null,
+  "review_required": false,
+  "role": "top",
+  "source_paths": {
+    "artifact": "bench/catalog_generation/artifacts/outfit_24_top_top_half_sleeve.pipeline.request.json",
+    "override": null,
+    "production_metadata": "bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/outfit_24/top.run.json",
+    "vlm_attributes": "bench/catalog_generation/vlm_attributes/outfit_24_top.attributes.json"
+  },
+  "status": "ok",
+  "template_id": "top_half_sleeve",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "office_blouse",
+    "override_applied": false,
+    "reason": "Generic blouse/shirt with half sleeves. Evidence: Sleeves end above elbow; neckline is curved and unstructured; textured embellishment visible on left shoulder area. | Reviewed: navy blue office blouse with short sleeves, rounded neckline, and decorative shoulder trim. | Silhouette shows structured shoulders, rounded neckline, and short sleeves typical of a formal or semi-formal blouse; no collar or buttons visible to suggest other classes.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": null,
+    "sleeve_length_normalized": "half",
+    "template_id": "top_half_sleeve"
+  },
+  "texture_qc": {
+    "edge_density_ratio": 0.447,
+    "flags": [],
+    "heuristic": true,
+    "luminance_std_ratio": 1.026,
+    "mean_delta_e": 3.857,
+    "note": "Heuristic metrics only. Source and output garment geometry differ; pixelwise comparison is invalid. Do not auto-regenerate from these scores.",
+    "output_garment_pixel_count": 145639,
+    "palette_delta_e_mean": 4.494,
+    "role": "top",
+    "source_garment_pixel_count": 39548
+  },
+  "user_override_applied": false,
+  "vlm_attribute_json_sha256": "5bc02d61236fde682845a3f09d99f1aa3724a77055ff1aff01d865948d557e93"
+}

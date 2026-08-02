@@ -1,0 +1,101 @@
+{
+  "artifact_image_roles": [
+    {
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "6a5ab816329cc91ca2a41196de66764e93a120bb43944d23cdf52737b05e4e06"
+    },
+    {
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "5004b608fd898d5dceafa86ad78205d62fe3feef38b6d113ebaca4c3cb0962da"
+    }
+  ],
+  "candidate_request_sha256": null,
+  "derived_geometry_sha256": null,
+  "estimated_cost_usd": 0.0,
+  "fixture": "outfit_26",
+  "generated_or_reused": "reused",
+  "generation_calls": 0,
+  "model_id": "gemini-3.1-flash-image",
+  "outputs": {
+    "output_1k": {
+      "path": "outfit_26/bottom/output_1k.png",
+      "sha256": "3e48f2e09c1333ac5e6ed2e16ea9d6d62ebc10726951b4182989ba8eab8bfe4f"
+    },
+    "output_512": {
+      "path": "outfit_26/bottom/output.png",
+      "sha256": "3d37fbd32cb3ae7d507064405893e3329fa9ad7747f25ecc7e3e444958d604b3"
+    }
+  },
+  "packaged_inputs": [
+    {
+      "filename": "input_segmented.png",
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "6a5ab816329cc91ca2a41196de66764e93a120bb43944d23cdf52737b05e4e06",
+      "source_path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_26/catalog_bottom.png"
+    },
+    {
+      "filename": "input_template.png",
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "5004b608fd898d5dceafa86ad78205d62fe3feef38b6d113ebaca4c3cb0962da",
+      "source_path": "bench/catalog_templates/generated/skirt_pencil.png"
+    },
+    {
+      "filename": "attributes.json",
+      "role": "vlm_attributes",
+      "sha256": "f926c842a8afc83b73b9998aeb28341b395cb3e82dc92cb434df7f1d91c697ac",
+      "source_path": "bench/catalog_generation/vlm_attributes/outfit_26_bottom.attributes.json"
+    }
+  ],
+  "promoted_from_candidate": null,
+  "promoted_from_reference": null,
+  "prompt_policy_version": 5,
+  "prompt_sha256": "0d75bb104da2b50d8e566895752572aa2ffda8919e8855a6a45a2f5223d9aa65",
+  "request_settings": {
+    "aspect_ratio": "1:1",
+    "image_size": "1K",
+    "model_id": "gemini-3.1-flash-image",
+    "response_modalities": [
+      "TEXT",
+      "IMAGE"
+    ]
+  },
+  "reuse_source": "identity:outfit_6_bottom",
+  "review_required": false,
+  "role": "bottom",
+  "source_paths": {
+    "artifact": "bench/catalog_generation/artifacts/outfit_26_bottom_skirt_pencil.pipeline.request.json",
+    "override": null,
+    "production_metadata": "bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/outfit_26/bottom.run.json",
+    "vlm_attributes": "bench/catalog_generation/vlm_attributes/outfit_26_bottom.attributes.json"
+  },
+  "status": "ok",
+  "template_id": "skirt_pencil",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "skirt",
+    "override_applied": true,
+    "reason": "Explicit reviewed override to 'skirt_pencil'.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": "pencil",
+    "sleeve_length_normalized": null,
+    "template_id": "skirt_pencil"
+  },
+  "texture_qc": {
+    "edge_density_ratio": 1.076,
+    "flags": [],
+    "heuristic": true,
+    "luminance_std_ratio": 0.729,
+    "mean_delta_e": 9.537,
+    "note": "Heuristic metrics only. Source and output garment geometry differ; pixelwise comparison is invalid. Do not auto-regenerate from these scores.",
+    "output_garment_pixel_count": 106621,
+    "palette_delta_e_mean": 9.056,
+    "role": "bottom",
+    "source_garment_pixel_count": 54390
+  },
+  "user_override_applied": false,
+  "vlm_attribute_json_sha256": "3499f7646740438f434d031af3558e3969eee208c3b97dabe884d9810435810d"
+}

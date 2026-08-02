@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "fixture": "outfit_6",
+  "role": "top",
+  "namespace": "user_corrected_shirt_v1",
+  "garment_class": "shirt",
+  "reason": "User correction: garment is a shirt with structured collar and front placket, not a round-neck or collarless top.",
+  "overridden_vlm_fields": [
+    "garment_class",
+    "sleeve_cuff_neckline"
+  ],
+  "prohibited_conversions": [
+    "crew neck",
+    "round neck",
+    "T-shirt",
+    "collarless blouse",
+    "simplified neckline",
+    "mock neck",
+    "collarless top"
+  ],
+  "prompt_lines": [
+    "Garment class: shirt. This is a structured shirt, NOT a round-neck, collarless, or simplified-neckline top.",
+    "Preserve a shirt collar with structured neckline, front placket, visible buttons, cuffs, and seams wherever clearly supported by Image 1 or Image 3.",
+    "Do NOT convert to: crew neck, round neck, T-shirt, collarless blouse, simplified neckline, mock neck, collarless top.",
+    "Closed, symmetric, front-facing lay-flat catalog presentation.",
+    "Preserve deep-red color and soft restrained satin-like sheen from Image 1. Do not exaggerate to glossy, metallic, vinyl, or plastic finishes.",
+    "Do not invent buttons, hardware, or details absent from Image 1 or Image 3."
+  ],
+  "presentation_mode": "text_only",
+  "precedence": "user_override > high_confidence_source_vlm > template_geometry_only"
+}

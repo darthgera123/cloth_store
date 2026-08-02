@@ -1,0 +1,66 @@
+{
+  "attributes": {
+    "closures_details": {
+      "confidence": "high",
+      "evidence": "no buttons, zippers, plackets, or trim detected in frame",
+      "observation_type": "observed",
+      "value": "none visible"
+    },
+    "dominant_color": {
+      "confidence": "high",
+      "evidence": "entire visible garment area is uniformly dark with no tonal variation or pattern",
+      "observation_type": "observed",
+      "value": "black"
+    },
+    "garment_class": {
+      "confidence": "high",
+      "evidence": "straight black pencil skirt silhouette; lower-body garment without separate legs; reviewed Plan 1 evidence confirms pencil skirt despite low cutout detail",
+      "observation_type": "inferred",
+      "value": "skirt"
+    },
+    "likely_material": {
+      "confidence": "medium",
+      "evidence": "no sheen or drape visible; holds shape without stretch indication; surface appears non-reflective",
+      "observation_type": "inferred",
+      "value": "opaque woven fabric"
+    },
+    "sleeve_cuff_neckline": {
+      "confidence": "high",
+      "evidence": "garment is lower-body only; no sleeves, cuffs, or neckline present in view",
+      "observation_type": "observed",
+      "value": "not applicable"
+    },
+    "surface_sheen": {
+      "confidence": "high",
+      "evidence": "no specular highlights or light reflection; surface absorbs light uniformly",
+      "observation_type": "observed",
+      "value": "matte"
+    },
+    "texture_pattern": {
+      "confidence": "high",
+      "evidence": "no visible print, embroidery, or textural variation across garment surface",
+      "observation_type": "observed",
+      "value": "solid"
+    },
+    "weave_finish": {
+      "confidence": "high",
+      "evidence": "image lacks detail to resolve weave structure or finish characteristics",
+      "observation_type": "inferred",
+      "value": "not discernible at this resolution"
+    }
+  },
+  "case": {
+    "fixture": "outfit_6",
+    "role": "bottom"
+  },
+  "extracted_at_utc": "2026-08-01T18:54:16.077653+00:00",
+  "inputs": [
+    {
+      "path": "/users/pg00807/cloth_store/bench/plan1_localization/outputs/catalog_cutouts/outfit_6/catalog_bottom.png",
+      "role": "segmented_cutout",
+      "sha256": "a747c5defbf3a824860441852f3cdde28924377fba95f733820b7fe962b03c04"
+    }
+  ],
+  "model_id": "Qwen/Qwen3.5-9B",
+  "schema_version": 1
+}

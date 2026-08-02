@@ -1,0 +1,53 @@
+{
+  "artifact_version": 1,
+  "bench": "catalog_generation",
+  "case": {
+    "fixture": "outfit_28",
+    "role": "bottom"
+  },
+  "gemini_model_id": "gemini-3.1-flash-image",
+  "images": [
+    {
+      "description": "Plan 1 segmented catalog cutout (identity/color/texture reference)",
+      "height": 512,
+      "mode": "RGB",
+      "order": 1,
+      "path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_28/catalog_bottom.png",
+      "role": "garment_identity",
+      "sha256": "5a0dac1167eed20749641978020d24ab023fb5df8e94de1cf7b346075f0d444b",
+      "width": 512
+    },
+    {
+      "description": "Canonical template silhouette (geometry/layout reference)",
+      "height": 512,
+      "mode": "RGB",
+      "order": 2,
+      "path": "bench/catalog_templates/generated/skirt_long.png",
+      "role": "template_geometry",
+      "sha256": "2371eb0cfbb085edf1aac1891413c92a92d51d8b872a5456d7b73cf4e047b3c0",
+      "width": 512
+    }
+  ],
+  "prompt": "Create a catalog product image for fixture outfit_28 (bottom) using separate reference images.\n\nImage 1 is the garment identity reference. Preserve a long or maxi skirt silhouette extending to ankle or floor length with A-line or straight shape as shown in Image 1. Image 1 is authoritative for color, material, and pattern. Do not invent pockets, fly, buttons, hardware, or texture unless clearly visible in Image 1.\n\nImage 2 is the geometry and silhouette reference (skirt_long). Use Image 2 only for garment shape, proportions, sleeve length, hem line, and overall layout. The flat gray fill in Image 2 is a placeholder silhouette \u2014 do not copy that gray color or treat it as fabric. Image 2 controls shape, not appearance.\n\nImage 1 is authoritative for visible color, material, and weave. Ignore hands, phone, and any non-garment segmentation artifacts from Image 1. The template gray color must never transfer to the output.\n\nOutput a single 512\u00d7512 front-facing catalog photograph on a pure white background (255, 255, 255). Fit the garment to the silhouette of Image 2 while preserving the color and material of Image 1. Reconstruct only missing or occluded regions implied by the target silhouette; do not invent new design elements. Exclude any person, mannequin, hanger, gray template color, grids, checkers, text, shadows, or diagnostic artifacts. The template controls shape, not appearance.",
+  "prompt_policy_version": 5,
+  "request_layout": {
+    "no_composite_input": true,
+    "part_order": [
+      "garment_identity",
+      "template_geometry"
+    ],
+    "separate_parts": true
+  },
+  "runner_model_id": "nano_banana_2",
+  "template_id": "skirt_long",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "skirt",
+    "override_applied": false,
+    "reason": "Long/maxi skirt style. Evidence: Garment is a skirt; no sleeves, cuffs, or neckline present. | User-confirmed new long/maxi skirt; navy and white vertical/horizontal striped A-line ankle-length skirt. | Garment has a single continuous panel with waistband and hem, consistent with skirt silhouette; no sleeves, collar, or trouser legs visible.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": "long",
+    "sleeve_length_normalized": null,
+    "template_id": "skirt_long"
+  }
+}

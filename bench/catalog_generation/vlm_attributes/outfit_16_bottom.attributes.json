@@ -1,0 +1,71 @@
+{
+  "attributes": {
+    "closures_details": {
+      "confidence": "high",
+      "evidence": "Small metallic button and placket seam visible at center front waist; no zipper teeth or additional trim.",
+      "observation_type": "observed",
+      "value": "front fly with button closure visible at waistband"
+    },
+    "dominant_color": {
+      "confidence": "high",
+      "evidence": "Overall pixel tone is dark gray with subtle tonal variation due to lighting and fabric texture.",
+      "observation_type": "observed",
+      "value": "dark gray"
+    },
+    "garment_class": {
+      "confidence": "high",
+      "evidence": "Full-length lower-body garment with waistband, front fly, and two leg openings; consistent with trousers.",
+      "observation_type": "observed",
+      "value": "trousers"
+    },
+    "likely_material": {
+      "confidence": "high",
+      "evidence": "Surface shows consistent vertical lines suggesting a ribbed or twill-like weave; no sheen or stretch visible.",
+      "observation_type": "inferred",
+      "value": "woven fabric with fine vertical ribbing"
+    },
+    "sleeve_cuff_neckline": {
+      "confidence": "high",
+      "evidence": "Garment is trousers; no sleeves, cuffs, or neckline present.",
+      "observation_type": "observed",
+      "value": "not applicable"
+    },
+    "surface_sheen": {
+      "confidence": "high",
+      "evidence": "No specular highlights or reflective surfaces; light diffuses evenly across fabric.",
+      "observation_type": "observed",
+      "value": "matte"
+    },
+    "texture_pattern": {
+      "confidence": "high",
+      "evidence": "Uniform color field interrupted by closely spaced vertical lines indicating structural weave pattern.",
+      "observation_type": "observed",
+      "value": "solid with fine vertical ribbing"
+    },
+    "weave_finish": {
+      "confidence": "high",
+      "evidence": "Visible linear texture running vertically along garment length, consistent with ribbed or twill weave finish.",
+      "observation_type": "observed",
+      "value": "fine vertical ribbing"
+    }
+  },
+  "case": {
+    "fixture": "outfit_16",
+    "role": "bottom"
+  },
+  "extracted_at_utc": "2026-08-01T23:56:23.929543+00:00",
+  "inputs": [
+    {
+      "path": "/users/pg00807/cloth_store/bench/plan1_localization/outputs/catalog_cutouts/outfit_16/catalog_bottom.png",
+      "role": "segmented_cutout",
+      "sha256": "8b584418cc3d74d9056771c0653ae2651ce053a538410b1836509a0a5f841e11"
+    },
+    {
+      "path": "/users/pg00807/cloth_store/data/outfit_16.jpeg",
+      "role": "source_photo",
+      "sha256": "a504fb75496c0e3b48dd6ddfd03bd8488d748ffce458c6f504cbac7af8214e51"
+    }
+  ],
+  "model_id": "Qwen/Qwen3.5-9B",
+  "schema_version": 1
+}

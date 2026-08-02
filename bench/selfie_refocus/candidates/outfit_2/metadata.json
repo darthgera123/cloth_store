@@ -1,0 +1,56 @@
+{
+  "fixture_id": "outfit_2",
+  "source_path": "data/outfit_2.jpeg",
+  "source_sha256": "700f43d4ee6e6cf83216eeb9a67c5af0def97d08b45b3bdbc1974eaab22f9590",
+  "person_bbox": {
+    "box": [
+      0.34124,
+      0.2978,
+      0.57676,
+      0.8622799999999999
+    ],
+    "provenance": "garment_union_asymmetric_v1",
+    "confidence": 0.803,
+    "source_roles": [
+      "top",
+      "bottom"
+    ]
+  },
+  "crop": {
+    "x0": 142,
+    "y0": 424,
+    "x1": 962,
+    "y1": 1449,
+    "aspect_ratio": 0.8,
+    "aspect_label": "4:5",
+    "padding_fraction": 0.06,
+    "output_width": 820,
+    "output_height": 1025
+  },
+  "metrics": {
+    "subject_clipped": false,
+    "retained_background_fraction": 0.8508,
+    "background_reduction_fraction": 0.0897,
+    "person_mask_coverage": 0.1492,
+    "person_pixel_preservation": 0.9998,
+    "edge_halo_score": 0.0628
+  },
+  "variants": {
+    "crop_only": "bench/selfie_refocus/candidates/outfit_2/crop_only.jpg",
+    "crop_refocused": "bench/selfie_refocus/candidates/outfit_2/crop_refocused.jpg"
+  },
+  "artifacts": {
+    "person_mask": "bench/selfie_refocus/candidates/outfit_2/person_mask.png",
+    "bbox_mask_overlay": "bench/selfie_refocus/candidates/outfit_2/bbox_mask_overlay.jpg",
+    "comparison_sheet": "bench/selfie_refocus/candidates/outfit_2/comparison_sheet.jpg"
+  },
+  "parameters": {
+    "primary_aspect": "4:5",
+    "fallback_aspect": "3:4",
+    "crop_padding_fraction": 0.06,
+    "blur_radius_px": 8,
+    "background_dim_factor": 0.88,
+    "background_desaturation": 0.65,
+    "feather_radius_px": 5
+  }
+}

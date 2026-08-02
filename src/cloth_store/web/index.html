@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lavani's Closet</title>
+    <meta
+      name="description"
+      content="Lavani's Closet — a curated catalogue of tops and bottoms."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header">
+        <div class="brand-block">
+          <p class="brand-eyebrow">Curated wardrobe</p>
+          <h1 class="brand-title">Lavani's Closet</h1>
+          <p class="brand-tagline">
+            A refined edit of catalogue pieces — tops and bottoms, styled for clarity.
+          </p>
+        </div>
+
+        <div class="toolbar">
+          <label class="search-field" for="catalog-search">
+            <span class="visually-hidden">Search catalogue</span>
+            <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="7"></circle>
+              <path d="M20 20l-4-4"></path>
+            </svg>
+            <input
+              id="catalog-search"
+              type="search"
+              name="q"
+              placeholder="Search colour, fabric, silhouette…"
+              autocomplete="off"
+              spellcheck="false"
+            />
+          </label>
+
+          <div class="role-filters" role="tablist" aria-label="Garment role">
+            <button class="role-filter is-active" type="button" data-role="" aria-selected="true">
+              All pieces
+            </button>
+            <button class="role-filter" type="button" data-role="top" aria-selected="false">
+              Tops
+            </button>
+            <button class="role-filter" type="button" data-role="dress" aria-selected="false">
+              Dresses
+            </button>
+            <button class="role-filter" type="button" data-role="bottom" aria-selected="false">
+              Bottoms
+            </button>
+          </div>
+
+          <div class="outfit-actions">
+            <button type="button" class="outfit-generator-cta" id="outfit-generator-open">
+              Generate an Outfit
+            </button>
+            <button type="button" class="outfit-generator-cta" id="lucky-pair-open">
+              I'm Feeling Lucky
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="catalog-main">
+        <div id="status-banner" class="status-banner" hidden></div>
+
+        <section id="results-meta" class="results-meta" aria-live="polite"></section>
+
+        <section id="catalog-sections" class="catalog-sections" hidden>
+          <div class="catalog-section" data-section="top">
+            <div class="section-heading">
+              <h2>Tops</h2>
+              <p class="section-count" data-count-for="top"></p>
+            </div>
+            <div class="catalog-grid" id="grid-top"></div>
+          </div>
+
+          <div class="catalog-section" data-section="dress">
+            <div class="section-heading">
+              <h2>Dresses</h2>
+              <p class="section-count" data-count-for="dress"></p>
+            </div>
+            <div class="catalog-grid" id="grid-dress"></div>
+          </div>
+
+          <div class="catalog-section" data-section="bottom">
+            <div class="section-heading">
+              <h2>Bottoms</h2>
+              <p class="section-count" data-count-for="bottom"></p>
+            </div>
+            <div class="catalog-grid" id="grid-bottom"></div>
+          </div>
+        </section>
+
+        <section id="state-panel" class="state-panel">
+          <div class="state-card">
+            <p class="state-eyebrow">Catalogue</p>
+            <h2 id="state-title">Loading pieces…</h2>
+            <p id="state-message">Gathering the latest edit from Lavani's Closet.</p>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <p>Lavani's Closet</p>
+      </footer>
+    </div>
+
+    <dialog id="item-detail-modal" class="detail-modal" aria-labelledby="detail-title">
+      <div class="detail-modal-panel">
+        <button type="button" class="detail-close" aria-label="Close detail view">
+          <svg class="detail-close-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18"></path>
+          </svg>
+        </button>
+
+        <div class="detail-modal-layout">
+          <div class="detail-media-column">
+            <div class="detail-stage-wrap">
+              <div class="detail-stage" id="detail-stage">
+                <p class="detail-stage-message" id="detail-stage-message">Loading piece…</p>
+                <img
+                  class="detail-stage-image"
+                  id="detail-stage-image"
+                  alt=""
+                  hidden
+                  decoding="async"
+                />
+              </div>
+            </div>
+
+            <div class="detail-carousel-controls">
+              <button
+                type="button"
+                class="detail-nav detail-nav-prev"
+                aria-label="Previous image"
+                disabled
+              >
+                <svg class="detail-nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M15 6l-6 6 6 6"></path>
+                </svg>
+              </button>
+              <div class="detail-carousel-meta">
+                <div class="detail-dots" id="detail-dots" role="tablist" aria-label="Image slides"></div>
+                <p class="detail-slide-count" id="detail-slide-count" aria-live="polite"></p>
+              </div>
+              <button
+                type="button"
+                class="detail-nav detail-nav-next"
+                aria-label="Next image"
+                disabled
+              >
+                <svg class="detail-nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M9 6l6 6-6 6"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="detail-info">
+            <p class="detail-eyebrow">Catalogue piece</p>
+            <h2 id="detail-title" class="detail-title"></h2>
+            <p id="detail-description" class="detail-description"></p>
+            <p id="detail-slide-label" class="detail-slide-label" hidden></p>
+            <section
+              id="detail-advice"
+              class="detail-advice"
+              aria-labelledby="detail-advice-heading"
+              hidden
+            >
+              <h3 id="detail-advice-heading" class="detail-advice-heading"></h3>
+              <p id="detail-advice-text" class="detail-advice-text"></p>
+            </section>
+            <p id="detail-error" class="detail-error" hidden></p>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog
+      id="outfit-generator-modal"
+      class="generator-modal"
+      aria-labelledby="generator-title"
+    >
+      <div class="generator-modal-panel">
+        <button type="button" class="generator-close" aria-label="Close outfit generator">
+          <svg class="generator-close-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18"></path>
+          </svg>
+        </button>
+
+        <div class="generator-modal-layout">
+          <div class="generator-hero-column">
+            <div class="generator-hero-wrap">
+              <div class="generator-hero-stage" id="generator-hero-stage">
+                <p class="generator-stage-message" id="generator-stage-message">
+                  Composing your look…
+                </p>
+                <img
+                  class="generator-hero-image"
+                  id="generator-hero-image"
+                  alt=""
+                  hidden
+                  decoding="async"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="generator-info">
+            <p class="generator-eyebrow">Outfit generator</p>
+            <h2 id="generator-title" class="generator-title">Your styled look</h2>
+            <p id="generator-summary" class="generator-summary" hidden></p>
+
+            <div class="generator-pieces" id="generator-pieces" hidden>
+              <article class="generator-piece-card" aria-labelledby="generator-top-name">
+                <div class="generator-piece-media">
+                  <img
+                    class="generator-piece-image"
+                    id="generator-top-image"
+                    alt=""
+                    decoding="async"
+                  />
+                </div>
+                <div class="generator-piece-copy">
+                  <p class="generator-piece-label">Top</p>
+                  <h3 id="generator-top-name" class="generator-piece-name"></h3>
+                  <p id="generator-top-description" class="generator-piece-description"></p>
+                </div>
+              </article>
+
+              <article class="generator-piece-card" aria-labelledby="generator-bottom-name">
+                <div class="generator-piece-media">
+                  <img
+                    class="generator-piece-image"
+                    id="generator-bottom-image"
+                    alt=""
+                    decoding="async"
+                  />
+                </div>
+                <div class="generator-piece-copy">
+                  <p class="generator-piece-label">Bottom</p>
+                  <h3 id="generator-bottom-name" class="generator-piece-name"></h3>
+                  <p id="generator-bottom-description" class="generator-piece-description"></p>
+                </div>
+              </article>
+            </div>
+
+            <p id="generator-error" class="generator-error" hidden></p>
+
+            <div class="generator-actions">
+              <button
+                type="button"
+                class="generator-regenerate"
+                id="generator-regenerate"
+                disabled
+              >
+                Generate another
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog
+      id="lucky-pair-modal"
+      class="generator-modal lucky-modal"
+      aria-labelledby="lucky-title"
+    >
+      <div class="generator-modal-panel">
+        <button type="button" class="generator-close lucky-close" aria-label="Close lucky pairing">
+          <svg class="generator-close-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18"></path>
+          </svg>
+        </button>
+
+        <div class="lucky-modal-layout">
+          <div class="generator-info lucky-info">
+            <p class="generator-eyebrow">Catalogue pairing</p>
+            <h2 id="lucky-title" class="generator-title">I'm Feeling Lucky</h2>
+            <p id="lucky-summary" class="generator-summary" hidden></p>
+
+            <div class="lucky-pieces" id="lucky-pieces" hidden>
+              <article class="lucky-piece-card" aria-labelledby="lucky-top-name">
+                <div class="lucky-piece-media">
+                  <img
+                    class="lucky-piece-image"
+                    id="lucky-top-image"
+                    alt=""
+                    decoding="async"
+                  />
+                </div>
+                <div class="lucky-piece-copy">
+                  <p class="generator-piece-label">Top</p>
+                  <h3 id="lucky-top-name" class="generator-piece-name"></h3>
+                  <p id="lucky-top-description" class="generator-piece-description"></p>
+                </div>
+              </article>
+
+              <article class="lucky-piece-card" aria-labelledby="lucky-bottom-name">
+                <div class="lucky-piece-media">
+                  <img
+                    class="lucky-piece-image"
+                    id="lucky-bottom-image"
+                    alt=""
+                    decoding="async"
+                  />
+                </div>
+                <div class="lucky-piece-copy">
+                  <p class="generator-piece-label">Bottom</p>
+                  <h3 id="lucky-bottom-name" class="generator-piece-name"></h3>
+                  <p id="lucky-bottom-description" class="generator-piece-description"></p>
+                </div>
+              </article>
+            </div>
+
+            <p id="lucky-stage-message" class="generator-stage-message lucky-stage-message">
+              Finding a new pairing…
+            </p>
+            <p id="lucky-error" class="generator-error" hidden></p>
+
+            <div class="generator-actions">
+              <button
+                type="button"
+                class="generator-regenerate"
+                id="lucky-regenerate"
+                disabled
+              >
+                Try another
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+    <template id="item-card-template">
+      <button type="button" class="item-card">
+        <span class="item-media">
+          <img class="item-image" alt="" loading="lazy" decoding="async" />
+        </span>
+        <span class="item-body">
+          <span class="item-title"></span>
+          <span class="item-description"></span>
+        </span>
+      </button>
+    </template>
+
+    <script src="/static/app.js" defer></script>
+  </body>
+</html>

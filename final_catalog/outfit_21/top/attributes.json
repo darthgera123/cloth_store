@@ -1,0 +1,71 @@
+{
+  "attributes": {
+    "closures_details": {
+      "confidence": "high",
+      "evidence": "No buttons, zippers, plackets, or trim visible on front, back, or sleeves within frame.",
+      "observation_type": "observed",
+      "value": "none visible"
+    },
+    "dominant_color": {
+      "confidence": "high",
+      "evidence": "Primary hue is light purple/lavender with white grid lines forming plaid pattern.",
+      "observation_type": "observed",
+      "value": "lavender"
+    },
+    "garment_class": {
+      "confidence": "high",
+      "evidence": "Structured bodice with peplum hem, long sleeves, and formal silhouette consistent with office blouse; no pants or skirt visible to suggest full dress.",
+      "observation_type": "inferred",
+      "value": "office_blouse"
+    },
+    "likely_material": {
+      "confidence": "high",
+      "evidence": "Surface reflects light with soft sheen and drapes smoothly, suggesting satin or similar lustrous weave.",
+      "observation_type": "inferred",
+      "value": "satin-like woven fabric"
+    },
+    "sleeve_cuff_neckline": {
+      "confidence": "high",
+      "evidence": "Sleeves extend to wrist with elasticized or gathered cuffs; neckline dips in center with fabric bow tied at bust.",
+      "observation_type": "observed",
+      "value": "long sleeves, gathered cuffs, sweetheart neckline with bow detail"
+    },
+    "surface_sheen": {
+      "confidence": "high",
+      "evidence": "Light reflects off folds and curves of fabric, indicating moderate luster without high gloss.",
+      "observation_type": "observed",
+      "value": "soft satin-like"
+    },
+    "texture_pattern": {
+      "confidence": "high",
+      "evidence": "Clear intersecting horizontal and vertical bands in lavender and white forming classic plaid/checkered pattern.",
+      "observation_type": "observed",
+      "value": "plaid"
+    },
+    "weave_finish": {
+      "confidence": "medium",
+      "evidence": "Image resolution insufficient to resolve individual weave structure or finish details beyond general luster.",
+      "observation_type": "inferred",
+      "value": "not discernible at this resolution"
+    }
+  },
+  "case": {
+    "fixture": "outfit_21",
+    "role": "top"
+  },
+  "extracted_at_utc": "2026-08-02T00:54:56.484886+00:00",
+  "inputs": [
+    {
+      "path": "/users/pg00807/cloth_store/bench/plan1_localization/outputs/catalog_cutouts/outfit_21/catalog_top.png",
+      "role": "segmented_cutout",
+      "sha256": "5d46fc5ab524af867085cb1174268898611ab61352ffe4c445038807da9bd4ef"
+    },
+    {
+      "path": "/users/pg00807/cloth_store/data/outfit_21.jpeg",
+      "role": "source_photo",
+      "sha256": "2f9b5e5678050bdf68cca4eb11e8bfd8fe57001401fa003678d171283f43846f"
+    }
+  ],
+  "model_id": "Qwen/Qwen3.5-9B",
+  "schema_version": 1
+}

@@ -1,0 +1,71 @@
+{
+  "attributes": {
+    "closures_details": {
+      "confidence": "high",
+      "evidence": "No buttons, zippers, plackets, or trim visible in frame.",
+      "observation_type": "observed",
+      "value": "none visible"
+    },
+    "dominant_color": {
+      "confidence": "high",
+      "evidence": "Entire visible garment is uniformly black across all pixels.",
+      "observation_type": "observed",
+      "value": "black"
+    },
+    "garment_class": {
+      "confidence": "high",
+      "evidence": "Silhouette shows A-line or pencil shape with waistband and hemline consistent with skirt; no legs or torso visible to confirm trousers or dress.",
+      "observation_type": "inferred",
+      "value": "skirt"
+    },
+    "likely_material": {
+      "confidence": "medium",
+      "evidence": "No sheen or drape suggests knit; slight creasing and structure imply woven construction.",
+      "observation_type": "inferred",
+      "value": "opaque woven fabric"
+    },
+    "sleeve_cuff_neckline": {
+      "confidence": "high",
+      "evidence": "Garment is a skirt; sleeves, cuffs, and necklines are not present.",
+      "observation_type": "observed",
+      "value": "not applicable"
+    },
+    "surface_sheen": {
+      "confidence": "high",
+      "evidence": "No specular highlights or reflective surfaces visible; light absorption uniform.",
+      "observation_type": "observed",
+      "value": "matte"
+    },
+    "texture_pattern": {
+      "confidence": "high",
+      "evidence": "No patterns, prints, or textures visible \u2014 entirely uniform surface.",
+      "observation_type": "observed",
+      "value": "solid"
+    },
+    "weave_finish": {
+      "confidence": "high",
+      "evidence": "Image lacks detail to resolve weave structure or finish characteristics.",
+      "observation_type": "inferred",
+      "value": "not discernible at this resolution"
+    }
+  },
+  "case": {
+    "fixture": "outfit_26",
+    "role": "bottom"
+  },
+  "extracted_at_utc": "2026-08-02T01:39:16.192333+00:00",
+  "inputs": [
+    {
+      "path": "/users/pg00807/cloth_store/bench/plan1_localization/outputs/catalog_cutouts/outfit_26/catalog_bottom.png",
+      "role": "segmented_cutout",
+      "sha256": "6a5ab816329cc91ca2a41196de66764e93a120bb43944d23cdf52737b05e4e06"
+    },
+    {
+      "path": "/users/pg00807/cloth_store/data/outfit_26.jpeg",
+      "role": "source_photo",
+      "sha256": "5a0cc6c51b1be8abb8fbc7bd16477618546020ebe420f4787ccdd2f89478afd0"
+    }
+  ],
+  "model_id": "Qwen/Qwen3.5-9B",
+  "schema_version": 1
+}

@@ -1,0 +1,80 @@
+{
+  "artifact_version": 1,
+  "bench": "catalog_generation",
+  "case": {
+    "fixture": "outfit_1",
+    "role": "top"
+  },
+  "detail_reference_provenance": {
+    "crop_bbox": [
+      202,
+      187,
+      357,
+      323
+    ],
+    "included": true,
+    "reason": "low-variance garment texture window; native resolution centered on white canvas without upscaling",
+    "source_bbox": [
+      100,
+      85,
+      411,
+      426
+    ]
+  },
+  "gemini_model_id": "gemini-3.1-flash-image",
+  "images": [
+    {
+      "description": "Plan 1 segmented catalog cutout (identity/color/texture reference)",
+      "height": 512,
+      "mode": "RGB",
+      "order": 1,
+      "path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_1/catalog_top.png",
+      "role": "garment_identity",
+      "sha256": "93e467523a954b0dc7434d5f0384ed490bb0741cc60513c217a31e110763e306",
+      "width": 512
+    },
+    {
+      "description": "Canonical template silhouette (geometry/layout reference)",
+      "height": 512,
+      "mode": "RGB",
+      "order": 2,
+      "path": "bench/catalog_templates/generated/top_full_sleeve.png",
+      "role": "template_geometry",
+      "sha256": "e26886ae087ebcfae196049581aeb8e8e308fe84e3dcc522863f0c4c3db1f6fc",
+      "width": 512
+    },
+    {
+      "description": "Source-derived garment detail crop (texture/pattern/trim reinforcement only)",
+      "height": 512,
+      "mode": "RGB",
+      "order": 3,
+      "path": "bench/catalog_generation/detail_crops/outfit_1_top_detail.png",
+      "role": "garment_detail",
+      "sha256": "b407e790bd741749c747f4150f50c722f5353eb308963f15b2f2c2b197dd0e96",
+      "width": 512
+    }
+  ],
+  "prompt": "Create a catalog product image for fixture outfit_1 (top) using separate reference images.\n\nImage 1 is the garment identity reference. Present a closed, symmetric, front-facing lay-flat garment. Reconstruct any pose-induced gaps, wrap, or drape from Image 1 as a closed garment. Image 1 is authoritative for exact color, material, weave, pattern, embroidery, lace, print, trim, buttons, seams, lapels, pockets, and every other surface feature clearly visible in the segmented source. Preserving source-visible texture and color fidelity is the highest priority. Do not simplify, replace, or invent texture, hardware, or details absent from Image 1. Never copy the template gray fill as fabric.\n\nImage 2 is the geometry and silhouette reference (top_full_sleeve). Use Image 2 only for garment shape, proportions, sleeve length, hem line, and overall layout. The flat gray fill in Image 2 is a placeholder silhouette \u2014 do not copy that gray color or treat it as fabric. Image 2 controls shape, not appearance.\n\nImage 3 is an optional close-up detail reference cropped from the same segmented source as Image 1. Use Image 3 only to reinforce exact texture, weave, pattern, embroidery, and trim visible in the source. Image 3 does not change the target silhouette.\n\nImage 1 is authoritative for visible color, material, and weave. Ignore hands, phone, and any non-garment segmentation artifacts from Image 1. The template gray color must never transfer to the output.\n\nOutput a single 512\u00d7512 front-facing catalog photograph on a pure white background (255, 255, 255). Fit the garment to the silhouette of Image 2 while preserving the color and material of Image 1. Reconstruct only missing or occluded regions implied by the target silhouette; do not invent new design elements. Exclude any person, mannequin, hanger, gray template color, grids, checkers, text, shadows, or diagnostic artifacts. The template controls shape, not appearance.",
+  "prompt_policy_version": 5,
+  "request_layout": {
+    "no_composite_input": true,
+    "part_order": [
+      "garment_identity",
+      "template_geometry",
+      "garment_detail"
+    ],
+    "separate_parts": true
+  },
+  "runner_model_id": "nano_banana_2",
+  "template_id": "top_full_sleeve",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "blouse",
+    "override_applied": false,
+    "reason": "Generic blouse/shirt with full sleeves. Evidence: Sleeves extend to wrist with elasticized or gathered cuffs; neckline is deep V with small keyhole cutout at center. | Long-sleeve white eyelet-embroidered blouse; plan2 template_projection_specs. | Long-sleeved, V-neck top with decorative front panel; no collar or waistline visible, consistent with blouse silhouette.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": null,
+    "sleeve_length_normalized": "full",
+    "template_id": "top_full_sleeve"
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "artifact_image_roles": [
+    {
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "05a9777d6248c496a009cafffac2f40c1a7f0f2400b27b658d19d285b43d4af4"
+    },
+    {
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "5915aea94afb1433c00ab23a096004f64d380746b8619a8b25d3730363f91029"
+    },
+    {
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "d1eddcd387f9dab7abba6a27dbb35c298f016a418ef04d8b9ddd7cd734150ae2"
+    }
+  ],
+  "candidate_request_sha256": null,
+  "derived_geometry_sha256": null,
+  "estimated_cost_usd": 0.067,
+  "fixture": "outfit_19",
+  "generated_or_reused": "generated",
+  "generation_calls": 1,
+  "model_id": "gemini-3.1-flash-image",
+  "outputs": {
+    "output_1k": {
+      "path": "outfit_19/top/output_1k.png",
+      "sha256": "12c82d8182fb1f6cdce8e35e70d72a211c15b163c7d0d78d44a7a8059244e20b"
+    },
+    "output_512": {
+      "path": "outfit_19/top/output.png",
+      "sha256": "5afdd59ddc3a5e2d238821591ce4784c5ef562670699909aac2725f4de73dc6b"
+    }
+  },
+  "packaged_inputs": [
+    {
+      "filename": "input_segmented.png",
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "05a9777d6248c496a009cafffac2f40c1a7f0f2400b27b658d19d285b43d4af4",
+      "source_path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_19/catalog_top.png"
+    },
+    {
+      "filename": "input_template.png",
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "5915aea94afb1433c00ab23a096004f64d380746b8619a8b25d3730363f91029",
+      "source_path": "bench/catalog_templates/generated/blazer.png"
+    },
+    {
+      "filename": "input_detail.png",
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "d1eddcd387f9dab7abba6a27dbb35c298f016a418ef04d8b9ddd7cd734150ae2",
+      "source_path": "bench/catalog_generation/detail_crops/outfit_19_top_detail.png"
+    },
+    {
+      "filename": "attributes.json",
+      "role": "vlm_attributes",
+      "sha256": "af3ff852b85621951120aee5ac673222ada3e8455a4bb47e2bdd94dcc80b8514",
+      "source_path": "bench/catalog_generation/vlm_attributes/outfit_19_top.attributes.json"
+    }
+  ],
+  "promoted_from_candidate": null,
+  "promoted_from_reference": null,
+  "prompt_policy_version": 5,
+  "prompt_sha256": "d515cbe241a813f9bdda8bd39f43c9874744d3bcf427eb016a8655f751c711c4",
+  "request_settings": {
+    "aspect_ratio": "1:1",
+    "image_size": "1K",
+    "model_id": "gemini-3.1-flash-image",
+    "response_modalities": [
+      "TEXT",
+      "IMAGE"
+    ]
+  },
+  "reuse_source": null,
+  "review_required": false,
+  "role": "top",
+  "source_paths": {
+    "artifact": "bench/catalog_generation/artifacts/outfit_19_top_blazer.pipeline.request.json",
+    "override": null,
+    "production_metadata": "bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/outfit_19/top.run.json",
+    "vlm_attributes": "bench/catalog_generation/vlm_attributes/outfit_19_top.attributes.json"
+  },
+  "status": "ok",
+  "template_id": "blazer",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "blazer",
+    "override_applied": false,
+    "reason": "Blazer/suit jacket class mapped to blazer. Evidence: Sleeves extend to wrist area; cuffs not clearly defined or visible; neckline features classic notched lapels typical of blazers. | Reviewed: green gingham cropped blazer with notched lapels, button front, and full sleeves to wrist. Maps to blazer. | Structured lapels, notched collar, two-button front closure, flap pockets, and tailored silhouette consistent with blazer design.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": null,
+    "sleeve_length_normalized": "full",
+    "template_id": "blazer"
+  },
+  "texture_qc": {
+    "edge_density_ratio": 0.943,
+    "flags": [],
+    "heuristic": true,
+    "luminance_std_ratio": 0.948,
+    "mean_delta_e": 6.322,
+    "note": "Heuristic metrics only. Source and output garment geometry differ; pixelwise comparison is invalid. Do not auto-regenerate from these scores.",
+    "output_garment_pixel_count": 151136,
+    "palette_delta_e_mean": 5.393,
+    "role": "top",
+    "source_garment_pixel_count": 50719
+  },
+  "user_override_applied": false,
+  "vlm_attribute_json_sha256": "5b427a8b266590f0c4c2eb2eae28e3db1bd8abc4e7324e6aa53b66bfd87b1dbf"
+}

@@ -1,0 +1,66 @@
+{
+  "attributes": {
+    "closures_details": {
+      "confidence": "high",
+      "evidence": "No buttons, zippers, plackets, or trim detected on front, back, or sleeves.",
+      "observation_type": "observed",
+      "value": "none visible"
+    },
+    "dominant_color": {
+      "confidence": "high",
+      "evidence": "Entire garment appears uniformly white across all visible areas under neutral lighting.",
+      "observation_type": "observed",
+      "value": "white"
+    },
+    "garment_class": {
+      "confidence": "high",
+      "evidence": "Long-sleeved, V-neck top with decorative front panel; no collar or waistline visible, consistent with blouse silhouette.",
+      "observation_type": "observed",
+      "value": "blouse"
+    },
+    "likely_material": {
+      "confidence": "high",
+      "evidence": "Fabric drapes softly and shows slight sheen; eyelet-style perforations suggest structured woven base, possibly cotton or linen blend.",
+      "observation_type": "inferred",
+      "value": "woven fabric with openwork detailing"
+    },
+    "sleeve_cuff_neckline": {
+      "confidence": "high",
+      "evidence": "Sleeves extend to wrist with elasticized or gathered cuffs; neckline is deep V with small keyhole cutout at center.",
+      "observation_type": "observed",
+      "value": "long sleeves, gathered cuffs, V-neck with keyhole opening"
+    },
+    "surface_sheen": {
+      "confidence": "medium",
+      "evidence": "Subtle light reflection on folds suggests mild luster, not matte nor glossy.",
+      "observation_type": "inferred",
+      "value": "soft satin-like"
+    },
+    "texture_pattern": {
+      "confidence": "high",
+      "evidence": "Front panel features raised embroidered motifs; sleeves and body have circular eyelet holes forming floral/geometric patterns.",
+      "observation_type": "observed",
+      "value": "embroidery and eyelet perforations"
+    },
+    "weave_finish": {
+      "confidence": "medium",
+      "evidence": "No clear weave structure visible due to image resolution and fabric texture overlay.",
+      "observation_type": "inferred",
+      "value": "not discernible at this resolution"
+    }
+  },
+  "case": {
+    "fixture": "outfit_1",
+    "role": "top"
+  },
+  "extracted_at_utc": "2026-08-01T18:47:55.585569+00:00",
+  "inputs": [
+    {
+      "path": "/users/pg00807/cloth_store/bench/plan1_localization/outputs/catalog_cutouts/outfit_1/catalog_top.png",
+      "role": "segmented_cutout",
+      "sha256": "93e467523a954b0dc7434d5f0384ed490bb0741cc60513c217a31e110763e306"
+    }
+  ],
+  "model_id": "Qwen/Qwen3.5-9B",
+  "schema_version": 1
+}

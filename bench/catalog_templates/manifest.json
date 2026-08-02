@@ -1,0 +1,205 @@
+{
+  "bench": "catalog_templates",
+  "description": "Canonical front-facing garment silhouette templates for catalog layout and reconstruction geometry targets.",
+  "canvas": {
+    "size": 512,
+    "background_rgb": [
+      255,
+      255,
+      255
+    ],
+    "margin_fraction": 0.04,
+    "silhouette_fill_rgb": [
+      90,
+      90,
+      90
+    ],
+    "centering": "visible_foreground_bbox_centered_xy"
+  },
+  "source_provenance": {
+    "strategy": "internal_deterministic",
+    "online_set_adopted": false,
+    "summary": "No single CC0/public-domain online pack covers all five required garment silhouettes in one coherent front-facing catalog style. Kept repo-owned polygon definitions; see SOURCES.md for research notes.",
+    "research_doc": "bench/catalog_templates/SOURCES.md"
+  },
+  "templates": [
+    {
+      "id": "top_full_sleeve",
+      "display_name": "Full / long-sleeve top",
+      "role": "top",
+      "sleeve": "full",
+      "top_kind": "generic",
+      "bottom_kind": null,
+      "png": "bench/catalog_templates/generated/top_full_sleeve.png",
+      "svg": "bench/catalog_templates/sources/top_full_sleeve.svg"
+    },
+    {
+      "id": "top_half_sleeve",
+      "display_name": "Half / short-sleeve top",
+      "role": "top",
+      "sleeve": "half",
+      "top_kind": "generic",
+      "bottom_kind": null,
+      "png": "bench/catalog_templates/generated/top_half_sleeve.png",
+      "svg": "bench/catalog_templates/sources/top_half_sleeve.svg"
+    },
+    {
+      "id": "top_sleeveless",
+      "display_name": "Sleeveless blouse / top",
+      "role": "top",
+      "sleeve": "sleeveless",
+      "top_kind": "generic",
+      "bottom_kind": null,
+      "png": "bench/catalog_templates/generated/top_sleeveless.png",
+      "svg": "bench/catalog_templates/sources/top_sleeveless.svg"
+    },
+    {
+      "id": "blazer",
+      "display_name": "Blazer / suit jacket",
+      "role": "top",
+      "sleeve": "full",
+      "top_kind": "blazer",
+      "bottom_kind": null,
+      "png": "bench/catalog_templates/generated/blazer.png",
+      "svg": "bench/catalog_templates/sources/blazer.svg"
+    },
+    {
+      "id": "waistcoat_closed",
+      "display_name": "Closed waistcoat / vest",
+      "role": "top",
+      "sleeve": null,
+      "top_kind": "waistcoat",
+      "bottom_kind": null,
+      "png": "bench/catalog_templates/generated/waistcoat_closed.png",
+      "svg": "bench/catalog_templates/sources/waistcoat_closed.svg"
+    },
+    {
+      "id": "dress_knee_length_half_sleeve",
+      "display_name": "Knee-length half-sleeve dress",
+      "role": "dress",
+      "sleeve": "half",
+      "top_kind": "dress",
+      "bottom_kind": null,
+      "png": "bench/catalog_templates/generated/dress_knee_length_half_sleeve.png",
+      "svg": "bench/catalog_templates/sources/dress_knee_length_half_sleeve.svg"
+    },
+    {
+      "id": "dress_knee_length_full_sleeve",
+      "display_name": "Knee-length full-sleeve dress",
+      "role": "dress",
+      "sleeve": "full",
+      "top_kind": "dress",
+      "bottom_kind": null,
+      "png": "bench/catalog_templates/generated/dress_knee_length_full_sleeve.png",
+      "svg": "bench/catalog_templates/sources/dress_knee_length_full_sleeve.svg"
+    },
+    {
+      "id": "skirt",
+      "display_name": "Skirt",
+      "role": "bottom",
+      "sleeve": null,
+      "top_kind": null,
+      "bottom_kind": "skirt",
+      "png": "bench/catalog_templates/generated/skirt.png",
+      "svg": "bench/catalog_templates/sources/skirt.svg"
+    },
+    {
+      "id": "skirt_pencil",
+      "display_name": "Pencil / straight skirt",
+      "role": "bottom",
+      "sleeve": null,
+      "top_kind": null,
+      "bottom_kind": "skirt_pencil",
+      "png": "bench/catalog_templates/generated/skirt_pencil.png",
+      "svg": "bench/catalog_templates/sources/skirt_pencil.svg"
+    },
+    {
+      "id": "skirt_knee_length",
+      "display_name": "Knee-length skirt",
+      "role": "bottom",
+      "sleeve": null,
+      "top_kind": null,
+      "bottom_kind": "skirt_knee_length",
+      "png": "bench/catalog_templates/generated/skirt_knee_length.png",
+      "svg": "bench/catalog_templates/sources/skirt_knee_length.svg"
+    },
+    {
+      "id": "skirt_long",
+      "display_name": "Long / maxi skirt",
+      "role": "bottom",
+      "sleeve": null,
+      "top_kind": null,
+      "bottom_kind": "skirt_long",
+      "png": "bench/catalog_templates/generated/skirt_long.png",
+      "svg": "bench/catalog_templates/sources/skirt_long.svg"
+    },
+    {
+      "id": "pants",
+      "display_name": "Pants / trousers",
+      "role": "bottom",
+      "sleeve": null,
+      "top_kind": null,
+      "bottom_kind": "pants",
+      "png": "bench/catalog_templates/generated/pants.png",
+      "svg": "bench/catalog_templates/sources/pants.svg"
+    }
+  ],
+  "artifacts": {
+    "contact_sheet": "bench/catalog_templates/generated/contact_sheet.jpg"
+  },
+  "categories": {
+    "top_full_sleeve": {
+      "role": "top",
+      "sleeve": "full",
+      "top_kind": "generic"
+    },
+    "top_half_sleeve": {
+      "role": "top",
+      "sleeve": "half",
+      "top_kind": "generic"
+    },
+    "top_sleeveless": {
+      "role": "top",
+      "sleeve": "sleeveless",
+      "top_kind": "generic",
+      "geometry_notes": "Front-facing sleeveless blouse/top: shoulder straps or upper bodice with open armhole cutouts, no sleeve polygons, centered catalog proportions."
+    },
+    "blazer": {
+      "role": "top",
+      "sleeve": "full",
+      "top_kind": "blazer"
+    },
+    "waistcoat_closed": {
+      "role": "top",
+      "sleeve": null,
+      "top_kind": "waistcoat",
+      "geometry_notes": "Front-facing closed waistcoat/vest: sleeveless structured shoulders and armholes, V-neck lapels, hip-length fitted torso, buttoned center front with no open garment gap."
+    },
+    "dress_knee_length_half_sleeve": {
+      "role": "top",
+      "sleeve": "half",
+      "top_kind": "dress",
+      "geometry_notes": "Front-facing one-piece knee-length dress with half/short sleeves; continuous bodice-to-skirt silhouette with no waistband separation."
+    },
+    "dress_knee_length_full_sleeve": {
+      "role": "dress",
+      "sleeve": "full",
+      "top_kind": "dress",
+      "geometry_notes": "Front-facing one-piece knee-length dress with full/long sleeves; continuous bodice-to-skirt silhouette with no waistband separation."
+    },
+    "skirt": {
+      "role": "bottom",
+      "bottom_kind": "skirt"
+    },
+    "skirt_pencil": {
+      "role": "bottom",
+      "bottom_kind": "skirt_pencil",
+      "geometry_notes": "Front-facing pencil skirt; rendered waist ~34%, hip/body ~47%, hem ~43% of 512 canvas width (hem/waist ~1.25). v1 narrow backup preserved as skirt_pencil_v1_narrow.png (~13% waist)."
+    },
+    "pants": {
+      "role": "bottom",
+      "bottom_kind": "pants",
+      "geometry_notes": "Front-facing trousers with a narrow waist band and split-leg inner separation beginning at y=0.10 (legacy v3 silhouette)."
+    }
+  }
+}

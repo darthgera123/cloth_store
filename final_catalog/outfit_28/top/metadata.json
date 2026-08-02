@@ -1,0 +1,115 @@
+{
+  "artifact_image_roles": [
+    {
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "8292022ad683d3ad417f8f4e41716e996305052c8ba417fc12e99b632f223638"
+    },
+    {
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "e26886ae087ebcfae196049581aeb8e8e308fe84e3dcc522863f0c4c3db1f6fc"
+    },
+    {
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "58ab388573116a6ff5bcf911ee4da846b78bf47f29ad00dbb51c338a679a6442"
+    }
+  ],
+  "candidate_request_sha256": null,
+  "derived_geometry_sha256": null,
+  "estimated_cost_usd": 0.067,
+  "fixture": "outfit_28",
+  "generated_or_reused": "generated",
+  "generation_calls": 1,
+  "model_id": "gemini-3.1-flash-image",
+  "outputs": {
+    "output_1k": {
+      "path": "outfit_28/top/output_1k.png",
+      "sha256": "615a24bf7066dbcf9af881197fe2ca26b8509699a947c8f15e440c17eb9963c1"
+    },
+    "output_512": {
+      "path": "outfit_28/top/output.png",
+      "sha256": "80e8ccc46686b9155975386ca0e3dbe3ff598e92da5d99cc961aef3bd02a34a1"
+    }
+  },
+  "packaged_inputs": [
+    {
+      "filename": "input_segmented.png",
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "8292022ad683d3ad417f8f4e41716e996305052c8ba417fc12e99b632f223638",
+      "source_path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_28/catalog_top.png"
+    },
+    {
+      "filename": "input_template.png",
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "e26886ae087ebcfae196049581aeb8e8e308fe84e3dcc522863f0c4c3db1f6fc",
+      "source_path": "bench/catalog_templates/generated/top_full_sleeve.png"
+    },
+    {
+      "filename": "input_detail.png",
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "58ab388573116a6ff5bcf911ee4da846b78bf47f29ad00dbb51c338a679a6442",
+      "source_path": "bench/catalog_generation/detail_crops/outfit_28_top_detail.png"
+    },
+    {
+      "filename": "attributes.json",
+      "role": "vlm_attributes",
+      "sha256": "4bf3e37898dfd739259f862a2c8b2d52f36486463693e38c8c5d662c370116ca",
+      "source_path": "bench/catalog_generation/vlm_attributes/outfit_28_top.attributes.json"
+    }
+  ],
+  "promoted_from_candidate": null,
+  "promoted_from_reference": null,
+  "prompt_policy_version": 5,
+  "prompt_sha256": "5fa49208829bba616194f55d9c1d70e47145e9b9b935dafc4de12f4aea63b9fb",
+  "request_settings": {
+    "aspect_ratio": "1:1",
+    "image_size": "1K",
+    "model_id": "gemini-3.1-flash-image",
+    "response_modalities": [
+      "TEXT",
+      "IMAGE"
+    ]
+  },
+  "reuse_source": null,
+  "review_required": false,
+  "role": "top",
+  "source_paths": {
+    "artifact": "bench/catalog_generation/artifacts/outfit_28_top_top_full_sleeve.pipeline.request.json",
+    "override": null,
+    "production_metadata": "bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/outfit_28/top.run.json",
+    "vlm_attributes": "bench/catalog_generation/vlm_attributes/outfit_28_top.attributes.json"
+  },
+  "status": "ok",
+  "template_id": "top_full_sleeve",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "office_blouse",
+    "override_applied": true,
+    "reason": "Explicit reviewed override to 'top_full_sleeve'.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": null,
+    "sleeve_length_normalized": "full",
+    "template_id": "top_full_sleeve"
+  },
+  "texture_qc": {
+    "edge_density_ratio": 0.554,
+    "flags": [
+      "texture_contrast_mismatch"
+    ],
+    "heuristic": true,
+    "luminance_std_ratio": 0.348,
+    "mean_delta_e": 15.309,
+    "note": "Heuristic metrics only. Source and output garment geometry differ; pixelwise comparison is invalid. Do not auto-regenerate from these scores.",
+    "output_garment_pixel_count": 120461,
+    "palette_delta_e_mean": 14.627,
+    "role": "top",
+    "source_garment_pixel_count": 33210
+  },
+  "user_override_applied": false,
+  "vlm_attribute_json_sha256": "8f50dc83b553c30c7d5706ac646755667a573e003c1984205535f56ff8844691"
+}

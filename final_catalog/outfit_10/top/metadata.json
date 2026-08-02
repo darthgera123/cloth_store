@@ -1,0 +1,115 @@
+{
+  "artifact_image_roles": [
+    {
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "a45301bb65a949661d5ad3119950b2f9ebd648b304af532fe2749254d6379724"
+    },
+    {
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "f08454e5e8c77642a0fcb05e6ea8dbcb91ec5c435f8a5b8e59d7c1f754d4808c"
+    },
+    {
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "6d8a0aedadc743014b0d4620c36120eff799c0efec3b3571c64387231a652a65"
+    }
+  ],
+  "candidate_request_sha256": null,
+  "derived_geometry_sha256": null,
+  "estimated_cost_usd": 0.067,
+  "fixture": "outfit_10",
+  "generated_or_reused": "generated",
+  "generation_calls": 1,
+  "model_id": "gemini-3.1-flash-image",
+  "outputs": {
+    "output_1k": {
+      "path": "outfit_10/top/output_1k.png",
+      "sha256": "902bd301c6f1389583e09312735c6a286e1c454ac31d4dd1548a2188c528ea20"
+    },
+    "output_512": {
+      "path": "outfit_10/top/output.png",
+      "sha256": "a34ecbc30742b245216ad882ef2bd8555cc379e561b8906beb99f12387543ac3"
+    }
+  },
+  "packaged_inputs": [
+    {
+      "filename": "input_segmented.png",
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "a45301bb65a949661d5ad3119950b2f9ebd648b304af532fe2749254d6379724",
+      "source_path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_10/catalog_top.png"
+    },
+    {
+      "filename": "input_template.png",
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "f08454e5e8c77642a0fcb05e6ea8dbcb91ec5c435f8a5b8e59d7c1f754d4808c",
+      "source_path": "bench/catalog_templates/generated/waistcoat_closed.png"
+    },
+    {
+      "filename": "input_detail.png",
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "6d8a0aedadc743014b0d4620c36120eff799c0efec3b3571c64387231a652a65",
+      "source_path": "bench/catalog_generation/detail_crops/outfit_10_top_detail.png"
+    },
+    {
+      "filename": "attributes.json",
+      "role": "vlm_attributes",
+      "sha256": "4af6b25e2e110010bc5cc72115170669072cb14aae88be24385ebd29dfe6faab",
+      "source_path": "bench/catalog_generation/vlm_attributes/outfit_10_top.attributes.json"
+    }
+  ],
+  "promoted_from_candidate": null,
+  "promoted_from_reference": null,
+  "prompt_policy_version": 5,
+  "prompt_sha256": "87291506049a353ea46827824a1e494a687c15d73ade55b0ddad424ab834dde9",
+  "request_settings": {
+    "aspect_ratio": "1:1",
+    "image_size": "1K",
+    "model_id": "gemini-3.1-flash-image",
+    "response_modalities": [
+      "TEXT",
+      "IMAGE"
+    ]
+  },
+  "reuse_source": null,
+  "review_required": false,
+  "role": "top",
+  "source_paths": {
+    "artifact": "bench/catalog_generation/artifacts/outfit_10_top_waistcoat_closed.pipeline.request.json",
+    "override": null,
+    "production_metadata": "bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/outfit_10/top.run.json",
+    "vlm_attributes": "bench/catalog_generation/vlm_attributes/outfit_10_top.attributes.json"
+  },
+  "status": "ok",
+  "template_id": "waistcoat_closed",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "waistcoat",
+    "override_applied": false,
+    "reason": "Waistcoat/vest class mapped to waistcoat_closed. Evidence: Garment has no sleeves; collar forms V-shape; white short-sleeved shirt visible beneath at shoulders and neckline. | Black sleeveless waistcoat/vest over shirt; V-neck, three front buttons, closed/buttoned presentation; maps to waistcoat_closed. | V-neck, front button closure, no sleeves, structured fit over short-sleeved shirt \u2014 consistent with waistcoat design.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": null,
+    "sleeve_length_normalized": "half",
+    "template_id": "waistcoat_closed"
+  },
+  "texture_qc": {
+    "edge_density_ratio": 0.41,
+    "flags": [
+      "texture_contrast_mismatch"
+    ],
+    "heuristic": true,
+    "luminance_std_ratio": 0.327,
+    "mean_delta_e": 2.862,
+    "note": "Heuristic metrics only. Source and output garment geometry differ; pixelwise comparison is invalid. Do not auto-regenerate from these scores.",
+    "output_garment_pixel_count": 131761,
+    "palette_delta_e_mean": 9.417,
+    "role": "top",
+    "source_garment_pixel_count": 28294
+  },
+  "user_override_applied": false,
+  "vlm_attribute_json_sha256": "964e6d644c5b236b802609e3126874e6ac57c41fb9ea2d04e333dadb8b88abb5"
+}

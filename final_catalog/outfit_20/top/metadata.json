@@ -1,0 +1,105 @@
+{
+  "artifact_image_roles": [
+    {
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "b03ade77cb8d6744d0992778e1d5bf0ad159ba69fe3cc6d6118e718d4a692cc1"
+    },
+    {
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "e26886ae087ebcfae196049581aeb8e8e308fe84e3dcc522863f0c4c3db1f6fc"
+    }
+  ],
+  "candidate_request_sha256": null,
+  "derived_geometry_sha256": null,
+  "estimated_cost_usd": 0.067,
+  "fixture": "outfit_20",
+  "generated_or_reused": "generated",
+  "generation_calls": 1,
+  "model_id": "gemini-3.1-flash-image",
+  "outputs": {
+    "output_1k": {
+      "path": "outfit_20/top/output_1k.png",
+      "sha256": "f5b158b73008fd6f5d5cf64c44f09fbf03bbd461ab1bea92ec6fdead4349684a"
+    },
+    "output_512": {
+      "path": "outfit_20/top/output.png",
+      "sha256": "7f65e1b228dd96d4d7862df403939c2da02deb7eddefb092a703fb31b163e103"
+    }
+  },
+  "packaged_inputs": [
+    {
+      "filename": "input_segmented.png",
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "b03ade77cb8d6744d0992778e1d5bf0ad159ba69fe3cc6d6118e718d4a692cc1",
+      "source_path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_20/catalog_top.png"
+    },
+    {
+      "filename": "input_template.png",
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "e26886ae087ebcfae196049581aeb8e8e308fe84e3dcc522863f0c4c3db1f6fc",
+      "source_path": "bench/catalog_templates/generated/top_full_sleeve.png"
+    },
+    {
+      "filename": "attributes.json",
+      "role": "vlm_attributes",
+      "sha256": "f948fd14373040a90cd56275863c214fa704db6580d25cd0884dad15699c15dd",
+      "source_path": "bench/catalog_generation/vlm_attributes/outfit_20_top.attributes.json"
+    }
+  ],
+  "promoted_from_candidate": null,
+  "promoted_from_reference": null,
+  "prompt_policy_version": 5,
+  "prompt_sha256": "3a35376013d4dd1f824bc1a67781501d114635ee7da4d88a9d2d778480c9c505",
+  "request_settings": {
+    "aspect_ratio": "1:1",
+    "image_size": "1K",
+    "model_id": "gemini-3.1-flash-image",
+    "response_modalities": [
+      "TEXT",
+      "IMAGE"
+    ]
+  },
+  "reuse_source": null,
+  "review_required": false,
+  "role": "top",
+  "source_paths": {
+    "artifact": "bench/catalog_generation/artifacts/outfit_20_top_top_full_sleeve.pipeline.request.json",
+    "override": null,
+    "production_metadata": "bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/outfit_20/top.run.json",
+    "vlm_attributes": "bench/catalog_generation/vlm_attributes/outfit_20_top.attributes.json"
+  },
+  "status": "ok",
+  "template_id": "top_full_sleeve",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "office_blouse",
+    "override_applied": false,
+    "reason": "Generic blouse/shirt with full sleeves. Evidence: Left sleeve extends to wrist with visible cuff; collar has sharp points typical of formal shirts; neckline open at top. | Reviewed: white office blouse with pointed collar, button front, and long sleeves with cuffs. | Structured collar, button-front placket, long sleeves with cuffs, and tailored silhouette consistent with formal or business casual blouse design.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": null,
+    "sleeve_length_normalized": "full",
+    "template_id": "top_full_sleeve"
+  },
+  "texture_qc": {
+    "edge_density_ratio": 0.111,
+    "flags": [
+      "high_mean_color_shift",
+      "texture_contrast_mismatch",
+      "detail_loss_suspected"
+    ],
+    "heuristic": true,
+    "luminance_std_ratio": 0.138,
+    "mean_delta_e": 27.036,
+    "note": "Heuristic metrics only. Source and output garment geometry differ; pixelwise comparison is invalid. Do not auto-regenerate from these scores.",
+    "output_garment_pixel_count": 133721,
+    "palette_delta_e_mean": 25.777,
+    "role": "top",
+    "source_garment_pixel_count": 31911
+  },
+  "user_override_applied": false,
+  "vlm_attribute_json_sha256": "27b0359d20391c1df55f1f96dbe8c53d357bf2e339a89c5d1323832b63354ff8"
+}

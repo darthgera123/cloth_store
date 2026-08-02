@@ -4,16 +4,29 @@ version = "0.1.0"
 description = "Private AI-assisted digital wardrobe"
 requires-python = ">=3.13"
 dependencies = [
-    "fastapi>=0.141.1",
+    "numpy>=1.26,<2",
     "pillow>=12.3.0",
-    "pydantic-settings>=2.14.2",
-    "python-multipart>=0.0.32",
-    "sqlalchemy>=2.0.51",
-    "uvicorn[standard]>=0.52.0",
 ]
 
 [project.scripts]
-cloth-store-api = "cloth_store.app:run"
+cloth-store-bbox = "cloth_store.vlm_bbox:main"
+cloth-store-masks = "cloth_store.sam_masks:main"
+cloth-store-cutouts = "cloth_store.catalog_cutouts:main"
+cloth-store-templates = "cloth_store.catalog_templates:main"
+cloth-store-gemini-catalog-check = "cloth_store.gemini_catalog:main_check"
+cloth-store-gemini-catalog-request = "cloth_store.gemini_catalog_request:main"
+cloth-store-gemini-catalog-generate = "cloth_store.gemini_catalog_generate:main"
+cloth-store-vlm-garment-attributes = "cloth_store.vlm_garment_attributes:main"
+cloth-store-catalog-pipeline = "cloth_store.catalog_pipeline:main"
+cloth-store-catalog-preflight = "cloth_store.catalog_preflight:main"
+cloth-store-catalog-final-packaging = "cloth_store.catalog_final_packaging:main"
+cloth-store-catalog-index = "cloth_store.catalog_catalog_index:main"
+cloth-store-catalog-identities = "cloth_store.catalog_garment_identities:main"
+cloth-store-catalog-search = "cloth_store.catalog_catalog_search:main"
+cloth-store-selfie-refocus = "cloth_store.selfie_refocus:main"
+cloth-store-web = "cloth_store.web_server:main"
+cloth-store-web-build = "cloth_store.web_storefront:main"
+cloth-store-static-bundle = "cloth_store.static_bundle:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -21,9 +34,25 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
-    "httpx>=0.28.1",
     "pytest>=9.1.1",
     "ruff>=0.16.0",
+]
+vlm = [
+    "accelerate>=1.14.0",
+    "torch>=2.13.0",
+    "torchvision>=0.28.0",
+    "transformers @ git+https://github.com/huggingface/transformers.git@main",
+]
+sam = [
+    "einops>=0.8.0",
+    "huggingface-hub>=0.30.0",
+    "psutil>=7.0.0",
+    "pycocotools>=2.0.8",
+    "sam3 @ git+https://github.com/facebookresearch/sam3.git",
+    "torch>=2.13.0",
+]
+gemini = [
+    "google-genai>=1.0.0",
 ]
 
 [tool.pytest.ini_options]

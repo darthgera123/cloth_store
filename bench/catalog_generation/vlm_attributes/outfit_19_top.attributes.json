@@ -1,0 +1,71 @@
+{
+  "attributes": {
+    "closures_details": {
+      "confidence": "high",
+      "evidence": "Two visible buttons on front placket; matching buttoned flap pockets on lower front panels.",
+      "observation_type": "observed",
+      "value": "two-button front closure with flap pockets"
+    },
+    "dominant_color": {
+      "confidence": "high",
+      "evidence": "Primary color is medium green, forming part of a checkered pattern with white or light gray lines.",
+      "observation_type": "observed",
+      "value": "green"
+    },
+    "garment_class": {
+      "confidence": "high",
+      "evidence": "Structured lapels, notched collar, two-button front closure, flap pockets, and tailored silhouette consistent with blazer design.",
+      "observation_type": "observed",
+      "value": "blazer"
+    },
+    "likely_material": {
+      "confidence": "high",
+      "evidence": "Holds shape at shoulders and sleeves; no visible sheen or stretch; consistent with wool-blend or cotton-blend suiting fabric.",
+      "observation_type": "inferred",
+      "value": "woven fabric with structured drape"
+    },
+    "sleeve_cuff_neckline": {
+      "confidence": "high",
+      "evidence": "Sleeves extend to wrist area; cuffs not clearly defined or visible; neckline features classic notched lapels typical of blazers.",
+      "observation_type": "observed",
+      "value": "long sleeves, no visible cuff detail, notched lapel neckline"
+    },
+    "surface_sheen": {
+      "confidence": "high",
+      "evidence": "No specular highlights or reflective surfaces; light diffuses evenly across fabric surface.",
+      "observation_type": "observed",
+      "value": "matte"
+    },
+    "texture_pattern": {
+      "confidence": "high",
+      "evidence": "Regular grid of intersecting green and white/light gray lines forming small squares across entire garment.",
+      "observation_type": "observed",
+      "value": "checkered"
+    },
+    "weave_finish": {
+      "confidence": "medium",
+      "evidence": "Image resolution insufficient to resolve individual warp/weft threads or finish texture.",
+      "observation_type": "inferred",
+      "value": "not discernible at this resolution"
+    }
+  },
+  "case": {
+    "fixture": "outfit_19",
+    "role": "top"
+  },
+  "extracted_at_utc": "2026-08-02T00:52:30.635617+00:00",
+  "inputs": [
+    {
+      "path": "/users/pg00807/cloth_store/bench/plan1_localization/outputs/catalog_cutouts/outfit_19/catalog_top.png",
+      "role": "segmented_cutout",
+      "sha256": "05a9777d6248c496a009cafffac2f40c1a7f0f2400b27b658d19d285b43d4af4"
+    },
+    {
+      "path": "/users/pg00807/cloth_store/data/outfit_19.jpeg",
+      "role": "source_photo",
+      "sha256": "d57e91fb2088dc2b37311fc4a069ecbe0927402811945c317a95fe484a4fab3a"
+    }
+  ],
+  "model_id": "Qwen/Qwen3.5-9B",
+  "schema_version": 1
+}

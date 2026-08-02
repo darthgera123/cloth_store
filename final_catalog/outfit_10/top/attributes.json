@@ -1,0 +1,71 @@
+{
+  "attributes": {
+    "closures_details": {
+      "confidence": "high",
+      "evidence": "Three clearly visible circular buttons spaced evenly down the front placket.",
+      "observation_type": "observed",
+      "value": "three round buttons vertically aligned on center front"
+    },
+    "dominant_color": {
+      "confidence": "high",
+      "evidence": "Main body of garment is uniformly dark black; collar and lapels match in tone.",
+      "observation_type": "observed",
+      "value": "black"
+    },
+    "garment_class": {
+      "confidence": "high",
+      "evidence": "V-neck, front button closure, no sleeves, structured fit over short-sleeved shirt \u2014 consistent with waistcoat design.",
+      "observation_type": "observed",
+      "value": "waistcoat"
+    },
+    "likely_material": {
+      "confidence": "medium",
+      "evidence": "Holds shape with minimal drape; suggests medium-weight woven material typical of formal waistcoats.",
+      "observation_type": "inferred",
+      "value": "structured woven fabric"
+    },
+    "sleeve_cuff_neckline": {
+      "confidence": "high",
+      "evidence": "Garment has no sleeves; collar forms V-shape; white short-sleeved shirt visible beneath at shoulders and neckline.",
+      "observation_type": "observed",
+      "value": "no sleeves; V-neckline; short-sleeved shirt visible underneath"
+    },
+    "surface_sheen": {
+      "confidence": "high",
+      "evidence": "No specular highlights or gloss; surface absorbs light evenly.",
+      "observation_type": "observed",
+      "value": "matte"
+    },
+    "texture_pattern": {
+      "confidence": "high",
+      "evidence": "No visible patterns, prints, or textures across the entire visible surface.",
+      "observation_type": "observed",
+      "value": "solid"
+    },
+    "weave_finish": {
+      "confidence": "high",
+      "evidence": "Image resolution insufficient to resolve weave structure or finish details.",
+      "observation_type": "inferred",
+      "value": "not discernible at this resolution"
+    }
+  },
+  "case": {
+    "fixture": "outfit_10",
+    "role": "top"
+  },
+  "extracted_at_utc": "2026-08-01T23:01:38.841254+00:00",
+  "inputs": [
+    {
+      "path": "/users/pg00807/cloth_store/bench/plan1_localization/outputs/catalog_cutouts/outfit_10/catalog_top.png",
+      "role": "segmented_cutout",
+      "sha256": "a45301bb65a949661d5ad3119950b2f9ebd648b304af532fe2749254d6379724"
+    },
+    {
+      "path": "/users/pg00807/cloth_store/data/outfit_10.jpeg",
+      "role": "source_photo",
+      "sha256": "cc4f45100d3b123a77880f2b8afeaded6329221c42d9169fa7f58ae4a93d8782"
+    }
+  ],
+  "model_id": "Qwen/Qwen3.5-9B",
+  "schema_version": 1
+}

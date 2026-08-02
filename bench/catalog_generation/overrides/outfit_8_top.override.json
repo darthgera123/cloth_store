@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "fixture": "outfit_8",
+  "role": "top",
+  "namespace": "user_corrected_zip_top_v1",
+  "garment_class": "top",
+  "reason": "User correction: navy/blue short-sleeve zip-front knit top with visible center zipper and adjustable deeper V neckline, not a button office blouse or polo.",
+  "overridden_vlm_fields": [
+    "garment_class",
+    "sleeve_cuff_neckline",
+    "closures_details"
+  ],
+  "prohibited_conversions": [
+    "button placket",
+    "button-front blouse",
+    "office blouse",
+    "polo buttons",
+    "collared button shirt",
+    "fake button placket"
+  ],
+  "prompt_lines": [
+    "Garment class: navy zip-front knit top. This is a short-sleeve zip-neck top with a visible center zipper and metallic/O-ring pull, NOT a button placket office blouse or polo.",
+    "Preserve the center front zipper with visible metallic/O-ring zipper pull wherever supported by Image 1 or Image 3.",
+    "Preserve an adjustable/deeper V neckline that can open from the zip; do NOT replace with a button placket or closed polo collar.",
+    "Preserve navy/blue color, knit texture, short sleeves, and all source-visible details from Image 1 and Image 3.",
+    "Do NOT convert to: button placket, button-front blouse, office blouse, polo buttons, collared button shirt, fake button placket.",
+    "Closed, symmetric, front-facing lay-flat catalog presentation using half-sleeve outer geometry only.",
+    "Do not invent buttons, plackets, or hardware absent from Image 1 or Image 3."
+  ],
+  "presentation_mode": "text_only",
+  "precedence": "user_override > high_confidence_source_vlm > template_geometry_only"
+}

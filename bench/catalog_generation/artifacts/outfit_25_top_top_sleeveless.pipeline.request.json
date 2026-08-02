@@ -1,0 +1,80 @@
+{
+  "artifact_version": 1,
+  "bench": "catalog_generation",
+  "case": {
+    "fixture": "outfit_25",
+    "role": "top"
+  },
+  "detail_reference_provenance": {
+    "crop_bbox": [
+      190,
+      252,
+      294,
+      358
+    ],
+    "included": true,
+    "reason": "low-variance garment texture window; native resolution centered on white canvas without upscaling",
+    "source_bbox": [
+      151,
+      122,
+      360,
+      389
+    ]
+  },
+  "gemini_model_id": "gemini-3.1-flash-image",
+  "images": [
+    {
+      "description": "Plan 1 segmented catalog cutout (identity/color/texture reference)",
+      "height": 512,
+      "mode": "RGB",
+      "order": 1,
+      "path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_25/catalog_top.png",
+      "role": "garment_identity",
+      "sha256": "33aa9e7a58e487fc75972105c52bf1d79fe67131f93f0fd2152e535cd46a9ab6",
+      "width": 512
+    },
+    {
+      "description": "Canonical template silhouette (geometry/layout reference)",
+      "height": 512,
+      "mode": "RGB",
+      "order": 2,
+      "path": "bench/catalog_templates/generated/top_sleeveless.png",
+      "role": "template_geometry",
+      "sha256": "15e2fa524c4ad241190ecb0c24897d792f61ee4d5a0c1b0981800560d966512d",
+      "width": 512
+    },
+    {
+      "description": "Source-derived garment detail crop (texture/pattern/trim reinforcement only)",
+      "height": 512,
+      "mode": "RGB",
+      "order": 3,
+      "path": "bench/catalog_generation/detail_crops/outfit_25_top_detail.png",
+      "role": "garment_detail",
+      "sha256": "2676d018947e841bb8f846b8476594e144f762ce8c8abd23a74cba307d63faa7",
+      "width": 512
+    }
+  ],
+  "prompt": "Create a catalog product image for fixture outfit_25 (top) using separate reference images.\n\nImage 1 is the garment identity reference. Present a closed, symmetric, front-facing sleeveless blouse or top in a clean catalog layout. The garment must have clear shoulder straps or upper bodice with open armholes and no sleeves. Do not add sleeves. Preserve source neckline, straps, lace, pattern, color, material, and details clearly visible in Image 1. Reconstruct any pose-induced gaps, wrap, or drape from Image 1 as a closed garment. Do not present as a structured waistcoat or vest unless Image 1 clearly shows that class. Image 1 is authoritative for exact color, material, weave, pattern, embroidery, lace, print, trim, buttons, seams, lapels, pockets, and every other surface feature clearly visible in the segmented source. Preserving source-visible texture and color fidelity is the highest priority. Do not simplify, replace, or invent texture, hardware, or details absent from Image 1. Never copy the template gray fill as fabric.\n\nImage 2 is the geometry and silhouette reference (top_sleeveless). Use Image 2 only for garment shape, proportions, sleeve length, hem line, and overall layout. The flat gray fill in Image 2 is a placeholder silhouette \u2014 do not copy that gray color or treat it as fabric. Image 2 controls shape, not appearance.\n\nImage 3 is an optional close-up detail reference cropped from the same segmented source as Image 1. Use Image 3 only to reinforce exact texture, weave, pattern, embroidery, and trim visible in the source. Image 3 does not change the target silhouette.\n\nImage 1 is authoritative for visible color, material, and weave. Ignore hands, phone, and any non-garment segmentation artifacts from Image 1. The template gray color must never transfer to the output.\n\nOutput a single 512\u00d7512 front-facing catalog photograph on a pure white background (255, 255, 255). Fit the garment to the silhouette of Image 2 while preserving the color and material of Image 1. Reconstruct only missing or occluded regions implied by the target silhouette; do not invent new design elements. Exclude any person, mannequin, hanger, gray template color, grids, checkers, text, shadows, or diagnostic artifacts. The template controls shape, not appearance.",
+  "prompt_policy_version": 5,
+  "request_layout": {
+    "no_composite_input": true,
+    "part_order": [
+      "garment_identity",
+      "template_geometry",
+      "garment_detail"
+    ],
+    "separate_parts": true
+  },
+  "runner_model_id": "nano_banana_2",
+  "template_id": "top_sleeveless",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "tank_top",
+    "override_applied": true,
+    "reason": "Explicit reviewed override to 'top_sleeveless'.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": null,
+    "sleeve_length_normalized": "sleeveless",
+    "template_id": "top_sleeveless"
+  }
+}

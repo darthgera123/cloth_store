@@ -1,0 +1,104 @@
+{
+  "artifact_image_roles": [
+    {
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "bb4d7338015b05a9f347507f39c15217b00e3a4abd07e4d1a9b500df6f7bab54"
+    },
+    {
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "91c8cc4a84b5cd4b24a3c9e8b8fab561f2c34b93860a234e9c5f06c3b95c3ce7"
+    }
+  ],
+  "candidate_request_sha256": null,
+  "derived_geometry_sha256": null,
+  "estimated_cost_usd": 0.067,
+  "fixture": "outfit_22",
+  "generated_or_reused": "generated",
+  "generation_calls": 1,
+  "model_id": "gemini-3.1-flash-image",
+  "outputs": {
+    "output_1k": {
+      "path": "outfit_22/bottom/output_1k.png",
+      "sha256": "b0a42693dd779f87f10a40505f875945466b6f4198cc77df0719811fe21fe281"
+    },
+    "output_512": {
+      "path": "outfit_22/bottom/output.png",
+      "sha256": "7a50278ca6d8534b354ade8b9453975bad0cef056c584ae6870f5c5b004d80e7"
+    }
+  },
+  "packaged_inputs": [
+    {
+      "filename": "input_segmented.png",
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "bb4d7338015b05a9f347507f39c15217b00e3a4abd07e4d1a9b500df6f7bab54",
+      "source_path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_22/catalog_bottom.png"
+    },
+    {
+      "filename": "input_template.png",
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "91c8cc4a84b5cd4b24a3c9e8b8fab561f2c34b93860a234e9c5f06c3b95c3ce7",
+      "source_path": "bench/catalog_templates/generated/pants.png"
+    },
+    {
+      "filename": "attributes.json",
+      "role": "vlm_attributes",
+      "sha256": "e84990bf6393c86fef10dafcc999c7b10811026331583c0d66aa36325ec9fa4a",
+      "source_path": "bench/catalog_generation/vlm_attributes/outfit_22_bottom.attributes.json"
+    }
+  ],
+  "promoted_from_candidate": null,
+  "promoted_from_reference": null,
+  "prompt_policy_version": 5,
+  "prompt_sha256": "fb7a7b273c79da4e9857b9c0bc71a03989dd17bf6e301f5793dc1c9b1d9d163a",
+  "request_settings": {
+    "aspect_ratio": "1:1",
+    "image_size": "1K",
+    "model_id": "gemini-3.1-flash-image",
+    "response_modalities": [
+      "TEXT",
+      "IMAGE"
+    ]
+  },
+  "reuse_source": null,
+  "review_required": false,
+  "role": "bottom",
+  "source_paths": {
+    "artifact": "bench/catalog_generation/artifacts/outfit_22_bottom_pants.pipeline.request.json",
+    "override": null,
+    "production_metadata": "bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/outfit_22/bottom.run.json",
+    "vlm_attributes": "bench/catalog_generation/vlm_attributes/outfit_22_bottom.attributes.json"
+  },
+  "status": "ok",
+  "template_id": "pants",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "trousers",
+    "override_applied": false,
+    "reason": "Trousers/pants class. Evidence: Garment is trousers; no sleeves, cuffs, or neckline present. | Trousers/pants class. Evidence: Garment is trousers; no sleeves, cuffs, or neckline present. | Full-length leg structure with waistband and two legs visible; consistent with trousers. | Full-length leg structure with waistband and two legs visible; consistent with trousers.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": null,
+    "sleeve_length_normalized": null,
+    "template_id": "pants"
+  },
+  "texture_qc": {
+    "edge_density_ratio": 0.284,
+    "flags": [
+      "texture_contrast_mismatch",
+      "detail_loss_suspected"
+    ],
+    "heuristic": true,
+    "luminance_std_ratio": 0.249,
+    "mean_delta_e": 21.813,
+    "note": "Heuristic metrics only. Source and output garment geometry differ; pixelwise comparison is invalid. Do not auto-regenerate from these scores.",
+    "output_garment_pixel_count": 86321,
+    "palette_delta_e_mean": 20.881,
+    "role": "bottom",
+    "source_garment_pixel_count": 35268
+  },
+  "user_override_applied": false,
+  "vlm_attribute_json_sha256": "1f1e7b42b8646e0d41cdb1d07bac9d0cd181eb8e881dea30c8acfb7bc6c60f55"
+}

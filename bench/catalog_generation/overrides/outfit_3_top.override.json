@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "fixture": "outfit_3",
+  "role": "top",
+  "garment_class": "blazer",
+  "reason": "Approved presentation-geometry candidate: derived neutral silhouette from outfit_4 catalog output replaces blazer template for catalog pose.",
+  "geometry_reference_override": {
+    "derived_geometry_path": "bench/catalog_generation/candidates/outfit_3_top_presentation_geometry_v1/derived_geometry_from_outfit_4_top.png",
+    "derived_geometry_sha256": "05db7389bed7d675d067bd7bf4b5c46873baa0c8969b23fa4c979b5112d6ffa0",
+    "geometry_source_fixture": "outfit_4",
+    "geometry_source_path": "bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/outfit_4/top_1k_raw.png",
+    "geometry_source_sha256": "0c0a12aff3e27032829b3a0125b306562fba39a5cfd211e369c0751036a31591",
+    "prompt_policy_version": 1
+  },
+  "input_role_policy": {
+    "include_detail_reference": false
+  },
+  "presentation_mode": "text_only",
+  "precedence": "user_override > high_confidence_source_vlm > template_geometry_only"
+}

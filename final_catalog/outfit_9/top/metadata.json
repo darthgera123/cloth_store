@@ -1,0 +1,115 @@
+{
+  "artifact_image_roles": [
+    {
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "4720de0b323aecd06f05e1b19558919e905687eb65c2412eda29b8f7f995f147"
+    },
+    {
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "15e2fa524c4ad241190ecb0c24897d792f61ee4d5a0c1b0981800560d966512d"
+    },
+    {
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "655a03260eaa636fbbcb391cf35fcbf8b287a4ab95680f8cb86991564add0f4f"
+    }
+  ],
+  "candidate_request_sha256": null,
+  "derived_geometry_sha256": null,
+  "estimated_cost_usd": 0.067,
+  "fixture": "outfit_9",
+  "generated_or_reused": "generated",
+  "generation_calls": 1,
+  "model_id": "gemini-3.1-flash-image",
+  "outputs": {
+    "output_1k": {
+      "path": "outfit_9/top/output_1k.png",
+      "sha256": "16ab15fd4bbe06b4e8abf1e2f818297214b8da7445846a2608e34da7e1634030"
+    },
+    "output_512": {
+      "path": "outfit_9/top/output.png",
+      "sha256": "656fd2976b4c5042e7e2771b3c799614e78dea86361f8e50c2cdf602f8522782"
+    }
+  },
+  "packaged_inputs": [
+    {
+      "filename": "input_segmented.png",
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "4720de0b323aecd06f05e1b19558919e905687eb65c2412eda29b8f7f995f147",
+      "source_path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_9/catalog_top.png"
+    },
+    {
+      "filename": "input_template.png",
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "15e2fa524c4ad241190ecb0c24897d792f61ee4d5a0c1b0981800560d966512d",
+      "source_path": "bench/catalog_templates/generated/top_sleeveless.png"
+    },
+    {
+      "filename": "input_detail.png",
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "655a03260eaa636fbbcb391cf35fcbf8b287a4ab95680f8cb86991564add0f4f",
+      "source_path": "bench/catalog_generation/detail_crops/outfit_9_top_detail.png"
+    },
+    {
+      "filename": "attributes.json",
+      "role": "vlm_attributes",
+      "sha256": "66e760f2c8cd992d18e35b653f88367bcdd21af90093a5cd7e8134b9ddab3596",
+      "source_path": "bench/catalog_generation/vlm_attributes/outfit_9_top.attributes.json"
+    }
+  ],
+  "promoted_from_candidate": null,
+  "promoted_from_reference": null,
+  "prompt_policy_version": 6,
+  "prompt_sha256": "c8d03c367a8877607956849f208384b512952f0c8af43715fc571b80376c6e22",
+  "request_settings": {
+    "aspect_ratio": "1:1",
+    "image_size": "1K",
+    "model_id": "gemini-3.1-flash-image",
+    "response_modalities": [
+      "TEXT",
+      "IMAGE"
+    ]
+  },
+  "reuse_source": null,
+  "review_required": false,
+  "role": "top",
+  "source_paths": {
+    "artifact": "bench/catalog_generation/artifacts/outfit_9_top_top_sleeveless.user_corrected.request.json",
+    "override": "bench/catalog_generation/overrides/outfit_9_top.override.json",
+    "production_metadata": "bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/outfit_9/top.run.json",
+    "vlm_attributes": "bench/catalog_generation/vlm_attributes/outfit_9_top.attributes.json"
+  },
+  "status": "ok",
+  "template_id": "top_sleeveless",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "blouse",
+    "override_applied": true,
+    "reason": "Explicit reviewed override to 'top_sleeveless'.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": null,
+    "sleeve_length_normalized": "sleeveless",
+    "template_id": "top_sleeveless"
+  },
+  "texture_qc": {
+    "edge_density_ratio": 0.286,
+    "flags": [
+      "detail_loss_suspected"
+    ],
+    "heuristic": true,
+    "luminance_std_ratio": 1.514,
+    "mean_delta_e": 7.886,
+    "note": "Heuristic metrics only. Source and output garment geometry differ; pixelwise comparison is invalid. Do not auto-regenerate from these scores.",
+    "output_garment_pixel_count": 118943,
+    "palette_delta_e_mean": 7.289,
+    "role": "top",
+    "source_garment_pixel_count": 32683
+  },
+  "user_override_applied": true,
+  "vlm_attribute_json_sha256": "66e760f2c8cd992d18e35b653f88367bcdd21af90093a5cd7e8134b9ddab3596"
+}

@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "fixture": "outfit_13",
+  "role": "top",
+  "namespace": "user_corrected_sleeveless_top_v1",
+  "garment_class": "blouse",
+  "template_override": "top_sleeveless",
+  "reason": "User correction: garment is a sleeveless halter-neck lace blouse/top, not a half-sleeve top.",
+  "overridden_vlm_fields": [
+    "garment_class",
+    "sleeve_cuff_neckline"
+  ],
+  "prohibited_conversions": [
+    "half sleeves",
+    "short sleeves",
+    "long sleeves",
+    "waistcoat",
+    "vest",
+    "structured waistcoat"
+  ],
+  "prompt_lines": [
+    "Garment class: sleeveless blouse/top. This is a sleeveless halter-neck lace top, NOT a half-sleeve, short-sleeve, or waistcoat garment.",
+    "Preserve sleeveless armholes with shoulder straps or upper bodice as clearly supported by Image 1. Do NOT add sleeves.",
+    "Preserve dusty-rose color, halter neckline, lace overlay, pattern, material, and trim from Image 1 and Image 3 wherever clearly visible.",
+    "Do NOT convert to: half sleeves, short sleeves, long sleeves, waistcoat, vest, structured waistcoat.",
+    "Closed, symmetric, front-facing lay-flat catalog presentation.",
+    "Do not invent buttons, hardware, collars, or details absent from Image 1 or Image 3."
+  ],
+  "presentation_mode": "text_only",
+  "precedence": "user_override > high_confidence_source_vlm > template_geometry_only"
+}

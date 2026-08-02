@@ -1,0 +1,94 @@
+{
+  "artifact_version": 1,
+  "bench": "catalog_generation",
+  "case": {
+    "fixture": "outfit_3",
+    "role": "top"
+  },
+  "detail_reference_provenance": {
+    "included": false,
+    "path": null,
+    "reason": "detail crop garment pixel ratio 0.58 below 0.70",
+    "sha256": null
+  },
+  "gemini_model_id": "gemini-3.1-flash-image",
+  "geometry_reference_override": {
+    "derived_geometry_path": "bench/catalog_generation/candidates/outfit_3_top_presentation_geometry_v1/derived_geometry_from_outfit_4_top.png",
+    "derived_geometry_sha256": "05db7389bed7d675d067bd7bf4b5c46873baa0c8969b23fa4c979b5112d6ffa0",
+    "geometry_source_fixture": "outfit_4",
+    "geometry_source_path": "bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/outfit_4/top_1k_raw.png",
+    "geometry_source_sha256": "0c0a12aff3e27032829b3a0125b306562fba39a5cfd211e369c0751036a31591",
+    "prompt_policy_version": 1
+  },
+  "images": [
+    {
+      "description": "Plan 1 segmented catalog cutout (identity/color/texture reference)",
+      "height": 512,
+      "mode": "RGB",
+      "order": 1,
+      "path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_3/catalog_top.png",
+      "role": "garment_identity",
+      "sha256": "73072af0a5da74b7f9fa39cb011167b3310eeacc8c5fdf56bbc9a48f2a0840a8",
+      "width": 512
+    },
+    {
+      "description": "Derived neutral geometry silhouette from outfit_4 catalog output (geometry/presentation only; no color or fabric)",
+      "height": 512,
+      "mode": "RGB",
+      "order": 2,
+      "path": "bench/catalog_generation/candidates/outfit_3_top_presentation_geometry_v1/derived_geometry_from_outfit_4_top.png",
+      "role": "derived_geometry",
+      "sha256": "05db7389bed7d675d067bd7bf4b5c46873baa0c8969b23fa4c979b5112d6ffa0",
+      "width": 512
+    }
+  ],
+  "prompt": "Create a catalog product image for fixture outfit_3 (top) using separate reference images.\n\nImage 1 is the garment identity reference. Present a closed, buttoned blazer or suit jacket in a clean front-facing catalog layout. Reconstruct any pose-induced front opening from Image 1 as closed while preserving lapels, buttons, pockets, seams, weave, and other jacket-specific details clearly visible in Image 1. Image 1 is authoritative for exact color, material, weave, pattern, embroidery, lace, print, trim, buttons, seams, lapels, pockets, and every other surface feature clearly visible in the segmented source. Preserving source-visible texture and color fidelity is the highest priority. Do not simplify, replace, or invent texture, hardware, or details absent from Image 1. Never copy the template gray fill as fabric.\n\nImage 2 is a derived neutral geometry and silhouette reference extracted from the successful catalog presentation of outfit_4 (top). Use Image 2 ONLY for garment shape, proportions, centering within the square frame, scale, body width and length, sleeve spread angle, hem placement, closed/buttoned front layout, and overall catalog pose. The flat gray fill in Image 2 is a placeholder silhouette \u2014 do not copy that gray color or treat it as fabric. Image 2 controls geometry and presentation layout, not appearance.\n\nCRITICAL appearance constraints: preserve ONLY the black color, matte woven fabric, notched lapels, buttons, pockets, seams, and construction details clearly visible in Image 1. Do NOT transfer any white, off-white, cream, ivory, or light-colored fabric from outfit_4. Do NOT copy outfit_4's material, weave, satin sheen, princess seams, pocket styling, or any other surface feature from Image 2 or from memory of that reference output. Do NOT convert the blazer to a round neck, crew neck, collarless top, or blouse. Do NOT invent buttons, hardware, or pockets absent from Image 1.\n\nVLM-derived material cues (supplement Image 1; do not override visible source):\n- surface sheen: matte (high confidence, observed; No specular highlights or reflective surfaces; light diffuses evenly across fabric.)\n- dominant color: black (high confidence, observed; Garment is uniformly dark across all visible areas; no other hues present.)\n- texture pattern: solid (high confidence, observed; No visible patterns, prints, or textures; surface appears uniform.)\n- closures details: single-button closure visible (high confidence, observed; One dark button centered on placket; no zipper or additional fasteners visible.)\n- sleeve cuff neckline: long sleeves, notched lapel neckline (high confidence, observed; Sleeves extend to wrist area; collar features classic notched lapel typical of blazers.)\n- garment class: blazer (high confidence, observed; Structured lapels, notched collar, single-breasted front, and tailored silhouette consistent with blazer design.)\n\nSheen constraint: Image 1 shows matte. Keep this low reflectivity. Do not add satin, gloss, metallic, vinyl, or plastic shine absent from Image 1.\nThese cues clarify Image 1; they must not override pixels visible in Image 1 or Image 3.\n\nImage 1 is authoritative for visible color, material, and weave. Ignore hands, phone, and any non-garment segmentation artifacts from Image 1. The template gray color must never transfer to the output.\n\nOutput a single 512\u00d7512 front-facing catalog photograph on a pure white background (255, 255, 255). Match the catalog presentation geometry of Image 2 \u2014 symmetric front-facing layout, vertically hanging straight sleeves, slim tailored body, single closed front, and centered framing \u2014 while preserving the black blazer identity of Image 1. Reconstruct only missing or occluded regions implied by the target silhouette; do not invent new design elements. Exclude any person, mannequin, hanger, gray template color, grids, checkers, text, shadows, or diagnostic artifacts. Image 2 controls shape and presentation; Image 1 controls appearance.",
+  "prompt_policy_version": 1,
+  "request_layout": {
+    "no_composite_input": true,
+    "part_order": [
+      "garment_identity",
+      "derived_geometry"
+    ],
+    "separate_parts": true
+  },
+  "runner_model_id": "nano_banana_2",
+  "template_id": "blazer",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "blazer",
+    "override_applied": false,
+    "reason": "Blazer/suit jacket class mapped to blazer. Evidence: Sleeves extend to wrist area; collar features classic notched lapel typical of blazers. | Plan 1 notes: dominant outer blazer; plan2 TEMU caption structured blazer with lapels.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": null,
+    "sleeve_length_normalized": "full",
+    "template_id": "blazer"
+  },
+  "user_override": {
+    "garment_class": "blazer",
+    "injected_high_confidence_fields": [
+      "surface_sheen",
+      "dominant_color",
+      "texture_pattern",
+      "closures_details",
+      "sleeve_cuff_neckline",
+      "garment_class"
+    ],
+    "overridden_vlm_fields": [],
+    "precedence": "user_override > high_confidence_source_vlm > template_geometry_only",
+    "presentation_mode": "text_only",
+    "prohibited_conversions": [],
+    "reason": "Approved presentation-geometry candidate: derived neutral silhouette from outfit_4 catalog output replaces blazer template for catalog pose.",
+    "sheen_constraint": "",
+    "vlm_attribute_json_sha256": "7fca62fe3899ddc1d07c4432873f1128f9490b39f61dda4a75bf8f8dfc46dc06"
+  },
+  "vlm_attribute_json_sha256": "7fca62fe3899ddc1d07c4432873f1128f9490b39f61dda4a75bf8f8dfc46dc06",
+  "vlm_injected_fields": [
+    "surface_sheen",
+    "dominant_color",
+    "texture_pattern",
+    "closures_details",
+    "sleeve_cuff_neckline",
+    "garment_class"
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "attributes": {
+    "closures_details": {
+      "confidence": "high",
+      "evidence": "No buttons, zippers, plackets, or trim visible in frame; garment appears unfastened or cropped.",
+      "observation_type": "observed",
+      "value": "none visible"
+    },
+    "dominant_color": {
+      "confidence": "high",
+      "evidence": "Background fabric is light neutral tone; pink floral motifs are secondary.",
+      "observation_type": "observed",
+      "value": "beige"
+    },
+    "garment_class": {
+      "confidence": "high",
+      "evidence": "Fitted bodice with gathered waist, short sleeves, and floral print typical of women\u2019s blouses; no collar or buttons visible.",
+      "observation_type": "observed",
+      "value": "blouse"
+    },
+    "likely_material": {
+      "confidence": "medium",
+      "evidence": "Subtle sheen and drape suggest smooth, slightly lustrous woven material; no texture indicating cotton or linen.",
+      "observation_type": "inferred",
+      "value": "satin-like woven fabric"
+    },
+    "sleeve_cuff_neckline": {
+      "confidence": "high",
+      "evidence": "Sleeves end above elbow with no cuff detail; neckline curves gently without collar or fastening.",
+      "observation_type": "observed",
+      "value": "short sleeves, no visible cuff, rounded neckline"
+    },
+    "surface_sheen": {
+      "confidence": "high",
+      "evidence": "Light reflects gently along folds and curves, indicating low-to-moderate luster without gloss.",
+      "observation_type": "observed",
+      "value": "soft satin-like"
+    },
+    "texture_pattern": {
+      "confidence": "high",
+      "evidence": "Floral design with pink roses and green leaves printed across entire surface; no embroidery or texture variation.",
+      "observation_type": "observed",
+      "value": "print"
+    },
+    "weave_finish": {
+      "confidence": "high",
+      "evidence": "Image resolution insufficient to resolve weave structure or finish details.",
+      "observation_type": "inferred",
+      "value": "not discernible at this resolution"
+    }
+  },
+  "case": {
+    "fixture": "outfit_7",
+    "role": "top"
+  },
+  "extracted_at_utc": "2026-08-01T22:58:00.556835+00:00",
+  "inputs": [
+    {
+      "path": "/users/pg00807/cloth_store/bench/plan1_localization/outputs/catalog_cutouts/outfit_7/catalog_top.png",
+      "role": "segmented_cutout",
+      "sha256": "568665018f05be2d237728650c8be8df9c6dd8f64d935217ad4dc053452718ac"
+    },
+    {
+      "path": "/users/pg00807/cloth_store/data/outfit_7.jpeg",
+      "role": "source_photo",
+      "sha256": "55a3f60a7925edd9db8a808affe9cf34c524da2b81be254d4a9bebb0d1251213"
+    }
+  ],
+  "model_id": "Qwen/Qwen3.5-9B",
+  "schema_version": 1
+}

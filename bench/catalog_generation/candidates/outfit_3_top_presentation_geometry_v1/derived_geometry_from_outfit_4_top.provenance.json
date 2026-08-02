@@ -1,0 +1,46 @@
+{
+  "derivation": "neutral_binary_silhouette_from_catalog_output",
+  "derived_path": "bench/catalog_generation/candidates/outfit_3_top_presentation_geometry_v1/derived_geometry_from_outfit_4_top.png",
+  "derived_sha256": "05db7389bed7d675d067bd7bf4b5c46873baa0c8969b23fa4c979b5112d6ffa0",
+  "namespace": "outfit_3_top_presentation_geometry_v1",
+  "schema_version": 1,
+  "silhouette_fill_rgb": [
+    90,
+    90,
+    90
+  ],
+  "source_path": "bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/outfit_4/top_1k_raw.png",
+  "source_sha256": "0c0a12aff3e27032829b3a0125b306562fba39a5cfd211e369c0751036a31591",
+  "validation": {
+    "foreground_bounds": [
+      88,
+      42,
+      423,
+      469
+    ],
+    "unique_colors": [
+      [
+        90,
+        90,
+        90
+      ],
+      [
+        255,
+        255,
+        255
+      ]
+    ],
+    "width_metrics": {
+      "bbox_width_fraction": 0.65625,
+      "hem_to_waist_ratio": 2.0506134969325154,
+      "hem_width_fraction": 0.5912441037735849,
+      "mid_width_fraction": 0.5967957823426573,
+      "waist_width_fraction": 0.28832547169811323
+    }
+  },
+  "white_background_rgb": [
+    255,
+    255,
+    255
+  ]
+}

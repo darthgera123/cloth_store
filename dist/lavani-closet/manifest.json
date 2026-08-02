@@ -1,0 +1,427 @@
+{
+  "bundle_name": "lavani-closet",
+  "bundle_version": "1",
+  "build_timestamp": "2026-08-02T03:45:19.245864+00:00",
+  "repo_root": "/users/pg00807/cloth_store",
+  "total_items": 46,
+  "outfit_candidates": 28,
+  "lucky_pair_candidates": 414,
+  "data_files": [
+    {
+      "path": "data/storefront.json",
+      "sha256": "a7db260aec02ff61a8b0effe6d613a564c6f0c13cc552cd2787cf3ff71183312",
+      "size_bytes": 477690
+    }
+  ],
+  "static_files": [
+    {
+      "path": "static/app.js",
+      "sha256": "62cdb1a92bfe51c5e99433a2c69003bdbb30f4e2c29754595dbd953fbc9ea7b1",
+      "size_bytes": 27331
+    },
+    {
+      "path": "static/styles.css",
+      "sha256": "7315931853e901a1326fa399e5c386458be4f736e9eed3a774e07986848aab04",
+      "size_bytes": 28300
+    }
+  ],
+  "catalogue_images": [
+    {
+      "path": "assets/catalogue/outfit_1/bottom/output.png",
+      "sha256": "cf0ab814cc5e046d3a2d4c453826cd7de8e78181ea644567636df282b6856bab",
+      "size_bytes": 139544
+    },
+    {
+      "path": "assets/catalogue/outfit_1/top/output.png",
+      "sha256": "9b2b8f815c73c6cc22da5ae93c1333d2b6cfbdc92bc0b024930cd3deac70db41",
+      "size_bytes": 276023
+    },
+    {
+      "path": "assets/catalogue/outfit_10/bottom/output.png",
+      "sha256": "3963496276900e655a506956934763d75650cb0cb0594053dfa7de5eb32b8943",
+      "size_bytes": 171452
+    },
+    {
+      "path": "assets/catalogue/outfit_10/top/output.png",
+      "sha256": "a34ecbc30742b245216ad882ef2bd8555cc379e561b8906beb99f12387543ac3",
+      "size_bytes": 188004
+    },
+    {
+      "path": "assets/catalogue/outfit_11/bottom/output.png",
+      "sha256": "54e8de60ba37ca8c50cc5375e06031ca4f1d6488c85e559af811d1933256068d",
+      "size_bytes": 191808
+    },
+    {
+      "path": "assets/catalogue/outfit_11/top/output.png",
+      "sha256": "24d0708bdf6fd99a071f3d24fe06ded559244dc8a40d7bce4c564744711cd36d",
+      "size_bytes": 198465
+    },
+    {
+      "path": "assets/catalogue/outfit_12/top/output.png",
+      "sha256": "d2d233b733237551b0bec3e56d5e20c9e4d41d72c409b015c925975928d31a73",
+      "size_bytes": 174352
+    },
+    {
+      "path": "assets/catalogue/outfit_13/bottom/output.png",
+      "sha256": "90579e05162b226bddaac3f97c3562c4bf449be54e5f99670f2c83e6e64e248a",
+      "size_bytes": 167717
+    },
+    {
+      "path": "assets/catalogue/outfit_13/top/output.png",
+      "sha256": "1580b39245e2bc3fc6fd2ac7b8f98c22b8f3d300a652fba1aa07bc3e280f747e",
+      "size_bytes": 314936
+    },
+    {
+      "path": "assets/catalogue/outfit_14/bottom/output.png",
+      "sha256": "8a74b402f2b35bac1f4317031880cd87d47cc085d84054c15d141a26f38ba56e",
+      "size_bytes": 183874
+    },
+    {
+      "path": "assets/catalogue/outfit_14/top/output.png",
+      "sha256": "aa7c1f2d63527f4e3b580811ec2b86c640da857ea7da50e52a574dcd698f5169",
+      "size_bytes": 217126
+    },
+    {
+      "path": "assets/catalogue/outfit_15/bottom/output.png",
+      "sha256": "747d59d330c50c4653b2a10d67c61b11fa5185b818848ebd5b6e71c2c81b5e79",
+      "size_bytes": 185830
+    },
+    {
+      "path": "assets/catalogue/outfit_15/top/output.png",
+      "sha256": "2af97fcbd338741e58e3b4e32cb05c997775f4d3f4b2eb4a0c389f4a1a1761d1",
+      "size_bytes": 152727
+    },
+    {
+      "path": "assets/catalogue/outfit_17/top/output.png",
+      "sha256": "b11bb128b79b943178ecdbfc4c38726381e53efe76a0c679dced935fc8907a26",
+      "size_bytes": 176044
+    },
+    {
+      "path": "assets/catalogue/outfit_18/top/output.png",
+      "sha256": "cbc9bfbe43e742db7d1c95c7c6e3a63fc65a4f552e858d07a6ea878258b61127",
+      "size_bytes": 273038
+    },
+    {
+      "path": "assets/catalogue/outfit_19/bottom/output.png",
+      "sha256": "0604769a983e8c0f04ac980f5ef0f7417b9a001c8fbf58f34b7f12574d2d18e4",
+      "size_bytes": 136939
+    },
+    {
+      "path": "assets/catalogue/outfit_19/top/output.png",
+      "sha256": "5afdd59ddc3a5e2d238821591ce4784c5ef562670699909aac2725f4de73dc6b",
+      "size_bytes": 392294
+    },
+    {
+      "path": "assets/catalogue/outfit_2/bottom/output.png",
+      "sha256": "7f0ca8c8e269915927981762e03808069de4006898169c4d119f894f9f3d87c9",
+      "size_bytes": 145320
+    },
+    {
+      "path": "assets/catalogue/outfit_2/top/output.png",
+      "sha256": "fe46ca0da0f425bff20358f0d015d22ef9357e1b07b0664a97f57a378dc3f00f",
+      "size_bytes": 353022
+    },
+    {
+      "path": "assets/catalogue/outfit_21/top/output.png",
+      "sha256": "26ff11f41c331f49482d0894053a495287a8e94f7a7e84d33e501b46cb3e52e8",
+      "size_bytes": 284587
+    },
+    {
+      "path": "assets/catalogue/outfit_22/bottom/output.png",
+      "sha256": "7a50278ca6d8534b354ade8b9453975bad0cef056c584ae6870f5c5b004d80e7",
+      "size_bytes": 111221
+    },
+    {
+      "path": "assets/catalogue/outfit_22/top/output.png",
+      "sha256": "31fd0004a72734d8d9ad4f685a903a4eac2222157b5839178861e22da14c7e9e",
+      "size_bytes": 301746
+    },
+    {
+      "path": "assets/catalogue/outfit_23/top/output.png",
+      "sha256": "82fbcd7e08f8a0a185f36f55998a095bd181da60d3e529442a615570c26d9558",
+      "size_bytes": 220231
+    },
+    {
+      "path": "assets/catalogue/outfit_24/bottom/output.png",
+      "sha256": "34c5fff9c4861c8641d4b4f83f2dc13839effc612e397026d6390abeaa3ffe97",
+      "size_bytes": 123138
+    },
+    {
+      "path": "assets/catalogue/outfit_24/top/output.png",
+      "sha256": "735eb5a66b1147d680e54de3f973ef128495ffe1e4a895dd0ab5f6ef33a41e95",
+      "size_bytes": 221095
+    },
+    {
+      "path": "assets/catalogue/outfit_25/top/output.png",
+      "sha256": "85ca052164fa25c1a484fb8e5fded99995f9102a4f0d6591082dac1e31ef5c49",
+      "size_bytes": 201860
+    },
+    {
+      "path": "assets/catalogue/outfit_26/top/output.png",
+      "sha256": "fb2abe61d2418f45fd9ae9a018fe83cdabb1b679d35ec4799f99e0ce85971568",
+      "size_bytes": 231135
+    },
+    {
+      "path": "assets/catalogue/outfit_27/dress/output.png",
+      "sha256": "24e77cfbc05c3ff20d57e55fd128c501507cab348e97ef870d70ed39b47d489a",
+      "size_bytes": 134540
+    },
+    {
+      "path": "assets/catalogue/outfit_28/bottom/output.png",
+      "sha256": "3a9adbcac54d666491bed270ddeb9bd0aae21a2d4c23858cd7a325ccad0803c4",
+      "size_bytes": 196219
+    },
+    {
+      "path": "assets/catalogue/outfit_28/top/output.png",
+      "sha256": "80e8ccc46686b9155975386ca0e3dbe3ff598e92da5d99cc961aef3bd02a34a1",
+      "size_bytes": 220779
+    },
+    {
+      "path": "assets/catalogue/outfit_29/dress/output.png",
+      "sha256": "9c96ec1ff65994f9c621e74b02e362520dc37af495f026cb2bfdf66d378cade5",
+      "size_bytes": 226458
+    },
+    {
+      "path": "assets/catalogue/outfit_3/top/output.png",
+      "sha256": "a4c697f72949d5c88cbe125e5068b0919054423e0cc59f9caae1de44d7c5345f",
+      "size_bytes": 159925
+    },
+    {
+      "path": "assets/catalogue/outfit_30/dress/output.png",
+      "sha256": "22d0a089631d491914a92217a65cfef498cc38fac18e736012d72cd0e528266e",
+      "size_bytes": 151274
+    },
+    {
+      "path": "assets/catalogue/outfit_31/bottom/output.png",
+      "sha256": "c859509de89b128ae99d3b0d7523a2817f2f1c445e3119e810814ac66fd3b57a",
+      "size_bytes": 153241
+    },
+    {
+      "path": "assets/catalogue/outfit_31/top/output.png",
+      "sha256": "bbdb0a18e45d584a2480bb536ba5743c1bbacb3f116a6c627339edf22893e123",
+      "size_bytes": 174339
+    },
+    {
+      "path": "assets/catalogue/outfit_4/bottom/output.png",
+      "sha256": "33d826a1fb54da3cece89a61f6086d08aaab4c793f5b0ae05dee6fe8ea72c3ca",
+      "size_bytes": 185612
+    },
+    {
+      "path": "assets/catalogue/outfit_4/top/output.png",
+      "sha256": "841a8d470fc1ec7ce03f6d56c9d8091ae7196e5196ad6f33d54cfeffbb4892fd",
+      "size_bytes": 202202
+    },
+    {
+      "path": "assets/catalogue/outfit_5/bottom/output.png",
+      "sha256": "3bbd5aa286955968f225356c999d181bd150e319b454682c34cff0b34ec4002b",
+      "size_bytes": 140561
+    },
+    {
+      "path": "assets/catalogue/outfit_5/top/output.png",
+      "sha256": "5117ae97ad11f190e1d65438bc0cf688964c027a9ea0b682b346c85c794a02f1",
+      "size_bytes": 261848
+    },
+    {
+      "path": "assets/catalogue/outfit_6/bottom/output.png",
+      "sha256": "3d37fbd32cb3ae7d507064405893e3329fa9ad7747f25ecc7e3e444958d604b3",
+      "size_bytes": 103658
+    },
+    {
+      "path": "assets/catalogue/outfit_6/top/output.png",
+      "sha256": "34ca5b338aa80390767da3e34f94ad15af1732af2e2294063f77b1369109fad0",
+      "size_bytes": 184646
+    },
+    {
+      "path": "assets/catalogue/outfit_7/bottom/output.png",
+      "sha256": "e626d6703175b373e3f058cf2efa09995981d380a37f8e47b127461660ffe491",
+      "size_bytes": 132515
+    },
+    {
+      "path": "assets/catalogue/outfit_7/top/output.png",
+      "sha256": "2ffe7dbcffc65c993ce71a2a27f80095e536c358badc87a807f579e241e23ee2",
+      "size_bytes": 364163
+    },
+    {
+      "path": "assets/catalogue/outfit_8/top/output.png",
+      "sha256": "a128a6c11ce0b7fcda815e24088967bb18c3509823a508f59cbf4568086da3b8",
+      "size_bytes": 223405
+    },
+    {
+      "path": "assets/catalogue/outfit_9/bottom/output.png",
+      "sha256": "e4332c8bc8e1a2fd715412700e0823494d0863ca1ecd6e9b02f35be341e23ef0",
+      "size_bytes": 132231
+    },
+    {
+      "path": "assets/catalogue/outfit_9/top/output.png",
+      "sha256": "656fd2976b4c5042e7e2771b3c799614e78dea86361f8e50c2cdf602f8522782",
+      "size_bytes": 146453
+    }
+  ],
+  "selfie_images": [
+    {
+      "path": "assets/selfies/outfit_1.jpeg",
+      "sha256": "f87d8451b6f38272a4e84a1f7c9b5897027b916dded2556ea6bdf836ee339c0c",
+      "size_bytes": 161496
+    },
+    {
+      "path": "assets/selfies/outfit_10.jpeg",
+      "sha256": "cc4f45100d3b123a77880f2b8afeaded6329221c42d9169fa7f58ae4a93d8782",
+      "size_bytes": 157517
+    },
+    {
+      "path": "assets/selfies/outfit_11.jpeg",
+      "sha256": "35e1bdac38367fb77ee06c865e7f2161e19762d6eab47632acdc9c67066f06c3",
+      "size_bytes": 147738
+    },
+    {
+      "path": "assets/selfies/outfit_12.jpeg",
+      "sha256": "f60ebd6260e38590ab0a410516f0a5d7d52826ed47181e984901acf44ca117e3",
+      "size_bytes": 165645
+    },
+    {
+      "path": "assets/selfies/outfit_13.jpeg",
+      "sha256": "d5be7ad87297d3bfde014871d9cac470e26b1344cecd54ec4e06c1f7bfc0c5bc",
+      "size_bytes": 161968
+    },
+    {
+      "path": "assets/selfies/outfit_14.jpeg",
+      "sha256": "371a680b702401afc27febc0714e4686dfade0a21d010c752ccab4b1f464152e",
+      "size_bytes": 160354
+    },
+    {
+      "path": "assets/selfies/outfit_15.jpeg",
+      "sha256": "ed7e1ae43b754902651107a41f037bd2a79f1d6fe69f8bec8b25de214324e184",
+      "size_bytes": 156012
+    },
+    {
+      "path": "assets/selfies/outfit_16.jpeg",
+      "sha256": "a504fb75496c0e3b48dd6ddfd03bd8488d748ffce458c6f504cbac7af8214e51",
+      "size_bytes": 157402
+    },
+    {
+      "path": "assets/selfies/outfit_17.jpeg",
+      "sha256": "0e0b645fa2da1e01af1d208bf8f08eb5a92f5040da4091634f1c11a073c4ee7f",
+      "size_bytes": 159927
+    },
+    {
+      "path": "assets/selfies/outfit_18.jpeg",
+      "sha256": "808817d71253bfa4bed1dfb68514375a27cf32f21a5a144e7394b4ea7259fa7d",
+      "size_bytes": 150767
+    },
+    {
+      "path": "assets/selfies/outfit_19.jpeg",
+      "sha256": "d57e91fb2088dc2b37311fc4a069ecbe0927402811945c317a95fe484a4fab3a",
+      "size_bytes": 164404
+    },
+    {
+      "path": "assets/selfies/outfit_2.jpeg",
+      "sha256": "700f43d4ee6e6cf83216eeb9a67c5af0def97d08b45b3bdbc1974eaab22f9590",
+      "size_bytes": 165517
+    },
+    {
+      "path": "assets/selfies/outfit_20.jpeg",
+      "sha256": "1273025cfffd40f8c2c8cf99a8d888a4ce6e4d6717a4cb6f802b60bb9201a5d9",
+      "size_bytes": 157487
+    },
+    {
+      "path": "assets/selfies/outfit_21.jpeg",
+      "sha256": "2f9b5e5678050bdf68cca4eb11e8bfd8fe57001401fa003678d171283f43846f",
+      "size_bytes": 135249
+    },
+    {
+      "path": "assets/selfies/outfit_22.jpeg",
+      "sha256": "5a022e6961a90023e1c5a567a287cb39eba5a9f3d75537feaaaa77d699de0458",
+      "size_bytes": 157374
+    },
+    {
+      "path": "assets/selfies/outfit_23.jpeg",
+      "sha256": "eadf987654f70e673930a95c3aabd7c7035d963abfe57917bc731abc5304cedb",
+      "size_bytes": 162633
+    },
+    {
+      "path": "assets/selfies/outfit_24.jpeg",
+      "sha256": "8b776b431cbe070bdf413453dfd9fdbc86ff114d1dc67ec02cc557cd305116ad",
+      "size_bytes": 149098
+    },
+    {
+      "path": "assets/selfies/outfit_25.jpeg",
+      "sha256": "1affee052ed7ef78591910abf4867a0127067267bc29f9fe3dcdad93abb9bb81",
+      "size_bytes": 152000
+    },
+    {
+      "path": "assets/selfies/outfit_26.jpeg",
+      "sha256": "5a0cc6c51b1be8abb8fbc7bd16477618546020ebe420f4787ccdd2f89478afd0",
+      "size_bytes": 148089
+    },
+    {
+      "path": "assets/selfies/outfit_27.jpeg",
+      "sha256": "9c9655cc45194f8a47be00e51f69840860457ae15793e9c998afe70ebe55a825",
+      "size_bytes": 161196
+    },
+    {
+      "path": "assets/selfies/outfit_28.jpeg",
+      "sha256": "fa3493caa5c84b029ed229946711ebcc84d68fa72129c2b6b2841905cae70b58",
+      "size_bytes": 173790
+    },
+    {
+      "path": "assets/selfies/outfit_29.jpeg",
+      "sha256": "fbee3d32c46dadb29939979705247fab4b6fd6b65e6590d4b91e77654cb3070e",
+      "size_bytes": 174189
+    },
+    {
+      "path": "assets/selfies/outfit_3.jpeg",
+      "sha256": "cdfe9e67adb1ff0b6c0e946823ceb2673a7a3e4cbb922972ef4487915baae0a4",
+      "size_bytes": 156329
+    },
+    {
+      "path": "assets/selfies/outfit_30.jpeg",
+      "sha256": "1140f2c1386095c182bd38dfcb9cbe3f359156eb67f4f9fc3e64ca4290ed0bb8",
+      "size_bytes": 115750
+    },
+    {
+      "path": "assets/selfies/outfit_31.jpeg",
+      "sha256": "44f5ea43816cbb2c1dd51ef08d89740f3d536ef1b06a9f6fb4d9816f1cbe5d99",
+      "size_bytes": 107815
+    },
+    {
+      "path": "assets/selfies/outfit_4.jpeg",
+      "sha256": "73b5d7a01b743c1c292d8d530ab7ce540f1d46357c87bf8bf6cd23c217794e37",
+      "size_bytes": 156191
+    },
+    {
+      "path": "assets/selfies/outfit_5.jpeg",
+      "sha256": "bf9ad142a60282932d9d157544c445815f9cd9bae6271842dd2b2b234471b838",
+      "size_bytes": 168083
+    },
+    {
+      "path": "assets/selfies/outfit_6.jpeg",
+      "sha256": "9f1ba58febb67f967ac2efd56284608407153b26edac90b7364bf19f8107ea2c",
+      "size_bytes": 157938
+    },
+    {
+      "path": "assets/selfies/outfit_7.jpeg",
+      "sha256": "55a3f60a7925edd9db8a808affe9cf34c524da2b81be254d4a9bebb0d1251213",
+      "size_bytes": 156027
+    },
+    {
+      "path": "assets/selfies/outfit_8.jpeg",
+      "sha256": "3b8a95fe64e509f75c0bb3a6d8b8be7bfa1e9e4065d58a66ec2c914634ce3818",
+      "size_bytes": 134460
+    },
+    {
+      "path": "assets/selfies/outfit_9.jpeg",
+      "sha256": "cc5427d5de8fa9265323fa33e484b014d6cb62b7d547bb9177d232a4a871c70b",
+      "size_bytes": 146445
+    }
+  ],
+  "docs": [
+    {
+      "path": "docs/static-bundle-guide.md",
+      "source": "/users/pg00807/cloth_store/docs/static-bundle-guide.md"
+    },
+    {
+      "path": "docs/catalogue_description_system.md",
+      "source": "/users/pg00807/cloth_store/prompts/catalogue_description_system.md"
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "artifact_image_roles": [
+    {
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "89de4e70bfbbc0d895cdbde4092a802f81f64630f431d8357100fa76729c5f87"
+    },
+    {
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "29f9df23b3f0b8be5337d96bbb671f5b0939e79ba2c8341f0d818961b954946d"
+    },
+    {
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "9ad939cc0909e9ddb7e9d93f0f4080904b27b1fc2db3741d0fc2142447769410"
+    }
+  ],
+  "candidate_request_sha256": null,
+  "derived_geometry_sha256": null,
+  "estimated_cost_usd": 0.067,
+  "fixture": "outfit_29",
+  "generated_or_reused": "generated",
+  "generation_calls": 1,
+  "model_id": "gemini-3.1-flash-image",
+  "outputs": {
+    "output_1k": {
+      "path": "outfit_29/dress/output_1k.png",
+      "sha256": "8d3f67bc19345df6ce21bce043c6edfcdae8a7c84095e7122f635717bd6cbce2"
+    },
+    "output_512": {
+      "path": "outfit_29/dress/output.png",
+      "sha256": "9c96ec1ff65994f9c621e74b02e362520dc37af495f026cb2bfdf66d378cade5"
+    }
+  },
+  "packaged_inputs": [
+    {
+      "filename": "input_segmented.png",
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "89de4e70bfbbc0d895cdbde4092a802f81f64630f431d8357100fa76729c5f87",
+      "source_path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_29/catalog_dress.png"
+    },
+    {
+      "filename": "input_template.png",
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "29f9df23b3f0b8be5337d96bbb671f5b0939e79ba2c8341f0d818961b954946d",
+      "source_path": "bench/catalog_templates/generated/dress_knee_length_full_sleeve.png"
+    },
+    {
+      "filename": "input_detail.png",
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "9ad939cc0909e9ddb7e9d93f0f4080904b27b1fc2db3741d0fc2142447769410",
+      "source_path": "bench/catalog_generation/detail_crops/outfit_29_dress_detail.png"
+    },
+    {
+      "filename": "attributes.json",
+      "role": "vlm_attributes",
+      "sha256": "4ae8ffa9947a5fb53f7c46e828569f217200095a8d9bcc0cf9cb288f16a7b429",
+      "source_path": "bench/catalog_generation/vlm_attributes/outfit_29_dress.attributes.json"
+    }
+  ],
+  "promoted_from_candidate": null,
+  "promoted_from_reference": null,
+  "prompt_policy_version": 5,
+  "prompt_sha256": "ad83b9aa3933603cc6ef78b4f43b427ae1d3e5611aeb118a79ebe2f4444144d1",
+  "request_settings": {
+    "aspect_ratio": "1:1",
+    "image_size": "1K",
+    "model_id": "gemini-3.1-flash-image",
+    "response_modalities": [
+      "TEXT",
+      "IMAGE"
+    ]
+  },
+  "reuse_source": null,
+  "review_required": false,
+  "role": "dress",
+  "source_paths": {
+    "artifact": "bench/catalog_generation/artifacts/outfit_29_dress_dress_knee_length_full_sleeve.pipeline.request.json",
+    "override": null,
+    "production_metadata": "bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/outfit_29/dress.run.json",
+    "vlm_attributes": "bench/catalog_generation/vlm_attributes/outfit_29_dress.attributes.json"
+  },
+  "status": "ok",
+  "template_id": "dress_knee_length_full_sleeve",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "dress",
+    "override_applied": false,
+    "reason": "One-piece knee-length dress with full sleeves mapped to dress_knee_length_full_sleeve. Evidence: Sleeves extend to mid-forearm with slight flare; neckline is high and rounded, exposing collarbone area. | One-piece blush pink lace overlay dress with high round neckline, full-length sheer lace sleeves, and above-knee scalloped hem; user-confirmed single connected garment. | Full-length silhouette with defined bodice and skirt; no visible waist seam or separate top/bottom structure.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": "knee_length",
+    "sleeve_length_normalized": "full",
+    "template_id": "dress_knee_length_full_sleeve"
+  },
+  "texture_qc": {
+    "edge_density_ratio": 0.972,
+    "flags": [],
+    "heuristic": true,
+    "luminance_std_ratio": 1.073,
+    "mean_delta_e": 0.904,
+    "note": "Heuristic metrics only. Source and output garment geometry differ; pixelwise comparison is invalid. Do not auto-regenerate from these scores.",
+    "output_garment_pixel_count": 83100,
+    "palette_delta_e_mean": 2.07,
+    "role": "dress",
+    "source_garment_pixel_count": 48962
+  },
+  "user_override_applied": false,
+  "vlm_attribute_json_sha256": "deb3caff1ae4e3c868b80479df45272259a4c37323a0ccf8ade60add4000ab66"
+}

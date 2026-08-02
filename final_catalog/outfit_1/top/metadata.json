@@ -1,0 +1,113 @@
+{
+  "artifact_image_roles": [
+    {
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "93e467523a954b0dc7434d5f0384ed490bb0741cc60513c217a31e110763e306"
+    },
+    {
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "e26886ae087ebcfae196049581aeb8e8e308fe84e3dcc522863f0c4c3db1f6fc"
+    },
+    {
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "b407e790bd741749c747f4150f50c722f5353eb308963f15b2f2c2b197dd0e96"
+    }
+  ],
+  "candidate_request_sha256": null,
+  "derived_geometry_sha256": null,
+  "estimated_cost_usd": 0.067,
+  "fixture": "outfit_1",
+  "generated_or_reused": "generated",
+  "generation_calls": 1,
+  "model_id": "gemini-3.1-flash-image",
+  "outputs": {
+    "output_1k": {
+      "path": "outfit_1/top/output_1k.png",
+      "sha256": "17e6c17b266534b46ae3e425f5e4062e30df59905aacbf88add738057da0dd5d"
+    },
+    "output_512": {
+      "path": "outfit_1/top/output.png",
+      "sha256": "9b2b8f815c73c6cc22da5ae93c1333d2b6cfbdc92bc0b024930cd3deac70db41"
+    }
+  },
+  "packaged_inputs": [
+    {
+      "filename": "input_segmented.png",
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "93e467523a954b0dc7434d5f0384ed490bb0741cc60513c217a31e110763e306",
+      "source_path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_1/catalog_top.png"
+    },
+    {
+      "filename": "input_template.png",
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "e26886ae087ebcfae196049581aeb8e8e308fe84e3dcc522863f0c4c3db1f6fc",
+      "source_path": "bench/catalog_templates/generated/top_full_sleeve.png"
+    },
+    {
+      "filename": "input_detail.png",
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "b407e790bd741749c747f4150f50c722f5353eb308963f15b2f2c2b197dd0e96",
+      "source_path": "bench/catalog_generation/detail_crops/outfit_1_top_detail.png"
+    },
+    {
+      "filename": "attributes.json",
+      "role": "vlm_attributes",
+      "sha256": "85708810d202a5bb69da67554989a52459a0486a426238dbfc5a98e20bd2bc84",
+      "source_path": "bench/catalog_generation/vlm_attributes/outfit_1_top.attributes.json"
+    }
+  ],
+  "promoted_from_candidate": null,
+  "promoted_from_reference": null,
+  "prompt_policy_version": 5,
+  "prompt_sha256": "2fb2dec5be5de9fc4709a4f94df342e1289db003896c0ed62830fc3bb2c9a961",
+  "request_settings": {
+    "aspect_ratio": "1:1",
+    "image_size": "1K",
+    "model_id": "gemini-3.1-flash-image",
+    "response_modalities": [
+      "TEXT",
+      "IMAGE"
+    ]
+  },
+  "reuse_source": null,
+  "review_required": false,
+  "role": "top",
+  "source_paths": {
+    "artifact": "bench/catalog_generation/artifacts/outfit_1_top_top_full_sleeve.pipeline.request.json",
+    "override": null,
+    "production_metadata": "bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/outfit_1/top.run.json",
+    "vlm_attributes": "bench/catalog_generation/vlm_attributes/outfit_1_top.attributes.json"
+  },
+  "status": "ok",
+  "template_id": "top_full_sleeve",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "blouse",
+    "override_applied": false,
+    "reason": "Generic blouse/shirt with full sleeves. Evidence: Sleeves extend to wrist with elasticized or gathered cuffs; neckline is deep V with small keyhole cutout at center. | Long-sleeve white eyelet-embroidered blouse; plan2 template_projection_specs. | Long-sleeved, V-neck top with decorative front panel; no collar or waistline visible, consistent with blouse silhouette.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": null,
+    "sleeve_length_normalized": "full",
+    "template_id": "top_full_sleeve"
+  },
+  "texture_qc": {
+    "edge_density_ratio": 0.903,
+    "flags": [],
+    "heuristic": true,
+    "luminance_std_ratio": 0.623,
+    "mean_delta_e": 8.768,
+    "note": "Heuristic metrics only. Source and output garment geometry differ; pixelwise comparison is invalid. Do not auto-regenerate from these scores.",
+    "output_garment_pixel_count": 113014,
+    "palette_delta_e_mean": 7.182,
+    "role": "top",
+    "source_garment_pixel_count": 52777
+  },
+  "user_override_applied": false,
+  "vlm_attribute_json_sha256": "22b7136c722593396a101ced298db95f668a3c46dbbdcd9f1efdddaf1a7c9704"
+}

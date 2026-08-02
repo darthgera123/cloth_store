@@ -1,0 +1,115 @@
+{
+  "artifact_version": 1,
+  "bench": "catalog_generation",
+  "case": {
+    "fixture": "outfit_9",
+    "role": "top"
+  },
+  "detail_reference_provenance": {
+    "crop_bbox": [
+      178,
+      256,
+      279,
+      361
+    ],
+    "included": true,
+    "reason": "low-variance garment texture window; native resolution centered on white canvas without upscaling",
+    "source_bbox": [
+      154,
+      124,
+      357,
+      387
+    ]
+  },
+  "gemini_model_id": "gemini-3.1-flash-image",
+  "images": [
+    {
+      "description": "Plan 1 segmented catalog cutout (identity/color/texture reference)",
+      "height": 512,
+      "mode": "RGB",
+      "order": 1,
+      "path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_9/catalog_top.png",
+      "role": "garment_identity",
+      "sha256": "4720de0b323aecd06f05e1b19558919e905687eb65c2412eda29b8f7f995f147",
+      "width": 512
+    },
+    {
+      "description": "Canonical template silhouette (geometry/layout reference)",
+      "height": 512,
+      "mode": "RGB",
+      "order": 2,
+      "path": "bench/catalog_templates/generated/top_sleeveless.png",
+      "role": "template_geometry",
+      "sha256": "15e2fa524c4ad241190ecb0c24897d792f61ee4d5a0c1b0981800560d966512d",
+      "width": 512
+    },
+    {
+      "description": "Source-derived garment detail crop (texture/pattern/trim reinforcement only)",
+      "height": 512,
+      "mode": "RGB",
+      "order": 3,
+      "path": "bench/catalog_generation/detail_crops/outfit_9_top_detail.png",
+      "role": "garment_detail",
+      "sha256": "655a03260eaa636fbbcb391cf35fcbf8b287a4ab95680f8cb86991564add0f4f",
+      "width": 512
+    }
+  ],
+  "prompt": "Create a catalog product image for fixture outfit_9 (top) using separate reference images.\n\nImage 1 is the garment identity reference. Present a closed, symmetric, front-facing sleeveless blouse or top in a clean catalog layout. The garment must have clear shoulder straps or upper bodice with open armholes and no sleeves. Do not add sleeves. Preserve source neckline, straps, lace, pattern, color, material, and details clearly visible in Image 1. Reconstruct any pose-induced gaps, wrap, or drape from Image 1 as a closed garment. Do not present as a structured waistcoat or vest unless Image 1 clearly shows that class. Image 1 is authoritative for exact color, material, weave, pattern, embroidery, lace, print, trim, buttons, seams, lapels, pockets, and every other surface feature clearly visible in the segmented source. Preserving source-visible texture and color fidelity is the highest priority. Do not simplify, replace, or invent texture, hardware, or details absent from Image 1. Never copy the template gray fill as fabric.\n\nImage 2 is the geometry and silhouette reference (top_sleeveless). Use Image 2 only for garment shape, proportions, sleeve length, hem line, and overall layout. The flat gray fill in Image 2 is a placeholder silhouette \u2014 do not copy that gray color or treat it as fabric. Image 2 controls shape, not appearance.\n\nImage 3 is an optional close-up detail reference cropped from the same segmented source as Image 1. Use Image 3 only to reinforce exact texture, weave, pattern, embroidery, and trim visible in the source. Image 3 does not change the target silhouette.\n\nUser override (highest precedence):\n- Garment class: sleeveless blouse/top. This is a black sleeveless top with open armholes, NOT a half-sleeve, short-sleeve, or sleeved blouse.\n- Preserve black color, smooth woven material, matte finish, neckline, and all source-visible details from Image 1 and Image 3.\n- Do NOT add sleeves. Do NOT convert to: half sleeves, short sleeves, long sleeves, full sleeves, waistcoat, or vest.\n- Closed, symmetric, front-facing lay-flat sleeveless catalog presentation.\n- Do not invent buttons, hardware, collars, closures, or details absent from Image 1 or Image 3.\n\nVLM-derived material cues (supplement Image 1; do not override visible source):\n- surface sheen: matte (high confidence, observed; No specular highlights or reflective sheen visible; light absorption is uniform across surface.)\n- dominant color: black (high confidence, observed; Entire visible garment area is uniformly dark with no discernible hue variation or pattern.)\n- texture pattern: solid (high confidence, observed; No prints, embroidery, or textural variation detected on visible portions of garment.)\n- weave finish: not discernible at this resolution (high confidence, inferred; Image lacks sufficient detail to resolve weave structure or finish characteristics.)\n- closures details: none visible (high confidence, observed; No buttons, zippers, plackets, or trim are visible in the frame; garment appears unadorned.)\n\nSheen constraint: Image 1 shows matte. Keep this low reflectivity. Do not add satin, gloss, metallic, vinyl, or plastic shine absent from Image 1.\nThese cues clarify Image 1; they must not override pixels visible in Image 1 or Image 3.\n\nImage 1 is authoritative for visible color, material, and weave. Ignore hands, phone, and any non-garment segmentation artifacts from Image 1. The template gray color must never transfer to the output.\n\nOutput a single 512\u00d7512 front-facing catalog photograph on a pure white background (255, 255, 255). Fit the garment to the silhouette of Image 2 while preserving the color and material of Image 1. Reconstruct only missing or occluded regions implied by the target silhouette; do not invent new design elements. Exclude any person, mannequin, hanger, gray template color, grids, checkers, text, shadows, or diagnostic artifacts. The template controls shape, not appearance.",
+  "prompt_policy_version": 6,
+  "request_layout": {
+    "no_composite_input": true,
+    "part_order": [
+      "garment_identity",
+      "template_geometry",
+      "garment_detail"
+    ],
+    "separate_parts": true
+  },
+  "runner_model_id": "nano_banana_2",
+  "template_id": "top_sleeveless",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "blouse",
+    "override_applied": true,
+    "reason": "Explicit reviewed override to 'top_sleeveless'.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": null,
+    "sleeve_length_normalized": "sleeveless",
+    "template_id": "top_sleeveless"
+  },
+  "user_override": {
+    "garment_class": "blouse",
+    "injected_high_confidence_fields": [
+      "surface_sheen",
+      "dominant_color",
+      "texture_pattern",
+      "weave_finish",
+      "closures_details"
+    ],
+    "namespace": "user_corrected_sleeveless_top_v1",
+    "overridden_vlm_fields": [
+      "garment_class",
+      "sleeve_cuff_neckline"
+    ],
+    "precedence": "user_override > high_confidence_source_vlm > template_geometry_only",
+    "presentation_mode": "text_only",
+    "prohibited_conversions": [
+      "half sleeves",
+      "short sleeves",
+      "long sleeves",
+      "full sleeves",
+      "waistcoat",
+      "vest"
+    ],
+    "prompt_lines": [
+      "Garment class: sleeveless blouse/top. This is a black sleeveless top with open armholes, NOT a half-sleeve, short-sleeve, or sleeved blouse.",
+      "Preserve black color, smooth woven material, matte finish, neckline, and all source-visible details from Image 1 and Image 3.",
+      "Do NOT add sleeves. Do NOT convert to: half sleeves, short sleeves, long sleeves, full sleeves, waistcoat, or vest.",
+      "Closed, symmetric, front-facing lay-flat sleeveless catalog presentation.",
+      "Do not invent buttons, hardware, collars, closures, or details absent from Image 1 or Image 3."
+    ],
+    "reason": "User correction: black sleeveless top/blouse with open armholes; not a half-sleeve or short-sleeve garment.",
+    "sheen_constraint": "Image 1 shows matte. Keep this low reflectivity. Do not add satin, gloss, metallic, vinyl, or plastic shine absent from Image 1.",
+    "vlm_attribute_json_sha256": "66e760f2c8cd992d18e35b653f88367bcdd21af90093a5cd7e8134b9ddab3596"
+  }
+}

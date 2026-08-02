@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "fixture": "outfit_18",
+  "role": "top",
+  "namespace": "user_corrected_sleeveless_collar_top_v1",
+  "garment_class": "blouse",
+  "template_override": "top_sleeveless",
+  "reason": "User correction: sleeveless top/blouse with a large prominent collar neckline and lemon print, not a half-sleeve blouse.",
+  "overridden_vlm_fields": [
+    "garment_class",
+    "sleeve_cuff_neckline"
+  ],
+  "prohibited_conversions": [
+    "half sleeves",
+    "short sleeves",
+    "long sleeves",
+    "sleeveless halter only",
+    "small collar",
+    "removed collar",
+    "simplified collar",
+    "crew neck"
+  ],
+  "prompt_lines": [
+    "Garment class: sleeveless blouse/top with a large prominent oversized collar neckline. This is sleeveless with open armholes, NOT a half-sleeve or sleeved blouse.",
+    "Preserve the large/oversized collar and neckline exactly as supported by Image 1 and Image 3; do NOT simplify, shrink, or remove the collar.",
+    "Preserve cream/lemon-print color, floral pattern, material sheen, buttons, and all source-visible details from Image 1 and Image 3.",
+    "Do NOT add sleeves. Do NOT convert to: half sleeves, short sleeves, long sleeves, small collar, removed collar, simplified collar, crew neck.",
+    "Closed, symmetric, front-facing lay-flat sleeveless catalog presentation.",
+    "Do not invent new print elements, hardware, or details absent from Image 1 or Image 3."
+  ],
+  "presentation_mode": "text_only",
+  "precedence": "user_override > high_confidence_source_vlm > template_geometry_only"
+}

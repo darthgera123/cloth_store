@@ -1,0 +1,115 @@
+{
+  "artifact_image_roles": [
+    {
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "b9ce9a88d38f5b536fb0e4626990bff57d80af695d9f714aca1d87e280389e8b"
+    },
+    {
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "e26886ae087ebcfae196049581aeb8e8e308fe84e3dcc522863f0c4c3db1f6fc"
+    },
+    {
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "6534f283b6bec80b8bf5ec4e958c90647bb188b655d5732014ae0da81e8c1644"
+    }
+  ],
+  "candidate_request_sha256": null,
+  "derived_geometry_sha256": null,
+  "estimated_cost_usd": 0.067,
+  "fixture": "outfit_17",
+  "generated_or_reused": "generated",
+  "generation_calls": 1,
+  "model_id": "gemini-3.1-flash-image",
+  "outputs": {
+    "output_1k": {
+      "path": "outfit_17/top/output_1k.png",
+      "sha256": "1e4598e3a0b26337c0b1b9f3867be20c2229e383169d82e9914fda2d12fc9d04"
+    },
+    "output_512": {
+      "path": "outfit_17/top/output.png",
+      "sha256": "b11bb128b79b943178ecdbfc4c38726381e53efe76a0c679dced935fc8907a26"
+    }
+  },
+  "packaged_inputs": [
+    {
+      "filename": "input_segmented.png",
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "b9ce9a88d38f5b536fb0e4626990bff57d80af695d9f714aca1d87e280389e8b",
+      "source_path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_17/catalog_top.png"
+    },
+    {
+      "filename": "input_template.png",
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "e26886ae087ebcfae196049581aeb8e8e308fe84e3dcc522863f0c4c3db1f6fc",
+      "source_path": "bench/catalog_templates/generated/top_full_sleeve.png"
+    },
+    {
+      "filename": "input_detail.png",
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "6534f283b6bec80b8bf5ec4e958c90647bb188b655d5732014ae0da81e8c1644",
+      "source_path": "bench/catalog_generation/detail_crops/outfit_17_top_detail.png"
+    },
+    {
+      "filename": "attributes.json",
+      "role": "vlm_attributes",
+      "sha256": "2850ec06db35109503b33d3fbfa2c4e7a5d27eb26b90cc17d3de29fb9730ffc5",
+      "source_path": "bench/catalog_generation/vlm_attributes/outfit_17_top.attributes.json"
+    }
+  ],
+  "promoted_from_candidate": null,
+  "promoted_from_reference": null,
+  "prompt_policy_version": 5,
+  "prompt_sha256": "044fcd344e016ec950d516f194e995a33ce5024cfd10bd6ac95a5b82c12ca1f8",
+  "request_settings": {
+    "aspect_ratio": "1:1",
+    "image_size": "1K",
+    "model_id": "gemini-3.1-flash-image",
+    "response_modalities": [
+      "TEXT",
+      "IMAGE"
+    ]
+  },
+  "reuse_source": null,
+  "review_required": false,
+  "role": "top",
+  "source_paths": {
+    "artifact": "bench/catalog_generation/artifacts/outfit_17_top_top_full_sleeve.pipeline.request.json",
+    "override": null,
+    "production_metadata": "bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/outfit_17/top.run.json",
+    "vlm_attributes": "bench/catalog_generation/vlm_attributes/outfit_17_top.attributes.json"
+  },
+  "status": "ok",
+  "template_id": "top_full_sleeve",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "office_blouse",
+    "override_applied": false,
+    "reason": "Generic blouse/shirt with full sleeves. Evidence: Sleeves extend to wrist area; cuffs appear buttoned or folded; collar has sharp points typical of dress shirts. | Generic blouse/shirt with full sleeves. Evidence: Structured collar, front button placket, long sleeves, tailored fit consistent with office blouse. | Sleeves extend to wrist area; cuffs appear buttoned or folded; collar has sharp points typical of dress shirts. | Structured collar, front button placket, long sleeves, tailored fit consistent with office blouse.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": null,
+    "sleeve_length_normalized": "full",
+    "template_id": "top_full_sleeve"
+  },
+  "texture_qc": {
+    "edge_density_ratio": 0.331,
+    "flags": [
+      "detail_loss_suspected"
+    ],
+    "heuristic": true,
+    "luminance_std_ratio": 1.073,
+    "mean_delta_e": 10.714,
+    "note": "Heuristic metrics only. Source and output garment geometry differ; pixelwise comparison is invalid. Do not auto-regenerate from these scores.",
+    "output_garment_pixel_count": 117427,
+    "palette_delta_e_mean": 10.35,
+    "role": "top",
+    "source_garment_pixel_count": 39335
+  },
+  "user_override_applied": false,
+  "vlm_attribute_json_sha256": "01e5740ae721853220cbd750c911568128c857a65bbaaa697327c0752335d4ac"
+}

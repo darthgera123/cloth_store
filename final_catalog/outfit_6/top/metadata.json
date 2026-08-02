@@ -1,0 +1,113 @@
+{
+  "artifact_image_roles": [
+    {
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "33723ec434f11cfb106e17a0e0e6ec281f6ad73fa59efae2816e80d41d358711"
+    },
+    {
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "e26886ae087ebcfae196049581aeb8e8e308fe84e3dcc522863f0c4c3db1f6fc"
+    },
+    {
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "4543b037b97266bf7158cf687d0b1109f0b3330561c6e53f938ae24e98af800b"
+    }
+  ],
+  "candidate_request_sha256": null,
+  "derived_geometry_sha256": null,
+  "estimated_cost_usd": 0.0,
+  "fixture": "outfit_6",
+  "generated_or_reused": "reused",
+  "generation_calls": 0,
+  "model_id": "gemini-3.1-flash-image",
+  "outputs": {
+    "output_1k": {
+      "path": "outfit_6/top/output_1k.png",
+      "sha256": "d640de333725dfde5e3a2103aac72e8010cc1befcb99f0d46515b9cdafcb1aa7"
+    },
+    "output_512": {
+      "path": "outfit_6/top/output.png",
+      "sha256": "34ca5b338aa80390767da3e34f94ad15af1732af2e2294063f77b1369109fad0"
+    }
+  },
+  "packaged_inputs": [
+    {
+      "filename": "input_segmented.png",
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "33723ec434f11cfb106e17a0e0e6ec281f6ad73fa59efae2816e80d41d358711",
+      "source_path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_6/catalog_top.png"
+    },
+    {
+      "filename": "input_template.png",
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "e26886ae087ebcfae196049581aeb8e8e308fe84e3dcc522863f0c4c3db1f6fc",
+      "source_path": "bench/catalog_templates/generated/top_full_sleeve.png"
+    },
+    {
+      "filename": "input_detail.png",
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "4543b037b97266bf7158cf687d0b1109f0b3330561c6e53f938ae24e98af800b",
+      "source_path": "bench/catalog_generation/detail_crops/outfit_6_top_detail.png"
+    },
+    {
+      "filename": "attributes.json",
+      "role": "vlm_attributes",
+      "sha256": "b191154bd442841b1b9885d7506b3b7490ef8241fe51eaca630260c6b5e57ca7",
+      "source_path": "bench/catalog_generation/vlm_attributes/outfit_6_top.attributes.json"
+    }
+  ],
+  "promoted_from_candidate": null,
+  "promoted_from_reference": "user_corrected_shirt_v1",
+  "prompt_policy_version": 6,
+  "prompt_sha256": "29409dbe112f88a64a4e0d711cbc41e847fa3302870193b649bbb193038d9019",
+  "request_settings": {
+    "aspect_ratio": "1:1",
+    "image_size": "1K",
+    "model_id": "gemini-3.1-flash-image",
+    "response_modalities": [
+      "TEXT",
+      "IMAGE"
+    ]
+  },
+  "reuse_source": "user_corrected_shirt_v1",
+  "review_required": false,
+  "role": "top",
+  "source_paths": {
+    "artifact": "bench/catalog_generation/artifacts/outfit_6_top_top_full_sleeve.user_corrected.request.json",
+    "override": "bench/catalog_generation/overrides/outfit_6_top.override.json",
+    "production_metadata": "bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/outfit_6/top.run.json",
+    "vlm_attributes": "bench/catalog_generation/vlm_attributes/outfit_6_top.attributes.json"
+  },
+  "status": "ok",
+  "template_id": "top_full_sleeve",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "shirt",
+    "override_applied": false,
+    "reason": "Generic blouse/shirt with full sleeves. Evidence: Red satin long-sleeve office blouse with standing collar and gathered cuff.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": null,
+    "sleeve_length_normalized": "full",
+    "template_id": "top_full_sleeve"
+  },
+  "texture_qc": {
+    "edge_density_ratio": 0.823,
+    "flags": [],
+    "heuristic": true,
+    "luminance_std_ratio": 0.575,
+    "mean_delta_e": 11.072,
+    "note": "Heuristic metrics only. Source and output garment geometry differ; pixelwise comparison is invalid. Do not auto-regenerate from these scores.",
+    "output_garment_pixel_count": 111809,
+    "palette_delta_e_mean": 9.755,
+    "role": "top",
+    "source_garment_pixel_count": 49206
+  },
+  "user_override_applied": true,
+  "vlm_attribute_json_sha256": "b191154bd442841b1b9885d7506b3b7490ef8241fe51eaca630260c6b5e57ca7"
+}

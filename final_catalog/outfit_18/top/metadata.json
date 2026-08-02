@@ -1,0 +1,113 @@
+{
+  "artifact_image_roles": [
+    {
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "ba281a78d7f73f9b0594ec42c5b1d50f880c06839884e0f99667dd53cd2a159e"
+    },
+    {
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "15e2fa524c4ad241190ecb0c24897d792f61ee4d5a0c1b0981800560d966512d"
+    },
+    {
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "39edc0c50fced467db3516b830a154ef495832d3736e0a29c0669cfefefdf7c5"
+    }
+  ],
+  "candidate_request_sha256": null,
+  "derived_geometry_sha256": null,
+  "estimated_cost_usd": 0.067,
+  "fixture": "outfit_18",
+  "generated_or_reused": "generated",
+  "generation_calls": 1,
+  "model_id": "gemini-3.1-flash-image",
+  "outputs": {
+    "output_1k": {
+      "path": "outfit_18/top/output_1k.png",
+      "sha256": "2a47e6424008468d228451604257d1cac2ae711f44319b83a35ebae1f51977db"
+    },
+    "output_512": {
+      "path": "outfit_18/top/output.png",
+      "sha256": "cbc9bfbe43e742db7d1c95c7c6e3a63fc65a4f552e858d07a6ea878258b61127"
+    }
+  },
+  "packaged_inputs": [
+    {
+      "filename": "input_segmented.png",
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "ba281a78d7f73f9b0594ec42c5b1d50f880c06839884e0f99667dd53cd2a159e",
+      "source_path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_18/catalog_top.png"
+    },
+    {
+      "filename": "input_template.png",
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "15e2fa524c4ad241190ecb0c24897d792f61ee4d5a0c1b0981800560d966512d",
+      "source_path": "bench/catalog_templates/generated/top_sleeveless.png"
+    },
+    {
+      "filename": "input_detail.png",
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "39edc0c50fced467db3516b830a154ef495832d3736e0a29c0669cfefefdf7c5",
+      "source_path": "bench/catalog_generation/detail_crops/outfit_18_top_detail.png"
+    },
+    {
+      "filename": "attributes.json",
+      "role": "vlm_attributes",
+      "sha256": "c86ff14c93156fcf85ff39abae3d0a190e62d38b7b60cc3371edd282da54cace",
+      "source_path": "bench/catalog_generation/vlm_attributes/outfit_18_top.attributes.json"
+    }
+  ],
+  "promoted_from_candidate": null,
+  "promoted_from_reference": null,
+  "prompt_policy_version": 6,
+  "prompt_sha256": "627fbc2ac2493f8aebb430bc1b3501a57eb4f9909acbd96728250a3b87b9ecaa",
+  "request_settings": {
+    "aspect_ratio": "1:1",
+    "image_size": "1K",
+    "model_id": "gemini-3.1-flash-image",
+    "response_modalities": [
+      "TEXT",
+      "IMAGE"
+    ]
+  },
+  "reuse_source": null,
+  "review_required": false,
+  "role": "top",
+  "source_paths": {
+    "artifact": "bench/catalog_generation/artifacts/outfit_18_top_top_sleeveless.user_corrected.request.json",
+    "override": "bench/catalog_generation/overrides/outfit_18_top.override.json",
+    "production_metadata": "bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/outfit_18/top.run.json",
+    "vlm_attributes": "bench/catalog_generation/vlm_attributes/outfit_18_top.attributes.json"
+  },
+  "status": "ok",
+  "template_id": "top_sleeveless",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "blouse",
+    "override_applied": true,
+    "reason": "Explicit reviewed override to 'top_sleeveless'.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": null,
+    "sleeve_length_normalized": "sleeveless",
+    "template_id": "top_sleeveless"
+  },
+  "texture_qc": {
+    "edge_density_ratio": 0.977,
+    "flags": [],
+    "heuristic": true,
+    "luminance_std_ratio": 0.958,
+    "mean_delta_e": 11.9,
+    "note": "Heuristic metrics only. Source and output garment geometry differ; pixelwise comparison is invalid. Do not auto-regenerate from these scores.",
+    "output_garment_pixel_count": 125079,
+    "palette_delta_e_mean": 7.063,
+    "role": "top",
+    "source_garment_pixel_count": 27442
+  },
+  "user_override_applied": true,
+  "vlm_attribute_json_sha256": "c86ff14c93156fcf85ff39abae3d0a190e62d38b7b60cc3371edd282da54cace"
+}

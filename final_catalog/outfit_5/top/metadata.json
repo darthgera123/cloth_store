@@ -1,0 +1,115 @@
+{
+  "artifact_image_roles": [
+    {
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "318ea002c4c25b3e8b4b1016f820927b411b924a8ddfd12e1812667bfbc69fd0"
+    },
+    {
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "7f5ac10ceb46a20a636972bdbc10ec1e48dd6a395f2fa94e98c9ba4d450e29bd"
+    },
+    {
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "d70c8133a80a67c58fb5798ede6f13f90f60dac17162a1e587bc3e24502921bb"
+    }
+  ],
+  "candidate_request_sha256": null,
+  "derived_geometry_sha256": null,
+  "estimated_cost_usd": 0.067,
+  "fixture": "outfit_5",
+  "generated_or_reused": "generated",
+  "generation_calls": 1,
+  "model_id": "gemini-3.1-flash-image",
+  "outputs": {
+    "output_1k": {
+      "path": "outfit_5/top/output_1k.png",
+      "sha256": "57aee4297bf53a12a9da2cbaa533a1379ab9b38122f0c04fdef2b82c3d4a6cd7"
+    },
+    "output_512": {
+      "path": "outfit_5/top/output.png",
+      "sha256": "5117ae97ad11f190e1d65438bc0cf688964c027a9ea0b682b346c85c794a02f1"
+    }
+  },
+  "packaged_inputs": [
+    {
+      "filename": "input_segmented.png",
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "318ea002c4c25b3e8b4b1016f820927b411b924a8ddfd12e1812667bfbc69fd0",
+      "source_path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_5/catalog_top.png"
+    },
+    {
+      "filename": "input_template.png",
+      "order": 2,
+      "role": "template_geometry",
+      "sha256": "7f5ac10ceb46a20a636972bdbc10ec1e48dd6a395f2fa94e98c9ba4d450e29bd",
+      "source_path": "bench/catalog_templates/generated/top_half_sleeve.png"
+    },
+    {
+      "filename": "input_detail.png",
+      "order": 3,
+      "role": "garment_detail",
+      "sha256": "d70c8133a80a67c58fb5798ede6f13f90f60dac17162a1e587bc3e24502921bb",
+      "source_path": "bench/catalog_generation/detail_crops/outfit_5_top_detail.png"
+    },
+    {
+      "filename": "attributes.json",
+      "role": "vlm_attributes",
+      "sha256": "a6d92e54583332a6a2e429194a36d27c473ab596e8da456f27ccc566a29efc19",
+      "source_path": "bench/catalog_generation/vlm_attributes/outfit_5_top.attributes.json"
+    }
+  ],
+  "promoted_from_candidate": null,
+  "promoted_from_reference": null,
+  "prompt_policy_version": 5,
+  "prompt_sha256": "97e5434f297c4b8bf6d527ff874e0e6470245a89be9cbd73b969a2d634404cdb",
+  "request_settings": {
+    "aspect_ratio": "1:1",
+    "image_size": "1K",
+    "model_id": "gemini-3.1-flash-image",
+    "response_modalities": [
+      "TEXT",
+      "IMAGE"
+    ]
+  },
+  "reuse_source": null,
+  "review_required": false,
+  "role": "top",
+  "source_paths": {
+    "artifact": "bench/catalog_generation/artifacts/outfit_5_top_top_half_sleeve.pipeline.request.json",
+    "override": null,
+    "production_metadata": "bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/outfit_5/top.run.json",
+    "vlm_attributes": "bench/catalog_generation/vlm_attributes/outfit_5_top.attributes.json"
+  },
+  "status": "ok",
+  "template_id": "top_half_sleeve",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "office_blouse",
+    "override_applied": false,
+    "reason": "Generic blouse/shirt with half sleeves. Evidence: Sleeves end above elbow with no cuff detailing; neckline forms shallow V-shape with no collar or button placket. | Light blue eyelet blouse with short sleeves ending mid-upper arm. | V-neckline, short sleeves, structured fit, and decorative front panel suggest formal or semi-formal women\u2019s top.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": null,
+    "sleeve_length_normalized": "half",
+    "template_id": "top_half_sleeve"
+  },
+  "texture_qc": {
+    "edge_density_ratio": 0.63,
+    "flags": [
+      "texture_contrast_mismatch"
+    ],
+    "heuristic": true,
+    "luminance_std_ratio": 0.379,
+    "mean_delta_e": 22.108,
+    "note": "Heuristic metrics only. Source and output garment geometry differ; pixelwise comparison is invalid. Do not auto-regenerate from these scores.",
+    "output_garment_pixel_count": 126679,
+    "palette_delta_e_mean": 21.589,
+    "role": "top",
+    "source_garment_pixel_count": 37740
+  },
+  "user_override_applied": false,
+  "vlm_attribute_json_sha256": "d6674faa4c6bf906aa36e8c474890219567d905242a0c19ef85c390086fc89aa"
+}

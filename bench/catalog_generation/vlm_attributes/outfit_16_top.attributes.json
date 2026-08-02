@@ -1,0 +1,71 @@
+{
+  "attributes": {
+    "closures_details": {
+      "confidence": "high",
+      "evidence": "Vertical row of small, round buttons visible along center front placket; collar points suggest button-down style.",
+      "observation_type": "observed",
+      "value": "button-front placket"
+    },
+    "dominant_color": {
+      "confidence": "high",
+      "evidence": "Entire garment is uniformly white across all visible areas; no secondary colors or patterns detected.",
+      "observation_type": "observed",
+      "value": "white"
+    },
+    "garment_class": {
+      "confidence": "high",
+      "evidence": "Long sleeves, structured collar, front placket with visible button alignment, cropped hemline \u2014 consistent with formal or business-casual blouse styling.",
+      "observation_type": "observed",
+      "value": "office_blouse"
+    },
+    "likely_material": {
+      "confidence": "high",
+      "evidence": "Fabric holds shape without draping, suggests woven construction; no sheen or texture indicating synthetic or natural fiber specifically.",
+      "observation_type": "inferred",
+      "value": "woven fabric with slight stiffness"
+    },
+    "sleeve_cuff_neckline": {
+      "confidence": "high",
+      "evidence": "Sleeves extend to wrist with visible cuff buttons; collar has sharp points extending toward shoulders; neckline is open at top.",
+      "observation_type": "observed",
+      "value": "long sleeves, buttoned cuffs, pointed collar"
+    },
+    "surface_sheen": {
+      "confidence": "high",
+      "evidence": "No specular highlights or reflective surfaces; light diffuses evenly across fabric surface.",
+      "observation_type": "observed",
+      "value": "matte"
+    },
+    "texture_pattern": {
+      "confidence": "high",
+      "evidence": "No prints, embroidery, or textural variations visible; uniform surface throughout.",
+      "observation_type": "observed",
+      "value": "solid"
+    },
+    "weave_finish": {
+      "confidence": "medium",
+      "evidence": "Image resolution insufficient to resolve individual weave structure or finish details.",
+      "observation_type": "inferred",
+      "value": "not discernible at this resolution"
+    }
+  },
+  "case": {
+    "fixture": "outfit_16",
+    "role": "top"
+  },
+  "extracted_at_utc": "2026-08-01T23:55:45.247271+00:00",
+  "inputs": [
+    {
+      "path": "/users/pg00807/cloth_store/bench/plan1_localization/outputs/catalog_cutouts/outfit_16/catalog_top.png",
+      "role": "segmented_cutout",
+      "sha256": "6ca50afbd4a196b1759e04284157234399c0690900e01bc01a4e4eb9b4a816c3"
+    },
+    {
+      "path": "/users/pg00807/cloth_store/data/outfit_16.jpeg",
+      "role": "source_photo",
+      "sha256": "a504fb75496c0e3b48dd6ddfd03bd8488d748ffce458c6f504cbac7af8214e51"
+    }
+  ],
+  "model_id": "Qwen/Qwen3.5-9B",
+  "schema_version": 1
+}

@@ -1,0 +1,71 @@
+{
+  "attributes": {
+    "closures_details": {
+      "confidence": "high",
+      "evidence": "No buttons, zippers, plackets, or trim are visible in the frame; garment appears unadorned.",
+      "observation_type": "observed",
+      "value": "none visible"
+    },
+    "dominant_color": {
+      "confidence": "high",
+      "evidence": "Entire visible garment area is uniformly dark with no discernible hue variation or pattern.",
+      "observation_type": "observed",
+      "value": "black"
+    },
+    "garment_class": {
+      "confidence": "high",
+      "evidence": "Silhouette shows structured bodice, defined shoulder seam, and short sleeves consistent with tailored office wear; no collar or buttons visible but form suggests formal top.",
+      "observation_type": "inferred",
+      "value": "office_blouse"
+    },
+    "likely_material": {
+      "confidence": "medium",
+      "evidence": "Surface appears flat and non-textured with slight drape, suggesting woven construction rather than knit or heavy textile.",
+      "observation_type": "inferred",
+      "value": "smooth woven fabric"
+    },
+    "sleeve_cuff_neckline": {
+      "confidence": "high",
+      "evidence": "Sleeve ends above elbow with no cuff detail; neckline area is cut off or shadowed, preventing identification.",
+      "observation_type": "inferred",
+      "value": "short sleeve, no visible cuff, neckline obscured"
+    },
+    "surface_sheen": {
+      "confidence": "high",
+      "evidence": "No specular highlights or reflective sheen visible; light absorption is uniform across surface.",
+      "observation_type": "observed",
+      "value": "matte"
+    },
+    "texture_pattern": {
+      "confidence": "high",
+      "evidence": "No prints, embroidery, or textural variation detected on visible portions of garment.",
+      "observation_type": "observed",
+      "value": "solid"
+    },
+    "weave_finish": {
+      "confidence": "high",
+      "evidence": "Image lacks sufficient detail to resolve weave structure or finish characteristics.",
+      "observation_type": "inferred",
+      "value": "not discernible at this resolution"
+    }
+  },
+  "case": {
+    "fixture": "outfit_9",
+    "role": "top"
+  },
+  "extracted_at_utc": "2026-08-01T23:00:26.843436+00:00",
+  "inputs": [
+    {
+      "path": "/users/pg00807/cloth_store/bench/plan1_localization/outputs/catalog_cutouts/outfit_9/catalog_top.png",
+      "role": "segmented_cutout",
+      "sha256": "4720de0b323aecd06f05e1b19558919e905687eb65c2412eda29b8f7f995f147"
+    },
+    {
+      "path": "/users/pg00807/cloth_store/data/outfit_9.jpeg",
+      "role": "source_photo",
+      "sha256": "cc5427d5de8fa9265323fa33e484b014d6cb62b7d547bb9177d232a4a871c70b"
+    }
+  ],
+  "model_id": "Qwen/Qwen3.5-9B",
+  "schema_version": 1
+}

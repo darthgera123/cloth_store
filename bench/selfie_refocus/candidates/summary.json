@@ -1,0 +1,55 @@
+{
+  "fixture_ids": [
+    "outfit_1",
+    "outfit_2"
+  ],
+  "output_root": "bench/selfie_refocus/candidates",
+  "results": [
+    {
+      "fixture_id": "outfit_1",
+      "crop_box": [
+        0,
+        486,
+        891,
+        1600
+      ],
+      "output_size": [
+        891,
+        1114
+      ],
+      "aspect_label": "4:5",
+      "metrics": {
+        "subject_clipped": false,
+        "retained_background_fraction": 0.8086,
+        "background_reduction_fraction": 0.1026,
+        "person_mask_coverage": 0.1914,
+        "person_pixel_preservation": 0.9999,
+        "edge_halo_score": 0.05
+      },
+      "recommendation": "crop_refocused"
+    },
+    {
+      "fixture_id": "outfit_2",
+      "crop_box": [
+        142,
+        424,
+        962,
+        1449
+      ],
+      "output_size": [
+        820,
+        1025
+      ],
+      "aspect_label": "4:5",
+      "metrics": {
+        "subject_clipped": false,
+        "retained_background_fraction": 0.8508,
+        "background_reduction_fraction": 0.0897,
+        "person_mask_coverage": 0.1492,
+        "person_pixel_preservation": 0.9998,
+        "edge_halo_score": 0.0628
+      },
+      "recommendation": "crop_refocused"
+    }
+  ]
+}

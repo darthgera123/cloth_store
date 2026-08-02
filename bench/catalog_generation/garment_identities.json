@@ -1,0 +1,221 @@
+{
+  "groups": [
+    {
+      "canonical_observation_id": "outfit_4_bottom",
+      "canonical_selection_reason": "Lower texture QC mean_delta_e (2.448 vs 3.040); no QC flags on either approved output.",
+      "display_name": "dark gray trousers",
+      "facet_corrections": {
+        "colors": [
+          "dark gray"
+        ]
+      },
+      "garment_id": "garment_dark_gray_trousers_001",
+      "notes": "Same physical dark gray trousers worn in outfit 3 and outfit 4.",
+      "observation_ids": [
+        "outfit_3_bottom",
+        "outfit_4_bottom"
+      ],
+      "reason": "user_confirmed"
+    },
+    {
+      "canonical_observation_id": "outfit_9_bottom",
+      "canonical_selection_reason": "Lower texture QC mean_delta_e (1.027 vs 4.648); best approved output fidelity.",
+      "display_name": "brown trousers",
+      "facet_corrections": {
+        "colors": [
+          "brown",
+          "taupe"
+        ]
+      },
+      "garment_id": "garment_brown_trousers_001",
+      "notes": "Same physical brown trousers worn in outfit 8 and outfit 9.",
+      "observation_ids": [
+        "outfit_8_bottom",
+        "outfit_9_bottom"
+      ],
+      "reason": "user_confirmed"
+    },
+    {
+      "canonical_observation_id": "outfit_13_bottom",
+      "canonical_selection_reason": "Lower texture QC mean_delta_e (0.857 vs 5.184); best approved output fidelity.",
+      "display_name": "gray trousers",
+      "facet_corrections": {
+        "colors": [
+          "gray"
+        ]
+      },
+      "garment_id": "garment_gray_trousers_001",
+      "notes": "Same physical gray trousers worn in outfit 12 and outfit 13.",
+      "observation_ids": [
+        "outfit_12_bottom",
+        "outfit_13_bottom"
+      ],
+      "reason": "user_confirmed"
+    },
+    {
+      "canonical_observation_id": "outfit_15_bottom",
+      "canonical_selection_reason": "Slightly lower texture QC mean_delta_e (3.926 vs 3.937); selected over ribbed VLM variant.",
+      "display_name": "slim fit gray trousers",
+      "facet_corrections": {
+        "colors": [
+          "gray",
+          "dark gray"
+        ],
+        "fit": "slim"
+      },
+      "garment_id": "garment_gray_trousers_002",
+      "notes": "Same physical slim-fit gray trousers worn in outfit 15 and outfit 16.",
+      "observation_ids": [
+        "outfit_15_bottom",
+        "outfit_16_bottom"
+      ],
+      "reason": "user_confirmed"
+    },
+    {
+      "canonical_observation_id": "outfit_19_bottom",
+      "canonical_selection_reason": "Lowest texture QC mean_delta_e (14.128) with no QC flags across five linked observations.",
+      "display_name": "white relaxed-fit trousers",
+      "facet_corrections": {
+        "colors": [
+          "white",
+          "off-white",
+          "beige"
+        ],
+        "fit": "relaxed"
+      },
+      "garment_id": "garment_off_white_trousers_001",
+      "notes": "Same physical white relaxed-fit trousers worn in outfits 17, 18, 19, 20, and 21.",
+      "observation_ids": [
+        "outfit_17_bottom",
+        "outfit_18_bottom",
+        "outfit_19_bottom",
+        "outfit_20_bottom",
+        "outfit_21_bottom"
+      ],
+      "reason": "user_confirmed"
+    },
+    {
+      "canonical_observation_id": "outfit_24_bottom",
+      "canonical_selection_reason": "No texture QC flags (outfit 23 flagged detail_loss_suspected); preferred approved output.",
+      "display_name": "straight-fit khaki trousers",
+      "facet_corrections": {
+        "colors": [
+          "khaki",
+          "tan",
+          "brown"
+        ],
+        "fit": "straight"
+      },
+      "garment_id": "garment_khaki_slim_trousers_001",
+      "notes": "Same physical straight-fit khaki trousers worn in outfits 23, 24, and 25.",
+      "observation_ids": [
+        "outfit_23_bottom",
+        "outfit_24_bottom",
+        "outfit_25_bottom"
+      ],
+      "reason": "user_confirmed"
+    },
+    {
+      "canonical_observation_id": "outfit_6_bottom",
+      "canonical_selection_reason": "Original approved black pencil skirt generation; reused for outfit 26 alias without additional billing.",
+      "display_name": "black pencil skirt",
+      "facet_corrections": {
+        "colors": [
+          "black"
+        ]
+      },
+      "garment_id": "garment_black_pencil_skirt_001",
+      "notes": "Same physical black pencil skirt worn in outfit 6 and outfit 26.",
+      "observation_ids": [
+        "outfit_6_bottom",
+        "outfit_26_bottom"
+      ],
+      "reason": "user_confirmed"
+    },
+    {
+      "canonical_observation_id": "outfit_22_top",
+      "canonical_selection_reason": "Lowest texture QC mean_delta_e (8.608 vs 20.442/27.036); no QC flags on approved output.",
+      "display_name": "white long-sleeve button-down shirt",
+      "facet_corrections": {
+        "colors": [
+          "white",
+          "light gray"
+        ]
+      },
+      "garment_id": "garment_white_button_down_shirt_001",
+      "notes": "Same physical white button-down shirt worn in outfits 16, 20, and 22; light gray label on outfit 22 is lighting/classification drift.",
+      "observation_ids": [
+        "outfit_16_top",
+        "outfit_20_top",
+        "outfit_22_top"
+      ],
+      "reason": "user_confirmed"
+    }
+  ],
+  "namespace": "catalog_production_v1",
+  "observation_enrichments": [
+    {
+      "facet_corrections": {
+        "fit": "straight"
+      },
+      "notes": "User-confirmed straight-fit brown formal trousers.",
+      "observation_id": "outfit_1_bottom",
+      "reason": "user_confirmed"
+    },
+    {
+      "facet_corrections": {
+        "fit": "straight"
+      },
+      "notes": "User-confirmed straight-fit tan trousers.",
+      "observation_id": "outfit_2_bottom",
+      "reason": "user_confirmed"
+    },
+    {
+      "facet_corrections": {
+        "colors": [
+          "pastel pink",
+          "pink"
+        ],
+        "stale_color_tags": [
+          "dusty rose"
+        ]
+      },
+      "display_name": "pastel pink lace knee-length dress",
+      "notes": "User-confirmed pastel pink lace overlay dress; VLM dominant_color dusty rose corrected from source/cutout.",
+      "observation_id": "outfit_29_dress",
+      "reason": "user_confirmed"
+    },
+    {
+      "facet_corrections": {
+        "colors": [
+          "pastel pink",
+          "pink"
+        ],
+        "stale_color_tags": [
+          "dusty rose"
+        ]
+      },
+      "display_name": "pastel pink sleeveless top",
+      "notes": "User-confirmed pastel pink sleeveless halter lace top; VLM dominant_color dusty rose corrected from source/cutout.",
+      "observation_id": "outfit_13_top",
+      "reason": "user_confirmed"
+    },
+    {
+      "facet_corrections": {
+        "colors": [
+          "forest green",
+          "green"
+        ],
+        "stale_color_tags": [
+          "black",
+          "dark green"
+        ]
+      },
+      "display_name": "forest green stretch knit fabric knee-length dress",
+      "notes": "User-confirmed forest green ribbed knit bodycon dress; VLM dominant_color black corrected from source/cutout.",
+      "observation_id": "outfit_30_dress",
+      "reason": "user_confirmed"
+    }
+  ],
+  "schema_version": 1
+}

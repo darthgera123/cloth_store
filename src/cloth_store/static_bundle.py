@@ -1,0 +1,492 @@
+"""Build a shareable static-site bundle for Lavani's Closet."""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import re
+import shutil
+import sys
+import urllib.request
+import zipfile
+from datetime import UTC, datetime
+from pathlib import Path
+from typing import Any
+
+from cloth_store.web import STATIC_ROOT, WEB_ROOT
+from cloth_store.web_storefront import build_storefront_bundle, write_storefront_bundle
+
+BUNDLE_NAME = "lavani-closet"
+BUNDLE_VERSION = "1"
+CATALOGUE_PREFIX = "assets/catalogue"
+SELFIE_PREFIX = "assets/selfies"
+DEFAULT_OUTPUT_DIR = Path("dist/lavani-closet")
+DEFAULT_ZIP_PATH = Path("dist/lavani-closet.zip")
+
+FORBIDDEN_BUNDLE_PARTS = (
+    "output_1k.png",
+    ".venv",
+    ".env",
+    ".sqlite",
+    ".db",
+    "node_modules",
+)
+
+PROMPT_SOURCE = Path("prompts/catalogue_description_system.md")
+STATIC_BUNDLE_GUIDE_SOURCE = Path("docs/static-bundle-guide.md")
+
+README_TEMPLATE = """# Lavani's Closet — Static Snapshot
+
+This folder is a **standalone static snapshot** of the Lavani's Closet storefront.
+It does not require the Cloth Store repository, FastAPI, uv, or any ML/runtime
+dependencies.
+
+## Contents
+
+| Path | Purpose |
+|------|---------|
+| `index.html` | Storefront shell (embedded catalogue data for offline use) |
+| `static/` | CSS and JavaScript |
+| `data/storefront.json` | Pre-computed catalogue, styling, outfit, and lucky-pair data |
+| `assets/catalogue/` | 512px catalogue `output.png` images referenced by the snapshot |
+| `assets/selfies/` | Source mirror selfies referenced by styling and outfit generator |
+| `docs/` | Storefront and description-prompt documentation |
+| `manifest.json` | Build metadata and packaged asset inventory |
+
+## Run locally
+
+From this directory:
+
+```bash
+python3 -m http.server 8080
+```
+
+Then open **http://127.0.0.1:8080/** in your browser.
+
+### Direct file open
+
+`index.html` embeds the catalogue payload so basic browsing works when opened
+via `file://`. For the most reliable experience (images and modals), use the
+local HTTP server above.
+
+## Supported features (offline)
+
+- Browse tops, dresses, and bottoms
+- Search and role filters
+- Item detail modal with catalogue carousel and styling selfies
+- **Generate an Outfit** — same-fixture top/bottom pairs with selfie hero
+- **I'm Feeling Lucky** — cross-fixture top/bottom pairings from catalogue views
+
+## Image policy
+
+- Catalogue cards and modals use **512px** `output.png` derivatives only.
+- Selfies are the original source mirror photos bundled for styling context.
+- No 1K masters, pipeline inputs, or private database files are included.
+
+## Snapshot notice
+
+Data and images reflect the catalogue at build time. Rebuild from the repository
+with `uv run cloth-store-static-bundle --repo-root /path/to/cloth_store` to
+refresh.
+"""
+
+
+def _json_for_html_embed(data: dict[str, Any]) -> str:
+    """Serialize JSON safely for embedding inside a ``<script>`` tag."""
+    return json.dumps(data, ensure_ascii=False).replace("<", "\\u003c")
+
+
+def collect_bundle_image_urls(bundle: dict[str, Any]) -> set[str]:
+    """Return every catalogue/selfie URL referenced by the storefront payload."""
+    urls: set[str] = set()
+
+    for item in bundle.get("items", []):
+        if url := item.get("image_url"):
+            urls.add(str(url))
+
+    for styling in bundle.get("styling", {}).values():
+        for association in styling.get("associations", []):
+            selfie = association.get("selfie") or {}
+            if url := selfie.get("image_url"):
+                urls.add(str(url))
+
+    for candidate in bundle.get("outfit_candidates", []):
+        for key in ("top", "bottom"):
+            garment = candidate.get(key) or {}
+            if url := garment.get("image_url"):
+                urls.add(str(url))
+        selfie = candidate.get("selfie") or {}
+        if url := selfie.get("image_url"):
+            urls.add(str(url))
+
+    for pair in bundle.get("lucky_pair_candidates", []):
+        for key in ("top", "bottom"):
+            garment = pair.get(key) or {}
+            if url := garment.get("image_url"):
+                urls.add(str(url))
+
+    return urls
+
+
+def _catalogue_source_path(repo_root: Path, bundle_url: str) -> Path:
+    rel = bundle_url.removeprefix(f"{CATALOGUE_PREFIX}/")
+    return repo_root / "final_catalog" / rel
+
+
+def _selfie_source_path(repo_root: Path, bundle_url: str) -> Path:
+    filename = bundle_url.removeprefix(f"{SELFIE_PREFIX}/")
+    return repo_root / "data" / filename
+
+
+def _copy_asset(source: Path, destination: Path, *, manifest_root: Path) -> dict[str, Any]:
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(source, destination)
+    digest = hashlib.sha256(destination.read_bytes()).hexdigest()
+    return {
+        "path": destination.relative_to(manifest_root).as_posix(),
+        "sha256": digest,
+        "size_bytes": destination.stat().st_size,
+    }
+
+
+def prepare_bundle_index_html(source_html: str, bundle: dict[str, Any]) -> str:
+    """Rewrite web shell paths and embed storefront JSON for static/file use."""
+    html = source_html.replace('href="/static/', 'href="static/')
+    html = html.replace('src="/static/', 'src="static/')
+    html = html.replace(
+        '<html lang="en">',
+        '<html lang="en" data-storefront-url="data/storefront.json">',
+    )
+    embedded = _json_for_html_embed(bundle)
+    embed_tag = f'    <script type="application/json" id="storefront-data">{embedded}</script>\n'
+    html = html.replace(
+        '    <script src="static/app.js" defer></script>',
+        embed_tag + '    <script src="static/app.js" defer></script>',
+    )
+    return html
+
+
+def _write_bundle_docs(output_dir: Path, repo_root: Path) -> list[dict[str, Any]]:
+    docs_dir = output_dir / "docs"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    entries: list[dict[str, Any]] = []
+
+    guide_source = repo_root / STATIC_BUNDLE_GUIDE_SOURCE
+    if guide_source.is_file():
+        dest = docs_dir / "static-bundle-guide.md"
+        shutil.copy2(guide_source, dest)
+        entries.append(
+            {"path": dest.relative_to(output_dir).as_posix(), "source": guide_source.as_posix()}
+        )
+
+    prompt_source = repo_root / PROMPT_SOURCE
+    if prompt_source.is_file():
+        dest = docs_dir / "catalogue_description_system.md"
+        shutil.copy2(prompt_source, dest)
+        entries.append(
+            {"path": dest.relative_to(output_dir).as_posix(), "source": prompt_source.as_posix()}
+        )
+
+    return entries
+
+
+def build_static_bundle(
+    *,
+    repo_root: Path,
+    output_dir: Path,
+    zip_path: Path | None = None,
+) -> dict[str, Any]:
+    """Build a clean static bundle directory and optional zip archive."""
+    repo_root = repo_root.resolve()
+    output_dir = output_dir.resolve()
+    if output_dir.exists():
+        shutil.rmtree(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    bundle = build_storefront_bundle(
+        repo_root=repo_root,
+        selfies_url_prefix=SELFIE_PREFIX,
+        assets_url_prefix=CATALOGUE_PREFIX,
+    )
+
+    data_dir = output_dir / "data"
+    storefront_path = data_dir / "storefront.json"
+    write_storefront_bundle(bundle, output_path=storefront_path)
+
+    static_dir = output_dir / "static"
+    static_dir.mkdir(parents=True, exist_ok=True)
+    static_entries: list[dict[str, Any]] = []
+    for name in ("app.js", "styles.css"):
+        source = STATIC_ROOT / name
+        dest = static_dir / name
+        static_entries.append(_copy_asset(source, dest, manifest_root=output_dir))
+
+    catalogue_entries: list[dict[str, Any]] = []
+    selfie_entries: list[dict[str, Any]] = []
+    for url in sorted(collect_bundle_image_urls(bundle)):
+        if url.startswith(f"{CATALOGUE_PREFIX}/"):
+            source = _catalogue_source_path(repo_root, url)
+            dest = output_dir / url
+            if not source.is_file():
+                raise FileNotFoundError(f"Missing catalogue asset for {url}: {source}")
+            catalogue_entries.append(_copy_asset(source, dest, manifest_root=output_dir))
+        elif url.startswith(f"{SELFIE_PREFIX}/"):
+            source = _selfie_source_path(repo_root, url)
+            dest = output_dir / url
+            if not source.is_file():
+                raise FileNotFoundError(f"Missing selfie asset for {url}: {source}")
+            selfie_entries.append(_copy_asset(source, dest, manifest_root=output_dir))
+        else:
+            raise ValueError(f"Unexpected bundle asset URL: {url}")
+
+    index_html = prepare_bundle_index_html(
+        (WEB_ROOT / "index.html").read_text(encoding="utf-8"),
+        bundle,
+    )
+    index_path = output_dir / "index.html"
+    index_path.write_text(index_html, encoding="utf-8")
+
+    (output_dir / "README.md").write_text(README_TEMPLATE, encoding="utf-8")
+    doc_entries = _write_bundle_docs(output_dir, repo_root)
+
+    build_timestamp = datetime.now(tz=UTC).isoformat()
+    manifest: dict[str, Any] = {
+        "bundle_name": BUNDLE_NAME,
+        "bundle_version": BUNDLE_VERSION,
+        "build_timestamp": build_timestamp,
+        "repo_root": str(repo_root),
+        "total_items": bundle.get("total_items", 0),
+        "outfit_candidates": len(bundle.get("outfit_candidates", [])),
+        "lucky_pair_candidates": len(bundle.get("lucky_pair_candidates", [])),
+        "data_files": [
+            {
+                "path": storefront_path.relative_to(output_dir).as_posix(),
+                "sha256": hashlib.sha256(storefront_path.read_bytes()).hexdigest(),
+                "size_bytes": storefront_path.stat().st_size,
+            }
+        ],
+        "static_files": static_entries,
+        "catalogue_images": catalogue_entries,
+        "selfie_images": selfie_entries,
+        "docs": doc_entries,
+    }
+    manifest_path = output_dir / "manifest.json"
+    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+
+    zip_info: dict[str, Any] | None = None
+    if zip_path is not None:
+        zip_path = zip_path.resolve()
+        zip_path.parent.mkdir(parents=True, exist_ok=True)
+        if zip_path.exists():
+            zip_path.unlink()
+        with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+            for path in sorted(output_dir.rglob("*")):
+                if path.is_file():
+                    archive.write(path, arcname=path.relative_to(output_dir.parent).as_posix())
+        zip_info = {
+            "path": str(zip_path),
+            "size_bytes": zip_path.stat().st_size,
+            "file_count": len(list(output_dir.rglob("*"))),
+        }
+
+    return {
+        "output_dir": str(output_dir),
+        "zip": zip_info,
+        "manifest": manifest,
+        "bundle": bundle,
+    }
+
+
+def _iter_bundle_files(bundle_dir: Path) -> list[Path]:
+    return [path for path in bundle_dir.rglob("*") if path.is_file()]
+
+
+def _assert_no_forbidden_paths(files: list[Path]) -> None:
+    for path in files:
+        rel = path.as_posix()
+        for forbidden in FORBIDDEN_BUNDLE_PARTS:
+            if forbidden in rel:
+                raise AssertionError(f"Forbidden bundle path matched {forbidden!r}: {rel}")
+
+
+def _collect_html_asset_refs(index_html: str) -> set[str]:
+    refs: set[str] = set()
+    for match in re.finditer(r'(?:href|src)="([^"]+)"', index_html):
+        refs.add(match.group(1))
+    return refs
+
+
+def _http_smoke(base_url: str, path: str) -> tuple[int, bytes]:
+    url = f"{base_url.rstrip('/')}{path}"
+    with urllib.request.urlopen(url, timeout=10) as response:
+        return response.status, response.read()
+
+
+def validate_static_bundle(bundle_dir: Path, *, run_http_smoke: bool = True) -> dict[str, Any]:
+    """Validate bundle layout, references, and optional HTTP serving."""
+    bundle_dir = bundle_dir.resolve()
+    files = _iter_bundle_files(bundle_dir)
+    _assert_no_forbidden_paths(files)
+
+    manifest_path = bundle_dir / "manifest.json"
+    if not manifest_path.is_file():
+        raise AssertionError("manifest.json is missing")
+
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    storefront_path = bundle_dir / "data" / "storefront.json"
+    if not storefront_path.is_file():
+        raise AssertionError("data/storefront.json is missing")
+
+    bundle = json.loads(storefront_path.read_text(encoding="utf-8"))
+    assert int(bundle.get("total_items", 0)) > 0
+    assert bundle.get("outfit_candidates")
+    assert bundle.get("lucky_pair_candidates")
+
+    for url in collect_bundle_image_urls(bundle):
+        asset_path = bundle_dir / url
+        if not asset_path.is_file():
+            raise AssertionError(f"Missing referenced asset: {url}")
+        if "output_1k" in url:
+            raise AssertionError(f"1K asset must not be bundled: {url}")
+
+    index_html = (bundle_dir / "index.html").read_text(encoding="utf-8")
+    assert 'id="storefront-data"' in index_html
+    assert 'data-storefront-url="data/storefront.json"' in index_html
+
+    for ref in _collect_html_asset_refs(index_html):
+        if ref.startswith(("http://", "https://", "//", "data:", "#")):
+            continue
+        if ref.startswith("/"):
+            raise AssertionError(f"Absolute local reference not allowed in bundle HTML: {ref}")
+        resolved = bundle_dir / ref
+        if not resolved.is_file() and not (bundle_dir / ref.split("?", 1)[0]).is_file():
+            raise AssertionError(f"HTML reference does not resolve: {ref}")
+
+    app_js = (bundle_dir / "static/app.js").read_text(encoding="utf-8")
+    assert "storefront-data" in app_js
+    assert "/api/v1" not in app_js
+
+    smoke: dict[str, Any] | None = None
+    if run_http_smoke:
+        import functools
+        import http.server
+        import socket
+        import socketserver
+        import threading
+        import time
+
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.bind(("127.0.0.1", 0))
+            port = sock.getsockname()[1]
+
+        handler = functools.partial(
+            http.server.SimpleHTTPRequestHandler,
+            directory=str(bundle_dir),
+        )
+        server = socketserver.TCPServer(("127.0.0.1", port), handler)
+        server.allow_reuse_address = True
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        time.sleep(0.1)
+        base = f"http://127.0.0.1:{port}"
+        try:
+            status, body = _http_smoke(base, "/")
+            assert status == 200
+            assert b"Lavani's Closet" in body
+            status, body = _http_smoke(base, "/data/storefront.json")
+            assert status == 200
+            assert b'"outfit_candidates"' in body
+            sample_url = bundle["items"][0]["image_url"]
+            status, body = _http_smoke(base, f"/{sample_url}")
+            assert status == 200
+            smoke = {"status": "ok", "port": port, "sample_image": sample_url}
+        finally:
+            server.shutdown()
+            server.server_close()
+
+    return {
+        "file_count": len(files),
+        "total_items": bundle["total_items"],
+        "outfit_candidates": len(bundle["outfit_candidates"]),
+        "lucky_pair_candidates": len(bundle["lucky_pair_candidates"]),
+        "manifest": manifest,
+        "http_smoke": smoke,
+    }
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(
+        description="Build a shareable static Lavani's Closet bundle (directory + zip).",
+    )
+    parser.add_argument(
+        "--repo-root",
+        type=Path,
+        default=Path("."),
+        help="Repository root (default: current directory)",
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default=DEFAULT_OUTPUT_DIR,
+        help=f"Bundle output directory (default: {DEFAULT_OUTPUT_DIR})",
+    )
+    parser.add_argument(
+        "--zip",
+        type=Path,
+        default=DEFAULT_ZIP_PATH,
+        help=f"Zip archive path (default: {DEFAULT_ZIP_PATH})",
+    )
+    parser.add_argument(
+        "--skip-zip",
+        action="store_true",
+        help="Do not create the zip archive",
+    )
+    parser.add_argument(
+        "--validate",
+        action="store_true",
+        help="Run bundle validation after build",
+    )
+    parser.add_argument(
+        "--validate-only",
+        type=Path,
+        metavar="BUNDLE_DIR",
+        help="Validate an existing bundle directory and exit",
+    )
+    args = parser.parse_args(argv)
+
+    repo_root = args.repo_root.resolve()
+
+    if args.validate_only is not None:
+        report = validate_static_bundle(args.validate_only.resolve())
+        print(json.dumps(report, indent=2))
+        return 0
+
+    result = build_static_bundle(
+        repo_root=repo_root,
+        output_dir=args.output_dir
+        if args.output_dir.is_absolute()
+        else repo_root / args.output_dir,
+        zip_path=None
+        if args.skip_zip
+        else (args.zip if args.zip.is_absolute() else repo_root / args.zip),
+    )
+
+    file_count = len(list(Path(result["output_dir"]).rglob("*")))
+    print(f"Wrote {result['output_dir']} ({file_count} paths)")
+    if result["zip"] is not None:
+        print(
+            f"Wrote {result['zip']['path']} "
+            f"({result['zip']['size_bytes']:,} bytes, {result['zip']['file_count']} files)"
+        )
+
+    if args.validate:
+        report = validate_static_bundle(Path(result["output_dir"]))
+        print("Validation OK:")
+        print(json.dumps(report, indent=2))
+
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

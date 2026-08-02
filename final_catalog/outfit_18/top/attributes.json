@@ -1,0 +1,71 @@
+{
+  "attributes": {
+    "closures_details": {
+      "confidence": "high",
+      "evidence": "Vertical row of small, round, light-colored buttons visible along center front placket; no zipper or other closure mechanism apparent.",
+      "observation_type": "observed",
+      "value": "buttons"
+    },
+    "dominant_color": {
+      "confidence": "high",
+      "evidence": "Base fabric tone is off-white to light cream; yellow floral print overlays do not dominate overall surface area.",
+      "observation_type": "observed",
+      "value": "cream"
+    },
+    "garment_class": {
+      "confidence": "high",
+      "evidence": "V-neckline, front placket with visible button alignment, structured shoulder and collar area consistent with formal or business casual blouse design.",
+      "observation_type": "inferred",
+      "value": "office_blouse"
+    },
+    "likely_material": {
+      "confidence": "high",
+      "evidence": "Fabric exhibits smooth drape and subtle sheen under lighting, suggesting a satin or sateen weave rather than matte cotton or linen.",
+      "observation_type": "inferred",
+      "value": "satin-like woven fabric"
+    },
+    "sleeve_cuff_neckline": {
+      "confidence": "high",
+      "evidence": "Sleeveless collared blouse with V-neckline and front button placket.",
+      "observation_type": "observed",
+      "value": "sleeveless, V-neckline, pointed collar"
+    },
+    "surface_sheen": {
+      "confidence": "high",
+      "evidence": "Light reflects gently along folds and curves of fabric, indicating low-to-moderate luster typical of satin finishes.",
+      "observation_type": "observed",
+      "value": "soft satin-like"
+    },
+    "texture_pattern": {
+      "confidence": "high",
+      "evidence": "Floral motif in yellow and green tones printed across entire visible surface; no embroidery or textural relief detected.",
+      "observation_type": "observed",
+      "value": "print"
+    },
+    "weave_finish": {
+      "confidence": "medium",
+      "evidence": "Image resolution insufficient to resolve individual warp/weft threads or surface finish details beyond general sheen observation.",
+      "observation_type": "inferred",
+      "value": "not discernible at this resolution"
+    }
+  },
+  "case": {
+    "fixture": "outfit_18",
+    "role": "top"
+  },
+  "extracted_at_utc": "2026-08-01T23:58:19.319415+00:00",
+  "inputs": [
+    {
+      "path": "/users/pg00807/cloth_store/bench/plan1_localization/outputs/catalog_cutouts/outfit_18/catalog_top.png",
+      "role": "segmented_cutout",
+      "sha256": "ba281a78d7f73f9b0594ec42c5b1d50f880c06839884e0f99667dd53cd2a159e"
+    },
+    {
+      "path": "/users/pg00807/cloth_store/data/outfit_18.jpeg",
+      "role": "source_photo",
+      "sha256": "808817d71253bfa4bed1dfb68514375a27cf32f21a5a144e7394b4ea7259fa7d"
+    }
+  ],
+  "model_id": "Qwen/Qwen3.5-9B",
+  "schema_version": 1
+}

@@ -1,0 +1,118 @@
+{
+  "artifact_version": 1,
+  "bench": "catalog_generation",
+  "case": {
+    "fixture": "outfit_18",
+    "role": "top"
+  },
+  "detail_reference_provenance": {
+    "crop_bbox": [
+      197,
+      258,
+      288,
+      352
+    ],
+    "included": true,
+    "reason": "low-variance garment texture window; native resolution centered on white canvas without upscaling",
+    "source_bbox": [
+      164,
+      137,
+      347,
+      374
+    ]
+  },
+  "gemini_model_id": "gemini-3.1-flash-image",
+  "images": [
+    {
+      "description": "Plan 1 segmented catalog cutout (identity/color/texture reference)",
+      "height": 512,
+      "mode": "RGB",
+      "order": 1,
+      "path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_18/catalog_top.png",
+      "role": "garment_identity",
+      "sha256": "ba281a78d7f73f9b0594ec42c5b1d50f880c06839884e0f99667dd53cd2a159e",
+      "width": 512
+    },
+    {
+      "description": "Canonical template silhouette (geometry/layout reference)",
+      "height": 512,
+      "mode": "RGB",
+      "order": 2,
+      "path": "bench/catalog_templates/generated/top_sleeveless.png",
+      "role": "template_geometry",
+      "sha256": "15e2fa524c4ad241190ecb0c24897d792f61ee4d5a0c1b0981800560d966512d",
+      "width": 512
+    },
+    {
+      "description": "Source-derived garment detail crop (texture/pattern/trim reinforcement only)",
+      "height": 512,
+      "mode": "RGB",
+      "order": 3,
+      "path": "bench/catalog_generation/detail_crops/outfit_18_top_detail.png",
+      "role": "garment_detail",
+      "sha256": "39edc0c50fced467db3516b830a154ef495832d3736e0a29c0669cfefefdf7c5",
+      "width": 512
+    }
+  ],
+  "prompt": "Create a catalog product image for fixture outfit_18 (top) using separate reference images.\n\nImage 1 is the garment identity reference. Present a closed, symmetric, front-facing sleeveless blouse or top in a clean catalog layout. The garment must have clear shoulder straps or upper bodice with open armholes and no sleeves. Do not add sleeves. Preserve source neckline, straps, lace, pattern, color, material, and details clearly visible in Image 1. Reconstruct any pose-induced gaps, wrap, or drape from Image 1 as a closed garment. Do not present as a structured waistcoat or vest unless Image 1 clearly shows that class. Image 1 is authoritative for exact color, material, weave, pattern, embroidery, lace, print, trim, buttons, seams, lapels, pockets, and every other surface feature clearly visible in the segmented source. Preserving source-visible texture and color fidelity is the highest priority. Do not simplify, replace, or invent texture, hardware, or details absent from Image 1. Never copy the template gray fill as fabric.\n\nImage 2 is the geometry and silhouette reference (top_sleeveless). Use Image 2 only for garment shape, proportions, sleeve length, hem line, and overall layout. The flat gray fill in Image 2 is a placeholder silhouette \u2014 do not copy that gray color or treat it as fabric. Image 2 controls shape, not appearance.\n\nImage 3 is an optional close-up detail reference cropped from the same segmented source as Image 1. Use Image 3 only to reinforce exact texture, weave, pattern, embroidery, and trim visible in the source. Image 3 does not change the target silhouette.\n\nUser override (highest precedence):\n- Garment class: sleeveless blouse/top with a large prominent oversized collar neckline. This is sleeveless with open armholes, NOT a half-sleeve or sleeved blouse.\n- Preserve the large/oversized collar and neckline exactly as supported by Image 1 and Image 3; do NOT simplify, shrink, or remove the collar.\n- Preserve cream/lemon-print color, floral pattern, material sheen, buttons, and all source-visible details from Image 1 and Image 3.\n- Do NOT add sleeves. Do NOT convert to: half sleeves, short sleeves, long sleeves, small collar, removed collar, simplified collar, crew neck.\n- Closed, symmetric, front-facing lay-flat sleeveless catalog presentation.\n- Do not invent new print elements, hardware, or details absent from Image 1 or Image 3.\n\nVLM-derived material cues (supplement Image 1; do not override visible source):\n- surface sheen: soft satin-like (high confidence, observed; Light reflects gently along folds and curves of fabric, indicating low-to-moderate luster typical of satin finishes.)\n- dominant color: cream (high confidence, observed; Base fabric tone is off-white to light cream; yellow floral print overlays do not dominate overall surface area.)\n- likely material: satin-like woven fabric (high confidence, inferred; Fabric exhibits smooth drape and subtle sheen under lighting, suggesting a satin or sateen weave rather than matte cotton or linen.)\n- texture pattern: print (high confidence, observed; Floral motif in yellow and green tones printed across entire visible surface; no embroidery or textural relief detected.)\n- closures details: buttons (high confidence, observed; Vertical row of small, round, light-colored buttons visible along center front placket; no zipper or other closure mechanism apparent.)\n\nSheen constraint: Image 1 shows lustrous satin-like reflectivity with soft diffused highlights. Preserve that subtle satin sheen exactly as visible in Image 1. Do NOT exaggerate beyond the source to glossy, metallic, vinyl, plastic, lacquer, mirror-like, or wet-look finishes.\nThese cues clarify Image 1; they must not override pixels visible in Image 1 or Image 3.\n\nImage 1 is authoritative for visible color, material, and weave. Ignore hands, phone, and any non-garment segmentation artifacts from Image 1. The template gray color must never transfer to the output.\n\nOutput a single 512\u00d7512 front-facing catalog photograph on a pure white background (255, 255, 255). Fit the garment to the silhouette of Image 2 while preserving the color and material of Image 1. Reconstruct only missing or occluded regions implied by the target silhouette; do not invent new design elements. Exclude any person, mannequin, hanger, gray template color, grids, checkers, text, shadows, or diagnostic artifacts. The template controls shape, not appearance.",
+  "prompt_policy_version": 6,
+  "request_layout": {
+    "no_composite_input": true,
+    "part_order": [
+      "garment_identity",
+      "template_geometry",
+      "garment_detail"
+    ],
+    "separate_parts": true
+  },
+  "runner_model_id": "nano_banana_2",
+  "template_id": "top_sleeveless",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "blouse",
+    "override_applied": true,
+    "reason": "Explicit reviewed override to 'top_sleeveless'.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": null,
+    "sleeve_length_normalized": "sleeveless",
+    "template_id": "top_sleeveless"
+  },
+  "user_override": {
+    "garment_class": "blouse",
+    "injected_high_confidence_fields": [
+      "surface_sheen",
+      "dominant_color",
+      "likely_material",
+      "texture_pattern",
+      "closures_details"
+    ],
+    "namespace": "user_corrected_sleeveless_collar_top_v1",
+    "overridden_vlm_fields": [
+      "garment_class",
+      "sleeve_cuff_neckline"
+    ],
+    "precedence": "user_override > high_confidence_source_vlm > template_geometry_only",
+    "presentation_mode": "text_only",
+    "prohibited_conversions": [
+      "half sleeves",
+      "short sleeves",
+      "long sleeves",
+      "sleeveless halter only",
+      "small collar",
+      "removed collar",
+      "simplified collar",
+      "crew neck"
+    ],
+    "prompt_lines": [
+      "Garment class: sleeveless blouse/top with a large prominent oversized collar neckline. This is sleeveless with open armholes, NOT a half-sleeve or sleeved blouse.",
+      "Preserve the large/oversized collar and neckline exactly as supported by Image 1 and Image 3; do NOT simplify, shrink, or remove the collar.",
+      "Preserve cream/lemon-print color, floral pattern, material sheen, buttons, and all source-visible details from Image 1 and Image 3.",
+      "Do NOT add sleeves. Do NOT convert to: half sleeves, short sleeves, long sleeves, small collar, removed collar, simplified collar, crew neck.",
+      "Closed, symmetric, front-facing lay-flat sleeveless catalog presentation.",
+      "Do not invent new print elements, hardware, or details absent from Image 1 or Image 3."
+    ],
+    "reason": "User correction: sleeveless top/blouse with a large prominent collar neckline and lemon print, not a half-sleeve blouse.",
+    "sheen_constraint": "Image 1 shows lustrous satin-like reflectivity with soft diffused highlights. Preserve that subtle satin sheen exactly as visible in Image 1. Do NOT exaggerate beyond the source to glossy, metallic, vinyl, plastic, lacquer, mirror-like, or wet-look finishes.",
+    "vlm_attribute_json_sha256": "c86ff14c93156fcf85ff39abae3d0a190e62d38b7b60cc3371edd282da54cace"
+  }
+}

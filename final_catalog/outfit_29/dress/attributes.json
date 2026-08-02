@@ -1,0 +1,71 @@
+{
+  "attributes": {
+    "closures_details": {
+      "confidence": "high",
+      "evidence": "No buttons, zippers, snaps, or plackets visible on front, back, or sides within frame.",
+      "observation_type": "observed",
+      "value": "none visible"
+    },
+    "dominant_color": {
+      "confidence": "high",
+      "evidence": "Uniform muted pinkish-beige tone across entire garment; no secondary colors or patterns altering base hue.",
+      "observation_type": "observed",
+      "value": "dusty rose"
+    },
+    "garment_class": {
+      "confidence": "high",
+      "evidence": "Full-length silhouette with defined bodice and skirt; no visible waist seam or separate top/bottom structure.",
+      "observation_type": "observed",
+      "value": "dress"
+    },
+    "likely_material": {
+      "confidence": "high",
+      "evidence": "Openwork floral/geometric pattern consistent with lace construction; no sheen or drape suggesting knit or satin.",
+      "observation_type": "inferred",
+      "value": "lace-like woven fabric"
+    },
+    "sleeve_cuff_neckline": {
+      "confidence": "high",
+      "evidence": "Sleeves extend to mid-forearm with slight flare; neckline is high and rounded, exposing collarbone area.",
+      "observation_type": "observed",
+      "value": "three-quarter sleeves, open neckline"
+    },
+    "surface_sheen": {
+      "confidence": "high",
+      "evidence": "No specular highlights or light reflection; surface absorbs light uniformly.",
+      "observation_type": "observed",
+      "value": "matte"
+    },
+    "texture_pattern": {
+      "confidence": "high",
+      "evidence": "Repeating geometric and floral motifs formed by cutwork and raised threadwork across bodice and skirt.",
+      "observation_type": "observed",
+      "value": "embroidered lace pattern"
+    },
+    "weave_finish": {
+      "confidence": "high",
+      "evidence": "Resolution insufficient to resolve individual warp/weft threads; pattern dominates visual texture.",
+      "observation_type": "inferred",
+      "value": "not discernible at this resolution"
+    }
+  },
+  "case": {
+    "fixture": "outfit_29",
+    "role": "dress"
+  },
+  "extracted_at_utc": "2026-08-02T03:17:14.948457+00:00",
+  "inputs": [
+    {
+      "path": "/users/pg00807/cloth_store/bench/plan1_localization/outputs/catalog_cutouts/outfit_29/catalog_dress.png",
+      "role": "segmented_cutout",
+      "sha256": "89de4e70bfbbc0d895cdbde4092a802f81f64630f431d8357100fa76729c5f87"
+    },
+    {
+      "path": "/users/pg00807/cloth_store/data/outfit_29.jpeg",
+      "role": "source_photo",
+      "sha256": "fbee3d32c46dadb29939979705247fab4b6fd6b65e6590d4b91e77654cb3070e"
+    }
+  ],
+  "model_id": "Qwen/Qwen3.5-9B",
+  "schema_version": 1
+}

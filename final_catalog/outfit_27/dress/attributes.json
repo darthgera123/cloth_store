@@ -1,0 +1,71 @@
+{
+  "attributes": {
+    "closures_details": {
+      "confidence": "high",
+      "evidence": "Metallic zipper visible down center front; two rectangular flap pockets on hips each secured with single button.",
+      "observation_type": "observed",
+      "value": "center front zipper with placket; two flap pockets with button closures"
+    },
+    "dominant_color": {
+      "confidence": "high",
+      "evidence": "Overall hue is a muted, cool-toned grayish-blue across entire garment.",
+      "observation_type": "observed",
+      "value": "light blue-gray"
+    },
+    "garment_class": {
+      "confidence": "high",
+      "evidence": "Full-length silhouette with defined waist, skirt, and bodice; no separate top or bottom visible.",
+      "observation_type": "observed",
+      "value": "dress"
+    },
+    "likely_material": {
+      "confidence": "high",
+      "evidence": "Vertical ribbing texture visible throughout; drape and stretch suggest knit construction.",
+      "observation_type": "inferred",
+      "value": "ribbed knit fabric"
+    },
+    "sleeve_cuff_neckline": {
+      "confidence": "high",
+      "evidence": "Sleeves end mid-bicep; neckline forms high collar with vertical placket extending down chest.",
+      "observation_type": "observed",
+      "value": "short sleeves; mock neck with placket"
+    },
+    "surface_sheen": {
+      "confidence": "high",
+      "evidence": "No specular highlights or gloss; surface absorbs light uniformly.",
+      "observation_type": "observed",
+      "value": "matte"
+    },
+    "texture_pattern": {
+      "confidence": "high",
+      "evidence": "Uniform color with consistent vertical ribs; no prints, embroidery, or patterns.",
+      "observation_type": "observed",
+      "value": "solid with vertical ribbing"
+    },
+    "weave_finish": {
+      "confidence": "high",
+      "evidence": "Ribbing suggests knit structure, but weave details too fine to confirm under current image quality.",
+      "observation_type": "inferred",
+      "value": "not discernible at this resolution"
+    }
+  },
+  "case": {
+    "fixture": "outfit_27",
+    "role": "top"
+  },
+  "extracted_at_utc": "2026-08-02T02:38:19.915960+00:00",
+  "inputs": [
+    {
+      "path": "/users/pg00807/cloth_store/bench/plan1_localization/outputs/catalog_cutouts/outfit_27/catalog_top.png",
+      "role": "segmented_cutout",
+      "sha256": "f5a4c84400d2bf0bf7cc768b3bca70a8143e003b7afee5db898bb89a0f5737f0"
+    },
+    {
+      "path": "/users/pg00807/cloth_store/data/outfit_27.jpeg",
+      "role": "source_photo",
+      "sha256": "9c9655cc45194f8a47be00e51f69840860457ae15793e9c998afe70ebe55a825"
+    }
+  ],
+  "model_id": "Qwen/Qwen3.5-9B",
+  "schema_version": 1
+}

@@ -1,0 +1,71 @@
+{
+  "attributes": {
+    "closures_details": {
+      "confidence": "high",
+      "evidence": "Vertical placket with evenly spaced buttons down center front; collar points meet at center.",
+      "observation_type": "observed",
+      "value": "button-front placket with visible buttons"
+    },
+    "dominant_color": {
+      "confidence": "high",
+      "evidence": "Primary hue is pale blue with white vertical stripes; no other dominant colors present.",
+      "observation_type": "observed",
+      "value": "light blue"
+    },
+    "garment_class": {
+      "confidence": "high",
+      "evidence": "Collared, button-front, long sleeves with cuffs; structured silhouette typical of office wear.",
+      "observation_type": "observed",
+      "value": "office_blouse"
+    },
+    "likely_material": {
+      "confidence": "medium",
+      "evidence": "Fabric holds shape but shows soft folds; no sheen or stretch visible.",
+      "observation_type": "inferred",
+      "value": "woven fabric with slight drape"
+    },
+    "sleeve_cuff_neckline": {
+      "confidence": "high",
+      "evidence": "Sleeves extend to wrist with folded cuffs secured by buttons; collar has pointed tips and standard neck opening.",
+      "observation_type": "observed",
+      "value": "long sleeves, buttoned cuffs, pointed collar"
+    },
+    "surface_sheen": {
+      "confidence": "high",
+      "evidence": "No specular highlights; surface diffuses light evenly.",
+      "observation_type": "observed",
+      "value": "matte"
+    },
+    "texture_pattern": {
+      "confidence": "high",
+      "evidence": "Vertical stripes of light blue and white run consistently across garment.",
+      "observation_type": "observed",
+      "value": "striped"
+    },
+    "weave_finish": {
+      "confidence": "high",
+      "evidence": "Resolution insufficient to identify weave type or finish details.",
+      "observation_type": "inferred",
+      "value": "not discernible at this resolution"
+    }
+  },
+  "case": {
+    "fixture": "outfit_23",
+    "role": "top"
+  },
+  "extracted_at_utc": "2026-08-02T00:57:20.536022+00:00",
+  "inputs": [
+    {
+      "path": "/users/pg00807/cloth_store/bench/plan1_localization/outputs/catalog_cutouts/outfit_23/catalog_top.png",
+      "role": "segmented_cutout",
+      "sha256": "4f1898175d7eb2f636655e7f121a7e6f9fe5d3896c1a8ffec52b010be8108492"
+    },
+    {
+      "path": "/users/pg00807/cloth_store/data/outfit_23.jpeg",
+      "role": "source_photo",
+      "sha256": "eadf987654f70e673930a95c3aabd7c7035d963abfe57917bc731abc5304cedb"
+    }
+  ],
+  "model_id": "Qwen/Qwen3.5-9B",
+  "schema_version": 1
+}

@@ -1,0 +1,101 @@
+{
+  "artifact_image_roles": [
+    {
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "73072af0a5da74b7f9fa39cb011167b3310eeacc8c5fdf56bbc9a48f2a0840a8"
+    },
+    {
+      "order": 2,
+      "role": "derived_geometry",
+      "sha256": "05db7389bed7d675d067bd7bf4b5c46873baa0c8969b23fa4c979b5112d6ffa0"
+    }
+  ],
+  "candidate_request_sha256": "d4fd9232d55c690d7f30f5bdbda1ad74f55ce85570549c07689ce25717913365",
+  "derived_geometry_sha256": "05db7389bed7d675d067bd7bf4b5c46873baa0c8969b23fa4c979b5112d6ffa0",
+  "estimated_cost_usd": 0.0,
+  "fixture": "outfit_3",
+  "generated_or_reused": "reused",
+  "generation_calls": 0,
+  "model_id": "gemini-3.1-flash-image",
+  "outputs": {
+    "output_1k": {
+      "path": "outfit_3/top/output_1k.png",
+      "sha256": "81efd6442b3b91cf04a8935acb0d45b5c84cf3c7983587e588776a43505b2553"
+    },
+    "output_512": {
+      "path": "outfit_3/top/output.png",
+      "sha256": "a4c697f72949d5c88cbe125e5068b0919054423e0cc59f9caae1de44d7c5345f"
+    }
+  },
+  "packaged_inputs": [
+    {
+      "filename": "input_segmented.png",
+      "order": 1,
+      "role": "garment_identity",
+      "sha256": "73072af0a5da74b7f9fa39cb011167b3310eeacc8c5fdf56bbc9a48f2a0840a8",
+      "source_path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_3/catalog_top.png"
+    },
+    {
+      "filename": "input_template.png",
+      "order": 2,
+      "role": "derived_geometry",
+      "sha256": "05db7389bed7d675d067bd7bf4b5c46873baa0c8969b23fa4c979b5112d6ffa0",
+      "source_path": "bench/catalog_generation/candidates/outfit_3_top_presentation_geometry_v1/derived_geometry_from_outfit_4_top.png"
+    },
+    {
+      "filename": "attributes.json",
+      "role": "vlm_attributes",
+      "sha256": "7fca62fe3899ddc1d07c4432873f1128f9490b39f61dda4a75bf8f8dfc46dc06",
+      "source_path": "bench/catalog_generation/vlm_attributes/outfit_3_top.attributes.json"
+    }
+  ],
+  "promoted_from_candidate": "outfit_3_top_presentation_geometry_v1",
+  "promoted_from_reference": null,
+  "prompt_policy_version": 1,
+  "prompt_sha256": "ac051bbca1aecf322153ecccaffa9f8cc3693ce5425857906fd3e03df827d1b3",
+  "request_settings": {
+    "aspect_ratio": "1:1",
+    "image_size": "1K",
+    "model_id": "gemini-3.1-flash-image",
+    "response_modalities": [
+      "TEXT",
+      "IMAGE"
+    ]
+  },
+  "reuse_source": null,
+  "review_required": false,
+  "role": "top",
+  "source_paths": {
+    "artifact": "bench/catalog_generation/artifacts/outfit_3_top_blazer.geometry_reference.request.json",
+    "override": "bench/catalog_generation/overrides/outfit_3_top.override.json",
+    "production_metadata": "bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/outfit_3/top.run.json",
+    "vlm_attributes": "bench/catalog_generation/vlm_attributes/outfit_3_top.attributes.json"
+  },
+  "status": "ok",
+  "template_id": "blazer",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "blazer",
+    "override_applied": false,
+    "reason": "Blazer/suit jacket class mapped to blazer. Evidence: Sleeves extend to wrist area; collar features classic notched lapel typical of blazers. | Plan 1 notes: dominant outer blazer; plan2 TEMU caption structured blazer with lapels.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": null,
+    "sleeve_length_normalized": "full",
+    "template_id": "blazer"
+  },
+  "texture_qc": {
+    "edge_density_ratio": 0.652,
+    "flags": [],
+    "heuristic": true,
+    "luminance_std_ratio": 0.611,
+    "mean_delta_e": 7.227,
+    "note": "Heuristic metrics only. Source and output garment geometry differ; pixelwise comparison is invalid. Do not auto-regenerate from these scores.",
+    "output_garment_pixel_count": 118016,
+    "palette_delta_e_mean": 6.926,
+    "role": "top",
+    "source_garment_pixel_count": 41954
+  },
+  "user_override_applied": true,
+  "vlm_attribute_json_sha256": "7fca62fe3899ddc1d07c4432873f1128f9490b39f61dda4a75bf8f8dfc46dc06"
+}

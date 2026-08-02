@@ -1,0 +1,287 @@
+{
+  "bench": "plan1_localization",
+  "model": "Qwen/Qwen3.5-9B",
+  "description": "Smoke bench for mirror-selfie apparel bounding boxes (top+bottom or dress).",
+  "fixtures": [
+    {
+      "id": "outfit_1",
+      "image": "../../outfit_1.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "Casual separates."
+    },
+    {
+      "id": "outfit_2",
+      "image": "../../outfit_2.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "Casual separates."
+    },
+    {
+      "id": "outfit_3",
+      "image": "../../outfit_3.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "Layered look; top is the dominant outer blazer, not the shirt underneath."
+    },
+    {
+      "id": "outfit_4",
+      "image": "../../outfit_4.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "Layered look; top is the dominant outer blazer, not the shirt underneath."
+    },
+    {
+      "id": "outfit_5",
+      "image": "../../outfit_5.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "Casual separates."
+    },
+    {
+      "id": "outfit_6",
+      "image": "../../outfit_6.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "Casual separates."
+    },
+    {
+      "id": "outfit_7",
+      "image": "../../data/outfit_7.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "Casual separates."
+    },
+    {
+      "id": "outfit_8",
+      "image": "../../data/outfit_8.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "Casual separates."
+    },
+    {
+      "id": "outfit_9",
+      "image": "../../data/outfit_9.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "Casual separates."
+    },
+    {
+      "id": "outfit_10",
+      "image": "../../data/outfit_10.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "Casual separates."
+    },
+    {
+      "id": "outfit_11",
+      "image": "../../data/outfit_11.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "Casual separates."
+    },
+    {
+      "id": "outfit_12",
+      "image": "../../data/outfit_12.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "Casual separates."
+    },
+    {
+      "id": "outfit_13",
+      "image": "../../data/outfit_13.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "Casual separates."
+    },
+    {
+      "id": "outfit_14",
+      "image": "../../data/outfit_14.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "Casual separates."
+    },
+    {
+      "id": "outfit_15",
+      "image": "../../data/outfit_15.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "Casual separates."
+    },
+    {
+      "id": "outfit_16",
+      "image": "../../data/outfit_16.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "Casual separates."
+    },
+    {
+      "id": "outfit_17",
+      "image": "../../data/outfit_17.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "Casual separates."
+    },
+    {
+      "id": "outfit_18",
+      "image": "../../data/outfit_18.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "Casual separates."
+    },
+    {
+      "id": "outfit_19",
+      "image": "../../data/outfit_19.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "Casual separates."
+    },
+    {
+      "id": "outfit_20",
+      "image": "../../data/outfit_20.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "Casual separates."
+    },
+    {
+      "id": "outfit_21",
+      "image": "../../data/outfit_21.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "Casual separates."
+    },
+    {
+      "id": "outfit_22",
+      "image": "../../data/outfit_22.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "Casual separates."
+    },
+    {
+      "id": "outfit_23",
+      "image": "../../data/outfit_23.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "Casual separates."
+    },
+    {
+      "id": "outfit_24",
+      "image": "../../data/outfit_24.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "Casual separates."
+    },
+    {
+      "id": "outfit_25",
+      "image": "../../data/outfit_25.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "Plum sleeveless top with khaki slim trousers (same physical trousers as outfit 23/24)."
+    },
+    {
+      "id": "outfit_26",
+      "image": "../../data/outfit_26.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "Taupe ruffle blouse with black pencil skirt (same physical skirt as outfit_6)."
+    },
+    {
+      "id": "outfit_27",
+      "image": "../../data/outfit_27.jpeg",
+      "expected": {
+        "layout": "dress",
+        "roles": ["dress"]
+      },
+      "notes": "One-piece light blue ribbed knit polo dress (half-zip, short sleeves, knee-length). Catalog role=dress; garment_class=dress."
+    },
+    {
+      "id": "outfit_28",
+      "image": "../../data/outfit_28.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "White long-sleeve shirt with navy/white striped long maxi skirt."
+    },
+    {
+      "id": "outfit_29",
+      "image": "../../data/outfit_29.jpeg",
+      "expected": {
+        "layout": "dress",
+        "roles": ["dress"]
+      },
+      "notes": "One-piece blush pink lace overlay dress with full-length sleeves and above-knee hem. Catalog role=dress only."
+    },
+    {
+      "id": "outfit_30",
+      "image": "../../data/outfit_30.jpeg",
+      "expected": {
+        "layout": "dress",
+        "roles": ["dress"]
+      },
+      "notes": "One-piece dark green ribbed knit bodycon dress with cowl neck and full-length sleeves, knee-length. Catalog role=dress only."
+    },
+    {
+      "id": "outfit_31",
+      "image": "../../data/outfit_31.jpeg",
+      "expected": {
+        "layout": "separates",
+        "roles": ["top", "bottom"]
+      },
+      "notes": "Black long-sleeve turtleneck top with tan ribbed wide-leg trousers and tie belt."
+    }
+  ],
+  "gaps": []
+}

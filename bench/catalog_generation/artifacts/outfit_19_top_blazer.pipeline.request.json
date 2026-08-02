@@ -1,0 +1,80 @@
+{
+  "artifact_version": 1,
+  "bench": "catalog_generation",
+  "case": {
+    "fixture": "outfit_19",
+    "role": "top"
+  },
+  "detail_reference_provenance": {
+    "crop_bbox": [
+      248,
+      218,
+      367,
+      360
+    ],
+    "included": true,
+    "reason": "low-variance garment texture window; native resolution centered on white canvas without upscaling",
+    "source_bbox": [
+      136,
+      78,
+      375,
+      434
+    ]
+  },
+  "gemini_model_id": "gemini-3.1-flash-image",
+  "images": [
+    {
+      "description": "Plan 1 segmented catalog cutout (identity/color/texture reference)",
+      "height": 512,
+      "mode": "RGB",
+      "order": 1,
+      "path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_19/catalog_top.png",
+      "role": "garment_identity",
+      "sha256": "05a9777d6248c496a009cafffac2f40c1a7f0f2400b27b658d19d285b43d4af4",
+      "width": 512
+    },
+    {
+      "description": "Canonical template silhouette (geometry/layout reference)",
+      "height": 512,
+      "mode": "RGB",
+      "order": 2,
+      "path": "bench/catalog_templates/generated/blazer.png",
+      "role": "template_geometry",
+      "sha256": "5915aea94afb1433c00ab23a096004f64d380746b8619a8b25d3730363f91029",
+      "width": 512
+    },
+    {
+      "description": "Source-derived garment detail crop (texture/pattern/trim reinforcement only)",
+      "height": 512,
+      "mode": "RGB",
+      "order": 3,
+      "path": "bench/catalog_generation/detail_crops/outfit_19_top_detail.png",
+      "role": "garment_detail",
+      "sha256": "d1eddcd387f9dab7abba6a27dbb35c298f016a418ef04d8b9ddd7cd734150ae2",
+      "width": 512
+    }
+  ],
+  "prompt": "Create a catalog product image for fixture outfit_19 (top) using separate reference images.\n\nImage 1 is the garment identity reference. Present a closed, buttoned blazer or suit jacket in a clean front-facing catalog layout. Reconstruct any pose-induced front opening from Image 1 as closed while preserving lapels, buttons, pockets, seams, weave, and other jacket-specific details clearly visible in Image 1. Image 1 is authoritative for exact color, material, weave, pattern, embroidery, lace, print, trim, buttons, seams, lapels, pockets, and every other surface feature clearly visible in the segmented source. Preserving source-visible texture and color fidelity is the highest priority. Do not simplify, replace, or invent texture, hardware, or details absent from Image 1. Never copy the template gray fill as fabric.\n\nImage 2 is the geometry and silhouette reference (blazer). Use Image 2 only for garment shape, proportions, sleeve length, hem line, and overall layout. The flat gray fill in Image 2 is a placeholder silhouette \u2014 do not copy that gray color or treat it as fabric. Image 2 controls shape, not appearance.\n\nImage 3 is an optional close-up detail reference cropped from the same segmented source as Image 1. Use Image 3 only to reinforce exact texture, weave, pattern, embroidery, and trim visible in the source. Image 3 does not change the target silhouette.\n\nImage 1 is authoritative for visible color, material, and weave. Ignore hands, phone, and any non-garment segmentation artifacts from Image 1. The template gray color must never transfer to the output.\n\nOutput a single 512\u00d7512 front-facing catalog photograph on a pure white background (255, 255, 255). Fit the garment to the silhouette of Image 2 while preserving the color and material of Image 1. Reconstruct only missing or occluded regions implied by the target silhouette; do not invent new design elements. Exclude any person, mannequin, hanger, gray template color, grids, checkers, text, shadows, or diagnostic artifacts. The template controls shape, not appearance.",
+  "prompt_policy_version": 5,
+  "request_layout": {
+    "no_composite_input": true,
+    "part_order": [
+      "garment_identity",
+      "template_geometry",
+      "garment_detail"
+    ],
+    "separate_parts": true
+  },
+  "runner_model_id": "nano_banana_2",
+  "template_id": "blazer",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "blazer",
+    "override_applied": false,
+    "reason": "Blazer/suit jacket class mapped to blazer. Evidence: Sleeves extend to wrist area; cuffs not clearly defined or visible; neckline features classic notched lapels typical of blazers. | Reviewed: green gingham cropped blazer with notched lapels, button front, and full sleeves to wrist. Maps to blazer. | Structured lapels, notched collar, two-button front closure, flap pockets, and tailored silhouette consistent with blazer design.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": null,
+    "sleeve_length_normalized": "full",
+    "template_id": "blazer"
+  }
+}
