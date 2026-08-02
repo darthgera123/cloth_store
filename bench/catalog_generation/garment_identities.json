@@ -194,6 +194,17 @@
       "reason": "user_confirmed"
     },
     {
+      "display_name": "floral sleeveless top",
+      "facet_corrections": {
+        "stale_color_tags": [
+          "beige"
+        ]
+      },
+      "notes": "User-confirmed sleeveless floral top; suppress stale VLM beige base-color label.",
+      "observation_id": "outfit_7_top",
+      "reason": "user_confirmed"
+    },
+    {
       "facet_corrections": {
         "colors": [
           "forest green",

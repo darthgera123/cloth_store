@@ -444,6 +444,8 @@ def _override_search_tags(override: UserOverrideConfig | None) -> set[str]:
         )
     if "lemon" in combined:
         tags.update({"lemon print", "lemon print collar blouse"})
+    if "floral" in combined:
+        tags.update({"floral", "floral print", "floral sleeveless top"})
     if "white" in combined and "button" in combined:
         tags.update({"white shirt", "button-down shirt", "long-sleeve shirt"})
     return tags
@@ -927,6 +929,19 @@ def _apply_observation_enrichment(
             tags,
             color_tags + [f"{color} {garment_class_label}" for color in color_tags],
         )
+    elif isinstance(stale_color_tags, list) and stale_color_tags:
+        garment_class_label = updated.get("garment_class_normalized") or "garment"
+        remove_tags = {
+            str(tag).strip().lower() for tag in stale_color_tags if str(tag).strip()
+        }
+        tags = [
+            tag
+            for tag in tags
+            if tag.strip().lower() not in remove_tags
+            and not any(
+                tag.strip().lower() == f"{stale} {garment_class_label}" for stale in remove_tags
+            )
+        ]
     if isinstance(fit, str) and fit.strip():
         fit_label = fit.strip().lower()
         garment_class_label = updated.get("garment_class_normalized") or "trousers"

@@ -110,3 +110,4 @@ fi
 
 echo "bench outputs: ${OUTPUT_ROOT}"
 echo "final deliverable: ${FINAL_ROOT}"
+echo "privacy crop (optional): uv run cloth-store-selfie-privacy-crop --repo-root . --from-fixture 1 --to-fixture 31"

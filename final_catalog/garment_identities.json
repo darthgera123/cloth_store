@@ -1,6 +1,6 @@
 {
   "catalog_item_count": 33,
-  "exported_at_utc": "2026-08-02T03:26:33.658104+00:00",
+  "exported_at_utc": "2026-08-02T21:40:04.863092+00:00",
   "groups": [
     {
       "alias_observation_ids": [
@@ -281,6 +281,17 @@
       "notes": "User-confirmed forest green ribbed knit bodycon dress; VLM dominant_color black corrected from source/cutout.",
       "observation_id": "outfit_30_dress",
       "reason": "user_confirmed"
+    },
+    {
+      "display_name": "floral sleeveless top",
+      "facet_corrections": {
+        "stale_color_tags": [
+          "beige"
+        ]
+      },
+      "notes": "User-confirmed sleeveless floral top; suppress stale VLM beige base-color label.",
+      "observation_id": "outfit_7_top",
+      "reason": "user_confirmed"
     }
   ],
   "observation_to_garment": {
@@ -345,13 +356,13 @@
     "outfit_9_top": "outfit_9_top"
   },
   "registry_path": "bench/catalog_generation/garment_identities.json",
-  "registry_sha256": "3886eb56665f715288f53b3012a6c091ea644bfa0fcef0c63e864cac55800a77",
+  "registry_sha256": "b1e97ff2b81f5738677d9fa8221cb3721c044bfd5f7ae05d17c8507b34619621",
   "schema_version": 1,
   "source_snapshot": {
     "final_catalog_root": "final_catalog",
-    "manifest_packaged_at_utc": "2026-08-02T03:26:33.658104+00:00",
+    "manifest_packaged_at_utc": "2026-08-02T21:40:04.863092+00:00",
     "manifest_schema_version": 1,
-    "manifest_sha256": "51abf99532a89cbca0c3463ce2889f2072a18a1f2a1b2b2afa88cc23131e3ba4"
+    "manifest_sha256": "a9e3cb43207be5ce62b4af873a2e256215db49db711251420aa0fe4228be3756"
   },
   "unique_garment_count": 37
 }

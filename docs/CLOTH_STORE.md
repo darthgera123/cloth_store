@@ -33,7 +33,7 @@ uv run cloth-store-web --repo-root . --smoke
 | Web shell | `src/cloth_store/web/` (`index.html`, `static/app.js`, `static/styles.css`) |
 | Storefront payload | `final_catalog/storefront.json` (built by `cloth-store-web-build`) |
 | Catalogue images | `final_catalog/**/output.png` (512px derivatives) |
-| Styling selfies | `final_selfies/` (refocus crops) with fallback to `data/outfit_*.jpeg` |
+| Styling selfies | `final_selfies/` (neck-down privacy crops) with refocus/original fallbacks |
 | HTTP server | `cloth-store-web` → `src/cloth_store/web_server.py` |
 
 The browser loads `/final_catalog/storefront.json` at runtime (or embedded JSON in
@@ -77,11 +77,12 @@ uv run cloth-store-web --repo-root . --host 0.0.0.0 --port 8080
 - Descriptions are magazine-style copy generated under editorial constraints (see
   [`prompts/catalogue_description_system.md`](../prompts/catalogue_description_system.md)).
 
-## Per-outfit selfie refocus assets
+## Per-outfit selfie assets
 
 Styling associations, the outfit generator hero, and detail-modal selfie slides
-prefer **blur-only refocused portrait crops** from `final_selfies/`. Original
-mirror selfies under `data/` are used only when no refocus deliverable exists.
+prefer **neck-down privacy crops** from `final_selfies/`. Refocused portrait crops
+and original mirror selfies under `data/` are used only when no valid neck-down
+deliverable exists.
 
 ### Layout
 
@@ -89,30 +90,45 @@ mirror selfies under `data/` are used only when no refocus deliverable exists.
 final_selfies/
   manifest.json
   outfit_N/
-    crop_refocused.jpg   # default display variant
-    crop_only.jpg        # review / no-blur variant
+    crop_neck_down.jpg   # default display variant (privacy)
+    crop_refocused.jpg   # refocus fallback
+    crop_only.jpg        # review / no-blur fallback
     metadata.json
 ```
 
 ### Variant selection
 
 The styling resolver (`resolve_fixture_selfie_asset` in `services/styling.py`)
-reads each fixture's `metadata.json`:
+reads each fixture's `metadata.json` in this order:
 
-| Condition | Display file | Example |
-|-----------|--------------|---------|
-| Normal outfit (`review_required: false`) | `crop_refocused.jpg` | `/final_selfies/outfit_10/crop_refocused.jpg` |
-| Review required (`review_required: true`) | `crop_only.jpg` | `/final_selfies/outfit_14/crop_only.jpg` |
-| Metadata recommends `crop_only` | `crop_only.jpg` | `/final_selfies/outfit_29/crop_only.jpg` |
+| Priority | Condition | Display file | Example |
+|----------|-----------|--------------|---------|
+| 1 | Valid `privacy_variant` (QC `pass` or `user_approved`) | `crop_neck_down.jpg` | `/final_selfies/outfit_10/crop_neck_down.jpg` |
+| 2 | Normal outfit (`review_required: false`) | `crop_refocused.jpg` | `/final_selfies/outfit_10/crop_refocused.jpg` |
+| 3 | Review required (`review_required: true`) | `crop_only.jpg` | `/final_selfies/outfit_14/crop_only.jpg` |
+| 4 | Metadata recommends `crop_only` | `crop_only.jpg` | `/final_selfies/outfit_29/crop_only.jpg` |
+| 5 | No refocus deliverable | original source | `/data/outfit_N.jpeg` |
 
-Review-required fixtures in the current catalogue include **outfit_14** and
-**outfit_29** (subject clipping and low mask coverage respectively). **outfit_30**
-was recovered via Qwen full-person bbox + SAM re-segmentation and uses
-``crop_refocused.jpg``.
+A neck-down variant is **valid** when `privacy_variant.method` is
+`neck_down_privacy_v1`, QC status is `pass` or `user_approved`, the file exists on
+disk, and SHA-256 matches metadata when present.
 
-### Fallback when refocus is missing
+All 31 current fixtures have approved neck-down variants. Review-required fixtures
+**outfit_14** (user-approved neck-down) and **outfit_29** (original-source neck-down)
+still display `crop_neck_down.jpg` when QC passes. **outfit_30** uses neck-down from
+its recovered refocus source.
 
-If `final_selfies/outfit_N/metadata.json` is absent, unreadable, or the preferred
+### Privacy intent
+
+Neck-down crops exclude the face/jaw region for public storefront display while
+preserving garment styling context. Refocus and original variants remain packaged
+for review and compatibility fallback.
+
+### Fallback when neck-down is missing
+
+If `privacy_variant` is absent, QC-failed, or the file/hash is invalid, the resolver
+falls back to refocus variants (`crop_refocused` or `crop_only`). If
+`final_selfies/outfit_N/metadata.json` is absent, unreadable, or the preferred
 variant file is missing, the resolver falls back to the original source mirror
 selfie:
 
@@ -127,8 +143,8 @@ and UI surfaces omit the selfie slide.
 
 | Mode | Selfie URL pattern |
 |------|-------------------|
-| Live (`cloth-store-web`) | `/final_selfies/outfit_N/crop_refocused.jpg` or `.../crop_only.jpg` |
-| Static bundle (`dist/lavani-closet/`) | `assets/selfies/outfit_N/crop_refocused.jpg` or `.../crop_only.jpg` |
+| Live (`cloth-store-web`) | `/final_selfies/outfit_N/crop_neck_down.jpg` (or refocus/original fallback) |
+| Static bundle (`dist/lavani-closet/`) | `assets/selfies/outfit_N/crop_neck_down.jpg` (or fallback) |
 
 Regenerate refocus deliverables: see [`final_selfies/README.md`](../final_selfies/README.md)
 and [`bench/selfie_refocus/README.md`](../bench/selfie_refocus/README.md).
@@ -147,12 +163,12 @@ Click any catalogue card to open an accessible portrait-oriented modal:
 
 - Carousel of catalogue `output.png` views
 - **Fashion Advice** caption pairing the item with its documented partner(s)
-- Styling selfie slide when a refocus (or fallback) asset is available
+- Styling selfie slide when a neck-down (or fallback) asset is available
 
 ### Generate an Outfit
 
 Picks a random **same-fixture top/bottom pair** that has a documented mirror-selfie
-association. Shows the refocused selfie as the hero image plus both garment cards.
+association. Shows the neck-down privacy selfie as the hero image plus both garment cards.
 Uses a deterministic seed per session for reproducible "Regenerate" behavior.
 **Dresses are excluded** — only separates with fixture selfies qualify.
 
@@ -168,8 +184,9 @@ any documented fixture selfie. Supported look types:
 | Blazer + Dress | blazer, dress |
 
 Shows catalogue images only — no reference selfie hero. Selection balances across
-look types when regenerating. Useful for exploring pairings outside the mirror-selfie
-corpus.
+look types and uses a bounded recent-history shuffle bag so **Try Another** avoids
+immediate exact repeats, consecutive same-type streaks, and reusing the same key
+piece (especially blazers) when eligible alternatives exist — while staying random.
 
 This is distinct from **Generate an Outfit**, which requires a same-fixture selfie
 and always returns a documented top/bottom pair.
@@ -203,11 +220,12 @@ for the full identity table, expected counts, and rebuild commands.
   and items without partners are skipped.
 - **Lucky looks** — catalogue views only (top+bottom, blazer+top+bottom, blazer+dress);
   no composite or generative try-on imagery; no selfie hero.
-- **Selfie coverage** — refocus crops exist for packaged fixtures; fallback originals
-  may differ in framing from catalogue renders.
-- **Offline bundle** — see [`static-bundle-guide.md`](static-bundle-guide.md); uses
-  embedded JSON, relative asset paths (`assets/catalogue/`, `assets/selfies/`), and
-  Windows launchers (`start-lavani.bat`, `start-lavani.ps1`) in `dist/lavani-closet/`.
+- **Selfie coverage** — neck-down privacy crops exist for all 31 packaged fixtures;
+  refocus/original fallbacks may differ in framing from catalogue renders.
+- **Offline bundle** — see [`static-bundle-guide.md`](static-bundle-guide.md); extract
+  `dist/lavani-closet.zip` and double-click `index.html`. Uses embedded JSON and
+  relative asset paths (`assets/catalogue/`, `assets/selfies/`). HTTP serving is
+  optional if a browser blocks local file access.
 
 ## Related docs
 

@@ -1,0 +1,79 @@
+{
+  "fixture_id": "outfit_28",
+  "privacy_method": "neck_down_privacy_v1",
+  "privacy_purpose": "neck_down_face_exclusion",
+  "source_variant": "crop_refocused",
+  "source_refocused_path": "/users/pg00807/cloth_store/final_selfies/outfit_28/crop_refocused.jpg",
+  "source_variant_sha256": "89760076b68a7dcc50f4da0e6a0abe4662fa822f81b698f1fc0b2af218343af3",
+  "source_refocused_sha256": "89760076b68a7dcc50f4da0e6a0abe4662fa822f81b698f1fc0b2af218343af3",
+  "source_metadata_path": "bench/selfie_refocus/candidates/outfit_28/metadata.json",
+  "output_path": "/users/pg00807/cloth_store/bench/selfie_refocus/candidates/outfit_28/crop_neck_down.jpg",
+  "output_sha256": "7c2adf6a3f262d8909ff7d2c02f8e432f56a570c5a8b90ec42e67b08a4493722",
+  "base_crop": {
+    "x0": 216,
+    "y0": 419,
+    "x1": 1010,
+    "y1": 1412,
+    "aspect_ratio": 0.7996,
+    "aspect_label": "4:5",
+    "padding_fraction": 0.06,
+    "output_width": 794,
+    "output_height": 993
+  },
+  "neck_down_crop": {
+    "x0": 296,
+    "y0": 623,
+    "x1": 927,
+    "y1": 1412,
+    "aspect_ratio": 0.7997,
+    "aspect_label": "4:5",
+    "padding_fraction": 0.06,
+    "output_width": 631,
+    "output_height": 789
+  },
+  "sub_crop_from_refocused": {
+    "x0": 80,
+    "y0": 204,
+    "x1": 711,
+    "y1": 993,
+    "output_width": 631,
+    "output_height": 789
+  },
+  "face_bottom_cutoff": {
+    "y_normalized": 0.389375,
+    "provenance": "mask_face_bottom_jaw_v1+privacy_floor_v1",
+    "margin_fraction_of_person_height": 0.03,
+    "source_y_px": 623,
+    "face_exclusion_rows": 151
+  },
+  "framing": {
+    "aspect_label": "4:5",
+    "aspect_ratio": 0.7997,
+    "retained_person_top_y": 623,
+    "retained_person_bottom_y": 1358,
+    "top_anchor": "face_bottom_cutoff",
+    "upscale_applied": false,
+    "generative_calls": 0
+  },
+  "parameters": {
+    "refocus_method": "blur_only_v2",
+    "primary_aspect": "4:5",
+    "fallback_aspect": "3:4",
+    "crop_padding_fraction": 0.06,
+    "blur_radius_px": 8,
+    "background_brightness": 1.0,
+    "background_saturation": 1.0,
+    "feather_radius_px": 5
+  },
+  "qc": {
+    "status": "pass",
+    "notes": [],
+    "face_pixels_present": false
+  },
+  "collarbone_cutoff_reference": {
+    "y_normalized": 0.45875,
+    "source_y_px": 734,
+    "provenance": "mask_collarbone_minimum_v1",
+    "note": "over_conservative_reference_not_used_for_crop"
+  }
+}

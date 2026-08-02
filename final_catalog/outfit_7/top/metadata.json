@@ -8,7 +8,7 @@
     {
       "order": 2,
       "role": "template_geometry",
-      "sha256": "7f5ac10ceb46a20a636972bdbc10ec1e48dd6a395f2fa94e98c9ba4d450e29bd"
+      "sha256": "15e2fa524c4ad241190ecb0c24897d792f61ee4d5a0c1b0981800560d966512d"
     },
     {
       "order": 3,
@@ -26,11 +26,11 @@
   "outputs": {
     "output_1k": {
       "path": "outfit_7/top/output_1k.png",
-      "sha256": "0692f7246d57b2ed428dcbf44208be7b5176e3832be5aeaa91e2b65f8d6c68b4"
+      "sha256": "557aae4a397ad9e193a8ae010ef02af7c41bef56063ec2a2ac1ebc0a3a62e588"
     },
     "output_512": {
       "path": "outfit_7/top/output.png",
-      "sha256": "2ffe7dbcffc65c993ce71a2a27f80095e536c358badc87a807f579e241e23ee2"
+      "sha256": "a9745e7c269372172ae35cac4504e1cea93a356ffe0835f6b7b6d3806348a6ab"
     }
   },
   "packaged_inputs": [
@@ -45,8 +45,8 @@
       "filename": "input_template.png",
       "order": 2,
       "role": "template_geometry",
-      "sha256": "7f5ac10ceb46a20a636972bdbc10ec1e48dd6a395f2fa94e98c9ba4d450e29bd",
-      "source_path": "bench/catalog_templates/generated/top_half_sleeve.png"
+      "sha256": "15e2fa524c4ad241190ecb0c24897d792f61ee4d5a0c1b0981800560d966512d",
+      "source_path": "bench/catalog_templates/generated/top_sleeveless.png"
     },
     {
       "filename": "input_detail.png",
@@ -64,8 +64,8 @@
   ],
   "promoted_from_candidate": null,
   "promoted_from_reference": null,
-  "prompt_policy_version": 5,
-  "prompt_sha256": "3e00ae3bb6a1d67e0d7055da7fee2ae2fbbce12017492f7e373b1cb6296f7e7b",
+  "prompt_policy_version": 6,
+  "prompt_sha256": "3b0266b0ccbb37145979d36eb08c1e4e7c6a1f07f84be46985852c40db467f28",
   "request_settings": {
     "aspect_ratio": "1:1",
     "image_size": "1K",
@@ -79,37 +79,37 @@
   "review_required": false,
   "role": "top",
   "source_paths": {
-    "artifact": "bench/catalog_generation/artifacts/outfit_7_top_top_half_sleeve.pipeline.request.json",
-    "override": null,
+    "artifact": "bench/catalog_generation/artifacts/outfit_7_top_top_sleeveless.user_corrected.request.json",
+    "override": "bench/catalog_generation/overrides/outfit_7_top.override.json",
     "production_metadata": "bench/catalog_generation/outputs/nano_banana_2/catalog_production_v1/outfit_7/top.run.json",
     "vlm_attributes": "bench/catalog_generation/vlm_attributes/outfit_7_top.attributes.json"
   },
   "status": "ok",
-  "template_id": "top_half_sleeve",
+  "template_id": "top_sleeveless",
   "template_selection": {
     "confidence": "high",
     "garment_class_normalized": "blouse",
-    "override_applied": false,
-    "reason": "Generic blouse/shirt with half sleeves. Evidence: Sleeves end above elbow with no cuff detail; neckline curves gently without collar or fastening. | Beige printed blouse with short sleeves and rounded neckline; VLM high-confidence. | Fitted bodice with gathered waist, short sleeves, and floral print typical of women\u2019s blouses; no collar or buttons visible.",
+    "override_applied": true,
+    "reason": "Explicit reviewed override to 'top_sleeveless'.",
     "selector": "catalog_template_selector_v1",
     "skirt_style_normalized": null,
-    "sleeve_length_normalized": "half",
-    "template_id": "top_half_sleeve"
+    "sleeve_length_normalized": "sleeveless",
+    "template_id": "top_sleeveless"
   },
   "texture_qc": {
-    "edge_density_ratio": 1.055,
+    "edge_density_ratio": 1.009,
     "flags": [
       "high_mean_color_shift"
     ],
     "heuristic": true,
-    "luminance_std_ratio": 1.398,
-    "mean_delta_e": 28.629,
+    "luminance_std_ratio": 1.061,
+    "mean_delta_e": 29.126,
     "note": "Heuristic metrics only. Source and output garment geometry differ; pixelwise comparison is invalid. Do not auto-regenerate from these scores.",
-    "output_garment_pixel_count": 134604,
-    "palette_delta_e_mean": 25.168,
+    "output_garment_pixel_count": 116971,
+    "palette_delta_e_mean": 25.461,
     "role": "top",
     "source_garment_pixel_count": 32887
   },
-  "user_override_applied": false,
-  "vlm_attribute_json_sha256": "31f8366b2462af4f2fba6894d8961198ea5a66f7a60495a0760a05bf36596c75"
+  "user_override_applied": true,
+  "vlm_attribute_json_sha256": "f2262756a46e5ce38dd563d67253c42d289e3662f374f2beaf093054121a1cf2"
 }

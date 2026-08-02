@@ -13,6 +13,9 @@ data/
 # Local final selfie delivery bundle
 /final_selfies/
 
+# Local neck-down privacy JPG deliverables (geometry in *.metadata.json; regenerate via CLI)
+bench/selfie_refocus/candidates/**/crop_neck_down.jpg
+
 # Local mirror-selfie fixtures and bench outputs
 outfit_*.jpeg
 bench/plan1_localization/outputs/

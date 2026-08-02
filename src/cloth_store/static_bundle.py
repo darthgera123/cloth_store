@@ -23,8 +23,12 @@ CATALOGUE_PREFIX = "assets/catalogue"
 SELFIE_PREFIX = "assets/selfies"
 DEFAULT_OUTPUT_DIR = Path("dist/lavani-closet")
 DEFAULT_ZIP_PATH = Path("dist/lavani-closet.zip")
+LEGACY_WINDOWS_ZIP_PATH = Path("dist/lavani-closet-windows.zip")
+LEGACY_UNIX_ZIP_PATH = Path("dist/lavani-closet-unix.zip")
 LAUNCHER_DIR = Path(__file__).resolve().parent / "bundle_launchers"
-LAUNCHER_FILES = ("start-lavani.bat", "start-lavani.ps1")
+LAUNCHER_FILES = ("start-lavani.bat", "start-lavani.ps1", "start-lavani.sh")
+LEGACY_WINDOWS_LAUNCHER_FILES = ("start-lavani.bat", "start-lavani.ps1")
+LEGACY_UNIX_LAUNCHER_FILES = ("start-lavani.sh",)
 
 FORBIDDEN_BUNDLE_PARTS = (
     "output_1k.png",
@@ -42,8 +46,20 @@ CLOTH_STORE_DOC_SOURCE = Path("docs/CLOTH_STORE.md")
 README_TEMPLATE = """# Lavani's Closet — Static Snapshot
 
 This folder is a **standalone static snapshot** of Lavani's Closet.
-It does not require the Cloth Store repository, FastAPI, uv, bash, or any
-ML/runtime dependencies.
+It does not require the Cloth Store repository, FastAPI, uv, Python, bash, or
+any ML/runtime dependencies.
+
+## Open the storefront
+
+1. Extract **`lavani-closet.zip`** to any folder (for example `Downloads/lavani-closet`).
+2. Double-click **`index.html`**.
+
+The site loads from your browser using relative CSS, JavaScript, and images.
+Catalogue data is embedded in the page, so no server, fetch, or network setup
+is required for the primary experience.
+
+**Important:** Do not open `index.html` from inside the zip without extracting
+first — relative paths need the full folder layout (`static/`, `assets/`, etc.).
 
 ## Contents
 
@@ -53,42 +69,28 @@ ML/runtime dependencies.
 | `static/` | CSS and JavaScript |
 | `data/storefront.json` | Pre-computed catalogue, styling, outfit, and lucky-look data |
 | `assets/catalogue/` | 512px catalogue `output.png` images referenced by the snapshot |
-| `assets/selfies/` | Refocused crops per `outfit_N/` (`crop_refocused.jpg` or `crop_only.jpg`) |
+| `assets/selfies/` | Neck-down privacy crops per `outfit_N/` (`crop_neck_down.jpg`) |
 | `docs/` | Storefront and description-prompt documentation |
-| `start-lavani.bat` | Windows double-click launcher (Python stdlib HTTP server) |
-| `start-lavani.ps1` | Windows PowerShell launcher |
 | `manifest.json` | Build metadata and packaged asset inventory |
 
-## Run locally
+## Optional: serve over HTTP
 
-### Windows
-
-1. Install [Python 3](https://www.python.org/downloads/) if needed. During setup,
-   check **Add python.exe to PATH**.
-2. Unzip the bundle to any folder (for example `Downloads\\lavani-closet`).
-3. Double-click **`start-lavani.bat`**, or right-click **`start-lavani.ps1`** →
-   **Run with PowerShell**.
-4. Your browser opens **http://127.0.0.1:8080/** automatically.
-5. To stop the server, close the console window or press **Ctrl+C** in it.
-
-No FastAPI, uv, bash, or repository checkout is required on Windows.
-
-### macOS / Linux
-
-From this directory:
+If a browser blocks local file access or you prefer a URL, serve this folder
+with any static HTTP server. Python's stdlib server is enough:
 
 ```bash
 python3 -m http.server 8080 --bind 127.0.0.1
 ```
 
-Then open **http://127.0.0.1:8080/** in your browser. Press **Ctrl+C** in the
-terminal to stop the server.
+Then open **http://127.0.0.1:8080/**. Press **Ctrl+C** in the terminal to stop.
+No FastAPI, uv, or repository checkout is required.
 
-### Direct file open
-
-`index.html` embeds the catalogue payload so basic browsing works when opened
-via `file://`. For the most reliable experience (images and modals), use the
-local HTTP server above.
+| | Double-click `index.html` | HTTP server (optional) |
+|-|---------------------------|------------------------|
+| CSS / JS | Relative `static/...` paths | Same |
+| Catalogue data | Embedded in `index.html` | Embedded + `data/storefront.json` |
+| Images | Relative `assets/...` paths | Same |
+| Google Fonts | Optional network fetch | Same |
 
 ## Supported features (offline)
 
@@ -101,9 +103,10 @@ local HTTP server above.
 ## Image policy
 
 - Catalogue cards and modals use **512px** `output.png` derivatives only.
-- Selfies prefer blur-only refocused portrait crops from `final_selfies/`:
-  - normal outfits → `assets/selfies/outfit_N/crop_refocused.jpg`
-  - review-required outfits → `assets/selfies/outfit_N/crop_only.jpg`
+- Selfies prefer QC-approved neck-down privacy crops:
+  - normal outfits → `assets/selfies/outfit_N/crop_neck_down.jpg`
+  - review-required outfits with approved neck-down → same
+  - missing/invalid neck-down → `crop_refocused.jpg` or `crop_only.jpg`
   - no refocus deliverable → original `assets/selfies/outfit_N.jpeg`
 - No 1K masters, pipeline inputs, or private database files are included.
 
@@ -112,6 +115,8 @@ local HTTP server above.
 Data and images reflect the catalogue at build time. Rebuild from the repository
 with `uv run cloth-store-static-bundle --repo-root /path/to/cloth_store` to
 refresh.
+
+The canonical shareable artifact is **`dist/lavani-closet.zip`** (this folder).
 """
 
 
@@ -177,17 +182,22 @@ def _copy_asset(source: Path, destination: Path, *, manifest_root: Path) -> dict
 
 def prepare_bundle_index_html(source_html: str, bundle: dict[str, Any]) -> str:
     """Rewrite web shell paths and embed storefront JSON for static/file use."""
-    html = source_html.replace('href="/static/', 'href="static/')
-    html = html.replace('src="/static/', 'src="static/')
+    html = source_html
+    # Live storefront uses root-absolute /static/... which browsers resolve as
+    # file:///static/... when index.html is opened directly on Windows/macOS.
+    html = re.sub(r'(?<=href=")/static/', "static/", html)
+    html = re.sub(r'(?<=src=")/static/', "static/", html)
     html = html.replace(
         '<html lang="en">',
         '<html lang="en" data-storefront-url="data/storefront.json">',
     )
     embedded = _json_for_html_embed(bundle)
     embed_tag = f'    <script type="application/json" id="storefront-data">{embedded}</script>\n'
-    html = html.replace(
-        '    <script src="static/app.js" defer></script>',
-        embed_tag + '    <script src="static/app.js" defer></script>',
+    html = re.sub(
+        r'<script src="static/app\.js" defer></script>',
+        embed_tag + r'<script src="static/app.js" defer></script>',
+        html,
+        count=1,
     )
     return html
 
@@ -214,6 +224,8 @@ def _write_bundle_launchers(output_dir: Path) -> list[dict[str, Any]]:
             raise FileNotFoundError(f"Missing bundle launcher template: {source}")
         dest = output_dir / name
         shutil.copy2(source, dest)
+        if name.endswith(".sh"):
+            dest.chmod(dest.stat().st_mode | 0o111)
         entries.append(
             {
                 "path": dest.relative_to(output_dir).as_posix(),
@@ -262,11 +274,42 @@ def _write_bundle_docs(output_dir: Path, repo_root: Path) -> list[dict[str, Any]
     return entries
 
 
+def _write_zip_archive(
+    output_dir: Path,
+    zip_path: Path,
+    *,
+    exclude_launchers: frozenset[str] = frozenset(),
+) -> dict[str, Any]:
+    zip_path = zip_path.resolve()
+    zip_path.parent.mkdir(parents=True, exist_ok=True)
+    if zip_path.exists():
+        zip_path.unlink()
+    file_count = 0
+    with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        for path in sorted(output_dir.rglob("*")):
+            if not path.is_file():
+                continue
+            rel = path.relative_to(output_dir).as_posix()
+            if rel in exclude_launchers:
+                continue
+            archive.write(path, arcname=path.relative_to(output_dir.parent).as_posix())
+            file_count += 1
+    return {
+        "path": str(zip_path),
+        "size_bytes": zip_path.stat().st_size,
+        "file_count": file_count,
+        "excluded_launchers": sorted(exclude_launchers),
+    }
+
+
 def build_static_bundle(
     *,
     repo_root: Path,
     output_dir: Path,
     zip_path: Path | None = None,
+    legacy_windows_zip_path: Path | None = None,
+    legacy_unix_zip_path: Path | None = None,
+    include_launchers: bool = False,
 ) -> dict[str, Any]:
     """Build a clean static bundle directory and optional zip archive."""
     repo_root = repo_root.resolve()
@@ -319,7 +362,9 @@ def build_static_bundle(
     index_path.write_text(index_html, encoding="utf-8")
 
     (output_dir / "README.md").write_text(README_TEMPLATE, encoding="utf-8")
-    launcher_entries = _write_bundle_launchers(output_dir)
+    launcher_entries: list[dict[str, Any]] = []
+    if include_launchers:
+        launcher_entries = _write_bundle_launchers(output_dir)
     doc_entries = _write_bundle_docs(output_dir, repo_root)
 
     build_timestamp = datetime.now(tz=UTC).isoformat()
@@ -349,24 +394,28 @@ def build_static_bundle(
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
 
     zip_info: dict[str, Any] | None = None
+    legacy_windows_zip_info: dict[str, Any] | None = None
+    legacy_unix_zip_info: dict[str, Any] | None = None
     if zip_path is not None:
-        zip_path = zip_path.resolve()
-        zip_path.parent.mkdir(parents=True, exist_ok=True)
-        if zip_path.exists():
-            zip_path.unlink()
-        with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
-            for path in sorted(output_dir.rglob("*")):
-                if path.is_file():
-                    archive.write(path, arcname=path.relative_to(output_dir.parent).as_posix())
-        zip_info = {
-            "path": str(zip_path),
-            "size_bytes": zip_path.stat().st_size,
-            "file_count": len(list(output_dir.rglob("*"))),
-        }
+        zip_info = _write_zip_archive(output_dir, zip_path)
+    if legacy_windows_zip_path is not None:
+        legacy_windows_zip_info = _write_zip_archive(
+            output_dir,
+            legacy_windows_zip_path,
+            exclude_launchers=frozenset(LEGACY_UNIX_LAUNCHER_FILES),
+        )
+    if legacy_unix_zip_path is not None:
+        legacy_unix_zip_info = _write_zip_archive(
+            output_dir,
+            legacy_unix_zip_path,
+            exclude_launchers=frozenset(LEGACY_WINDOWS_LAUNCHER_FILES),
+        )
 
     return {
         "output_dir": str(output_dir),
         "zip": zip_info,
+        "legacy_windows_zip": legacy_windows_zip_info,
+        "legacy_unix_zip": legacy_unix_zip_info,
         "manifest": manifest,
         "bundle": bundle,
     }
@@ -423,6 +472,89 @@ def _validate_bundle_launchers(bundle_dir: Path) -> None:
     assert "%~dp0" in bat_text or 'cd /d "%~dp0"' in bat_text
     ps1_text = (bundle_dir / "start-lavani.ps1").read_text(encoding="utf-8")
     assert "$PSScriptRoot" in ps1_text
+    sh_path = bundle_dir / "start-lavani.sh"
+    sh_text = sh_path.read_text(encoding="utf-8")
+    assert 'dirname -- "$0"' in sh_text or "$(dirname" in sh_text
+    assert sh_path.stat().st_mode & 0o111, "start-lavani.sh must be executable"
+
+
+def _validate_bundle_html_static_paths(index_html: str) -> None:
+    if re.search(r'(?:href|src)="/static/', index_html):
+        raise AssertionError("Bundle HTML must not contain root-absolute /static/ paths")
+    if 'href="static/styles.css"' not in index_html:
+        raise AssertionError('Bundle HTML must reference href="static/styles.css"')
+    if 'src="static/app.js"' not in index_html:
+        raise AssertionError('Bundle HTML must reference src="static/app.js"')
+
+
+def _validate_direct_file_bundle(
+    bundle_dir: Path, index_html: str, bundle: dict[str, Any]
+) -> dict[str, Any]:
+    """Static checks simulating file:// open without fetch/CORS."""
+    _validate_bundle_html_static_paths(index_html)
+
+    embedded_match = re.search(
+        r'<script type="application/json" id="storefront-data">(.*?)</script>',
+        index_html,
+        re.DOTALL,
+    )
+    if embedded_match is None:
+        raise AssertionError("Embedded storefront-data script tag is missing")
+    embedded_payload = json.loads(embedded_match.group(1))
+    assert embedded_payload.get("total_items") == bundle.get("total_items")
+    assert embedded_payload.get("outfit_candidates")
+    assert embedded_payload.get("lucky_look_candidates")
+
+    for rel in ("static/styles.css", "static/app.js", "data/storefront.json"):
+        if not (bundle_dir / rel).is_file():
+            raise AssertionError(f"Required bundle file missing for file:// use: {rel}")
+
+    for item in bundle.get("items", []):
+        image_url = item.get("image_url", "")
+        if image_url.startswith("/"):
+            raise AssertionError(
+                f"Bundle image URL must be relative, not root-absolute: {image_url}"
+            )
+
+    sample_image = bundle["items"][0]["image_url"]
+    if not (bundle_dir / sample_image).is_file():
+        raise AssertionError(f"Sample image missing for file:// use: {sample_image}")
+
+    app_js = (bundle_dir / "static/app.js").read_text(encoding="utf-8")
+    assert "storefront-data" in app_js, "app.js must read embedded storefront-data"
+    assert 'getElementById("storefront-data")' in app_js or (
+        "getElementById('storefront-data')" in app_js
+    )
+
+    return {
+        "status": "ok",
+        "embedded_total_items": embedded_payload["total_items"],
+        "sample_image": sample_image,
+        "requires_launcher": False,
+    }
+
+
+def validate_markdown_links(repo_root: Path) -> list[str]:
+    """Return broken relative markdown links under docs/ (repo paths only)."""
+    docs_dir = repo_root / "docs"
+    if not docs_dir.is_dir():
+        return []
+
+    link_pattern = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
+    errors: list[str] = []
+    for md_path in sorted(docs_dir.rglob("*.md")):
+        text = md_path.read_text(encoding="utf-8")
+        for match in link_pattern.finditer(text):
+            target = match.group(1).strip()
+            if not target or target.startswith(("http://", "https://", "mailto:", "#")):
+                continue
+            target_path = target.split("#", 1)[0]
+            if not target_path:
+                continue
+            resolved = (md_path.parent / target_path).resolve()
+            if not resolved.is_file():
+                errors.append(f"{md_path.relative_to(repo_root)}: broken link {target!r}")
+    return errors
 
 
 def _validate_featured_bundle_assets(bundle_dir: Path, bundle: dict[str, Any]) -> None:
@@ -435,16 +567,16 @@ def _validate_featured_bundle_assets(bundle_dir: Path, bundle: dict[str, Any]) -
     if not outfit_30_catalogue.is_file():
         raise AssertionError("Missing outfit_30 catalogue image")
 
-    outfit_30_refocus = bundle_dir / "assets/selfies/outfit_30/crop_refocused.jpg"
-    if not outfit_30_refocus.is_file():
-        raise AssertionError("Missing outfit_30 refocus selfie asset")
+    outfit_30_neck_down = bundle_dir / "assets/selfies/outfit_30/crop_neck_down.jpg"
+    if not outfit_30_neck_down.is_file():
+        raise AssertionError("Missing outfit_30 neck-down selfie asset")
 
-    outfit_10_refocus = bundle_dir / "assets/selfies/outfit_10/crop_refocused.jpg"
-    outfit_14_crop_only = bundle_dir / "assets/selfies/outfit_14/crop_only.jpg"
-    if not outfit_10_refocus.is_file():
-        raise AssertionError("Missing outfit_10 crop_refocused.jpg")
-    if not outfit_14_crop_only.is_file():
-        raise AssertionError("Missing outfit_14 crop_only.jpg (review-required variant)")
+    outfit_10_neck_down = bundle_dir / "assets/selfies/outfit_10/crop_neck_down.jpg"
+    outfit_14_neck_down = bundle_dir / "assets/selfies/outfit_14/crop_neck_down.jpg"
+    if not outfit_10_neck_down.is_file():
+        raise AssertionError("Missing outfit_10 crop_neck_down.jpg")
+    if not outfit_14_neck_down.is_file():
+        raise AssertionError("Missing outfit_14 crop_neck_down.jpg (user-approved privacy variant)")
 
 
 def _http_smoke(base_url: str, path: str) -> tuple[int, bytes]:
@@ -473,7 +605,6 @@ def validate_static_bundle(bundle_dir: Path, *, run_http_smoke: bool = True) -> 
     assert bundle.get("outfit_candidates")
     assert bundle.get("lucky_look_candidates")
 
-    _validate_bundle_launchers(bundle_dir)
     _validate_featured_bundle_assets(bundle_dir, bundle)
 
     for url in collect_bundle_image_urls(bundle):
@@ -486,6 +617,8 @@ def validate_static_bundle(bundle_dir: Path, *, run_http_smoke: bool = True) -> 
     index_html = (bundle_dir / "index.html").read_text(encoding="utf-8")
     assert 'id="storefront-data"' in index_html
     assert 'data-storefront-url="data/storefront.json"' in index_html
+    _validate_bundle_html_static_paths(index_html)
+    direct_file = _validate_direct_file_bundle(bundle_dir, index_html, bundle)
 
     for ref in _collect_html_asset_refs(index_html):
         if ref.startswith(("http://", "https://", "//", "data:", "#")):
@@ -551,6 +684,7 @@ def validate_static_bundle(bundle_dir: Path, *, run_http_smoke: bool = True) -> 
         "lucky_look_candidates": len(bundle["lucky_look_candidates"]),
         "lucky_look_candidate_counts": bundle.get("lucky_look_candidate_counts", {}),
         "manifest": manifest,
+        "direct_file_smoke": direct_file,
         "http_smoke": smoke,
     }
 
@@ -580,7 +714,25 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--skip-zip",
         action="store_true",
-        help="Do not create the zip archive",
+        help="Do not create zip archives",
+    )
+    parser.add_argument(
+        "--legacy-platform-zips",
+        action="store_true",
+        help=(
+            "Also create legacy platform-specific zip archives "
+            f"({LEGACY_WINDOWS_ZIP_PATH}, {LEGACY_UNIX_ZIP_PATH})"
+        ),
+    )
+    parser.add_argument(
+        "--include-launchers",
+        action="store_true",
+        help="Include optional HTTP launcher scripts in the bundle (not required for file:// use)",
+    )
+    parser.add_argument(
+        "--check-markdown-links",
+        action="store_true",
+        help="Validate docs/*.md relative links and exit (non-zero if broken)",
     )
     parser.add_argument(
         "--validate",
@@ -597,6 +749,15 @@ def main(argv: list[str] | None = None) -> int:
 
     repo_root = args.repo_root.resolve()
 
+    if args.check_markdown_links:
+        broken = validate_markdown_links(repo_root)
+        if broken:
+            for error in broken:
+                print(error, file=sys.stderr)
+            return 1
+        print("Markdown links OK")
+        return 0
+
     if args.validate_only is not None:
         report = validate_static_bundle(args.validate_only.resolve())
         print(json.dumps(report, indent=2))
@@ -610,15 +771,38 @@ def main(argv: list[str] | None = None) -> int:
         zip_path=None
         if args.skip_zip
         else (args.zip if args.zip.is_absolute() else repo_root / args.zip),
+        legacy_windows_zip_path=(
+            (
+                LEGACY_WINDOWS_ZIP_PATH
+                if LEGACY_WINDOWS_ZIP_PATH.is_absolute()
+                else repo_root / LEGACY_WINDOWS_ZIP_PATH
+            )
+            if args.legacy_platform_zips and not args.skip_zip
+            else None
+        ),
+        legacy_unix_zip_path=(
+            (
+                LEGACY_UNIX_ZIP_PATH
+                if LEGACY_UNIX_ZIP_PATH.is_absolute()
+                else repo_root / LEGACY_UNIX_ZIP_PATH
+            )
+            if args.legacy_platform_zips and not args.skip_zip
+            else None
+        ),
+        include_launchers=args.include_launchers,
     )
 
     file_count = len(list(Path(result["output_dir"]).rglob("*")))
     print(f"Wrote {result['output_dir']} ({file_count} paths)")
-    if result["zip"] is not None:
-        print(
-            f"Wrote {result['zip']['path']} "
-            f"({result['zip']['size_bytes']:,} bytes, {result['zip']['file_count']} files)"
-        )
+    for key in ("zip", "legacy_windows_zip", "legacy_unix_zip"):
+        info = result.get(key)
+        if info is not None:
+            print(
+                f"Wrote {info['path']} ({info['size_bytes']:,} bytes, {info['file_count']} files)"
+            )
+            excluded = info.get("excluded_launchers") or []
+            if excluded:
+                print(f"  excluded launchers: {', '.join(excluded)}")
 
     if args.validate:
         report = validate_static_bundle(Path(result["output_dir"]))

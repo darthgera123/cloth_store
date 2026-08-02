@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "privacy_method": "neck_down_privacy_v1",
+  "description": "Reviewed per-fixture privacy overrides (cutoff, source variant, QC).",
+  "defaults": {
+    "face_bottom_margin_fraction_of_person_height": 0.03,
+    "privacy_floor_fraction_of_person_height": 0.17
+  },
+  "overrides": {
+    "outfit_1": {
+      "face_bottom_cutoff_y_normalized": 0.453125,
+      "provenance": "mask_face_bottom_jaw_v1+manual_review_margin_outfit_1",
+      "reviewed_at": "2026-08-02"
+    },
+    "outfit_14": {
+      "user_approved": true,
+      "qc_status": "user_approved",
+      "reviewed_at": "2026-08-02",
+      "note": "user approved as-is"
+    },
+    "outfit_26": {
+      "face_bottom_cutoff_y_normalized": 0.38,
+      "provenance": "mask_face_bottom_jaw_v1+manual_review_outfit_26",
+      "reviewed_at": "2026-08-02",
+      "note": "auto cutoff left chin/phone visible"
+    },
+    "outfit_27": {
+      "face_bottom_cutoff_y_normalized": 0.4,
+      "provenance": "mask_face_bottom_jaw_v1+manual_review_outfit_27",
+      "reviewed_at": "2026-08-02",
+      "note": "auto cutoff left forehead/jaw visible"
+    },
+    "outfit_29": {
+      "source_variant": "original",
+      "render_mode": "crop_only",
+      "face_bottom_cutoff_y_normalized": 0.38,
+      "provenance": "mask_face_bottom_jaw_v1+manual_review_original_source_outfit_29",
+      "reviewed_at": "2026-08-02",
+      "note": "original source retains full dress/legs/shoes without refocus blur"
+    },
+    "outfit_30": {
+      "source_variant": "crop_refocused",
+      "face_bottom_cutoff_y_normalized": 0.33,
+      "provenance": "mask_face_bottom_jaw_v1+manual_review_shoulders_outfit_30",
+      "reviewed_at": "2026-08-02",
+      "note": "raised cutoff to retain shoulders/neckline on crop_refocused base"
+    },
+    "outfit_31": {
+      "face_bottom_cutoff_y_normalized": 0.32,
+      "provenance": "mask_face_bottom_jaw_v1+manual_review_outfit_31",
+      "reviewed_at": "2026-08-02",
+      "note": "auto cutoff left jaw/chin visible"
+    }
+  }
+}

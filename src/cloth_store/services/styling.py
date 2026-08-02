@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Literal
 
 from cloth_store.catalog_display_categories import is_blazer_garment_class
+from cloth_store.catalog_hash import sha256_file
 from cloth_store.catalog_paths import (
     DEFAULT_SOURCE_PHOTO_DIR,
     fixture_number,
@@ -17,7 +18,11 @@ from cloth_store.catalog_paths import (
 from cloth_store.services.catalog import CatalogItemView, build_product_name
 
 DEFAULT_FINAL_SELFIES_ROOT = Path("final_selfies")
-SelfieDisplayVariant = Literal["crop_refocused", "crop_only", "original"]
+NECK_DOWN_METHOD = "neck_down_privacy_v1"
+NECK_DOWN_VARIANT = "crop_neck_down"
+PRIVACY_QC_PASS = "pass"
+PRIVACY_QC_USER_APPROVED = "user_approved"
+SelfieDisplayVariant = Literal["crop_neck_down", "crop_refocused", "crop_only", "original"]
 
 if TYPE_CHECKING:
     from cloth_store.services.catalog import CatalogService
@@ -358,6 +363,34 @@ def _preferred_refocus_variant(metadata: dict[str, Any]) -> SelfieDisplayVariant
     return "crop_refocused"
 
 
+def _is_valid_privacy_neck_down(
+    metadata: dict[str, Any],
+    *,
+    repo_root: Path,
+    final_selfies_root: Path,
+    fixture_id: str,
+) -> bool:
+    """Return True when metadata describes a QC-approved neck-down privacy crop on disk."""
+    privacy = metadata.get("privacy_variant")
+    if not isinstance(privacy, dict):
+        return False
+    if privacy.get("method") != NECK_DOWN_METHOD:
+        return False
+    if privacy.get("variant") != NECK_DOWN_VARIANT:
+        return False
+    qc = privacy.get("qc")
+    if not isinstance(qc, dict):
+        return False
+    qc_status = qc.get("status")
+    if qc_status not in {PRIVACY_QC_PASS, PRIVACY_QC_USER_APPROVED}:
+        return False
+    variant_path = repo_root / final_selfies_root / fixture_id / f"{NECK_DOWN_VARIANT}.jpg"
+    if not variant_path.is_file():
+        return False
+    expected_hash = privacy.get("sha256")
+    return not expected_hash or sha256_file(variant_path) == expected_hash
+
+
 def resolve_fixture_selfie_asset(
     fixture_id: str,
     *,
@@ -368,9 +401,10 @@ def resolve_fixture_selfie_asset(
 ) -> FixtureSelfieAsset | None:
     """Resolve the best available per-outfit selfie for storefront display.
 
-    Prefers packaged refocus crops from ``final_selfies/`` (``crop_refocused`` by
-    default, ``crop_only`` when review is required). Falls back to the original
-    source mirror selfie under ``data/`` when no refocus deliverable exists.
+    Prefers QC-approved neck-down privacy crops from ``final_selfies/`` when
+    available, then packaged refocus crops (``crop_refocused`` by default,
+    ``crop_only`` when review is required). Falls back to the original source
+    mirror selfie under ``data/`` when no refocus deliverable exists.
     """
     root = repo_root.resolve()
     metadata = _load_final_selfie_metadata(
@@ -379,6 +413,20 @@ def resolve_fixture_selfie_asset(
         final_selfies_root=final_selfies_root,
     )
     if metadata is not None:
+        if _is_valid_privacy_neck_down(
+            metadata,
+            repo_root=root,
+            final_selfies_root=final_selfies_root,
+            fixture_id=fixture_id,
+        ):
+            variant_path = root / final_selfies_root / fixture_id / f"{NECK_DOWN_VARIANT}.jpg"
+            return FixtureSelfieAsset(
+                source_path=variant_path.resolve(),
+                url_path=f"{fixture_id}/{NECK_DOWN_VARIANT}.jpg",
+                variant="crop_neck_down",
+                live_url_prefix=live_refocus_url_prefix,
+            )
+
         variant = _preferred_refocus_variant(metadata)
         variant_path = root / final_selfies_root / fixture_id / f"{variant}.jpg"
         if variant_path.is_file():
@@ -868,7 +916,7 @@ class StylingResolver:
 
         prefix = (
             self._refocus_selfies_url_prefix
-            if asset.variant in {"crop_refocused", "crop_only"}
+            if asset.variant in {"crop_neck_down", "crop_refocused", "crop_only"}
             else self._selfies_url_prefix
         )
         return StylingSelfieRef(

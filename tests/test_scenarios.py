@@ -9,6 +9,7 @@ from __future__ import annotations
 import io
 import json
 import re
+import shutil
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -392,7 +393,7 @@ def test_website_static_catalog_contract(tmp_path: Path) -> None:
         assoc for assoc in outfit_2_styling.associations if assoc.fixture == "outfit_2"
     )
     assert outfit_2_assoc.selfie.available is True
-    assert outfit_2_assoc.selfie.image_url == "/final_selfies/outfit_2/crop_refocused.jpg"
+    assert outfit_2_assoc.selfie.image_url == "/final_selfies/outfit_2/crop_neck_down.jpg"
     assert all(partner.catalog_id != "outfit_2_top" for partner in outfit_2_assoc.partners)
 
     outfit_31_top = catalog_service.get_item("outfit_31_top")
@@ -410,14 +411,14 @@ def test_website_static_catalog_contract(tmp_path: Path) -> None:
         assoc for assoc in white_trousers_styling.associations if assoc.fixture == "outfit_19"
     )
     assert outfit_19_assoc.selfie.available is True
-    assert outfit_19_assoc.selfie.image_url == "/final_selfies/outfit_19/crop_refocused.jpg"
+    assert outfit_19_assoc.selfie.image_url == "/final_selfies/outfit_19/crop_neck_down.jpg"
     assert all(partner.catalog_id != "outfit_19_top" for partner in outfit_19_assoc.partners)
 
     outfit_5_assoc = next(
         assoc for assoc in white_trousers_styling.associations if assoc.fixture == "outfit_5"
     )
     assert outfit_5_assoc.selfie.available is True
-    assert outfit_5_assoc.selfie.image_url == "/final_selfies/outfit_5/crop_refocused.jpg"
+    assert outfit_5_assoc.selfie.image_url == "/final_selfies/outfit_5/crop_neck_down.jpg"
     assert all(partner.catalog_id != "outfit_5_bottom" for partner in outfit_5_assoc.partners)
     assert catalog_service.get_item("outfit_5_bottom") is None
 
@@ -443,19 +444,77 @@ def test_website_static_catalog_contract(tmp_path: Path) -> None:
     top_association = top_styling.associations[0]
     assert top_association.fixture == "outfit_10"
     assert top_association.selfie.available is True
-    assert top_association.selfie.image_url == "/final_selfies/outfit_10/crop_refocused.jpg"
+    assert top_association.selfie.image_url == "/final_selfies/outfit_10/crop_neck_down.jpg"
 
     outfit_14_styling = styling_resolver.resolve_for_catalog_item("outfit_14_top")
     assert outfit_14_styling is not None
     assert (
         outfit_14_styling.associations[0].selfie.image_url
-        == "/final_selfies/outfit_14/crop_only.jpg"
+        == "/final_selfies/outfit_14/crop_neck_down.jpg"
     )
+
+    outfit_29_asset = resolve_fixture_selfie_asset("outfit_29", repo_root=repo_root)
+    assert outfit_29_asset is not None
+    assert outfit_29_asset.variant == "crop_neck_down"
+    assert outfit_29_asset.source_path.name == "crop_neck_down.jpg"
+
+    outfit_30_asset = resolve_fixture_selfie_asset("outfit_30", repo_root=repo_root)
+    assert outfit_30_asset is not None
+    assert outfit_30_asset.variant == "crop_neck_down"
+
+    for fixture_num in range(1, 32):
+        fixture_id = f"outfit_{fixture_num}"
+        asset = resolve_fixture_selfie_asset(fixture_id, repo_root=repo_root)
+        assert asset is not None, fixture_id
+        assert asset.variant == "crop_neck_down", fixture_id
+        assert "crop_neck_down.jpg" in asset.image_url, fixture_id
+        assert "crop_refocused.jpg" not in asset.image_url, fixture_id
+        assert "crop_only.jpg" not in asset.image_url, fixture_id
 
     refocus_asset = resolve_fixture_selfie_asset("outfit_10", repo_root=repo_root)
     assert refocus_asset is not None
-    assert refocus_asset.variant == "crop_refocused"
-    assert refocus_asset.source_path.name == "crop_refocused.jpg"
+    assert refocus_asset.variant == "crop_neck_down"
+    assert refocus_asset.source_path.name == "crop_neck_down.jpg"
+
+    fallback_root = tmp_path / "fallback_selfies"
+    fallback_fixture = fallback_root / "outfit_10"
+    fallback_fixture.mkdir(parents=True)
+    shutil.copy2(
+        repo_root / "final_selfies/outfit_10/crop_refocused.jpg",
+        fallback_fixture / "crop_refocused.jpg",
+    )
+    meta_no_privacy = json.loads(
+        (repo_root / "final_selfies/outfit_10/metadata.json").read_text(encoding="utf-8")
+    )
+    meta_no_privacy.pop("privacy_variant", None)
+    (fallback_fixture / "metadata.json").write_text(json.dumps(meta_no_privacy), encoding="utf-8")
+    fallback_asset = resolve_fixture_selfie_asset(
+        "outfit_10",
+        repo_root=tmp_path,
+        final_selfies_root=Path("fallback_selfies"),
+    )
+    assert fallback_asset is not None
+    assert fallback_asset.variant == "crop_refocused"
+
+    review_root = tmp_path / "review_selfies"
+    review_fixture = review_root / "outfit_14"
+    review_fixture.mkdir(parents=True)
+    shutil.copy2(
+        repo_root / "final_selfies/outfit_14/crop_only.jpg",
+        review_fixture / "crop_only.jpg",
+    )
+    meta_review = json.loads(
+        (repo_root / "final_selfies/outfit_14/metadata.json").read_text(encoding="utf-8")
+    )
+    meta_review.pop("privacy_variant", None)
+    (review_fixture / "metadata.json").write_text(json.dumps(meta_review), encoding="utf-8")
+    review_asset = resolve_fixture_selfie_asset(
+        "outfit_14",
+        repo_root=tmp_path,
+        final_selfies_root=Path("review_selfies"),
+    )
+    assert review_asset is not None
+    assert review_asset.variant == "crop_only"
     assert top_association.advice_title == FASHION_ADVICE_TITLE
     assert top_association.advice_text == "Black Waistcoat with gray straight-fit trousers."
 
@@ -553,6 +612,67 @@ def test_website_static_catalog_contract(tmp_path: Path) -> None:
     assert "renderLuckyLook" in app_js
     assert "lucky_look_candidates" in app_js
     assert "lucky-piece-template" in app_js
+    assert "filterLuckyPool" in app_js
+    assert "LUCKY_RECENT_HISTORY_LIMIT" in app_js
+    assert "pickLuckyLookFromBag" in app_js
+
+    from tests.lucky_selection_mirror import (
+        lucky_look_key_piece_ids,
+        lucky_look_signature,
+        lucky_recent_history_entry,
+        pick_lucky_look,
+        simulate_lucky_clicks,
+    )
+
+    lucky_payload = [look.to_dict() for look in lucky_candidates]
+    first = pick_lucky_look(lucky_payload, seed=11)
+    assert first is not None
+    repeat = pick_lucky_look(lucky_payload, seed=11)
+    assert lucky_look_signature(repeat) == lucky_look_signature(first)
+
+    history = [lucky_recent_history_entry(first)]
+    immediate_repeat = pick_lucky_look(lucky_payload, recent_history=history, seed=99)
+    assert immediate_repeat is not None
+    assert lucky_look_signature(immediate_repeat) != lucky_look_signature(first)
+
+    blazer_heavy = [
+        look
+        for look in lucky_payload
+        if look["look_type"] == "blazer_top_bottom"
+        and any(p["catalog_id"] == "outfit_3_top" for p in look["pieces"])
+    ][:6]
+    if len(blazer_heavy) >= 2:
+        alt_blazer = next(
+            look
+            for look in lucky_payload
+            if look["look_type"] == "blazer_top_bottom"
+            and all(
+                p["catalog_id"] != "outfit_3_top" for p in look["pieces"] if p["kind"] == "blazer"
+            )
+        )
+        history = [lucky_recent_history_entry(blazer_heavy[0])]
+        next_look = pick_lucky_look(blazer_heavy + [alt_blazer], recent_history=history, seed=5)
+        assert next_look is not None
+        assert "outfit_3_top" not in lucky_look_key_piece_ids(next_look)
+
+    tiny_pool = lucky_payload[:1]
+    tiny_next = pick_lucky_look(
+        tiny_pool,
+        recent_history=[lucky_recent_history_entry(tiny_pool[0])],
+        seed=3,
+    )
+    assert tiny_next is not None
+
+    sequence = simulate_lucky_clicks(lucky_payload, clicks=6, seed=21)
+    assert len(sequence) == 6
+    for previous, current in zip(sequence, sequence[1:], strict=False):
+        assert lucky_look_signature(previous) != lucky_look_signature(current)
+    look_types = [look["look_type"] for look in sequence]
+    if len({look_type for look_type in look_types}) > 1:
+        assert any(
+            previous != current
+            for previous, current in zip(look_types, look_types[1:], strict=False)
+        )
     storefront_path = tmp_path / "storefront.json"
     write_storefront_bundle(bundle, output_path=storefront_path)
     assert storefront_path.is_file()
@@ -567,9 +687,22 @@ def test_website_static_catalog_contract(tmp_path: Path) -> None:
     )
     static_report = validate_static_bundle(static_bundle_dir, run_http_smoke=True)
     assert static_report["total_items"] == EXPECTED_ITEM_COUNT
-    assert (static_bundle_dir / "start-lavani.bat").is_file()
-    assert (static_bundle_dir / "start-lavani.ps1").is_file()
-    assert (static_bundle_dir / "assets/selfies/outfit_30/crop_refocused.jpg").is_file()
+    assert static_report.get("direct_file_smoke", {}).get("status") == "ok"
+    assert static_report.get("direct_file_smoke", {}).get("requires_launcher") is False
+    index_html = (static_bundle_dir / "index.html").read_text(encoding="utf-8")
+    assert 'href="static/styles.css"' in index_html
+    assert 'src="static/app.js"' in index_html
+    assert 'id="storefront-data"' in index_html
+    assert not re.search(r'(?:href|src)="/static/', index_html)
+    assert (static_bundle_dir / "assets/selfies/outfit_30/crop_neck_down.jpg").is_file()
+    assert (static_bundle_dir / "assets/selfies/outfit_14/crop_neck_down.jpg").is_file()
+    static_storefront = json.loads((static_bundle_dir / "data/storefront.json").read_text())
+    for candidate in static_storefront["outfit_candidates"]:
+        selfie_url = candidate.get("selfie", {}).get("image_url", "")
+        if selfie_url:
+            assert "crop_neck_down.jpg" in selfie_url
+            assert "crop_refocused.jpg" not in selfie_url
+            assert "crop_only.jpg" not in selfie_url
     assert (static_bundle_dir / "assets/catalogue/outfit_30/dress/output.png").is_file()
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
@@ -586,7 +719,7 @@ def test_website_static_catalog_contract(tmp_path: Path) -> None:
         status, body = smoke_fetch(base, "/final_catalog/outfit_3/top/output.png")
         assert status == 200
         assert body[:8] == b"\x89PNG\r\n\x1a\n"
-        status, body = smoke_fetch(base, "/final_selfies/outfit_10/crop_refocused.jpg")
+        status, body = smoke_fetch(base, "/final_selfies/outfit_10/crop_neck_down.jpg")
         assert status == 200
         assert body[:2] == b"\xff\xd8"
     finally:
@@ -1050,6 +1183,62 @@ def test_sam_masks_and_catalog_cutouts(tmp_path: Path) -> None:
     assert complete is False
     assert complete_reason is None
 
+    from cloth_store.selfie_privacy_crop import (
+        build_neck_down_config_from_mask,
+        compute_neck_down_crop,
+        estimate_collarbone_cutoff_y_from_mask,
+        estimate_face_bottom_cutoff_y_from_mask,
+        render_neck_down_from_refocused,
+    )
+
+    neck_base_crop = compute_portrait_crop(image_w, image_h, person_mask)
+    face_bottom_y, face_prov = estimate_face_bottom_cutoff_y_from_mask(
+        person_mask=person_mask,
+        base_crop=neck_base_crop,
+        image_height=image_h,
+    )
+    collarbone_y, _ = estimate_collarbone_cutoff_y_from_mask(
+        person_mask=person_mask,
+        base_crop=neck_base_crop,
+        image_height=image_h,
+    )
+    assert collarbone_y > face_bottom_y
+    neck_config = build_neck_down_config_from_mask(
+        person_mask=person_mask,
+        base_crop=neck_base_crop,
+        image_height=image_h,
+        manual_face_bottom_cutoff_y_normalized=face_bottom_y / image_h,
+        manual_provenance="manual_review_face_bottom_cutoff_test",
+    )
+    assert neck_config.face_bottom_provenance == "manual_review_face_bottom_cutoff_test"
+    neck_geometry = compute_neck_down_crop(
+        image_width=image_w,
+        image_height=image_h,
+        person_mask=person_mask,
+        base_crop=neck_base_crop,
+        config=neck_config,
+        collarbone_cutoff_y=collarbone_y,
+    )
+    assert neck_geometry.neck_down_crop.y0 == int(
+        round(neck_config.face_bottom_cutoff_y_normalized * image_h)
+    )
+    assert neck_geometry.neck_down_crop.y1 == neck_base_crop.y1
+    assert neck_geometry.output_height == neck_base_crop.y1 - neck_geometry.neck_down_crop.y0
+    assert pytest.approx(neck_geometry.neck_down_crop.aspect_ratio, rel=0.02) == 4 / 5
+    sub_crop = neck_geometry.sub_crop_from_refocused
+    assert sub_crop[0] >= 0 and sub_crop[1] >= 0
+    assert sub_crop[2] <= neck_base_crop.output_width
+    assert sub_crop[3] <= neck_base_crop.output_height
+    refocused_stub = Image.new(
+        "RGB",
+        (neck_base_crop.output_width, neck_base_crop.output_height),
+        color=(30, 60, 90),
+    )
+    neck_down = render_neck_down_from_refocused(refocused_stub, sub_crop)
+    assert neck_down.size == (neck_geometry.output_width, neck_geometry.output_height)
+    assert neck_down.size[0] <= refocused_stub.size[0]
+    assert neck_down.size[1] <= refocused_stub.size[1]
+
     qwen_box = [0.32, 0.15, 0.68, 0.88]
     enriched = enrich_person_bbox_with_garments(qwen_box, dress_localization_for_mask)
     assert enriched.provenance == "qwen_full_reflected_person_v1"
@@ -1154,6 +1343,53 @@ def test_sam_masks_and_catalog_cutouts(tmp_path: Path) -> None:
         assert sheet_manifest["batch_size_outfits"] == 4
         assert len(sheet_manifest["sheets"]) == 1
         assert sheet_manifest["sheets"][0]["outfits"] == ["outfit_1"]
+
+    from cloth_store.selfie_privacy_crop import (
+        NECK_DOWN_METHOD,
+        SOURCE_VARIANT_ORIGINAL,
+        get_fixture_privacy_override,
+        load_privacy_cutoff_overrides,
+        process_fixture_privacy_crop,
+    )
+    from cloth_store.selfie_privacy_packaging import package_privacy_fixture
+
+    if outfit_1_meta.is_file():
+        privacy_root = tmp_path / "privacy_final_selfies"
+        privacy_bench = cloth_repo / "bench/selfie_refocus/candidates"
+        overrides = load_privacy_cutoff_overrides(cloth_repo)
+        assert "outfit_1" in overrides.get("overrides", {})
+        assert get_fixture_privacy_override(overrides, "outfit_29") is not None
+        assert (
+            get_fixture_privacy_override(overrides, "outfit_29").source_variant
+            == SOURCE_VARIANT_ORIGINAL
+        )
+        first_privacy = process_fixture_privacy_crop(
+            "outfit_1",
+            repo_root=cloth_repo,
+            candidate_root=privacy_bench,
+            overrides=overrides,
+        )
+        second_privacy = process_fixture_privacy_crop(
+            "outfit_1",
+            repo_root=cloth_repo,
+            candidate_root=privacy_bench,
+            overrides=overrides,
+        )
+        assert first_privacy.generated_or_reused in {"processed", "reused"}
+        assert second_privacy.generated_or_reused == "reused"
+        assert first_privacy.qc_status != "fail"
+
+        privacy_root.mkdir(parents=True, exist_ok=True)
+        shutil.copytree(cloth_repo / "final_selfies/outfit_1", privacy_root / "outfit_1")
+        package_privacy_fixture(
+            repo_root=cloth_repo,
+            final_root=privacy_root,
+            bench_root=privacy_bench,
+            fixture_id="outfit_1",
+        )
+        fixture_meta = json.loads((privacy_root / "outfit_1/metadata.json").read_text())
+        assert fixture_meta["privacy_variant"]["method"] == NECK_DOWN_METHOD
+        assert (privacy_root / "outfit_1/crop_neck_down.jpg").is_file()
 
 
 def test_catalog_template_geometry() -> None:
@@ -2011,6 +2247,17 @@ def test_production_pipeline_idempotency_and_output_contract(tmp_path: Path) -> 
     assert "user_override" in outfit_13_plan.artifact
     assert outfit_13_plan.artifact["prompt_policy_version"] == 6
 
+    outfit_7_plan = build_pipeline_plan(
+        repo_root=cloth_repo,
+        fixture_id="outfit_7",
+        role="top",
+    )
+    assert outfit_7_plan.override_applied is True
+    assert outfit_7_plan.template_id == "top_sleeveless"
+    assert outfit_7_plan.artifact["template_id"] == "top_sleeveless"
+    assert "user_override" in outfit_7_plan.artifact
+    assert outfit_7_plan.artifact["images"][1]["path"].endswith("top_sleeveless.png")
+
     dry_outfit_13 = run_pipeline_case(
         repo_root=cloth_repo,
         fixture_id="outfit_13",
@@ -2351,7 +2598,32 @@ def test_production_pipeline_idempotency_and_output_contract(tmp_path: Path) -> 
     assert "dusty rose" not in outfit_13_top["tags"]
     assert outfit_13_top["images"]["output_512"]["path"] == "outfit_13/top/output.png"
     assert outfit_13_top["images"]["output_1k"]["path"] == "outfit_13/top/output_1k.png"
+    assert (
+        outfit_13_top["images"]["output_512"]["sha256"]
+        == "1580b39245e2bc3fc6fd2ac7b8f98c22b8f3d300a652fba1aa07bc3e280f747e"
+    )
     assert outfit_13_top["user_override"] is not None
+
+    outfit_7_top = by_id["outfit_7_top"]
+    assert outfit_7_top["display_category"] == "top"
+    assert outfit_7_top["display_name"] == "floral sleeveless top"
+    assert outfit_7_top["template"]["template_id"] == "top_sleeveless"
+    assert outfit_7_top["facets"]["garment_class"]["source"] == "user_override"
+    assert outfit_7_top["facets"]["sleeve_length"]["value"] == "sleeveless"
+    assert outfit_7_top["facets"]["colors"]["value"] is None
+    assert "beige" not in outfit_7_top["tags"]
+    assert "sleeveless" in outfit_7_top["tags"]
+    assert "floral" in outfit_7_top["tags"]
+    assert outfit_7_top["user_override"] is not None
+    assert outfit_7_top["images"]["output_512"]["path"] == "outfit_7/top/output.png"
+    assert (
+        outfit_7_top["images"]["output_512"]["sha256"]
+        == "a9745e7c269372172ae35cac4504e1cea93a356ffe0835f6b7b6d3806348a6ab"
+    )
+    assert (
+        outfit_7_top["images"]["output_512"]["sha256"]
+        != "2ffe7dbcffc65c993ce71a2a27f80095e536c358badc87a807f579e241e23ee2"
+    )
 
     outfit_9_top = by_id["outfit_9_top"]
     assert outfit_9_top["template"]["template_id"] == "top_sleeveless"
@@ -2487,7 +2759,17 @@ def test_production_pipeline_idempotency_and_output_contract(tmp_path: Path) -> 
     assert shared_skirt_hits[0].catalog_id == "outfit_6_bottom"
 
     beige_hits = search_catalog(payload=index_payload, query="beige printed blouse")
-    assert beige_hits[0].catalog_id == "outfit_7_top"
+    for hit in beige_hits:
+        if hit.catalog_id == "outfit_7_top":
+            assert "beige" not in hit.matched_tokens
+    beige_only_hits = search_catalog(payload=index_payload, query="beige", role="top")
+    assert all(hit.catalog_id != "outfit_7_top" for hit in beige_only_hits)
+    floral_hits = search_catalog(payload=index_payload, query="floral", role="top")
+    assert floral_hits[0].catalog_id == "outfit_7_top"
+    floral_sleeveless_hits = search_catalog(
+        payload=index_payload, query="floral sleeveless", role="top"
+    )
+    assert floral_sleeveless_hits[0].catalog_id == "outfit_7_top"
     navy_hits = search_catalog(payload=index_payload, query="navy blue office blouse collar")
     assert navy_hits[0].catalog_id != "outfit_8_top"
     zip_hits = search_catalog(payload=index_payload, query="navy zip top")

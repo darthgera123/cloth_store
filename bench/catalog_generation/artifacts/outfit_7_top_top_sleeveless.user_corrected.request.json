@@ -1,0 +1,116 @@
+{
+  "artifact_version": 1,
+  "bench": "catalog_generation",
+  "case": {
+    "fixture": "outfit_7",
+    "role": "top"
+  },
+  "detail_reference_provenance": {
+    "crop_bbox": [
+      202,
+      252,
+      303,
+      350
+    ],
+    "included": true,
+    "reason": "low-variance garment texture window; native resolution centered on white canvas without upscaling",
+    "source_bbox": [
+      154,
+      132,
+      357,
+      379
+    ]
+  },
+  "gemini_model_id": "gemini-3.1-flash-image",
+  "images": [
+    {
+      "description": "Plan 1 segmented catalog cutout (identity/color/texture reference)",
+      "height": 512,
+      "mode": "RGB",
+      "order": 1,
+      "path": "bench/plan1_localization/outputs/catalog_cutouts/outfit_7/catalog_top.png",
+      "role": "garment_identity",
+      "sha256": "568665018f05be2d237728650c8be8df9c6dd8f64d935217ad4dc053452718ac",
+      "width": 512
+    },
+    {
+      "description": "Canonical template silhouette (geometry/layout reference)",
+      "height": 512,
+      "mode": "RGB",
+      "order": 2,
+      "path": "bench/catalog_templates/generated/top_sleeveless.png",
+      "role": "template_geometry",
+      "sha256": "15e2fa524c4ad241190ecb0c24897d792f61ee4d5a0c1b0981800560d966512d",
+      "width": 512
+    },
+    {
+      "description": "Source-derived garment detail crop (texture/pattern/trim reinforcement only)",
+      "height": 512,
+      "mode": "RGB",
+      "order": 3,
+      "path": "bench/catalog_generation/detail_crops/outfit_7_top_detail.png",
+      "role": "garment_detail",
+      "sha256": "2796351e692d057a44c3f9bfac29e442ebf4e966ee7fdc28d4521c2147ea0c1d",
+      "width": 512
+    }
+  ],
+  "prompt": "Create a catalog product image for fixture outfit_7 (top) using separate reference images.\n\nImage 1 is the garment identity reference. Present a closed, symmetric, front-facing sleeveless blouse or top in a clean catalog layout. The garment must have clear shoulder straps or upper bodice with open armholes and no sleeves. Do not add sleeves. Preserve source neckline, straps, lace, pattern, color, material, and details clearly visible in Image 1. Reconstruct any pose-induced gaps, wrap, or drape from Image 1 as a closed garment. Do not present as a structured waistcoat or vest unless Image 1 clearly shows that class. Image 1 is authoritative for exact color, material, weave, pattern, embroidery, lace, print, trim, buttons, seams, lapels, pockets, and every other surface feature clearly visible in the segmented source. Preserving source-visible texture and color fidelity is the highest priority. Do not simplify, replace, or invent texture, hardware, or details absent from Image 1. Never copy the template gray fill as fabric.\n\nImage 2 is the geometry and silhouette reference (top_sleeveless). Use Image 2 only for garment shape, proportions, sleeve length, hem line, and overall layout. The flat gray fill in Image 2 is a placeholder silhouette \u2014 do not copy that gray color or treat it as fabric. Image 2 controls shape, not appearance.\n\nImage 3 is an optional close-up detail reference cropped from the same segmented source as Image 1. Use Image 3 only to reinforce exact texture, weave, pattern, embroidery, and trim visible in the source. Image 3 does not change the target silhouette.\n\nUser override (highest precedence):\n- Garment class: sleeveless floral blouse/top. This is a sleeveless floral-print top, NOT a half-sleeve, short-sleeve, or sleeved blouse.\n- Describe the appearance as floral only; do NOT label or tag a beige base color.\n- Preserve sleeveless armholes and floral print from Image 1 and Image 3 wherever clearly visible. Do NOT add sleeves.\n- Do NOT convert to: beige blouse, beige base color, half sleeves, short sleeves, long sleeves, half-sleeve blouse.\n- Closed, symmetric, front-facing lay-flat sleeveless catalog presentation.\n- Do not invent buttons, hardware, collars, or details absent from Image 1 or Image 3.\n\nVLM-derived material cues (supplement Image 1; do not override visible source):\n- surface sheen: soft satin-like (high confidence, observed; Light reflects gently along folds and curves, indicating low-to-moderate luster without gloss.)\n- texture pattern: print (high confidence, observed; Floral design with pink roses and green leaves printed across entire surface; no embroidery or texture variation.)\n- weave finish: not discernible at this resolution (high confidence, inferred; Image resolution insufficient to resolve weave structure or finish details.)\n- closures details: none visible (high confidence, observed; No buttons, zippers, plackets, or trim visible in frame; garment appears unfastened or cropped.)\n\nSheen constraint: Image 1 shows lustrous satin-like reflectivity with soft diffused highlights. Preserve that subtle satin sheen exactly as visible in Image 1. Do NOT exaggerate beyond the source to glossy, metallic, vinyl, plastic, lacquer, mirror-like, or wet-look finishes.\nThese cues clarify Image 1; they must not override pixels visible in Image 1 or Image 3.\n\nImage 1 is authoritative for visible color, material, and weave. Ignore hands, phone, and any non-garment segmentation artifacts from Image 1. The template gray color must never transfer to the output.\n\nOutput a single 512\u00d7512 front-facing catalog photograph on a pure white background (255, 255, 255). Fit the garment to the silhouette of Image 2 while preserving the color and material of Image 1. Reconstruct only missing or occluded regions implied by the target silhouette; do not invent new design elements. Exclude any person, mannequin, hanger, gray template color, grids, checkers, text, shadows, or diagnostic artifacts. The template controls shape, not appearance.",
+  "prompt_policy_version": 6,
+  "request_layout": {
+    "no_composite_input": true,
+    "part_order": [
+      "garment_identity",
+      "template_geometry",
+      "garment_detail"
+    ],
+    "separate_parts": true
+  },
+  "runner_model_id": "nano_banana_2",
+  "template_id": "top_sleeveless",
+  "template_selection": {
+    "confidence": "high",
+    "garment_class_normalized": "blouse",
+    "override_applied": true,
+    "reason": "Explicit reviewed override to 'top_sleeveless'.",
+    "selector": "catalog_template_selector_v1",
+    "skirt_style_normalized": null,
+    "sleeve_length_normalized": "sleeveless",
+    "template_id": "top_sleeveless"
+  },
+  "user_override": {
+    "garment_class": "blouse",
+    "injected_high_confidence_fields": [
+      "surface_sheen",
+      "texture_pattern",
+      "weave_finish",
+      "closures_details"
+    ],
+    "namespace": "user_corrected_floral_sleeveless_top_v1",
+    "overridden_vlm_fields": [
+      "dominant_color",
+      "garment_class",
+      "sleeve_cuff_neckline"
+    ],
+    "precedence": "user_override > high_confidence_source_vlm > template_geometry_only",
+    "presentation_mode": "text_only",
+    "prohibited_conversions": [
+      "beige blouse",
+      "beige base color",
+      "half sleeves",
+      "short sleeves",
+      "long sleeves",
+      "half-sleeve blouse"
+    ],
+    "prompt_lines": [
+      "Garment class: sleeveless floral blouse/top. This is a sleeveless floral-print top, NOT a half-sleeve, short-sleeve, or sleeved blouse.",
+      "Describe the appearance as floral only; do NOT label or tag a beige base color.",
+      "Preserve sleeveless armholes and floral print from Image 1 and Image 3 wherever clearly visible. Do NOT add sleeves.",
+      "Do NOT convert to: beige blouse, beige base color, half sleeves, short sleeves, long sleeves, half-sleeve blouse.",
+      "Closed, symmetric, front-facing lay-flat sleeveless catalog presentation.",
+      "Do not invent buttons, hardware, collars, or details absent from Image 1 or Image 3."
+    ],
+    "reason": "User correction: sleeveless floral top/blouse, not a half-sleeve or beige-labeled garment.",
+    "sheen_constraint": "Image 1 shows lustrous satin-like reflectivity with soft diffused highlights. Preserve that subtle satin sheen exactly as visible in Image 1. Do NOT exaggerate beyond the source to glossy, metallic, vinyl, plastic, lacquer, mirror-like, or wet-look finishes.",
+    "vlm_attribute_json_sha256": "f2262756a46e5ce38dd563d67253c42d289e3662f374f2beaf093054121a1cf2"
+  }
+}

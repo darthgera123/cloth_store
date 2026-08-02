@@ -93,13 +93,12 @@ const luckyState = {
   currentCatalogIds: [],
   totalCandidates: 0,
   lastFocusedElement: null,
-};
-
-const LUCKY_PIECE_KIND_LABELS = {
-  top: "Top",
-  blazer: "Blazer",
-  bottom: "Bottom",
-  dress: "Dress",
+  recentHistory: [],
+  shuffleBags: {
+    top_bottom: [],
+    blazer_top_bottom: [],
+    blazer_dress: [],
+  },
 };
 
 function setStatePanel({ visible, title, message }) {
@@ -193,49 +192,184 @@ function pickRandom(items, { excludeKey, excludeValue, seed } = {}) {
   return pool[index];
 }
 
-function pickLuckyLook({ excludeCatalogIds, seed } = {}) {
-  const candidates = storefrontData?.lucky_look_candidates || [];
-  if (!candidates.length) {
-    return null;
-  }
+const LUCKY_RECENT_HISTORY_LIMIT = 4;
+const LUCKY_PIECE_KIND_LABELS = {
+  top: "Top",
+  blazer: "Blazer",
+  bottom: "Bottom",
+  dress: "Dress",
+};
 
-  let pool = candidates;
-  if (excludeCatalogIds?.length) {
-    const excluded = new Set(excludeCatalogIds);
-    const filtered = candidates.filter((look) => {
-      const ids = look.pieces.map((piece) => piece.catalog_id);
-      if (ids.length !== excluded.size) {
-        return true;
-      }
-      return !ids.every((id) => excluded.has(id));
-    });
-    if (filtered.length) {
-      pool = filtered;
-    }
-  }
+function luckyLookSignature(look) {
+  return look.pieces
+    .map((piece) => piece.catalog_id)
+    .sort()
+    .join("|");
+}
 
+function luckyLookKeyPieceIds(look) {
+  const blazer = look.pieces.find((piece) => piece.kind === "blazer");
+  if (blazer) {
+    return [blazer.catalog_id];
+  }
+  const top = look.pieces.find((piece) => piece.kind === "top");
+  if (top) {
+    return [top.catalog_id];
+  }
+  return look.pieces.map((piece) => piece.catalog_id);
+}
+
+function luckyRecentHistoryEntry(look) {
+  return {
+    catalogIds: look.pieces.map((piece) => piece.catalog_id),
+    lookType: look.look_type,
+    signature: luckyLookSignature(look),
+    keyPieceIds: luckyLookKeyPieceIds(look),
+  };
+}
+
+function groupLuckyLooksByType(looks) {
   const byType = {
     top_bottom: [],
     blazer_top_bottom: [],
     blazer_dress: [],
   };
-  for (const look of pool) {
+  for (const look of looks) {
     if (byType[look.look_type]) {
       byType[look.look_type].push(look);
     }
   }
+  return byType;
+}
 
-  const availableTypes = Object.keys(byType).filter((type) => byType[type].length);
+function shuffleArray(items, rng) {
+  const copy = items.slice();
+  for (let index = copy.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(rng() * (index + 1));
+    [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
+  }
+  return copy;
+}
+
+function pickRandomIndex(length, rng) {
+  return Math.floor(rng() * length);
+}
+
+function filterLuckyPool(pool, { recentHistory, avoidLookType }) {
+  const lastSignature = recentHistory[0]?.signature;
+  const recentKeyPieces = new Set(recentHistory.flatMap((entry) => entry.keyPieceIds));
+
+  const constraints = [
+    (looks) =>
+      lastSignature
+        ? looks.filter((look) => luckyLookSignature(look) !== lastSignature)
+        : looks,
+    (looks) =>
+      recentKeyPieces.size
+        ? looks.filter(
+            (look) =>
+              !luckyLookKeyPieceIds(look).some((catalogId) => recentKeyPieces.has(catalogId)),
+          )
+        : looks,
+    (looks) =>
+      avoidLookType ? looks.filter((look) => look.look_type !== avoidLookType) : looks,
+  ];
+
+  let filtered = pool;
+  for (const constraint of constraints) {
+    const next = constraint(filtered);
+    if (next.length) {
+      filtered = next;
+    }
+  }
+  return filtered;
+}
+
+function pickLuckyLookFromBag(typePool, { recentHistory, shuffleBags, lookType, rng }) {
+  if (!typePool.length) {
+    return null;
+  }
+
+  const signatures = new Set(typePool.map((look) => luckyLookSignature(look)));
+  shuffleBags[lookType] = (shuffleBags[lookType] || []).filter((look) =>
+    signatures.has(luckyLookSignature(look)),
+  );
+  if (!shuffleBags[lookType].length) {
+    shuffleBags[lookType] = shuffleArray(typePool, rng);
+  }
+
+  const bag = shuffleBags[lookType];
+  const lastSignature = recentHistory[0]?.signature;
+  const recentKeyPieces = new Set(recentHistory.flatMap((entry) => entry.keyPieceIds));
+  const bagSize = bag.length;
+
+  for (let attempt = 0; attempt < bagSize; attempt += 1) {
+    const look = bag.shift();
+    const passesExact = !lastSignature || luckyLookSignature(look) !== lastSignature;
+    const passesKeyPieces = !luckyLookKeyPieceIds(look).some((catalogId) =>
+      recentKeyPieces.has(catalogId),
+    );
+    if (passesExact && passesKeyPieces) {
+      return look;
+    }
+    bag.push(look);
+  }
+
+  const fallbackPool = typePool.filter(
+    (look) => !lastSignature || luckyLookSignature(look) !== lastSignature,
+  );
+  const finalPool = fallbackPool.length ? fallbackPool : typePool;
+  return finalPool[pickRandomIndex(finalPool.length, rng)];
+}
+
+function pickLuckyLook({ recentHistory = [], shuffleBags, seed, rng } = {}) {
+  const candidates = storefrontData?.lucky_look_candidates || [];
+  if (!candidates.length) {
+    return null;
+  }
+
+  const random = rng || (seed == null ? Math.random : seededRandom(seed));
+  const bags = shuffleBags || {
+    top_bottom: [],
+    blazer_top_bottom: [],
+    blazer_dress: [],
+  };
+  const lastLookType = recentHistory[0]?.lookType;
+
+  let pool = filterLuckyPool(candidates, { recentHistory, avoidLookType: lastLookType });
+  if (!pool.length) {
+    pool = filterLuckyPool(candidates, { recentHistory, avoidLookType: null });
+  }
+  if (!pool.length) {
+    pool = candidates.filter(
+      (look) => !recentHistory[0] || luckyLookSignature(look) !== recentHistory[0].signature,
+    );
+  }
+  if (!pool.length) {
+    pool = candidates;
+  }
+
+  const byType = groupLuckyLooksByType(pool);
+  let availableTypes = Object.keys(byType).filter((type) => byType[type].length);
   if (!availableTypes.length) {
     return null;
   }
 
-  const rng = seed == null ? Math.random : seededRandom(seed);
-  const typeIndex = Math.floor(rng() * availableTypes.length);
-  const lookType = availableTypes[typeIndex];
+  if (lastLookType && availableTypes.length > 1) {
+    const alternateTypes = availableTypes.filter((type) => type !== lastLookType);
+    if (alternateTypes.length) {
+      availableTypes = alternateTypes;
+    }
+  }
+
+  const lookType = availableTypes[pickRandomIndex(availableTypes.length, random)];
   const typePool = byType[lookType];
-  const lookIndex = Math.floor(rng() * typePool.length);
-  return typePool[lookIndex];
+  return pickLuckyLookFromBag(typePool, {
+    recentHistory,
+    shuffleBags: bags,
+    lookType,
+    rng: random,
+  });
 }
 
 async function loadStorefront() {
@@ -703,6 +837,10 @@ function renderLuckyLook(look) {
   }
 
   luckyState.currentCatalogIds = look.pieces.map((piece) => piece.catalog_id);
+  luckyState.recentHistory = [
+    luckyRecentHistoryEntry(look),
+    ...luckyState.recentHistory,
+  ].slice(0, LUCKY_RECENT_HISTORY_LIMIT);
 
   elements.luckyStageMessage.hidden = true;
 
@@ -727,13 +865,23 @@ function resetLuckyState() {
   luckyState.fetchToken += 1;
   luckyState.currentCatalogIds = [];
   luckyState.totalCandidates = 0;
+  luckyState.recentHistory = [];
+  luckyState.shuffleBags = {
+    top_bottom: [],
+    blazer_top_bottom: [],
+    blazer_dress: [],
+  };
 }
 
-function loadLuckyLook({ excludeCatalogIds, seed } = {}) {
+function loadLuckyLook({ seed } = {}) {
   const token = ++luckyState.fetchToken;
   setLuckyLoading();
 
-  const look = pickLuckyLook({ excludeCatalogIds, seed });
+  const look = pickLuckyLook({
+    recentHistory: luckyState.recentHistory,
+    shuffleBags: luckyState.shuffleBags,
+    seed,
+  });
   if (token !== luckyState.fetchToken) {
     return;
   }
@@ -767,9 +915,7 @@ function closeLuckyPairModal() {
 }
 
 function regenerateLuckyPair() {
-  loadLuckyLook({
-    excludeCatalogIds: luckyState.currentCatalogIds,
-  });
+  loadLuckyLook();
 }
 
 async function loadCatalog() {

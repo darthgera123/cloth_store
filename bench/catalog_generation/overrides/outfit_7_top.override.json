@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "fixture": "outfit_7",
+  "role": "top",
+  "namespace": "user_corrected_floral_sleeveless_top_v1",
+  "garment_class": "blouse",
+  "template_override": "top_sleeveless",
+  "reason": "User correction: sleeveless floral top/blouse, not a half-sleeve or beige-labeled garment.",
+  "overridden_vlm_fields": [
+    "dominant_color",
+    "garment_class",
+    "sleeve_cuff_neckline"
+  ],
+  "prohibited_conversions": [
+    "beige blouse",
+    "beige base color",
+    "half sleeves",
+    "short sleeves",
+    "long sleeves",
+    "half-sleeve blouse"
+  ],
+  "prompt_lines": [
+    "Garment class: sleeveless floral blouse/top. This is a sleeveless floral-print top, NOT a half-sleeve, short-sleeve, or sleeved blouse.",
+    "Describe the appearance as floral only; do NOT label or tag a beige base color.",
+    "Preserve sleeveless armholes and floral print from Image 1 and Image 3 wherever clearly visible. Do NOT add sleeves.",
+    "Do NOT convert to: beige blouse, beige base color, half sleeves, short sleeves, long sleeves, half-sleeve blouse.",
+    "Closed, symmetric, front-facing lay-flat sleeveless catalog presentation.",
+    "Do not invent buttons, hardware, collars, or details absent from Image 1 or Image 3."
+  ],
+  "presentation_mode": "text_only",
+  "precedence": "user_override > high_confidence_source_vlm > template_geometry_only"
+}
