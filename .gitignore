@@ -28,3 +28,9 @@ bench/catalog_generation/*.log
 .DS_Store
 .idea/
 .vscode/
+
+# Engagement invite: only index.html and preview.jpg are published.
+# passport/ holds the full-resolution originals and mast_magan_inst.mp4 the untrimmed
+# audio; both are sources for the embedded assets and are not needed to serve the page.
+/invite/passport/
+/invite/mast_magan_inst.mp4
