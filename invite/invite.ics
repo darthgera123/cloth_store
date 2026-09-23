@@ -1,0 +1,31 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Gera Hindocha Engagement//Invite//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VTIMEZONE
+TZID:Asia/Kolkata
+BEGIN:STANDARD
+DTSTART:19700101T000000
+TZOFFSETFROM:+0530
+TZOFFSETTO:+0530
+TZNAME:IST
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:engagement-gera-hindocha-20261126@cloth-store
+DTSTAMP:20260923T000816Z
+DTSTART;TZID=Asia/Kolkata:20261126T160000
+DTEND;TZID=Asia/Kolkata:20261126T210000
+SUMMARY:Pulkit & Lavani — Engagement
+LOCATION:Ahuja's Garden Villa, near Phoenix Mall of Asia, Bengaluru, Karnat
+ aka, India
+GEO:13.076018;77.590696
+URL:https://maps.app.goo.gl/fHr3HWLYLuoMG6m98
+DESCRIPTION:The engagement of Pulkit Gera and Lavani Hindocha.\n4:00 PM onw
+ ards.\nAhuja's Garden Villa, near Phoenix Mall of Asia, Bengaluru.
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+SEQUENCE:0
+END:VEVENT
+END:VCALENDAR

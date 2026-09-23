@@ -248,6 +248,8 @@ body{margin:0;color:var(--ink);font-family:var(--serif);-webkit-font-smoothing:a
   background:linear-gradient(135deg,#F2E4BE,#C2A044 52%,#E6CE8C);border:1px solid #B08D2E;
   box-shadow:0 3px 10px rgba(168,132,31,.3)}
 .gold-btn:focus-visible{outline:2px solid var(--lav-900);outline-offset:3px}
+.ics{font-family:var(--mono);font-size:.44em;letter-spacing:.14em;color:var(--gold);
+  text-transform:uppercase;text-decoration:none;display:inline-block;padding:.35em .2em}
 
 /* ---------- back cover ---------- */
 .bc .pg{justify-content:center;align-items:center;text-align:center;gap:.72em;padding:1.6em 1.5em}
@@ -6497,6 +6499,9 @@ var CAL = "https://calendar.google.com/calendar/render?action=TEMPLATE"
   + "&location=" + encodeURIComponent("Ahuja's Garden Villa, near Phoenix Mall of Asia, Bengaluru, Karnataka, India")
   + "&ctz=Asia/Kolkata";
 var MAP = "https://maps.app.goo.gl/fHr3HWLYLuoMG6m98";
+/* Calendar file sitting next to this page. Relative on purpose: unlike og:image, a plain
+   hyperlink resolves fine, so it keeps working if the page is moved to another host. */
+var ICS = "invite.ics";
 
 /* ---------------- ornaments ---------------- */
 var filigree = '<svg viewBox="0 0 44 44" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round">'
@@ -6715,7 +6720,8 @@ pages.push('<div class="page"><div class="guilloche"></div><div class="grain"></
 + '<div class="stub" id="stub"><span class="vt">TEAR HERE</span><span class="sq"></span><span class="vt">SEAT 1A</span></div>'
 + '</div>'
 + '<div class="tear-hint" id="tearhint">&#8592; drag the stub &#8594;</div>'
-+ '<div class="reveal" id="reveal"><a class="gold-btn" href="' + CAL + '" target="_blank" rel="noopener">Add to Google Calendar</a></div>'
++ '<div class="reveal" id="reveal"><a class="gold-btn" href="' + CAL + '" target="_blank" rel="noopener">Add to Google Calendar</a>'
++ '<br><a class="ics" href="' + ICS + '">Add to Calendar (.ics)</a></div>'
 + '</div><div class="pgnum">05</div></div></div>');
 
 /* 6 — back cover */
@@ -6730,6 +6736,7 @@ pages.push('<div class="page bc"><div class="guilloche"></div><div class="grain"
 + '<div class="when">THURSDAY, 26 NOVEMBER 2026<br>4:00 PM ONWARDS</div>'
 + '<div class="where">Ahuja&#39;s Garden Villa<br>near Phoenix Mall of Asia, Bengaluru</div>'
 + '<a class="gold-btn" href="' + CAL + '" target="_blank" rel="noopener">Add to Google Calendar</a>'
++ '<a class="ics" href="' + ICS + '">Add to Calendar (.ics)</a>'
 + '<a class="map" href="' + MAP + '" target="_blank" rel="noopener">Open in Maps &#8599;</a>'
 + '<div class="sign">Just the eight of us.</div>'
 + '<div class="pgnum">06</div></div></div>');
