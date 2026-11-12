@@ -65,6 +65,19 @@ describe("session lifecycle", () => {
     expectEngineError(() => act(s, { type: "reveal" }));
   });
 
+  test("explicit team picks override the alternating default", () => {
+    const s = createSession(
+      {
+        names: ["Pulkit", "Lavani", "Rajat", "Bindu"],
+        teams: ["Bride's Family", "Groom's Family"],
+        participantTeams: [1, 1, 0, 0],
+      },
+      "TEAM",
+      clock,
+    );
+    expect(s.participants.map((person) => person.teamId)).toEqual(["t2", "t2", "t1", "t1"]);
+  });
+
   test("configure replaces participants and keeps config valid", () => {
     const s = act(session(), {
       type: "configure",
@@ -74,6 +87,17 @@ describe("session lifecycle", () => {
     expect(s.participants.map((p) => p.name)).toEqual(["One", "Two", "Three"]);
     expect(s.participants[2]?.teamId).toBe("t2");
     expect(s.scores.participants.p3).toBe(0);
+
+    const swapped = act(s, {
+      type: "configure",
+      participants: [
+        { name: "One", team: 1 },
+        { name: "Two", team: 0 },
+        { name: "Three", team: 1 },
+      ],
+      teams: ["A", "B"],
+    });
+    expect(swapped.participants.map((person) => person.teamId)).toEqual(["t2", "t1", "t2"]);
   });
 });
 

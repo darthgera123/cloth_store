@@ -170,7 +170,16 @@ function HostBar({
 
 /* ---------- setup ---------- */
 
-const DEFAULT_NAMES = ["", "", "", "", "", "", "", ""];
+const DEFAULT_NAMES = [
+  "Pulkit",
+  "Lavani",
+  "Rajat",
+  "Bindu",
+  "Gaurang",
+  "Amita",
+  "Dhrupad",
+  "Aarush",
+];
 const DEFAULT_TEAMS: [string, string] = ["Bride's Family", "Groom's Family"];
 
 function SetupCard({
@@ -183,6 +192,7 @@ function SetupCard({
     names: string[];
     teams: [string, string] | null;
     config?: Partial<SessionConfig>;
+    participantTeams?: (0 | 1 | null)[];
   }) => Promise<boolean>;
   onSave?: (payload: {
     participants: { name: string; team?: 0 | 1 }[];
@@ -192,6 +202,13 @@ function SetupCard({
 }) {
   const [names, setNames] = useState<string[]>(
     session ? session.participants.map((person) => person.name) : DEFAULT_NAMES,
+  );
+  const [teamPick, setTeamPick] = useState<(0 | 1)[]>(() =>
+    Array.from({ length: 8 }, (_, index) => {
+      const existing = session?.participants[index];
+      if (existing) return existing.teamId === "t2" ? 1 : 0;
+      return index < 4 ? 0 : 1;
+    }),
   );
   const [teamsOn, setTeamsOn] = useState<boolean>(session ? session.teams.length === 2 : true);
   const [teamNames, setTeamNames] = useState<[string, string]>(
@@ -203,6 +220,12 @@ function SetupCard({
   const [message, setMessage] = useState<string | null>(null);
 
   const filled = names.map((name) => name.trim()).filter(Boolean);
+  const teamCount = (team: 0 | 1) =>
+    names.reduce(
+      (count, name, index) =>
+        name.trim().length > 0 && (teamPick[index] ?? 0) === team ? count + 1 : count,
+      0,
+    );
 
   const updateConfig = <K extends keyof SessionConfig>(key: K, value: SessionConfig[K]) => {
     setConfig((current) => ({ ...current, [key]: value }));
@@ -214,23 +237,26 @@ function SetupCard({
       return;
     }
     setMessage(null);
-    const participants = filled.map((name, index) => ({
-      name,
-      team: (index % 2) as 0 | 1,
-    }));
+    const roster = names
+      .map((name, index) => ({ name: name.trim(), team: teamPick[index] ?? 0, index }))
+      .filter((entry) => entry.name.length > 0);
     const teams = teamsOn ? teamNames : null;
 
     if (onCreate) {
       const ok = await onCreate({
-        names: filled,
+        names: roster.map((entry) => entry.name),
         teams,
         config: { ...config },
+        participantTeams: teams ? roster.map((entry) => entry.team) : undefined,
       });
       if (!ok) setMessage("Could not create the session.");
       return;
     }
     onSave?.({
-      participants: teamsOn ? participants : filled.map((name) => ({ name })),
+      participants: roster.map((entry) => ({
+        name: entry.name,
+        ...(teams ? { team: entry.team } : {}),
+      })),
       teams,
       config,
     });
@@ -247,20 +273,42 @@ function SetupCard({
         </span>
       </div>
 
-      <div className="grid gap-2 sm:grid-cols-2">
+      <div className="grid gap-2">
         {names.map((name, index) => (
-          <input
+          <div
             key={index}
-            className="field"
-            placeholder={`Player ${index + 1}`}
-            aria-label={`Player ${index + 1} name`}
-            value={name}
-            onChange={(event) => {
-              const next = [...names];
-              next[index] = event.target.value;
-              setNames(next);
-            }}
-          />
+            className="grid grid-cols-[18px_minmax(0,1fr)] items-center gap-2 sm:grid-cols-[18px_minmax(0,1fr)_minmax(150px,210px)]"
+          >
+            <span className="text-right font-serif text-[13px] text-gold-ink">
+              {index + 1}
+            </span>
+            <input
+              className="field"
+              placeholder={`Player ${index + 1}`}
+              aria-label={`Player ${index + 1} name`}
+              value={name}
+              onChange={(event) => {
+                const next = [...names];
+                next[index] = event.target.value;
+                setNames(next);
+              }}
+            />
+            {teamsOn ? (
+              <select
+                className="field"
+                aria-label={`Team for ${name.trim() || `player ${index + 1}`}`}
+                value={teamPick[index] ?? 0}
+                onChange={(event) => {
+                  const next = [...teamPick];
+                  next[index] = event.target.value === "1" ? 1 : 0;
+                  setTeamPick(next);
+                }}
+              >
+                <option value="0">{teamNames[0] || "Team one"}</option>
+                <option value="1">{teamNames[1] || "Team two"}</option>
+              </select>
+            ) : null}
+          </div>
         ))}
       </div>
 
@@ -288,6 +336,22 @@ function SetupCard({
             onChange={(event) => setTeamNames([teamNames[0], event.target.value])}
           />
         </div>
+      ) : null}
+
+      {teamsOn ? (
+        <p className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-plum-soft">
+          <span>
+            {teamNames[0] || "Team one"}:{" "}
+            <b className="tabular-nums text-plum">{teamCount(0)}</b>
+          </span>
+          <span>
+            {teamNames[1] || "Team two"}:{" "}
+            <b className="tabular-nums text-plum">{teamCount(1)}</b>
+          </span>
+          {teamCount(0) !== teamCount(1) ? (
+            <span className="text-gold-ink">Teams are uneven</span>
+          ) : null}
+        </p>
       ) : null}
 
       {config ? (

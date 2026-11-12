@@ -44,6 +44,7 @@ export interface HostGameApi {
     names: string[];
     teams: [string, string] | null;
     config?: Partial<SessionConfig>;
+    participantTeams?: (0 | 1 | null)[];
   }): Promise<boolean>;
   send(action: Action): void;
   undo(): void;
@@ -174,6 +175,7 @@ export function useHostGame(): HostGameApi {
       names: string[];
       teams: [string, string] | null;
       config?: Partial<SessionConfig>;
+      participantTeams?: (0 | 1 | null)[];
     }) => {
       const loaded = bankRef.current;
       if (!loaded) {

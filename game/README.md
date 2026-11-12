@@ -20,9 +20,10 @@ bun run dev        # http://127.0.0.1:5173
 | `/host/` | Host dashboard (laptop) |
 | `/display/?code=XXXX` | Audience display (TV or projector) |
 
-Open `/host/`, enter the eight names, create the session, then open
-`/display/` on the TV (or the copied link with the code) and enter the
-four-letter code shown in the host bar. `#/host` and `#/display?code=XXXX`
+Open `/host/`: the eight names are prefilled (Pulkit, Lavani, Rajat, Bindu,
+Gaurang, Amita, Dhrupad, Aarush) and you pick a team for each player. Create
+the session, then open `/display/` on the TV (or the copied link with the
+code) and enter the four-letter code shown in the host bar. `#/host` and `#/display?code=XXXX`
 still work as a fallback when the app is opened from the site root.
 
 Production build and local preview:
