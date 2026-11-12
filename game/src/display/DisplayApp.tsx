@@ -57,7 +57,10 @@ export function DisplayApp() {
             </button>
           </form>
           <p className="mt-6 text-[10px] uppercase tracking-[0.24em] text-plum-hush">
-            <a className="underline decoration-gold/50 underline-offset-4" href="#/host">
+            <a
+              className="underline decoration-gold/50 underline-offset-4"
+              href={`${import.meta.env.BASE_URL}host/`}
+            >
               Host dashboard
             </a>
           </p>

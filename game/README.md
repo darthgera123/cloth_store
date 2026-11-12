@@ -17,11 +17,13 @@ bun run dev        # http://127.0.0.1:5173
 
 | Route | Use |
 |---|---|
-| `/#/host` | Host dashboard (laptop) |
-| `/#/display` | Audience display (TV or projector) |
+| `/host/` | Host dashboard (laptop) |
+| `/display/?code=XXXX` | Audience display (TV or projector) |
 
-Open `/#/host`, enter the eight names, create the session, then open
-`/#/display` on the TV and enter the four-letter code shown in the host bar.
+Open `/host/`, enter the eight names, create the session, then open
+`/display/` on the TV (or the copied link with the code) and enter the
+four-letter code shown in the host bar. `#/host` and `#/display?code=XXXX`
+still work as a fallback when the app is opened from the site root.
 
 Production build and local preview:
 
@@ -124,8 +126,9 @@ ships dummy questions only — the real corpus is a data-only change.
 
 Set the repository variable `RELAY_URL` (for example
 `wss://relay.example.com`) to enable Mode B; leave it unset for same-device
-only. Routes are hash-based, so refreshing `…/game/#/host` and
-`…/game/#/display?code=XXXX` works on Pages without rewrites.
+only. The build emits real `host/index.html` and `display/index.html` pages,
+so `…/game/host/` and `…/game/display/?code=XXXX` survive refresh on Pages
+without rewrites; `…/game/` itself opens the display.
 
 ## Tests
 

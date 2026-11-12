@@ -27,10 +27,10 @@ export interface DisplaySessionApi {
 
 function codeFromLocation(): string | null {
   const hash = window.location.hash.replace(/^#/, "");
-  const query = hash.includes("?") ? hash.slice(hash.indexOf("?") + 1) : "";
-  const fromHash = new URLSearchParams(query).get("code");
+  const hashQuery = hash.includes("?") ? hash.slice(hash.indexOf("?") + 1) : "";
+  const fromHash = new URLSearchParams(hashQuery).get("code");
   const fromQuery = new URLSearchParams(window.location.search).get("code");
-  const code = fromHash ?? fromQuery;
+  const code = fromQuery ?? fromHash;
   if (code) return code.trim().toUpperCase();
   try {
     return sessionStorage.getItem(CODE_KEY);
@@ -107,7 +107,15 @@ export function useDisplaySession(): DisplaySessionApi {
     } catch {
       /* storage disabled */
     }
-    window.location.hash = `#/display?code=${normalized}`;
+    // Path routes keep the code in the query string; the hash fallback covers
+    // the root URL.
+    if (/\/display\/?$/.test(window.location.pathname)) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("code", normalized);
+      window.history.replaceState(null, "", url);
+    } else {
+      window.location.hash = `#/display?code=${normalized}`;
+    }
     setPublicState(null);
     setError(null);
     setCode(normalized);
@@ -119,8 +127,7 @@ export function useDisplaySession(): DisplaySessionApi {
     } catch {
       /* storage disabled */
     }
-    window.location.hash = "#/display";
-    window.location.reload();
+    window.location.assign(`${import.meta.env.BASE_URL}display/`);
   }, []);
 
   const retry = useCallback(() => {

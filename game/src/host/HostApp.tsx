@@ -114,7 +114,7 @@ function HostBar({
   session: SessionState | null;
 }) {
   const displayUrl = session
-    ? `${window.location.origin}${window.location.pathname}#/display?code=${session.code}`
+    ? new URL(`${import.meta.env.BASE_URL}display/?code=${session.code}`, window.location.origin).toString()
     : "";
 
   return (
@@ -611,7 +611,10 @@ function SessionCard({
   session: SessionState;
   api: HostGameApi;
 }) {
-  const displayUrl = `${window.location.origin}${window.location.pathname}#/display?code=${session.code}`;
+  const displayUrl = new URL(
+    `${import.meta.env.BASE_URL}display/?code=${session.code}`,
+    window.location.origin,
+  ).toString();
 
   return (
     <Panel className="p-4" corners={false}>
@@ -759,7 +762,7 @@ function SessionCard({
         </div>
 
         <p className="text-[11px] leading-relaxed text-plum-hush">
-          Audience: open <b>#/display</b> on the television and enter code{" "}
+          Audience: open <b>/display/</b> on the television and enter code{" "}
           <b className="text-plum">{session.code}</b>. Keep this dashboard open on the laptop.
           {session.game === "price_is_right" ? " Prices are shown here only until you reveal them." : ""}
           {session.timer ? ` Timer ends at ${new Date(session.timer.endsAt).toLocaleTimeString()}.` : ""}
