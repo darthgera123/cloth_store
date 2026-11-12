@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
   GAME_BLURB,
-  GAME_IDS,
   GAME_LABEL,
   type Action,
   type GameId,
@@ -13,6 +12,7 @@ import { Panel, Toast } from "../components/ui";
 import { useHostGame, type HostGameApi } from "../client/useHostGame";
 import { GamePanel, formatMoney } from "./panels";
 import { RULES } from "../rules/slides";
+import { VISIBLE_GAMES } from "../lib/games";
 
 export function HostApp() {
   const api = useHostGame();
@@ -534,7 +534,7 @@ function SelectCard({ session, send }: { session: SessionState; send: (action: A
         </span>
       </div>
       <div className="grid gap-2 sm:grid-cols-2">
-        {GAME_IDS.map((game: GameId) => {
+        {VISIBLE_GAMES.map((game: GameId, index) => {
           const blocked = game === "family_feud" && session.teams.length !== 2;
           return (
             <button
@@ -546,7 +546,7 @@ function SelectCard({ session, send }: { session: SessionState; send: (action: A
               title={blocked ? "Add two team names in setup first" : GAME_BLURB[game]}
             >
               <span className="font-serif text-[11px] uppercase tracking-[0.3em] text-gold-ink">
-                {GAME_IDS.indexOf(game) + 1}
+                {index + 1}
               </span>
               <span className="font-serif text-[24px] leading-tight">{GAME_LABEL[game]}</span>
               <span className="text-[11px] text-plum-soft">{GAME_BLURB[game]}</span>

@@ -289,7 +289,7 @@ export const configSchema = z.object({
 });
 
 export const defaultConfig: SessionConfig = {
-  strikeLimit: 3,
+  strikeLimit: 2,
   roundMultiplier: 1,
   herdPoints: 1,
   herdTieAwards: false,

@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { GAME_BLURB, GAME_IDS, GAME_LABEL, type PublicState } from "../lib/types";
+import { GAME_BLURB, GAME_LABEL, type PublicState } from "../lib/types";
 import { Ornaments } from "../components/Mandala";
 import { Confetti, Countdown, Panel, Rule, Toast } from "../components/ui";
 import { GameBoard, scoreRows } from "./boards";
 import { RULES } from "../rules/slides";
+import { VISIBLE_GAMES } from "../lib/games";
 import { useDisplaySession } from "../client/useDisplaySession";
 import { chime, isMuted, setMuted } from "../client/sound";
 
@@ -250,7 +251,7 @@ function Lobby({ state }: { state: PublicState }) {
         The Evening's Programme
       </p>
       <div className="mx-auto mt-3 grid w-full max-w-[680px] grid-cols-2 gap-2 sm:gap-3">
-        {GAME_IDS.map((game, index) => (
+        {VISIBLE_GAMES.map((game, index) => (
           <div
             key={game}
             className="flex items-baseline justify-center gap-3 border border-gold/30 bg-lavender-pale/40 px-4 py-3 text-center"

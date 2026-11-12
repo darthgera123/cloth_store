@@ -1,8 +1,9 @@
 # Game Night
 
-Host-run family game-show for eight players: **Family Feud**, **Herd
-Mentality**, **Who's Most Likely?** and **The Price Is Right**, in the
-lavender-and-gold invitation styling from `plan/UI-DESIGN.md`.
+Host-run family game-show for eight players, in the lavender-and-gold
+invitation styling from `plan/UI-DESIGN.md`. Four games are implemented;
+this event offers **Family Feud** and **The Price Is Right** — the other two
+stay in the codebase but are hidden via `src/lib/games.ts`.
 
 Built for one evening. The static app runs on GitHub Pages, the host browser
 owns the session, and an optional stateless relay connects a TV on another
@@ -106,7 +107,7 @@ never downloads question data.
 
 | Game | Mechanics |
 |---|---|
-| Family Feud | Shared round pot; correct answers credit the guessing team's revealed value and alternate the turn; three strikes per team; round ends when the board is clear or both teams are out. One team left → it takes the whole pot. Otherwise the higher revealed total wins, with a host tiebreak. Explicit "Award pot" before the cumulative scores move; starters alternate each round. |
+| Family Feud | Shared round pot; correct answers credit the guessing team's revealed value and alternate the turn; two strikes per team by default (configurable 2–5); round ends when the board is clear or both teams are out. One team left → it takes the whole pot. Otherwise the higher revealed total wins, with a host tiebreak. Explicit "Award pot" before the cumulative scores move; starters alternate each round. |
 | Herd Mentality | Record eight answers, auto-normalise, merge/split groups, majority scoring with configurable ties, optional Pink Cow including "blocks winning" |
 | Who's Most Likely? | Manual vote counts, reveal, ties, casual (no points) or competitive scoring |
 | The Price Is Right | Individual or team guesses, lock, reveal guesses, price reveal, closest-without-going-over with fallback, ties |

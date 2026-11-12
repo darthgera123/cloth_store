@@ -224,6 +224,19 @@ describe("family feud", () => {
     expect(s.phase).toBe("QUESTION_ACTIVE");
   });
 
+  test("the default strike limit is two", () => {
+    expect(session().config.strikeLimit).toBe(2);
+
+    let s = startGame("family_feud");
+    s = act(s, { type: "feud_strike", delta: 1 }); // t1
+    s = act(s, { type: "feud_strike", delta: 1 }); // t2
+    s = act(s, { type: "feud_strike", delta: 1 }); // t1 reaches two
+
+    expect(s.feud?.strikes).toEqual({ t1: 2, t2: 1 });
+    expect(s.feud?.ended).toBe(false);
+    expect(s.feud?.activeTeamId).toBe("t2");
+  });
+
   test("the active team alternates after every guess", () => {
     let s = startGame("family_feud");
     expect(s.feud?.activeTeamId).toBe("t1");
@@ -237,7 +250,7 @@ describe("family feud", () => {
   });
 
   test("strikes are counted per team and elimination does not end the round", () => {
-    let s = startGame("family_feud");
+    let s = startGame("family_feud", { strikeLimit: 3 });
     s = act(s, { type: "feud_reveal", answerId: "a1" });
     s = act(s, { type: "feud_reveal", answerId: "a2" });
     // t1, t2, t1, t2, t1 → t1 reaches three and drops out
@@ -260,7 +273,7 @@ describe("family feud", () => {
   });
 
   test("the last team standing takes the whole pot even with fewer points", () => {
-    let s = startGame("family_feud");
+    let s = startGame("family_feud", { strikeLimit: 3 });
     s = act(s, { type: "feud_reveal", answerId: "a1" }); // t1 +40
     s = act(s, { type: "feud_reveal", answerId: "a2" }); // t2 +30
     for (let i = 0; i < 5; i += 1) s = act(s, { type: "feud_strike", delta: 1 });

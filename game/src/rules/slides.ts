@@ -17,11 +17,11 @@ export const RULES: Record<GameId, RuleSlide[]> = {
     },
     {
       title: "Take Turns",
-      body: "Families alternate guesses. A correct answer adds its points to the shared pot. Three wrong guesses put a family out of the round.",
+      body: "Families alternate guesses. A correct answer adds its points to the shared pot. Two wrong guesses put a family out of the round.",
     },
     {
       title: "Win the Pot",
-      body: "The winning family takes the entire pot. One family left standing wins it. Otherwise the family with the more valuable correct answers wins. The starting family alternates each round.",
+      body: "The winning family takes the entire pot. One family left standing wins it. Otherwise the family with the more valuable correct answers wins. The starting family alternates each round. Two strikes knock a family out.",
     },
   ],
   herd_mentality: [

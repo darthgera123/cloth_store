@@ -29,7 +29,11 @@ Source documents:
 7. **Game rules** — the simplified alternating-team Family Feud (per-team
    strikes, shared pot, last team standing, revealed-total tiebreak, explicit
    pot award, alternating starters) replaces the earlier steal variant.
-8. **How to Play slides** — a `RULES` phase before the title card, with
+8. **Event game menu** — only Family Feud and The Price Is Right appear in
+   selection and on the audience programme; Herd Mentality and Who's Most
+   Likely remain implemented but hidden (`src/lib/games.ts`). Family Feud now
+   defaults to two strikes per family.
+9. **How to Play slides** — a `RULES` phase before the title card, with
    host-driven slides stored in `src/rules/slides.ts` (separate from questions),
    reopenable mid-round without touching scores or round state.
 
