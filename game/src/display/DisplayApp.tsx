@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { GAME_BLURB, GAME_LABEL, type PublicState } from "../lib/types";
+import { GAME_BLURB, GAME_IDS, GAME_LABEL, type PublicState } from "../lib/types";
 import { Ornaments } from "../components/Mandala";
 import { Confetti, Countdown, Panel, Rule, Toast } from "../components/ui";
 import { GameBoard, scoreRows } from "./boards";
@@ -243,7 +243,27 @@ function Lobby({ state }: { state: PublicState }) {
       <p className="mx-auto max-w-[36ch] text-balance font-serif text-[clamp(20px,1.85vw,30px)] italic leading-relaxed text-plum-soft">
         Two Families. One Celebration. A Little Friendly Competition.
       </p>
-      <div className="mt-8 flex flex-wrap justify-center gap-2">
+
+      <p className="mt-8 text-[10px] uppercase tracking-[0.4em] text-gold-ink">
+        The Evening's Programme
+      </p>
+      <div className="mx-auto mt-3 grid w-full max-w-[680px] grid-cols-2 gap-2 sm:gap-3">
+        {GAME_IDS.map((game, index) => (
+          <div
+            key={game}
+            className="flex items-baseline justify-center gap-3 border border-gold/30 bg-lavender-pale/40 px-4 py-3 text-center"
+          >
+            <span className="font-serif text-[11px] uppercase tracking-[0.2em] text-gold-ink">
+              {["I", "II", "III", "IV"][index]}
+            </span>
+            <span className="font-serif text-[clamp(16px,1.55vw,26px)] leading-tight text-plum">
+              {GAME_LABEL[game]}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-6 flex flex-wrap justify-center gap-2">
         {state.participants.map((person) => (
           <span
             key={person.id}
