@@ -3,47 +3,50 @@
 Source documents:
 
 - **[UI-DESIGN.md](UI-DESIGN.md)** — visual specification (palette, mandalas,
-  typography, screens A–H, motion, constraints). Delivered as the static
-  prototype in commit `aa0c504`.
-- **Framework specification** (from the client) — Phase 1 technical scope:
-  server-authoritative engine, four games, host/audience split, scoring, undo,
-  persistence, testing.
+  typography, screens A–H, motion, constraints).
+- **Framework specification** — four games, host/audience split, scoring, undo,
+  recovery.
+- **Hosting directive** — static deployment, no database, host browser owns the
+  session, stateless relay for cross-device sync.
 
 ## Decisions taken
 
-1. **Stack** — React 19 + TypeScript + Tailwind 4 + Vite, Bun HTTP/WebSocket
-   server, SQLite (`bun:sqlite`). Single process, no external services.
-2. **Two routes** — `/host` (private, host token) and `/display` (audience,
-   session code). Previously a same-browser BroadcastChannel prototype; now
-   server-authoritative so host and TV can be different devices.
-3. **Authentication** — session creation returns a 32-byte host token, stored in
-   the host browser's `localStorage`; actions and the private payload require it.
-   The display joins with the four-letter code only.
-4. **Undo** — full pre-action snapshots, capped at 50. Restoring scores is part
-   of the snapshot, not a visual reverse.
-5. **Question content** — dummy bank of 4/4/4/3 in `../questions/`; Phase 2 adds
-   the real corpus without touching code.
-6. **Pink Cow** — optional, configurable, can block winning.
-7. **Who's Most Likely?** — casual by default; competitive scoring is opt-in.
-8. **Price Is Right** — closest without going over; when every guess is over,
-   configurable fallback (closest overall by default, or lowest guess).
+1. **Static frontend** — React 19 + TypeScript + Tailwind 4 (Vite), published to
+   GitHub Pages at `/cloth_store/game/` with hash routes (`#/host`,
+   `#/display?code=…`).
+2. **Host is the source of truth** — the pure engine runs in the host browser;
+   the audience is read-only.
+3. **No persistence beyond `sessionStorage`** — the session, undo history and
+   revision live in the host tab; closing it ends the session. No database, no
+   accounts, no host tokens.
+4. **Two transports, one message format** — BroadcastChannel for same-device
+   windows, an optional WebSocket relay for the TV. The relay is stateless,
+   memory-only, and deployed separately (never on Pages).
+5. **Privacy** — the question bank is a host-only chunk; the audience receives
+   `PublicState` with concealed answers, prices, votes and tallies removed.
+6. **Recovery** — refresh restores from `sessionStorage`; the display requests a
+   fresh snapshot on open; a lost host shows a session-ended panel.
+7. **Game rules** — the simplified alternating-team Family Feud (per-team
+   strikes, shared pot, last team standing, revealed-total tiebreak, explicit
+   pot award, alternating starters) replaces the earlier steal variant.
 
-## Framework milestones
+## Milestones
 
 | Milestone | State |
 |---|---|
 | F-1 types, question schemas, session model, state machine | done |
-| F-2 session setup, host auth, display, real-time sync | done |
-| F-3 Family Feud end-to-end (scoring, strikes, reveals, undo) | done |
+| F-2 session setup, display, real-time sync | done (BC + relay) |
+| F-3 Family Feud (alternating rules, scoring, undo) | done |
 | F-4 Herd Mentality | done |
 | F-5 Who's Most Likely? | done |
 | F-6 The Price Is Right | done |
-| F-7 shared scoring, recovery, persistence, session controls | done |
-| F-8 end-to-end testing and edge cases | done (`bun test`, 29 assertions paths) |
+| F-7 shared scoring, recovery, session controls | done |
+| F-8 testing and edge cases | done (`bun test`, engine + relay) |
+| F-9 static hosting, base path, Pages workflow | done |
 
-## Open items for Phase 2
+## Open items
 
-- Real question corpus (not generated here, per the specification).
+- Real question corpus (Phase 2, as agreed).
 - Optional later: phone voting, QR join, speech recognition, music, tournament
   leaderboard, question editor/import.
-- Design review of the ported UI at 1920×1080 on the actual television.
+- Review the ported UI on the actual television at 1920×1080.

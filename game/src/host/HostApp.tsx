@@ -10,11 +10,11 @@ import {
   defaultConfig,
 } from "../lib/types";
 import { Panel, Toast } from "../components/ui";
-import { useSession, type SessionApi } from "../client/useSession";
+import { useHostGame, type HostGameApi } from "../client/useHostGame";
 import { GamePanel, formatMoney } from "./panels";
 
 export function HostApp() {
-  const api = useSession("host");
+  const api = useHostGame();
   const session = api.hostState?.session ?? null;
 
   if (!api.ready && !session) {
@@ -110,11 +110,11 @@ function HostBar({
   api,
   session,
 }: {
-  api: SessionApi;
+  api: HostGameApi;
   session: SessionState | null;
 }) {
   const displayUrl = session
-    ? `${window.location.origin}/display?code=${session.code}`
+    ? `${window.location.origin}${window.location.pathname}#/display?code=${session.code}`
     : "";
 
   return (
@@ -130,8 +130,12 @@ function HostBar({
           </span>
         ) : null}
         <span
-          className={`inline-block h-2 w-2 rounded-full ${api.connected ? "bg-gold" : "bg-plum-hush/40"}`}
-          title={api.connected ? "Connected" : "Reconnecting"}
+          className={`inline-block h-2 w-2 rounded-full ${
+            api.link.relay === "online" || api.link.sameDevice ? "bg-gold" : "bg-plum-hush/40"
+          }`}
+          title={`Same-device link: ${api.link.sameDevice ? "ready" : "unavailable"} · Relay: ${
+            api.link.relayConfigured ? api.link.relay : "not configured"
+          } · Displays: ${api.link.displays}`}
         />
       </div>
 
@@ -178,7 +182,7 @@ function SetupCard({
   onCreate?: (input: {
     names: string[];
     teams: [string, string] | null;
-    config?: Record<string, unknown>;
+    config?: Partial<SessionConfig>;
   }) => Promise<boolean>;
   onSave?: (payload: {
     participants: { name: string; team?: 0 | 1 }[];
@@ -368,14 +372,6 @@ function SetupCard({
                 ))}
               </select>
             </Rule>
-            <label className="flex items-center gap-2 text-[12px] text-plum-soft">
-              <input
-                type="checkbox"
-                checked={config.stealEnabled}
-                onChange={(event) => updateConfig("stealEnabled", event.target.checked)}
-              />
-              Steal on strikes
-            </label>
             <label className="flex items-center gap-2 text-[12px] text-plum-soft">
               <input
                 type="checkbox"
@@ -613,9 +609,9 @@ function SessionCard({
   api,
 }: {
   session: SessionState;
-  api: SessionApi;
+  api: HostGameApi;
 }) {
-  const displayUrl = `${window.location.origin}/display?code=${session.code}`;
+  const displayUrl = `${window.location.origin}${window.location.pathname}#/display?code=${session.code}`;
 
   return (
     <Panel className="p-4" corners={false}>
@@ -701,6 +697,17 @@ function SessionCard({
           >
             Reset all
           </button>
+          <button
+            className="hbtn hbtn-danger"
+            type="button"
+            onClick={() => {
+              if (window.confirm("End this session? The display will show that it has ended.")) {
+                api.endSession();
+              }
+            }}
+          >
+            End session
+          </button>
         </div>
 
         {api.hostState?.history?.length ? (
@@ -727,8 +734,32 @@ function SessionCard({
           </div>
         ) : null}
 
+        <div className="border-t border-gold/20 pt-2">
+          <p className="mb-1 text-[10px] uppercase tracking-[0.18em] text-plum-hush">
+            Connection
+          </p>
+          <ul className="grid gap-1 text-[11px] text-plum-soft">
+            <li className="flex items-center justify-between">
+              <span>Same-device link</span>
+              <span className="text-plum">
+                {api.link.sameDevice ? "ready" : "unavailable"}
+              </span>
+            </li>
+            <li className="flex items-center justify-between">
+              <span>Cross-device relay</span>
+              <span className="text-plum">
+                {api.link.relayConfigured ? api.link.relay : "not configured"}
+              </span>
+            </li>
+            <li className="flex items-center justify-between">
+              <span>Displays connected</span>
+              <span className="tabular-nums text-plum">{api.link.displays}</span>
+            </li>
+          </ul>
+        </div>
+
         <p className="text-[11px] leading-relaxed text-plum-hush">
-          Audience: open <b>/display</b> on the television and enter code{" "}
+          Audience: open <b>#/display</b> on the television and enter code{" "}
           <b className="text-plum">{session.code}</b>. Keep this dashboard open on the laptop.
           {session.game === "price_is_right" ? " Prices are shown here only until you reveal them." : ""}
           {session.timer ? ` Timer ends at ${new Date(session.timer.endsAt).toLocaleTimeString()}.` : ""}

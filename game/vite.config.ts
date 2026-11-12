@@ -2,16 +2,10 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 
-const backend = "http://127.0.0.1:8091";
-
+// GitHub Pages serves the app from a subpath; set BASE_PATH at build time.
 export default defineConfig({
+  base: process.env.BASE_PATH ?? "/",
   plugins: [react(), tailwindcss()],
   build: { outDir: "dist", emptyOutDir: true },
-  server: {
-    port: 5173,
-    proxy: {
-      "/api": backend,
-      "/ws": { target: "ws://127.0.0.1:8091", ws: true },
-    },
-  },
+  server: { port: 5173 },
 });

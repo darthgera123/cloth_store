@@ -18,7 +18,7 @@ function tone(frequency: number, at: number, duration: number, gain = 0.045) {
 
 export function isMuted(): boolean {
   try {
-    return localStorage.getItem(MUTE_KEY) === "1";
+    return sessionStorage.getItem(MUTE_KEY) === "1";
   } catch {
     return false;
   }
@@ -26,7 +26,7 @@ export function isMuted(): boolean {
 
 export function setMuted(muted: boolean): void {
   try {
-    localStorage.setItem(MUTE_KEY, muted ? "1" : "0");
+    sessionStorage.setItem(MUTE_KEY, muted ? "1" : "0");
   } catch {
     /* private mode */
   }

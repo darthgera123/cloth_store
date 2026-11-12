@@ -58,7 +58,8 @@ export function FeudBoard({ state }: { state: PublicState }) {
   if (!feud || !question) return null;
 
   const answers = question.answers ?? [];
-  const stealTeam = feud.steal.active && !feud.steal.resolved ? labelFor(state, feud.steal.teamId) : "";
+  const outcome = feud.ended ? feud.outcome : null;
+  const winnerName = feud.awardedTo ? labelFor(state, feud.awardedTo) : "";
 
   return (
     <div className="flex w-full flex-col gap-[clamp(16px,2.6vh,32px)]">
@@ -67,18 +68,20 @@ export function FeudBoard({ state }: { state: PublicState }) {
           <TeamScore
             team={state.teams[0]}
             score={state.scores.teams[state.teams[0].id] ?? 0}
-            active={feud.activeTeamId === state.teams[0].id}
-            strikes={feud.strikes}
+            active={feud.activeTeamId === state.teams[0].id && !feud.ended}
+            strikes={feud.strikes[state.teams[0].id] ?? 0}
             limit={feud.strikeLimit}
             align="left"
           />
         ) : null}
 
         <div className="grid justify-items-center gap-0.5 px-[clamp(10px,2vw,30px)]">
-          <span className="text-[9px] uppercase tracking-[0.34em] text-plum-hush">Question</span>
-          <span className="font-serif text-[clamp(28px,2.6vw,42px)] leading-none">{state.round}</span>
+          <span className="text-[9px] uppercase tracking-[0.34em] text-plum-hush">Round pot</span>
+          <span className="font-serif text-[clamp(30px,3vw,50px)] leading-none text-gold-display">
+            {feud.pot}
+          </span>
           <span className="text-[9px] uppercase tracking-[0.24em] text-plum-hush">
-            {feud.awarded ? "Awarded" : `Pot ${feud.pot}`}
+            Question {state.round}
           </span>
         </div>
 
@@ -86,18 +89,29 @@ export function FeudBoard({ state }: { state: PublicState }) {
           <TeamScore
             team={state.teams[1]}
             score={state.scores.teams[state.teams[1].id] ?? 0}
-            active={feud.activeTeamId === state.teams[1].id}
-            strikes={feud.strikes}
+            active={feud.activeTeamId === state.teams[1].id && !feud.ended}
+            strikes={feud.strikes[state.teams[1].id] ?? 0}
             limit={feud.strikeLimit}
             align="right"
           />
         ) : null}
       </div>
 
-      {stealTeam ? (
-        <p className="text-center text-[11px] uppercase tracking-[0.34em] text-gold-ink">
-          Steal opportunity — {stealTeam}
-        </p>
+      {outcome ? (
+        <div className="fade-up border border-gold/50 bg-lavender-pale px-[clamp(16px,2vw,32px)] py-[clamp(12px,1.6vh,20px)] text-center">
+          <p className="text-[9px] uppercase tracking-[0.34em] text-gold-ink">Round complete</p>
+          <p className="mt-1 font-serif text-[clamp(20px,2vw,32px)] leading-tight">
+            {outcome.winnerTeamId
+              ? `${labelFor(state, outcome.winnerTeamId)} takes the pot`
+              : "Tied on points — the host decides"}
+          </p>
+          <p className="mt-1 text-[clamp(11px,1.05vw,15px)] uppercase tracking-[0.16em] text-plum-soft">
+            {state.teams
+              .map((team) => `${team.name} ${outcome.credited[team.id] ?? 0}`)
+              .join("  ·  ")}
+            {feud.awarded && winnerName ? `  ·  ${winnerName} +${feud.pot}` : ""}
+          </p>
+        </div>
       ) : null}
 
       <h2 className="mx-auto max-w-[34ch] text-balance text-center font-serif text-[clamp(28px,3.1vw,54px)] font-medium leading-[1.18] text-plum">

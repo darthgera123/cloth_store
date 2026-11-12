@@ -1,110 +1,131 @@
 # Game Night
 
-Host-operated family game-show for eight players: **Family Feud**, **Herd
-Mentality**, **Who's Most Likely?** and **The Price Is Right**.
+Host-run family game-show for eight players: **Family Feud**, **Herd
+Mentality**, **Who's Most Likely?** and **The Price Is Right**, in the
+lavender-and-gold invitation styling from `plan/UI-DESIGN.md`.
 
-Phase 1 is the framework: complete mechanics, host controls, audience display,
-scoring, undo, persistence and recovery. The question files hold **dummy
-content** only — real questions come in Phase 2.
+Built for one evening. The static app runs on GitHub Pages, the host browser
+owns the session, and an optional stateless relay connects a TV on another
+device. No database, no accounts, no server-side persistence.
 
 ## Run
 
 ```bash
 bun install
-bun run build      # typecheck + bundle the client into dist/
-bun run start      # http://127.0.0.1:8091
+bun run dev        # http://127.0.0.1:5173
 ```
 
 | Route | Use |
 |---|---|
-| `/host` | Private dashboard, laptop/tablet |
-| `/display` | Audience screen, television or projector |
+| `/#/host` | Host dashboard (laptop) |
+| `/#/display` | Audience display (TV or projector) |
 
-Open `/host`, enter eight names, create the session, then open `/display` on
-the TV and enter the four-letter session code shown in the host bar.
+Open `/#/host`, enter the eight names, create the session, then open
+`/#/display` on the TV and enter the four-letter code shown in the host bar.
 
-### Development
+Production build and local preview:
 
 ```bash
-bun run start      # server on :8091
-bun run dev        # Vite on :5173, proxies /api and /ws
+bun run build
+bun run preview    # http://127.0.0.1:8091
 ```
 
-### Environment
+### Cross-device relay (Mode B)
 
-| Variable | Default | Purpose |
-|---|---|---|
-| `PORT` | `8091` | Server port |
-| `DB_PATH` | `.data/sessions.db` | SQLite session store |
-| `QUESTIONS_DIR` | `questions/` | Question bank directory |
+```bash
+bun run relay      # ws://127.0.0.1:8092
+```
+
+Point the app at it at build/dev time:
+
+```bash
+VITE_RELAY_URL=ws://127.0.0.1:8092 bun run build
+```
+
+Without `VITE_RELAY_URL` the app runs same-device only. The relay keeps rooms
+in memory and forwards messages; it stores nothing and is **not** hosted on
+GitHub Pages.
+
+## How state flows
+
+```
+host browser (source of truth)
+  engine → sessionStorage → public snapshot
+                              ├── BroadcastChannel  (same device, Mode A)
+                              └── WebSocket relay   (another device, Mode B)
+                                                     ↓
+                                            audience display (read-only)
+```
+
+- The host applies every action locally through the pure engine, persists the
+  session in `sessionStorage`, then publishes a `PublicState` snapshot.
+- The audience only ever receives `PublicState`: concealed answers, prices,
+  votes, tallies and per-player data are stripped by `projectPublic`.
+- Both transports use the identical `{ type: "snapshot", code, revision,
+  payload }` message; the display ignores revisions it has already applied.
+- The display sends `hello` on open and every three seconds until it has a
+  snapshot, so a refresh or a reopened TV re-syncs from the host.
+- If the host goes away for 20 seconds, or ends the session explicitly, the
+  display shows a **Session ended** panel instead of inventing state.
+
+### Storage
+
+`sessionStorage` is the only browser persistence: `gn:host-session:v1` holds the
+host's state, undo history and revision; `gn:last-code` remembers the display's
+session code. No `localStorage`, no IndexedDB, no database. Closing the host tab
+ends the session by design.
 
 ## Architecture
 
 ```
-questions/*.json        question bank (server-only, zod-validated)
-src/lib/types.ts        domain types, zod schemas, action union
-src/lib/herd.ts         answer normalisation and grouping
-src/server/engine.ts    pure state machine: createSession / applyAction / projectPublic
-src/server/db.ts        SQLite sessions, snapshots, applied-action ids
-src/server/index.ts     Bun HTTP + WebSocket server, static bundle
-src/client/useSession.ts  host/display transport: REST + WS, reconnect
-src/display/            audience screens and boards
-src/host/               host dashboard, per-game controls
+src/engine/engine.ts       pure state machine (createSession / applyAction / projectPublic)
+src/questions/bank.ts      bundled JSON questions, zod-validated, host-only chunk
+src/lib/types.ts           domain types, zod schemas, action union
+src/lib/herd.ts            answer normalisation and grouping
+src/transport/link.ts      BroadcastChannel + relay client, one message shape
+src/client/useHostGame.ts  host: engine + sessionStorage + publish
+src/client/useDisplaySession.ts  audience: snapshots, presence, session-ended
+src/display/               audience screens and boards
+src/host/                  host dashboard, per-game controls
+relay/index.ts             stateless WebSocket relay (Bun)
 ```
 
-- The **server owns all state**. The host sends actions; the server validates the
-  phase, mutates, persists, and broadcasts.
-- **Two payloads**: the display receives `PublicState` (hidden answers, prices,
-  votes and tallies stripped); the host receives `HostState` with the full
-  session and the question bank for the current game.
-- **Undo** restores a full pre-action snapshot (scores included), not a visual
-  rollback. Snapshots are capped at 50.
-- **Idempotency**: every action carries an `actionId`; duplicates are recorded in
-  `applied_actions` and ignored, so a double click cannot award twice.
-- **Reconnect**: the display and host re-fetch state, then reopen the socket; the
-  first message is always a full snapshot. `localStorage` keeps the host token
-  and the last display code.
-
-### Phases
-
-`LOBBY → GAME_INTRO → ROUND_READY → QUESTION_ACTIVE → ANSWERING → REVEAL →
-ROUND_RESULT → GAME_RESULT`
-
-Invalid transitions throw `EngineError` and never reach the display.
+`HostApp` and the question bank are loaded as separate chunks, so the audience
+never downloads question data.
 
 ## Games
 
-| Game | Mechanics implemented |
+| Game | Mechanics |
 |---|---|
-| Family Feud | Reveal answers into a pot, strikes with configurable limit, automatic steal opportunity, steal won/missed, manual award, round multiplier, two teams |
+| Family Feud | Shared round pot; correct answers credit the guessing team's revealed value and alternate the turn; three strikes per team; round ends when the board is clear or both teams are out. One team left → it takes the whole pot. Otherwise the higher revealed total wins, with a host tiebreak. Explicit "Award pot" before the cumulative scores move; starters alternate each round. |
 | Herd Mentality | Record eight answers, auto-normalise, merge/split groups, majority scoring with configurable ties, optional Pink Cow including "blocks winning" |
 | Who's Most Likely? | Manual vote counts, reveal, ties, casual (no points) or competitive scoring |
 | The Price Is Right | Individual or team guesses, lock, reveal guesses, price reveal, closest-without-going-over with fallback, ties |
 
-Shared controls: start/next/skip/restart round, end game, pause, countdown
-timer, undo, manual score edits, back to game selection, reset with confirmation.
+Shared host controls: start/next/skip/restart round, end game, pause, countdown
+timer, undo (snapshots include scores), manual score edits, reset confirmation,
+session end. Display controls: fullscreen and sound on/off.
 
 ## Questions
 
-One JSON array per game. `server/questions.ts` validates every entry with zod,
-rejects duplicate ids and groups by `game`.
+`questions/*.json`, one array per game, validated with zod at load. Optional
+`category`, `difficulty` and `image` fields are supported. Order follows the
+file; enable "Shuffle question order" in setup to shuffle per session. Phase 1
+ships dummy questions only — the real corpus is a data-only change.
 
-```json
-{
-  "id": "ff-demo-001",
-  "game": "family_feud",
-  "question": "Name something people bring on a family trip.",
-  "answers": [
-    { "id": "a1", "text": "Food", "points": 40 },
-    { "id": "a2", "text": "Clothes", "points": 30 }
-  ]
-}
-```
+## Deploy to GitHub Pages
 
-Other schemas live in `src/lib/types.ts`; optional `category` and `difficulty`
-metadata are accepted, as are optional `image` paths for price items (served
-from `public/`). Questions are ordered by file order, or shuffled per session
-when "Shuffle question order" is enabled. Used ids are tracked in the session.
+`.github/workflows/pages.yml` builds the app with
+`BASE_PATH=/cloth_store/game/` and publishes:
+
+- the existing storefront bundle at the site root (when `dist/cloth-store`
+  exists in the checkout), and
+- this game at `/cloth_store/game/`.
+
+Set the repository variable `RELAY_URL` (for example
+`wss://relay.example.com`) to enable Mode B; leave it unset for same-device
+only. Routes are hash-based, so refreshing `…/game/#/host` and
+`…/game/#/display?code=XXXX` works on Pages without rewrites.
 
 ## Tests
 
@@ -112,14 +133,13 @@ when "Shuffle question order" is enabled. Used ids are tracked in the session.
 bun test
 ```
 
-- `tests/engine.test.ts` — phase guards, scoring, steals, ties, merge, restarts,
-  privacy of the public projection, undo-relevant rollbacks.
-- `tests/server.test.ts` — spawns the real server on a temp database and drives
-  HTTP + WebSocket: host-token enforcement, private/public separation,
-  duplicate-action idempotency, undo, display rejection, reconnect persistence.
+- `tests/engine.test.ts` — phase guards, Feud alternating rules and pot award,
+  herd grouping and ties, most-likely and price winners, restart rollback,
+  public-state privacy.
+- `tests/relay.test.ts` — spawns the relay and checks room isolation, no
+  replay after disconnects, and malformed-message rejection.
 
-## Phase 1 boundaries
+## Limits
 
-Implemented: everything in the specification's "Essential" list. Not
-implemented (optional/later): phone voting, QR joining, speech recognition,
-background music, tournament leaderboard, question editor/import.
+Optional later: phone voting, QR joining, speech recognition, music, a
+tournament leaderboard, a question editor. None of them block the event.

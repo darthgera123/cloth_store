@@ -3,11 +3,11 @@ import { GAME_BLURB, GAME_LABEL, type PublicState } from "../lib/types";
 import { Ornaments } from "../components/Mandala";
 import { Confetti, Countdown, Panel, Rule, Toast } from "../components/ui";
 import { GameBoard, scoreRows } from "./boards";
-import { useSession } from "../client/useSession";
+import { useDisplaySession } from "../client/useDisplaySession";
 import { chime, isMuted, setMuted } from "../client/sound";
 
 export function DisplayApp() {
-  const session = useSession("display");
+  const session = useDisplaySession();
   const state = session.publicState;
   const [muted, setMutedState] = useState(() => isMuted());
   const [joinCode, setJoinCode] = useState("");
@@ -26,17 +26,9 @@ export function DisplayApp() {
     setMuted(next);
   };
 
-  if (!session.ready) {
+  if (!session.code) {
     return (
-      <Shell state={state} muted={muted} onToggleMute={toggleMute} connected={session.connected}>
-        <p className="font-serif text-[22px] italic text-plum-soft">Connecting…</p>
-      </Shell>
-    );
-  }
-
-  if (!state) {
-    return (
-      <Shell state={null} muted={muted} onToggleMute={toggleMute} connected={session.connected}>
+      <Shell state={null} code={null} muted={muted} onToggleMute={toggleMute} connected={false}>
         <Panel className="w-full max-w-[560px] px-10 py-12 text-center">
           <p className="kicker">Audience Display</p>
           <h1 className="mt-3 font-script text-[clamp(56px,7vw,84px)] leading-none text-gold-display">
@@ -64,9 +56,65 @@ export function DisplayApp() {
               Join Session
             </button>
           </form>
-          {session.error ? (
-            <p className="mt-5 text-[12px] text-gold-ink">{session.error}</p>
-          ) : null}
+          <p className="mt-6 text-[10px] uppercase tracking-[0.24em] text-plum-hush">
+            <a className="underline decoration-gold/50 underline-offset-4" href="#/host">
+              Host dashboard
+            </a>
+          </p>
+        </Panel>
+      </Shell>
+    );
+  }
+
+  if (session.ended) {
+    return (
+      <Shell
+        state={null}
+        code={session.code}
+        muted={muted}
+        onToggleMute={toggleMute}
+        connected={false}
+      >
+        <Panel className="w-full max-w-[620px] px-10 py-12 text-center">
+          <p className="kicker">Game Night</p>
+          <h2 className="mt-3 font-serif text-[clamp(34px,4vw,54px)] leading-tight">
+            Session ended
+          </h2>
+          <p className="mx-auto mt-4 max-w-[38ch] text-[14px] leading-relaxed text-plum-soft">
+            The host dashboard for session <b className="text-plum">{session.code}</b> is no longer
+            connected. Rejoin once the host opens it again.
+          </p>
+          <div className="mt-7 flex flex-wrap justify-center gap-3">
+            <button className="btn btn-primary" type="button" onClick={session.retry}>
+              Try again
+            </button>
+            <button className="btn" type="button" onClick={session.leave}>
+              Change code
+            </button>
+          </div>
+        </Panel>
+      </Shell>
+    );
+  }
+
+  if (!state) {
+    return (
+      <Shell
+        state={null}
+        code={session.code}
+        muted={muted}
+        onToggleMute={toggleMute}
+        connected={session.hostOnline}
+      >
+        <Panel className="w-full max-w-[560px] px-10 py-12 text-center">
+          <p className="kicker">Session {session.code}</p>
+          <h2 className="mt-3 font-serif text-[clamp(30px,3.6vw,48px)] leading-tight">
+            Waiting for the host
+          </h2>
+          <p className="mx-auto mt-4 max-w-[34ch] text-[13px] leading-relaxed text-plum-soft">
+            Keep this window open. The display connects automatically as soon as the host starts
+            the session.
+          </p>
         </Panel>
       </Shell>
     );
@@ -75,9 +123,10 @@ export function DisplayApp() {
   return (
     <Shell
       state={state}
+      code={session.code}
       muted={muted}
       onToggleMute={toggleMute}
-      connected={session.connected}
+      connected={session.hostOnline}
     >
       <Phase state={state} />
       {state.paused ? (
@@ -95,12 +144,14 @@ export function DisplayApp() {
 
 function Shell({
   state,
+  code,
   muted,
   onToggleMute,
   connected,
   children,
 }: {
   state: PublicState | null;
+  code: string | null;
   muted: boolean;
   onToggleMute: () => void;
   connected: boolean;
@@ -113,9 +164,9 @@ function Shell({
         <header className="flex items-center justify-between px-[clamp(20px,2.4vw,40px)] py-5">
           <div className="flex items-center gap-3">
             <span className="font-script text-[26px] leading-[1.5] text-gold-ink">Game Night</span>
-            {state ? (
+            {code ? (
               <span className="hidden border-l border-gold/40 pl-3 text-[10px] uppercase tracking-[0.3em] text-plum-hush sm:inline">
-                Session {state.code}
+                Session {code}
               </span>
             ) : null}
           </div>
@@ -142,13 +193,9 @@ function Shell({
           </div>
         </header>
 
-        {state && !connected ? (
-          <p className="border-y border-gold/30 bg-lavender-pale px-6 py-2 text-center text-[10px] uppercase tracking-[0.3em] text-gold-ink">
-            Reconnecting to the host…
-          </p>
-        ) : state && !state.hostConnected ? (
+        {code && !connected ? (
           <p className="border-y border-gold/30 bg-lavender-pale px-6 py-2 text-center text-[10px] uppercase tracking-[0.3em] text-plum-soft">
-            Host dashboard is offline
+            Host dashboard offline — waiting for it to reconnect
           </p>
         ) : null}
 
@@ -276,16 +323,20 @@ function GameResult({ state }: { state: PublicState }) {
           {winners.length > 0 ? winners.join(" · ") : "A draw"}
         </p>
         {result ? (
-          <ul className="mx-auto mt-8 grid w-full max-w-[420px] gap-1.5">
+          <ul className="mx-auto mt-8 grid w-full max-w-[520px] gap-1.5">
             {result.standings.map((row) => (
               <li
                 key={row.label}
-                className={`flex items-baseline justify-between border px-4 py-2 ${
+                className={`flex items-baseline justify-between border px-5 py-2.5 ${
                   row.winner ? "border-gold bg-lavender-pale" : "border-gold/20"
                 }`}
               >
-                <span className="text-[14px] uppercase tracking-[0.14em]">{row.label}</span>
-                <span className="tabular-nums text-gold-ink">{row.points}</span>
+                <span className="text-[clamp(14px,1.3vw,20px)] uppercase tracking-[0.12em]">
+                  {row.label}
+                </span>
+                <span className="text-[clamp(17px,1.6vw,26px)] tabular-nums text-gold-ink">
+                  {row.points}
+                </span>
               </li>
             ))}
           </ul>
@@ -305,10 +356,14 @@ function ScoreList({ state }: { state: PublicState }) {
       {rows.map((row) => (
         <li
           key={row.label}
-          className="flex items-baseline justify-between border border-gold/25 px-4 py-2"
+          className="flex items-baseline justify-between border border-gold/25 px-5 py-3"
         >
-          <span className="text-[13px] uppercase tracking-[0.14em]">{row.label}</span>
-          <span className="tabular-nums text-gold-ink">{row.points}</span>
+          <span className="text-[clamp(15px,1.5vw,24px)] uppercase tracking-[0.12em]">
+            {row.label}
+          </span>
+          <span className="text-[clamp(20px,2vw,32px)] tabular-nums text-gold-ink">
+            {row.points}
+          </span>
         </li>
       ))}
     </ul>

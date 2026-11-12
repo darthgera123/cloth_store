@@ -124,30 +124,55 @@ export function FeudPanel({
 }) {
   const feud = session.feud;
   const question = questions.find((q) => q.id === feud?.questionId) as FeudQuestion | undefined;
-  if (!feud || !question) return <p className="text-[13px] text-plum-soft">No Feud round in progress.</p>;
+  if (!feud || !question) {
+    return <p className="text-[13px] text-plum-soft">No Feud round in progress.</p>;
+  }
 
-  const [first, second] = session.teams;
-  const questionOpen = session.phase === "QUESTION_ACTIVE";
   const potValue = feud.pot * session.config.roundMultiplier;
+  const open = session.phase === "QUESTION_ACTIVE" && !feud.ended;
+  const teamName = (id: string | null | undefined) =>
+    session.teams.find((team) => team.id === id)?.name ?? "";
+  const outcome = feud.outcome;
+  const limit = session.config.strikeLimit;
 
   return (
     <div>
       <div className="mb-3 flex flex-wrap gap-2">
         <span className="hbtn pointer-events-none">Question {session.round}</span>
-        <span className="hbtn pointer-events-none">Pot {potValue}</span>
-        {feud.awarded ? (
-          <span className="hbtn pointer-events-none border-gold bg-lavender-pale">Awarded</span>
-        ) : null}
+        <span className="hbtn pointer-events-none border-gold bg-lavender-pale">
+          Round pot {potValue}
+        </span>
+        <span className="hbtn pointer-events-none">
+          Starts: {teamName(feud.startingTeamId)}
+        </span>
+      </div>
+
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border border-gold/30 bg-lavender-pale/50 px-4 py-3">
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.22em] text-plum-hush">Guessing now</p>
+          <p className="font-serif text-[24px] leading-tight">
+            {feud.ended ? "Round complete" : teamName(feud.activeTeamId)}
+          </p>
+        </div>
+        <button
+          className="hbtn hbtn-solid"
+          type="button"
+          disabled={!open}
+          onClick={() => send({ type: "feud_strike", delta: 1 })}
+        >
+          Wrong guess · strike
+        </button>
       </div>
 
       <ul className="grid gap-2">
         {question.answers.map((answer, index) => {
           const revealed = feud.revealed.includes(answer.id);
+          const claimedBy = feud.credited[answer.id];
           return (
             <li key={answer.id}>
               <button
                 type="button"
-                disabled={revealed || !questionOpen}
+                disabled={revealed || !open}
                 onClick={() => send({ type: "feud_reveal", answerId: answer.id })}
                 className={`flex w-full items-center gap-3 border px-3 py-2.5 text-left transition-colors ${
                   revealed ? "border-gold bg-lavender-pale" : "border-gold/25 hover:bg-lavender-pale/60"
@@ -157,6 +182,11 @@ export function FeudPanel({
                   {index + 1}
                 </span>
                 <span className="flex-1 text-[15px]">{answer.text}</span>
+                {revealed ? (
+                  <span className="text-[9px] uppercase tracking-[0.14em] text-plum-hush">
+                    {teamName(claimedBy)}
+                  </span>
+                ) : null}
                 <span className="text-[15px] font-semibold tabular-nums text-gold-ink">
                   {answer.points}
                 </span>
@@ -170,102 +200,108 @@ export function FeudPanel({
       </ul>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <div className="border border-gold/25 p-3">
-          <div className="mb-2 flex items-center justify-between">
-            <Meta>Strikes ({feud.strikes}/{session.config.strikeLimit})</Meta>
-            <div className="flex gap-1">
-              <button
-                className="hbtn"
-                type="button"
-                disabled={!questionOpen || feud.strikes === 0}
-                onClick={() => send({ type: "feud_strike", delta: -1 })}
-              >
-                −
-              </button>
-              <button
-                className="hbtn"
-                type="button"
-                disabled={!questionOpen || feud.strikes >= session.config.strikeLimit}
-                onClick={() => send({ type: "feud_strike", delta: 1 })}
-              >
-                + Strike
-              </button>
+        {session.teams.map((team) => {
+          const strikes = feud.strikes[team.id] ?? 0;
+          const isOut = strikes >= limit;
+          return (
+            <div
+              key={team.id}
+              className={`border p-3 ${isOut ? "border-gold bg-lavender-pale/60" : "border-gold/25"}`}
+            >
+              <div className="mb-2 flex items-center justify-between">
+                <Meta>
+                  {team.name} · {isOut ? "out of the round" : `${strikes}/${limit} strikes`}
+                </Meta>
+                <div className="flex gap-1">
+                  <button
+                    className="hbtn"
+                    type="button"
+                    aria-label={`Remove a strike from ${team.name}`}
+                    disabled={strikes === 0 || !open}
+                    onClick={() => send({ type: "feud_strike", delta: -1, teamId: team.id })}
+                  >
+                    −
+                  </button>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                {Array.from({ length: limit }, (_, index) => (
+                  <span
+                    key={index}
+                    className={`grid h-8 w-8 place-items-center border ${
+                      index < strikes ? "border-gold bg-lavender-pale" : "border-gold/25"
+                    }`}
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      className="h-4 w-4 text-gold"
+                    >
+                      <path
+                        d="M5 5l14 14M19 5L5 19"
+                        strokeWidth="2"
+                        opacity={index < strikes ? 1 : 0.25}
+                      />
+                    </svg>
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
-          <div className="flex gap-2">
-            {Array.from({ length: session.config.strikeLimit }, (_, index) => (
-              <span
-                key={index}
-                className={`grid h-8 w-8 place-items-center border ${
-                  index < feud.strikes ? "border-gold bg-lavender-pale" : "border-gold/25"
-                }`}
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="h-4 w-4 text-gold">
-                  <path d="M5 5l14 14M19 5L5 19" strokeWidth="2" opacity={index < feud.strikes ? 1 : 0.25} />
-                </svg>
+          );
+        })}
+      </div>
+
+      {feud.ended && outcome ? (
+        <div className="mt-4 border border-gold bg-lavender-pale p-4">
+          <Meta>
+            Round over ·{" "}
+            {outcome.reason === "answers_exhausted"
+              ? "all answers revealed"
+              : outcome.reason === "both_eliminated"
+                ? "both teams out"
+                : "one team left standing"}
+          </Meta>
+          <div className="mt-2 flex flex-wrap gap-4">
+            {session.teams.map((team) => (
+              <span key={team.id} className="text-[13px]">
+                {team.name}:{" "}
+                <b className="tabular-nums text-gold-ink">{outcome.credited[team.id] ?? 0}</b>
               </span>
             ))}
           </div>
-        </div>
 
-        <div className="border border-gold/25 p-3">
-          <Meta>Active team</Meta>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {session.teams.map((team) => (
-              <button
-                key={team.id}
-                type="button"
-                className="hbtn"
-                aria-pressed={feud.activeTeamId === team.id}
-                disabled={session.phase === "ROUND_RESULT"}
-                onClick={() => send({ type: "feud_set_active", teamId: team.id })}
-              >
-                {team.name}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {feud.steal.active && !feud.steal.resolved ? (
-        <div className="mt-3 border border-gold bg-lavender-pale p-3">
-          <Meta>Steal opportunity</Meta>
-          <div className="mt-2 flex flex-wrap gap-2">
+          {feud.awarded ? (
+            <p className="mt-3 text-[12px] uppercase tracking-[0.16em] text-gold-ink">
+              Pot of {potValue} awarded to {teamName(feud.awardedTo)}
+            </p>
+          ) : outcome.tied ? (
+            <div className="mt-3">
+              <p className="text-[12px] text-plum-soft">
+                Revealed points are level — choose who takes the pot.
+              </p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {session.teams.map((team) => (
+                  <button
+                    key={team.id}
+                    className="hbtn hbtn-solid"
+                    type="button"
+                    onClick={() => send({ type: "feud_award", teamId: team.id })}
+                  >
+                    Award {potValue} to {team.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : (
             <button
-              className="hbtn hbtn-solid"
+              className="hbtn hbtn-solid mt-3"
               type="button"
-              onClick={() => send({ type: "feud_steal", success: true })}
+              onClick={() => send({ type: "feud_award" })}
             >
-              Steal won
+              Award pot · {potValue} to {teamName(outcome.winnerTeamId)}
             </button>
-            <button
-              className="hbtn"
-              type="button"
-              onClick={() => send({ type: "feud_steal", success: false })}
-            >
-              Steal missed
-            </button>
-          </div>
-        </div>
-      ) : null}
-
-      {!feud.awarded ? (
-        <div className="mt-3 border border-gold/25 p-3">
-          <Meta>Award the pot ({potValue})</Meta>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {[first, second].map((team) =>
-              team ? (
-                <button
-                  key={team.id}
-                  className="hbtn"
-                  type="button"
-                  onClick={() => send({ type: "feud_award", teamId: team.id })}
-                >
-                  {team.name}
-                </button>
-              ) : null,
-            )}
-          </div>
+          )}
         </div>
       ) : null}
 
@@ -273,27 +309,24 @@ export function FeudPanel({
         <button
           className="hbtn hbtn-solid"
           type="button"
-          disabled={!questionOpen}
-          onClick={() => send({ type: "reveal" })}
-        >
-          Close board
-        </button>
-        <button
-          className="hbtn"
-          type="button"
           disabled={session.phase !== "REVEAL"}
           onClick={() => send({ type: "round_result" })}
         >
-          Round result
+          Show round result
         </button>
         <button
           className="hbtn"
           type="button"
-          disabled={session.phase !== "ROUND_RESULT"}
+          disabled={session.phase !== "ROUND_RESULT" || !feud.awarded}
           onClick={() => send({ type: "next_round" })}
         >
           Next question
         </button>
+        {!feud.ended ? (
+          <span className="self-center text-[11px] text-plum-hush">
+            The round ends when the board is clear or both teams are out.
+          </span>
+        ) : null}
       </Footer>
     </div>
   );

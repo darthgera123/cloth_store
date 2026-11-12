@@ -138,14 +138,29 @@ export interface Timer {
   label: string;
 }
 
+export type FeudEndReason = "answers_exhausted" | "both_eliminated" | "last_team_standing";
+
+export interface FeudOutcome {
+  reason: FeudEndReason;
+  winnerTeamId: string | null;
+  tied: boolean;
+  credited: Record<string, number>;
+}
+
 export interface FeudState {
   questionId: string;
   revealed: string[];
-  strikes: number;
+  /** answer id -> team id that guessed it correctly */
+  credited: Record<string, string>;
+  /** per-team incorrect guesses this round */
+  strikes: Record<string, number>;
   activeTeamId: string;
+  startingTeamId: string;
   pot: number;
   awarded: boolean;
-  steal: { active: boolean; teamId: string | null; resolved: boolean };
+  awardedTo: string | null;
+  ended: boolean;
+  outcome: FeudOutcome | null;
 }
 
 export interface HerdGroup {
@@ -236,7 +251,6 @@ export interface SessionState {
 
 export interface SessionConfig {
   strikeLimit: number;
-  stealEnabled: boolean;
   roundMultiplier: number;
   herdPoints: number;
   herdTieAwards: boolean;
@@ -255,7 +269,6 @@ export interface SessionConfig {
 
 export const configSchema = z.object({
   strikeLimit: z.number().int().min(1).max(5),
-  stealEnabled: z.boolean(),
   roundMultiplier: z.number().int().min(1).max(3),
   herdPoints: z.number().int().min(1).max(10),
   herdTieAwards: z.boolean(),
@@ -274,7 +287,6 @@ export const configSchema = z.object({
 
 export const defaultConfig: SessionConfig = {
   strikeLimit: 3,
-  stealEnabled: true,
   roundMultiplier: 1,
   herdPoints: 1,
   herdTieAwards: false,
@@ -331,10 +343,12 @@ export const actionSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("reset_session") }),
 
   z.object({ type: z.literal("feud_reveal"), answerId: z.string().min(1) }),
-  z.object({ type: z.literal("feud_strike"), delta: z.union([z.literal(1), z.literal(-1)]) }),
-  z.object({ type: z.literal("feud_set_active"), teamId: z.string().min(1) }),
-  z.object({ type: z.literal("feud_steal"), success: z.boolean() }),
-  z.object({ type: z.literal("feud_award"), teamId: z.string().min(1) }),
+  z.object({
+    type: z.literal("feud_strike"),
+    delta: z.union([z.literal(1), z.literal(-1)]),
+    teamId: z.string().min(1).optional(),
+  }),
+  z.object({ type: z.literal("feud_award"), teamId: z.string().min(1).optional() }),
 
   z.object({ type: z.literal("herd_set_answer"), participantId: z.string().min(1), text: z.string().max(60) }),
   z.object({ type: z.literal("herd_merge"), from: z.string().min(1), to: z.string().min(1) }),
@@ -381,11 +395,13 @@ export interface PublicQuestion {
 
 export interface PublicFeud {
   activeTeamId: string | null;
-  strikes: number;
+  strikes: Record<string, number>;
   strikeLimit: number;
   pot: number;
   awarded: boolean;
-  steal: { active: boolean; teamId: string | null; resolved: boolean };
+  awardedTo: string | null;
+  ended: boolean;
+  outcome: FeudOutcome | null;
 }
 
 export interface PublicHerd {
@@ -427,7 +443,6 @@ export interface PublicState {
   ml: PublicMostLikely | null;
   pir: PublicPrice | null;
   results: GameResult[];
-  hostConnected: boolean;
   updatedAt: number;
 }
 

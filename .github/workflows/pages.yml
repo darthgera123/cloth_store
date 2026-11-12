@@ -1,0 +1,63 @@
+name: Deploy Game Night to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "game/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
+
+      - name: Install and build the game
+        working-directory: game
+        env:
+          # The game lives beside the storefront: /cloth_store/game/
+          BASE_PATH: /cloth_store/game/
+          # Set the repository variable RELAY_URL to enable cross-device sync,
+          # e.g. wss://your-relay.example.com. Empty = same-device only.
+          VITE_RELAY_URL: ${{ vars.RELAY_URL }}
+        run: |
+          bun install --frozen-lockfile
+          bun run build
+
+      - name: Assemble the Pages site
+        run: |
+          mkdir -p site
+          # Keep the existing storefront at the site root when present.
+          if [ -d dist/cloth-store ]; then cp -r dist/cloth-store/. site/; fi
+          mkdir -p site/game
+          cp -r game/dist/. site/game/
+          touch site/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

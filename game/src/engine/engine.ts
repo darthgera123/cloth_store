@@ -5,6 +5,7 @@ import {
   type Action,
   type FeudQuestion,
   type GameId,
+  type FeudOutcome,
   type GameStanding,
   type Participant,
   type HerdResult,
@@ -155,10 +156,68 @@ const teamIds = (state: SessionState): [string, string] => {
   return [a.id, b.id];
 };
 
-const otherTeam = (state: SessionState, teamId: string): string => {
+function feudQuestionOf(state: SessionState, bank: QuestionBank): FeudQuestion | null {
+  const question = currentQuestion(state, bank);
+  return question && question.game === "family_feud" ? question : null;
+}
+
+function feudCreditedPoints(
+  state: SessionState,
+  bank: QuestionBank,
+): Record<string, number> {
+  const feud = state.feud;
+  const question = feudQuestionOf(state, bank);
   const [a, b] = teamIds(state);
-  return teamId === a ? b : a;
-};
+  const totals: Record<string, number> = { [a]: 0, [b]: 0 };
+  if (!feud || !question) return totals;
+  for (const [answerId, teamId] of Object.entries(feud.credited)) {
+    const answer = question.answers.find((item) => item.id === answerId);
+    if (answer) totals[teamId] = (totals[teamId] ?? 0) + answer.points;
+  }
+  return totals;
+}
+
+function finishFeudRound(
+  state: SessionState,
+  bank: QuestionBank,
+  trigger: "answers_exhausted" | "both_eliminated",
+) {
+  const feud = state.feud;
+  if (!feud || feud.ended) return;
+  const [a, b] = teamIds(state);
+  const credited = feudCreditedPoints(state, bank);
+  const limit = state.config.strikeLimit;
+  const alive = [a, b].filter((id) => (feud.strikes[id] ?? 0) < limit);
+
+  let reason: FeudOutcome["reason"] = trigger;
+  let winner: string | null = null;
+  let tied = false;
+
+  if (alive.length === 1) {
+    // Only one team left in the round: it takes the whole pot (rule 7).
+    reason = "last_team_standing";
+    winner = alive[0] ?? null;
+  } else if ((credited[a] ?? 0) === (credited[b] ?? 0)) {
+    // Both alive with the board clear, or both eliminated: level on revealed
+    // points, so the host decides (rule 8).
+    tied = true;
+  } else {
+    winner = (credited[a] ?? 0) > (credited[b] ?? 0) ? a : b;
+  }
+
+  feud.ended = true;
+  feud.outcome = { reason, winnerTeamId: winner, tied, credited };
+  state.phase = "REVEAL";
+}
+
+/** Hand the next guess to the other team, unless it is already eliminated. */
+function advanceFeudTurn(state: SessionState) {
+  const feud = state.feud;
+  if (!feud || feud.ended) return;
+  const [a, b] = teamIds(state);
+  const next = feud.activeTeamId === a ? b : a;
+  if ((feud.strikes[next] ?? 0) < state.config.strikeLimit) feud.activeTeamId = next;
+}
 
 function computeHerdResult(herd: HerdState, state: SessionState): HerdResult {
   const groups = herdGroups(herd, state.participants);
@@ -254,15 +313,22 @@ function initGameState(state: SessionState, question: Question) {
   state.usedQuestionIds = [...new Set([...state.usedQuestionIds, question.id])];
 
   if (question.game === "family_feud") {
-    const [first] = teamIds(state);
+    const [a, b] = teamIds(state);
+    // Alternate the opening team every round; question index parity is stable
+    // across restarts and undo.
+    const starter = state.questionIndex % 2 === 0 ? a : b;
     state.feud = {
       questionId: question.id,
       revealed: [],
-      strikes: 0,
-      activeTeamId: first,
+      credited: {},
+      strikes: { [a]: 0, [b]: 0 },
+      activeTeamId: starter,
+      startingTeamId: starter,
       pot: 0,
       awarded: false,
-      steal: { active: false, teamId: null, resolved: false },
+      awardedTo: null,
+      ended: false,
+      outcome: null,
     };
     state.herd = null;
     state.ml = null;
@@ -395,9 +461,7 @@ export function applyAction(
     case "reveal": {
       needPhase(next, ["QUESTION_ACTIVE", "ANSWERING"]);
       if (next.game === "family_feud") {
-        needPhase(next, ["QUESTION_ACTIVE"]);
-        next.phase = "REVEAL";
-        break;
+        fail("A Feud round ends when the board is clear or both teams are out");
       }
       if (next.game === "herd_mentality") {
         const herd = next.herd;
@@ -446,6 +510,9 @@ export function applyAction(
     case "next_round": {
       needPhase(next, ["ROUND_RESULT"]);
       if (!next.game) fail("No game");
+      if (next.game === "family_feud" && next.feud?.ended && !next.feud.awarded) {
+        fail("Award the pot before moving to the next round");
+      }
       const questions = questionsFor(bank, next.game);
       if (next.questionIndex + 1 >= (next.questionOrder.length || questions.length)) {
         finishGame(next, now);
@@ -462,6 +529,9 @@ export function applyAction(
     case "skip_question": {
       if (!next.game) fail("No game");
       needPhase(next, ["QUESTION_ACTIVE", "ANSWERING", "REVEAL", "ROUND_READY", "ROUND_RESULT"]);
+      if (next.game === "family_feud" && next.feud?.ended && !next.feud.awarded) {
+        fail("Award the pot before skipping the round");
+      }
       const questions = questionsFor(bank, next.game);
       if (next.questionIndex + 1 >= (next.questionOrder.length || questions.length)) {
         finishGame(next, now);
@@ -577,13 +647,26 @@ export function applyAction(
       needGame(next, "family_feud");
       needPhase(next, ["QUESTION_ACTIVE"]);
       const feud = next.feud;
-      const question = currentQuestion(next, bank) as FeudQuestion | null;
-      if (!feud || !question || question.game !== "family_feud") fail("No Feud round");
-      const answer = question.answers.find((a) => a.id === action.answerId);
+      const question = feudQuestionOf(next, bank);
+      if (!feud || !question) fail("No Feud round");
+      if (feud.ended) fail("The round is already over");
+      const active = feud.activeTeamId;
+      if ((feud.strikes[active] ?? 0) >= next.config.strikeLimit) {
+        fail("That team is out of the round");
+      }
+      const answer = question.answers.find((item) => item.id === action.answerId);
       if (!answer) fail("Unknown answer");
       if (feud.revealed.includes(answer.id)) fail("Answer already revealed");
+
       feud.revealed = [...feud.revealed, answer.id];
+      feud.credited[answer.id] = active;
       feud.pot += answer.points;
+
+      if (feud.revealed.length >= question.answers.length) {
+        finishFeudRound(next, bank, "answers_exhausted");
+      } else {
+        advanceFeudTurn(next);
+      }
       break;
     }
 
@@ -592,53 +675,49 @@ export function applyAction(
       needPhase(next, ["QUESTION_ACTIVE"]);
       const feud = next.feud;
       if (!feud) fail("No Feud round");
-      feud.strikes = Math.max(0, Math.min(next.config.strikeLimit, feud.strikes + action.delta));
-      if (
-        feud.strikes >= next.config.strikeLimit &&
-        next.config.stealEnabled &&
-        !feud.steal.active &&
-        !feud.awarded
-      ) {
-        const challenger = otherTeam(next, feud.activeTeamId);
-        feud.steal = { active: true, teamId: challenger, resolved: false };
-        feud.activeTeamId = challenger;
-      }
-      break;
-    }
+      if (feud.ended) fail("The round is already over");
 
-    case "feud_set_active": {
-      needGame(next, "family_feud");
-      needPhase(next, ["QUESTION_ACTIVE", "REVEAL"]);
       const [a, b] = teamIds(next);
-      if (action.teamId !== a && action.teamId !== b) fail("Unknown team");
-      if (!next.feud) fail("No Feud round");
-      next.feud.activeTeamId = action.teamId;
-      break;
-    }
+      const team = action.teamId ?? feud.activeTeamId;
+      if (team !== a && team !== b) fail("Unknown team");
+      const current = feud.strikes[team] ?? 0;
 
-    case "feud_steal": {
-      needGame(next, "family_feud");
-      const feud = next.feud;
-      if (!feud) fail("No Feud round");
-      if (!feud.steal.active || feud.awarded) fail("No steal in progress");
-      const winner = action.success ? feud.steal.teamId : otherTeam(next, feud.steal.teamId ?? "");
-      if (!winner) fail("No steal team");
-      addPoints(next, "team", winner, feud.pot * next.config.roundMultiplier);
-      feud.awarded = true;
-      feud.steal = { ...feud.steal, resolved: true };
+      if (action.delta === -1) {
+        feud.strikes[team] = Math.max(0, current - 1);
+        break;
+      }
+
+      if (current >= next.config.strikeLimit) fail("That team is already out");
+      feud.strikes[team] = current + 1;
+
+      const alive = [a, b].filter((id) => (feud.strikes[id] ?? 0) < next.config.strikeLimit);
+      if (alive.length === 0) {
+        finishFeudRound(next, bank, "both_eliminated");
+      } else if (alive.length === 1) {
+        // One team is out; the survivor keeps guessing alone.
+        feud.activeTeamId = alive[0] ?? feud.activeTeamId;
+      } else if (team === feud.activeTeamId) {
+        advanceFeudTurn(next);
+      }
       break;
     }
 
     case "feud_award": {
       needGame(next, "family_feud");
-      needPhase(next, ["QUESTION_ACTIVE", "REVEAL"]);
       const feud = next.feud;
       if (!feud) fail("No Feud round");
-      if (feud.awarded) fail("Round points already awarded");
+      if (!feud.ended) fail("Finish the round before awarding the pot");
+      if (feud.awarded) fail("The pot has already been awarded");
+
       const [a, b] = teamIds(next);
-      if (action.teamId !== a && action.teamId !== b) fail("Unknown team");
-      addPoints(next, "team", action.teamId, feud.pot * next.config.roundMultiplier);
+      const winner = action.teamId ?? feud.outcome?.winnerTeamId ?? null;
+      if (!winner || (winner !== a && winner !== b)) {
+        fail("Choose which team takes the pot");
+      }
+
+      addPoints(next, "team", winner, feud.pot * next.config.roundMultiplier);
       feud.awarded = true;
+      feud.awardedTo = winner;
       break;
     }
 
@@ -801,11 +880,7 @@ function publicAnswers(question: FeudQuestion, revealed: string[]): PublicAnswer
   });
 }
 
-export function projectPublic(
-  state: SessionState,
-  bank: QuestionBank,
-  options: { hostConnected: boolean },
-): PublicState {
+export function projectPublic(state: SessionState, bank: QuestionBank): PublicState {
   const question = currentQuestion(state, bank);
   const showQuestion = state.phase !== "LOBBY" && question !== null;
 
@@ -841,7 +916,9 @@ export function projectPublic(
         strikeLimit: state.config.strikeLimit,
         pot: state.feud.pot,
         awarded: state.feud.awarded,
-        steal: state.feud.steal,
+        awardedTo: state.feud.awardedTo,
+        ended: state.feud.ended,
+        outcome: state.feud.outcome,
       }
     : null;
 
@@ -897,7 +974,6 @@ export function projectPublic(
     ml,
     pir,
     results: state.results,
-    hostConnected: options.hostConnected,
     updatedAt: state.updatedAt,
   };
 }
