@@ -1,0 +1,275 @@
+/* Game Night — shared components: ornaments, invitation panels,
+   buttons, selection tiles, screen transitions. */
+
+/* ---------- decorative layer ---------- */
+
+.ornament-layer {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  color: var(--gold);
+}
+
+.mandala {
+  position: absolute;
+  transform: rotate(var(--rot, 0deg));
+  transform-origin: 50% 50%;
+}
+
+.mandala svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.mandala--tl {
+  top: -20vh;
+  left: -13vw;
+  width: min(66vw, 1020px);
+  opacity: 0.66;
+}
+
+.mandala--br {
+  right: -14vw;
+  bottom: -23vh;
+  width: min(62vw, 960px);
+  opacity: 0.52;
+}
+
+/* ---------- stage + screen transitions ---------- */
+
+.stage {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-areas: "stack";
+  place-items: center;
+  min-height: 100svh;
+  padding: clamp(16px, 2.6vh, 40px) var(--gutter);
+}
+
+.screen {
+  grid-area: stack;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition:
+    opacity var(--fade) var(--ease),
+    transform var(--fade) var(--ease),
+    visibility 0s linear var(--fade);
+}
+
+.screen.is-active {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-delay: 0s, 0s, 0s;
+}
+
+/* ---------- invitation panel ---------- */
+
+.panel {
+  position: relative;
+  background: var(--ivory);
+  border: 1px solid var(--gold-line-soft);
+  border-radius: var(--radius);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* inset rule: the printed double border */
+.panel__frame {
+  position: absolute;
+  inset: clamp(10px, 1.5vh, 18px);
+  border: 1px solid var(--gold-line);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.panel > .corner {
+  position: absolute;
+  width: clamp(20px, 1.6vw, 26px);
+  height: clamp(20px, 1.6vw, 26px);
+  color: var(--gold);
+  z-index: 3;
+  opacity: 0.85;
+}
+
+.panel > .corner--tl {
+  top: 7px;
+  left: 7px;
+}
+.panel > .corner--tr {
+  top: 7px;
+  right: 7px;
+  transform: scaleX(-1);
+}
+.panel > .corner--bl {
+  bottom: 7px;
+  left: 7px;
+  transform: scaleY(-1);
+}
+.panel > .corner--br {
+  right: 7px;
+  bottom: 7px;
+  transform: scale(-1, -1);
+}
+
+.panel > *:not(.panel__frame, .corner) {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- rule / divider ---------- */
+
+.rule {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: min(100%, 420px);
+  margin: 0 auto;
+  color: var(--gold);
+}
+
+.rule__line {
+  flex: 1;
+  height: 1px;
+  background: var(--gold-line);
+}
+
+.rule__mark {
+  width: 34px;
+  height: 18px;
+  flex: none;
+}
+
+/* ---------- buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0 34px;
+  border: 1px solid var(--gold);
+  border-radius: 1px;
+  background: transparent;
+  color: var(--gold-ink);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background-color var(--fade-fast) var(--ease),
+    border-color var(--fade-fast) var(--ease),
+    color var(--fade-fast) var(--ease);
+}
+
+.btn:hover {
+  background: var(--lavender-pale);
+}
+
+.btn--primary {
+  min-height: 62px;
+  padding: 0 52px;
+  font-size: 13px;
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #2b1c33;
+}
+
+.btn--primary:hover {
+  background: var(--plum);
+  border-color: var(--plum);
+  color: var(--ivory);
+}
+
+/* ---------- selection tiles ---------- */
+
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(12px, 1.4vw, 20px);
+}
+
+.tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  min-height: clamp(108px, 12.5vh, 138px);
+  padding: clamp(18px, 2.2vh, 26px) clamp(20px, 2vw, 28px);
+  text-align: left;
+  background: var(--ivory);
+  border: 1px solid rgba(212, 165, 46, 0.32);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition:
+    background-color var(--fade-fast) var(--ease),
+    border-color var(--fade-fast) var(--ease),
+    transform var(--fade-fast) var(--ease);
+}
+
+.tile:hover:not(:disabled) {
+  background: var(--lavender-pale);
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+
+.tile:disabled {
+  cursor: not-allowed;
+}
+
+.tile:disabled .tile__name {
+  color: var(--plum-hush);
+}
+
+.tile__tag {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  font-family: var(--font-sans);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-ink);
+  opacity: 0.75;
+}
+
+.tile__num {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  color: var(--gold-ink);
+}
+
+.tile__name {
+  font-family: var(--font-serif);
+  font-size: clamp(22px, 2.1vw, 32px);
+  font-weight: 500;
+  line-height: 1.15;
+  color: var(--plum);
+}
+
+/* ---------- strikes ---------- */
+
+.strike {
+  display: inline-block;
+  width: clamp(20px, 1.9vw, 30px);
+  height: clamp(20px, 1.9vw, 30px);
+  color: var(--gold);
+  opacity: 0.22;
+  transition: opacity var(--fade-fast) var(--ease), transform var(--fade-fast) var(--ease);
+}
+
+.strike.is-on {
+  opacity: 1;
+}
