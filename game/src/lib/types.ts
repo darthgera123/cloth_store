@@ -32,6 +32,7 @@ export const GAME_BLURB: Record<GameId, string> = {
 
 export const PHASES = [
   "LOBBY",
+  "RULES",
   "GAME_INTRO",
   "ROUND_READY",
   "QUESTION_ACTIVE",
@@ -234,6 +235,8 @@ export interface SessionState {
   game: GameId | null;
   round: number;
   questionIndex: number;
+  rulesSlide: number;
+  rulesReturn: Phase | null;
   usedQuestionIds: string[];
   questionOrder: string[];
   participants: Participant[];
@@ -322,6 +325,11 @@ export const actionSchema = z.discriminatedUnion("type", [
     assignTeams: z.boolean().optional(),
   }),
   z.object({ type: z.literal("select_game"), game: gameIdSchema }),
+  z.object({ type: z.literal("rules_next") }),
+  z.object({ type: z.literal("rules_prev") }),
+  z.object({ type: z.literal("rules_finish") }),
+  z.object({ type: z.literal("rules_skip") }),
+  z.object({ type: z.literal("open_rules") }),
   z.object({ type: z.literal("start_round") }),
   z.object({ type: z.literal("begin_answering") }),
   z.object({ type: z.literal("reveal") }),
@@ -433,6 +441,7 @@ export interface PublicState {
   paused: boolean;
   game: GameId | null;
   round: number;
+  rulesSlide: number;
   participants: Participant[];
   teams: Team[];
   scores: Scores;

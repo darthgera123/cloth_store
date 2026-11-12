@@ -12,6 +12,7 @@ import {
 import { Panel, Toast } from "../components/ui";
 import { useHostGame, type HostGameApi } from "../client/useHostGame";
 import { GamePanel, formatMoney } from "./panels";
+import { RULES } from "../rules/slides";
 
 export function HostApp() {
   const api = useHostGame();
@@ -47,6 +48,8 @@ export function HostApp() {
             </>
           ) : null}
 
+          {session.phase === "RULES" ? <RulesCard session={session} send={send} /> : null}
+
           {session.phase === "GAME_INTRO" || session.phase === "ROUND_READY" ? (
             <ReadyCard session={session} send={send} />
           ) : null}
@@ -59,9 +62,18 @@ export function HostApp() {
                 <h2 className="font-serif text-[24px] font-semibold">
                   {session.game ? GAME_LABEL[session.game] : "Game"}
                 </h2>
-                <span className="text-[10px] uppercase tracking-[0.22em] text-plum-hush">
-                  Round {session.round} · {session.phase.replaceAll("_", " ").toLowerCase()}
-                </span>
+                <div className="flex items-center gap-3">
+                  <span className="text-[10px] uppercase tracking-[0.22em] text-plum-hush">
+                    Round {session.round} · {session.phase.replaceAll("_", " ").toLowerCase()}
+                  </span>
+                  <button
+                    className="hbtn"
+                    type="button"
+                    onClick={() => send({ type: "open_rules" })}
+                  >
+                    Rules
+                  </button>
+                </div>
               </div>
               <p className="mb-4 font-serif text-[22px] leading-snug">{currentQuestionText(session, api.hostState?.questions ?? [])}</p>
               <div className="fade-in">
@@ -548,6 +560,79 @@ function SelectCard({ session, send }: { session: SessionState; send: (action: A
 
 /* ---------- ready / result ---------- */
 
+function RulesCard({
+  session,
+  send,
+}: {
+  session: SessionState;
+  send: (action: Action) => void;
+}) {
+  const slides = session.game ? RULES[session.game] : [];
+  const slide = slides[session.rulesSlide] ?? slides[0];
+  if (!slide || !session.game) return null;
+  const last = session.rulesSlide >= slides.length - 1;
+
+  return (
+    <Panel className="p-6" corners={false}>
+      <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2 border-b border-gold/20 pb-3">
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.3em] text-gold-ink">How to play</p>
+          <h2 className="font-serif text-[26px] leading-tight">{GAME_LABEL[session.game]}</h2>
+        </div>
+        <span className="text-[10px] uppercase tracking-[0.22em] text-plum-hush">
+          Slide {session.rulesSlide + 1} of {slides.length}
+        </span>
+      </div>
+
+      <p className="font-serif text-[30px] leading-tight">{slide.title}</p>
+      <p className="mt-3 max-w-[60ch] text-[15px] leading-relaxed text-plum-soft">{slide.body}</p>
+
+      <div className="mt-5 flex gap-1.5">
+        {slides.map((entry, index) => (
+          <span
+            key={entry.title}
+            className={`h-1 w-10 ${index === session.rulesSlide ? "bg-gold" : "bg-gold/25"}`}
+          />
+        ))}
+      </div>
+
+      <div className="mt-5 flex flex-wrap gap-2 border-t border-gold/20 pt-4">
+        <button
+          className="hbtn"
+          type="button"
+          disabled={session.rulesSlide === 0}
+          onClick={() => send({ type: "rules_prev" })}
+        >
+          Previous
+        </button>
+        <button
+          className="hbtn"
+          type="button"
+          disabled={last}
+          onClick={() => send({ type: "rules_next" })}
+        >
+          Next
+        </button>
+        <button
+          className="hbtn hbtn-solid"
+          type="button"
+          onClick={() => send({ type: "rules_finish" })}
+        >
+          Start game
+        </button>
+        <button className="hbtn" type="button" onClick={() => send({ type: "rules_skip" })}>
+          Skip rules
+        </button>
+        {session.rulesReturn ? (
+          <span className="self-center text-[11px] text-plum-hush">
+            Returns to the round in progress
+          </span>
+        ) : null}
+      </div>
+    </Panel>
+  );
+}
+
 function ReadyCard({ session, send }: { session: SessionState; send: (action: Action) => void }) {
   return (
     <Panel className="p-6" corners={false}>
@@ -565,6 +650,9 @@ function ReadyCard({ session, send }: { session: SessionState; send: (action: Ac
           onClick={() => send({ type: "start_round" })}
         >
           Start round {session.round || 1}
+        </button>
+        <button className="hbtn" type="button" onClick={() => send({ type: "open_rules" })}>
+          How to play
         </button>
         <button className="hbtn" type="button" onClick={() => send({ type: "skip_question" })}>
           Skip question

@@ -23,7 +23,12 @@ bun run dev        # http://127.0.0.1:5173
 Open `/host/`: the eight names are prefilled (Pulkit, Lavani, Rajat, Bindu,
 Gaurang, Amita, Dhrupad, Aarush) and you pick a team for each player. Create
 the session, then open `/display/` on the TV (or the copied link with the
-code) and enter the four-letter code shown in the host bar. `#/host` and `#/display?code=XXXX`
+code) and enter the four-letter code shown in the host bar.
+
+Selecting a game first opens its **How to Play** slides. The host steps through
+them with Previous/Next, then **Start game** (title card) or **Skip rules**
+(straight to round one). **Rules** in the game header reopens them mid-round;
+scores, pot and strikes are untouched, and closing returns to the same state. `#/host` and `#/display?code=XXXX`
 still work as a fallback when the app is opened from the site root.
 
 Production build and local preview:
@@ -83,6 +88,7 @@ ends the session by design.
 ```
 src/engine/engine.ts       pure state machine (createSession / applyAction / projectPublic)
 src/questions/bank.ts      bundled JSON questions, zod-validated, host-only chunk
+src/rules/slides.ts        How to Play copy per game (editable independently)
 src/lib/types.ts           domain types, zod schemas, action union
 src/lib/herd.ts            answer normalisation and grouping
 src/transport/link.ts      BroadcastChannel + relay client, one message shape
@@ -105,9 +111,10 @@ never downloads question data.
 | Who's Most Likely? | Manual vote counts, reveal, ties, casual (no points) or competitive scoring |
 | The Price Is Right | Individual or team guesses, lock, reveal guesses, price reveal, closest-without-going-over with fallback, ties |
 
-Shared host controls: start/next/skip/restart round, end game, pause, countdown
-timer, undo (snapshots include scores), manual score edits, reset confirmation,
-session end. Display controls: fullscreen and sound on/off.
+Shared host controls: rules presentation, start/next/skip/restart round, end
+game, pause, countdown timer, undo (snapshots include scores), manual score
+edits, reset confirmation, session end. Display controls: fullscreen and sound
+on/off.
 
 ## Questions
 

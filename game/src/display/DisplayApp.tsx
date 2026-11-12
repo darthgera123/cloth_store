@@ -3,6 +3,7 @@ import { GAME_BLURB, GAME_IDS, GAME_LABEL, type PublicState } from "../lib/types
 import { Ornaments } from "../components/Mandala";
 import { Confetti, Countdown, Panel, Rule, Toast } from "../components/ui";
 import { GameBoard, scoreRows } from "./boards";
+import { RULES } from "../rules/slides";
 import { useDisplaySession } from "../client/useDisplaySession";
 import { chime, isMuted, setMuted } from "../client/sound";
 
@@ -212,6 +213,7 @@ function Shell({
 
 function Phase({ state }: { state: PublicState }) {
   if (state.phase === "LOBBY") return <Lobby state={state} />;
+  if (state.phase === "RULES") return <RulesScreen state={state} />;
   if (state.phase === "GAME_INTRO") return <GameIntro state={state} />;
   if (state.phase === "ROUND_READY") return <RoundReady state={state} />;
   if (state.phase === "GAME_RESULT") return <GameResult state={state} />;
@@ -275,6 +277,37 @@ function Lobby({ state }: { state: PublicState }) {
       </div>
       <p className="mt-8 text-[10px] uppercase tracking-[0.3em] text-plum-hush">
         Session {state.code} · Waiting for the host
+      </p>
+    </BasePanel>
+  );
+}
+
+function RulesScreen({ state }: { state: PublicState }) {
+  const slides = state.game ? RULES[state.game] : [];
+  const slide = slides[state.rulesSlide] ?? slides[0];
+  if (!slide) return null;
+
+  return (
+    <BasePanel>
+      <p className="kicker">
+        How to Play{state.game ? ` · ${GAME_LABEL[state.game]}` : ""}
+      </p>
+      <p className="mt-6 font-serif text-[clamp(30px,3.6vw,54px)] leading-[1.15] text-plum">
+        {slide.title}
+      </p>
+      <p className="mx-auto mt-6 max-w-[30ch] text-balance text-[clamp(19px,2.05vw,32px)] leading-[1.4] text-plum-soft">
+        {slide.body}
+      </p>
+      <div className="mt-9 flex items-center justify-center gap-2">
+        {slides.map((entry, index) => (
+          <span
+            key={entry.title}
+            className={`h-1 w-12 ${index === state.rulesSlide ? "bg-gold" : "bg-gold/25"}`}
+          />
+        ))}
+      </div>
+      <p className="mt-3 text-[10px] uppercase tracking-[0.3em] text-plum-hush">
+        Slide {state.rulesSlide + 1} of {slides.length}
       </p>
     </BasePanel>
   );

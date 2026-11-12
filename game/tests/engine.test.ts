@@ -7,6 +7,7 @@ import {
   type SessionState,
   defaultConfig,
 } from "../src/lib/types";
+import { RULES } from "../src/rules/slides";
 import { EngineError, applyAction, createSession, projectPublic } from "../src/engine/engine";
 import { herdGroups, normalizeAnswer } from "../src/lib/herd";
 import { loadQuestionBank } from "../src/questions/bank";
@@ -35,6 +36,7 @@ function act(state: SessionState, action: Action): SessionState {
 function startGame(game: SessionState["game"], overrides: Partial<SessionState["config"]> = {}) {
   let s = session(overrides);
   s = act(s, { type: "select_game", game: game as NonNullable<typeof game> });
+  s = act(s, { type: "rules_finish" });
   s = act(s, { type: "start_round" });
   return s;
 }
@@ -101,6 +103,83 @@ describe("session lifecycle", () => {
   });
 });
 
+describe("rules", () => {
+  const openRules = () => act(session(), { type: "select_game", game: "family_feud" });
+
+  test("selecting a game opens the rules at the first slide", () => {
+    const s = openRules();
+    expect(s.phase).toBe("RULES");
+    expect(s.rulesSlide).toBe(0);
+    expect(s.rulesReturn).toBeNull();
+  });
+
+  test("slides advance and clamp at both ends", () => {
+    let s = openRules();
+    s = act(s, { type: "rules_prev" });
+    expect(s.rulesSlide).toBe(0);
+
+    for (let i = 0; i < 10; i += 1) s = act(s, { type: "rules_next" });
+    expect(s.rulesSlide).toBe(RULES.family_feud.length - 1);
+  });
+
+  test("finishing rules moves on to the game intro and resets the slide", () => {
+    const s = act(openRules(), { type: "rules_finish" });
+    expect(s.phase).toBe("GAME_INTRO");
+    expect(s.rulesSlide).toBe(0);
+    expect(s.rulesReturn).toBeNull();
+  });
+
+  test("skipping rules jumps straight to the round", () => {
+    const s = act(openRules(), { type: "rules_skip" });
+    expect(s.phase).toBe("ROUND_READY");
+    expect(s.rulesReturn).toBeNull();
+  });
+
+  test("skipping reopened rules returns to the round in progress", () => {
+    let s = startGame("family_feud");
+    s = act(s, { type: "open_rules" });
+    s = act(s, { type: "rules_skip" });
+    expect(s.phase).toBe("QUESTION_ACTIVE");
+  });
+
+  test("rules cannot be opened from the lobby", () => {
+    expectEngineError(() => act(session(), { type: "open_rules" }));
+  });
+
+  test("reopening rules keeps the round intact and returns to it", () => {
+    let s = startGame("family_feud");
+    s = act(s, { type: "feud_reveal", answerId: "a1" });
+    const before = { pot: s.feud?.pot, revealed: s.feud?.revealed, scores: { ...s.scores.teams } };
+
+    s = act(s, { type: "open_rules" });
+    expect(s.phase).toBe("RULES");
+    expect(s.rulesReturn).toBe("QUESTION_ACTIVE");
+
+    s = act(s, { type: "rules_next" });
+    const pub = projectPublic(s, bank);
+    expect(pub.rulesSlide).toBe(1);
+
+    s = act(s, { type: "rules_finish" });
+    expect(s.phase).toBe("QUESTION_ACTIVE");
+    expect(s.feud?.pot).toBe(before.pot);
+    expect(s.feud?.revealed).toEqual(before.revealed!);
+    expect(s.scores.teams).toEqual(before.scores);
+  });
+
+  test("rules reopen from the round result as well", () => {
+    let s = startGame("family_feud");
+    s = act(s, { type: "feud_reveal", answerId: "a1" });
+    s = act(s, { type: "feud_reveal", answerId: "a2" });
+    s = act(s, { type: "feud_reveal", answerId: "a3" });
+    s = act(s, { type: "feud_reveal", answerId: "a4" });
+    s = act(s, { type: "feud_award" });
+    s = act(s, { type: "round_result" });
+    s = act(s, { type: "open_rules" });
+    s = act(s, { type: "rules_finish" });
+    expect(s.phase).toBe("ROUND_RESULT");
+  });
+});
+
 describe("question order", () => {
   test("shuffle keeps every question exactly once", () => {
     const s = act(session({ shuffleQuestions: true }), {
@@ -129,6 +208,7 @@ describe("family feud", () => {
 
   const startWith = (questionBank: QuestionBank) => {
     let s = act(session(), { type: "select_game", game: "family_feud" });
+    s = applyAction(s, { type: "rules_finish" }, questionBank, tick());
     s = applyAction(s, { type: "start_round" }, questionBank, tick());
     return s;
   };

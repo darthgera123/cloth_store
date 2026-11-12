@@ -23,6 +23,7 @@ import {
   configSchema,
   defaultConfig,
 } from "../lib/types";
+import { RULES } from "../rules/slides";
 import { herdGroups, normalizeAnswer } from "../lib/herd";
 
 export class EngineError extends Error {
@@ -114,6 +115,8 @@ export function createSession(
     game: null,
     round: 0,
     questionIndex: 0,
+    rulesSlide: 0,
+    rulesReturn: null,
     usedQuestionIds: [],
     questionOrder: [],
     participants,
@@ -416,7 +419,9 @@ export function applyAction(
         fail("Family Feud needs two teams — set team names in setup");
       }
       next.game = action.game;
-      next.phase = "GAME_INTRO";
+      next.phase = "RULES";
+      next.rulesSlide = 0;
+      next.rulesReturn = null;
       next.questionIndex = 0;
       next.round = 0;
       next.status = "active";
@@ -431,6 +436,54 @@ export function applyAction(
       next.pir = null;
       next.usedQuestionIds = [];
       next.timer = null;
+      break;
+    }
+
+    case "rules_next": {
+      needPhase(next, ["RULES"]);
+      if (!next.game) fail("No game selected");
+      next.rulesSlide = Math.min(RULES[next.game].length - 1, next.rulesSlide + 1);
+      break;
+    }
+
+    case "rules_prev": {
+      needPhase(next, ["RULES"]);
+      if (!next.game) fail("No game selected");
+      next.rulesSlide = Math.max(0, next.rulesSlide - 1);
+      break;
+    }
+
+    case "rules_finish": {
+      needPhase(next, ["RULES"]);
+      const returnTo = next.rulesReturn;
+      next.rulesReturn = null;
+      next.rulesSlide = 0;
+      next.phase = returnTo ?? "GAME_INTRO";
+      break;
+    }
+
+    case "rules_skip": {
+      needPhase(next, ["RULES"]);
+      const returnTo = next.rulesReturn;
+      next.rulesReturn = null;
+      next.rulesSlide = 0;
+      // Before the game starts, skipping the rules also skips the title card.
+      next.phase = returnTo ?? "ROUND_READY";
+      break;
+    }
+
+    case "open_rules": {
+      needPhase(next, [
+        "GAME_INTRO",
+        "ROUND_READY",
+        "QUESTION_ACTIVE",
+        "ANSWERING",
+        "REVEAL",
+        "ROUND_RESULT",
+      ]);
+      next.rulesReturn = next.phase;
+      next.rulesSlide = 0;
+      next.phase = "RULES";
       break;
     }
 
@@ -561,6 +614,8 @@ export function applyAction(
       next.phase = "LOBBY";
       next.status = "lobby";
       next.game = null;
+      next.rulesSlide = 0;
+      next.rulesReturn = null;
       next.feud = null;
       next.herd = null;
       next.ml = null;
@@ -625,6 +680,8 @@ export function applyAction(
       next.phase = "LOBBY";
       next.status = "lobby";
       next.game = null;
+      next.rulesSlide = 0;
+      next.rulesReturn = null;
       next.round = 0;
       next.questionIndex = 0;
       next.usedQuestionIds = [];
@@ -964,6 +1021,7 @@ export function projectPublic(state: SessionState, bank: QuestionBank): PublicSt
     paused: state.paused,
     game: state.game,
     round: state.round,
+    rulesSlide: state.rulesSlide,
     participants: state.participants,
     teams: state.teams,
     scores: state.scores,
