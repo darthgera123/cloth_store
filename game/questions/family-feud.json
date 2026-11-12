@@ -1,0 +1,48 @@
+[
+  {
+    "id": "ff-demo-001",
+    "game": "family_feud",
+    "question": "Name something people bring on a family trip.",
+    "answers": [
+      { "id": "a1", "text": "Food", "points": 40 },
+      { "id": "a2", "text": "Clothes", "points": 30 },
+      { "id": "a3", "text": "Camera", "points": 20 },
+      { "id": "a4", "text": "Games", "points": 10 }
+    ]
+  },
+  {
+    "id": "ff-demo-002",
+    "game": "family_feud",
+    "question": "Name something a guest might forget to bring to a wedding.",
+    "answers": [
+      { "id": "a1", "text": "The gift", "points": 35 },
+      { "id": "a2", "text": "The invitation", "points": 25 },
+      { "id": "a3", "text": "Cash", "points": 22 },
+      { "id": "a4", "text": "A pen", "points": 10 },
+      { "id": "a5", "text": "Their dancing shoes", "points": 8 }
+    ]
+  },
+  {
+    "id": "ff-demo-003",
+    "game": "family_feud",
+    "question": "Name a chore nobody in the family wants to do.",
+    "answers": [
+      { "id": "a1", "text": "Washing dishes", "points": 38 },
+      { "id": "a2", "text": "Ironing", "points": 24 },
+      { "id": "a3", "text": "Cleaning the bathroom", "points": 22 },
+      { "id": "a4", "text": "Taking out the bins", "points": 16 }
+    ]
+  },
+  {
+    "id": "ff-demo-004",
+    "game": "family_feud",
+    "question": "Name something that always runs out at a party.",
+    "answers": [
+      { "id": "a1", "text": "Ice", "points": 34 },
+      { "id": "a2", "text": "Chairs", "points": 26 },
+      { "id": "a3", "text": "Sweets", "points": 21 },
+      { "id": "a4", "text": "Parking space", "points": 12 },
+      { "id": "a5", "text": "Conversation", "points": 7 }
+    ]
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "hm-demo-001",
+    "game": "herd_mentality",
+    "question": "Name a food people commonly eat at weddings.",
+    "answerType": "free_text"
+  },
+  {
+    "id": "hm-demo-002",
+    "game": "herd_mentality",
+    "question": "Name a colour people wear to a celebration.",
+    "answerType": "free_text"
+  },
+  {
+    "id": "hm-demo-003",
+    "game": "herd_mentality",
+    "question": "Name something that is always in a grandmother's kitchen.",
+    "answerType": "free_text"
+  },
+  {
+    "id": "hm-demo-004",
+    "game": "herd_mentality",
+    "question": "Name the best thing about a long weekend.",
+    "answerType": "free_text"
+  }
+]

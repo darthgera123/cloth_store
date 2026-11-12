@@ -1,0 +1,32 @@
+[
+  {
+    "id": "pir-demo-001",
+    "game": "price_is_right",
+    "item": "Decorative table lamp",
+    "description": "A simple home decor lamp.",
+    "image": "/demo/placeholder.svg",
+    "actualPrice": 1500,
+    "currency": "INR",
+    "priceUnit": "item"
+  },
+  {
+    "id": "pir-demo-002",
+    "game": "price_is_right",
+    "item": "Steel tea set",
+    "description": "A four-piece set, gift wrapped.",
+    "image": "/demo/placeholder.svg",
+    "actualPrice": 2400,
+    "currency": "INR",
+    "priceUnit": "set"
+  },
+  {
+    "id": "pir-demo-003",
+    "game": "price_is_right",
+    "item": "Wedding invitation box",
+    "description": "Printed cards with a keepsake box for fifty guests.",
+    "image": "/demo/placeholder.svg",
+    "actualPrice": 8000,
+    "currency": "INR",
+    "priceUnit": "box"
+  }
+]

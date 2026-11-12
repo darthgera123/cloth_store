@@ -1,0 +1,30 @@
+[
+  {
+    "id": "ml-demo-001",
+    "game": "whos_most_likely",
+    "question": "Who's most likely to arrive early to every event?",
+    "eligibleParticipants": "all",
+    "allowSelfVote": true
+  },
+  {
+    "id": "ml-demo-002",
+    "game": "whos_most_likely",
+    "question": "Who's most likely to cry at a wedding?",
+    "eligibleParticipants": "all",
+    "allowSelfVote": true
+  },
+  {
+    "id": "ml-demo-003",
+    "game": "whos_most_likely",
+    "question": "Who's most likely to give the longest speech?",
+    "eligibleParticipants": "all",
+    "allowSelfVote": true
+  },
+  {
+    "id": "ml-demo-004",
+    "game": "whos_most_likely",
+    "question": "Who's most likely to organise everyone for a photo?",
+    "eligibleParticipants": "all",
+    "allowSelfVote": true
+  }
+]

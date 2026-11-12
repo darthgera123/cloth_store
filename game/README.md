@@ -1,55 +1,125 @@
 # Game Night
 
-Lavender-and-gold game night for the engagement: an audience display and a
-host dashboard built from `plan/UI-DESIGN.md`.
+Host-operated family game-show for eight players: **Family Feud**, **Herd
+Mentality**, **Who's Most Likely?** and **The Price Is Right**.
+
+Phase 1 is the framework: complete mechanics, host controls, audience display,
+scoring, undo, persistence and recovery. The question files hold **dummy
+content** only — real questions come in Phase 2.
 
 ## Run
 
 ```bash
-cd game
-python3 -m http.server 8090
+bun install
+bun run build      # typecheck + bundle the client into dist/
+bun run start      # http://127.0.0.1:8091
 ```
 
-| | URL | Use |
-|---|-----|-----|
-| Audience | http://127.0.0.1:8090/ | TV / projector |
-| Host | http://127.0.0.1:8090/host.html | laptop or tablet |
+| Route | Use |
+|---|---|
+| `/host` | Private dashboard, laptop/tablet |
+| `/display` | Audience screen, television or projector |
 
-Open both in **the same browser profile** on one machine. The two tabs sync
-through a `BroadcastChannel`; `localStorage` keeps the state across reloads.
-No server or build step.
+Open `/host`, enter eight names, create the session, then open `/display` on
+the TV and enter the four-letter session code shown in the host bar.
 
-## Host keys
+### Development
 
-`R` reveal all · `H` hide all · `N` next question · `1`/`2` active team ·
-`S` strike on the active team.
+```bash
+bun run start      # server on :8091
+bun run dev        # Vite on :5173, proxies /api and /ws
+```
 
-## Content
+### Environment
 
-`data/games.json` holds the team names and the Family Feud questions
-(6 questions × 6 answers). Edit and reload; nothing else depends on the copy.
+| Variable | Default | Purpose |
+|---|---|---|
+| `PORT` | `8091` | Server port |
+| `DB_PATH` | `.data/sessions.db` | SQLite session store |
+| `QUESTIONS_DIR` | `questions/` | Question bank directory |
 
-## Built so far
-
-- **UI-1** design tokens, mandala linework, invitation panel, buttons, tiles
-- **UI-2** welcome screen, game selection
-- **UI-3** Family Feud audience board and host dashboard
-
-Herd Mentality, Who's Most Likely? and The Price Is Right are listed but
-disabled until UI-5; the winner screen (UI-5/6) is also pending.
-
-## Files
+## Architecture
 
 ```
-index.html        audience display
-host.html         host dashboard
-data/games.json   teams + questions
-static/tokens.css  palette, type, motion tokens
-static/components.css  ornaments, panels, buttons, tiles
-static/screens.css     welcome, selection, Family Feud
-static/host.css        host dashboard
-static/mandala.js  generated mandala SVG
-static/store.js    shared state + tab sync
-static/audience.js audience rendering
-static/host.js     host controls
+questions/*.json        question bank (server-only, zod-validated)
+src/lib/types.ts        domain types, zod schemas, action union
+src/lib/herd.ts         answer normalisation and grouping
+src/server/engine.ts    pure state machine: createSession / applyAction / projectPublic
+src/server/db.ts        SQLite sessions, snapshots, applied-action ids
+src/server/index.ts     Bun HTTP + WebSocket server, static bundle
+src/client/useSession.ts  host/display transport: REST + WS, reconnect
+src/display/            audience screens and boards
+src/host/               host dashboard, per-game controls
 ```
+
+- The **server owns all state**. The host sends actions; the server validates the
+  phase, mutates, persists, and broadcasts.
+- **Two payloads**: the display receives `PublicState` (hidden answers, prices,
+  votes and tallies stripped); the host receives `HostState` with the full
+  session and the question bank for the current game.
+- **Undo** restores a full pre-action snapshot (scores included), not a visual
+  rollback. Snapshots are capped at 50.
+- **Idempotency**: every action carries an `actionId`; duplicates are recorded in
+  `applied_actions` and ignored, so a double click cannot award twice.
+- **Reconnect**: the display and host re-fetch state, then reopen the socket; the
+  first message is always a full snapshot. `localStorage` keeps the host token
+  and the last display code.
+
+### Phases
+
+`LOBBY → GAME_INTRO → ROUND_READY → QUESTION_ACTIVE → ANSWERING → REVEAL →
+ROUND_RESULT → GAME_RESULT`
+
+Invalid transitions throw `EngineError` and never reach the display.
+
+## Games
+
+| Game | Mechanics implemented |
+|---|---|
+| Family Feud | Reveal answers into a pot, strikes with configurable limit, automatic steal opportunity, steal won/missed, manual award, round multiplier, two teams |
+| Herd Mentality | Record eight answers, auto-normalise, merge/split groups, majority scoring with configurable ties, optional Pink Cow including "blocks winning" |
+| Who's Most Likely? | Manual vote counts, reveal, ties, casual (no points) or competitive scoring |
+| The Price Is Right | Individual or team guesses, lock, reveal guesses, price reveal, closest-without-going-over with fallback, ties |
+
+Shared controls: start/next/skip/restart round, end game, pause, countdown
+timer, undo, manual score edits, back to game selection, reset with confirmation.
+
+## Questions
+
+One JSON array per game. `server/questions.ts` validates every entry with zod,
+rejects duplicate ids and groups by `game`.
+
+```json
+{
+  "id": "ff-demo-001",
+  "game": "family_feud",
+  "question": "Name something people bring on a family trip.",
+  "answers": [
+    { "id": "a1", "text": "Food", "points": 40 },
+    { "id": "a2", "text": "Clothes", "points": 30 }
+  ]
+}
+```
+
+Other schemas live in `src/lib/types.ts`; optional `category` and `difficulty`
+metadata are accepted, as are optional `image` paths for price items (served
+from `public/`). Questions are ordered by file order, or shuffled per session
+when "Shuffle question order" is enabled. Used ids are tracked in the session.
+
+## Tests
+
+```bash
+bun test
+```
+
+- `tests/engine.test.ts` — phase guards, scoring, steals, ties, merge, restarts,
+  privacy of the public projection, undo-relevant rollbacks.
+- `tests/server.test.ts` — spawns the real server on a temp database and drives
+  HTTP + WebSocket: host-token enforcement, private/public separation,
+  duplicate-action idempotency, undo, display rejection, reconnect persistence.
+
+## Phase 1 boundaries
+
+Implemented: everything in the specification's "Essential" list. Not
+implemented (optional/later): phone voting, QR joining, speech recognition,
+background music, tournament leaderboard, question editor/import.
