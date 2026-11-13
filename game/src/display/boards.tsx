@@ -348,6 +348,8 @@ function PartyPriceBoard({
   const showJoin = !party.locked && !party.priceRevealed;
   const joinUrl = `${window.location.origin}${import.meta.env.BASE_URL}join/?code=${state.code}`;
   const submitted = party.teams.filter((team) => team.submitted).length;
+  const podiumRank = (entryId: string) =>
+    party.podium.find((entry) => entry.entryId === entryId && entry.rank <= 3);
 
   useEffect(() => {
     if (!showJoin) {
@@ -378,6 +380,11 @@ function PartyPriceBoard({
   const guesses = [...(party.guesses ?? [])].sort((a, b) => {
     const left = party.teams.find((team) => team.id === a.teamId)?.name ?? "";
     const right = party.teams.find((team) => team.id === b.teamId)?.name ?? "";
+    if (party.leaderboardRevealed) {
+      const rankA = party.podium.find((entry) => entry.entryId === a.teamId)?.rank ?? 99;
+      const rankB = party.podium.find((entry) => entry.entryId === b.teamId)?.rank ?? 99;
+      return rankA - rankB || left.localeCompare(right);
+    }
     return left.localeCompare(right);
   });
   const leaderboard = [...party.teams]
@@ -409,6 +416,9 @@ function PartyPriceBoard({
               <p className="mt-1 font-serif text-[clamp(20px,1.8vw,30px)] leading-none">
                 {state.code}
               </p>
+              <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-plum-soft">
+                {party.mode === "teams" ? "3 teams · one phone each" : "6 players · one phone each"}
+              </p>
               <p className="mt-1 break-all text-[10px] leading-snug text-plum-hush">{joinUrl}</p>
             </div>
           </div>
@@ -434,20 +444,24 @@ function PartyPriceBoard({
         </div>
 
         {guesses.length > 0 ? (
-          <ul className="grid gap-1.5">
+          <ul className="grid gap-1">
             {guesses.map((guess) => {
               const team = party.teams.find((entry) => entry.id === guess.teamId);
-              const isWinner = party.winners.includes(guess.teamId);
+              const rank = podiumRank(guess.teamId);
               return (
                 <li
                   key={guess.teamId}
-                  className={`flex items-baseline justify-between border px-4 py-2 ${
-                    isWinner ? "border-gold bg-lavender-pale" : "border-gold/25"
+                  className={`flex items-baseline justify-between border px-4 py-1.5 ${
+                    rank ? "border-gold bg-lavender-pale" : "border-gold/25"
                   }`}
                 >
-                  <span className="text-[clamp(16px,1.6vw,24px)]">{team?.name ?? guess.teamId}</span>
+                  <span className="text-[clamp(16px,1.6vw,24px)]">
+                    {rank ? `${rank.rank}. ` : ""}
+                    {team?.name ?? guess.teamId}
+                  </span>
                   <span className="text-[clamp(18px,1.8vw,28px)] tabular-nums text-gold-ink">
                     {moneyLabel(guess.value, currency)}
+                    {rank ? ` · +${rank.points}` : ""}
                   </span>
                 </li>
               );
@@ -468,14 +482,26 @@ function PartyPriceBoard({
           </div>
         ) : null}
 
-        {party.priceRevealed && leaderboard.length > 0 ? (
-          <div className="border border-gold/30 px-4 py-3">
-            <p className="text-[9px] uppercase tracking-[0.3em] text-plum-hush">Team scores</p>
-            <ul className="mt-2 grid gap-1">
+        {party.priceRevealed && !party.leaderboardRevealed ? (
+          <p className="text-[11px] uppercase tracking-[0.28em] text-plum-hush">
+            Leaderboard next
+          </p>
+        ) : null}
+
+        {party.leaderboardRevealed && leaderboard.length > 0 ? (
+          <div className="border border-gold/30 px-4 py-2.5">
+            <p className="text-[9px] uppercase tracking-[0.3em] text-plum-hush">
+              {party.mode === "teams" ? "Team scores" : "Player scores"}
+            </p>
+            <ul
+              className={`mt-1.5 grid gap-x-8 gap-y-0.5 ${
+                leaderboard.length > 3 ? "grid-cols-2" : "grid-cols-1"
+              }`}
+            >
               {leaderboard.map((team) => (
-                <li key={team.id} className="flex items-baseline justify-between">
-                  <span className="text-[clamp(14px,1.4vw,22px)]">{team.name}</span>
-                  <span className="text-[clamp(20px,2.1vw,32px)] tabular-nums text-gold-ink">
+                <li key={team.id} className="flex items-baseline justify-between gap-2">
+                  <span className="text-[clamp(13px,1.25vw,19px)]">{team.name}</span>
+                  <span className="text-[clamp(16px,1.6vw,24px)] tabular-nums text-gold-ink">
                     {team.score}
                   </span>
                 </li>

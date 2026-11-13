@@ -1,9 +1,9 @@
 # Phone teams — The Price Is Right (Firebase)
 
 Real-time phone guesses for The Price Is Right only. The host and TV keep
-working exactly as before; when phone teams are enabled, three teams of two
-join from `/join/`, submit a price, and the TV shows the reveal and the team
-leaderboard.
+working exactly as before; the game offers **three teams** or **six
+individuals**, chosen in setup. Phones join from `/join/`, submit a price, and
+the TV shows the reveals and the podium.
 
 The implementation is modular: without Firebase configuration the button is
 disabled and the game falls back to the existing host-entered guesses.
@@ -83,12 +83,30 @@ Manual run-through:
 3. Open `/display/?code=CODE` — the QR and join URL appear with the item.
 4. Open `/join/?code=CODE` on three phones (or three separate browser
    profiles), name each team, submit a price.
-5. Lock submissions → reveal guesses → reveal price → **Award point**. The TV
-   shows guesses and the price when revealed; the leaderboard moves only when
-   the host confirms the award, and each phone shows its own result.
+5. Lock submissions → reveal guesses → reveal price → reveal leaderboard. The
+   price appears on its own first; the podium, points and totals come with the
+   leaderboard reveal. Each phone then shows its own rank and points.
 
 Each phone keeps its team identity in `sessionStorage`, so a refresh rejoins the
 same team. Renaming or removing a team from the host updates the phone.
+
+## Modes and scoring
+
+| Mode | Slots | Join label |
+|---|---|---|
+| `teams` | 3 | Team name |
+| `individual` | 6 | Your name |
+
+- Slots are claimed with a Firebase transaction (`t1..t3` or `p1..p6`); a slot
+  taken by another phone aborts the claim and the phone tries the next one, so
+  simultaneous joins can never exceed capacity.
+- Ranking is by absolute distance from the actual price (overbids count the
+  same). Standard competition ranking: ties share the rank and points
+  (1, 2, 2, 4…).
+- Points: 3 / 2 / 1 for ranks 1–3; nothing below.
+- The price is only written to the board after the host reveals it, and the
+  leaderboard only after the podium reveal.
+- The host can undo the award, override the podium and re-award.
 
 ## Rules and privacy
 

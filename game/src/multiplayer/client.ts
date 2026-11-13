@@ -9,6 +9,7 @@ export interface FirebaseHandle {
   set(path: string, value: unknown): Promise<void>;
   update(path: string, value: Record<string, unknown>): Promise<void>;
   remove(path: string): Promise<void>;
+  transaction(path: string, updater: (current: unknown) => unknown): Promise<unknown | null>;
   subscribe(
     path: string,
     callback: (value: Record<string, unknown> | null) => void,
@@ -27,9 +28,8 @@ export function getFirebase(): Promise<FirebaseHandle> {
     // multiplayer, so the offline/local game never pays for it.
     const { initializeApp, getApps } = await import("firebase/app");
     const { connectAuthEmulator, getAuth, signInAnonymously } = await import("firebase/auth");
-    const { get, getDatabase, onValue, ref, remove, set, update } = await import(
-      "firebase/database"
-    );
+    const { get, getDatabase, onValue, ref, remove, runTransaction, set, update } =
+      await import("firebase/database");
 
     const app = getApps()[0] ?? initializeApp(settings);
     const auth = getAuth(app);
@@ -53,6 +53,10 @@ export function getFirebase(): Promise<FirebaseHandle> {
       },
       async remove(path) {
         await remove(ref(db, path));
+      },
+      async transaction(path, updater) {
+        const result = await runTransaction(ref(db, path), (current) => updater(current));
+        return result.committed ? (result.snapshot.val() as unknown) : null;
       },
       subscribe(path, callback, onError) {
         return onValue(

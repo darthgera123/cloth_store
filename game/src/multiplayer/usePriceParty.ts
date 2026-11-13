@@ -126,12 +126,15 @@ export function usePriceParty(options: {
       image: boardQuestion.image,
       currency: session?.config.currency || boardQuestion.currency,
       priceUnit: boardQuestion.priceUnit,
+      mode: party.mode,
+      capacity: party.capacity,
       locked: primed ? false : party.locked,
       revealed: primed ? false : party.revealed,
       priceRevealed: primed ? false : party.priceRevealed,
+      leaderboardRevealed: primed ? false : party.leaderboardRevealed,
       price: !primed && party.priceRevealed ? boardQuestion.actualPrice : null,
       scores: party.scores,
-      winners: !primed && party.priceRevealed ? party.winners : [],
+      podium: primed ? [] : party.podium,
     };
 
     const signature = JSON.stringify(board);

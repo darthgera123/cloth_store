@@ -87,10 +87,11 @@ ends the session by design.
 
 ## Phone teams (optional, Firebase)
 
-The Price Is Right can take guesses from three phones (one per team) through
-Firebase Realtime Database. Enable **Phone teams** in the game rules, share the
-QR shown on the TV, and each phone joins at `/join/?code=XXXX`. The host keeps
-control of submissions, reveals, the price and the leaderboard.
+The Price Is Right can take guesses from phones through Firebase Realtime
+Database: **three teams** or **six individuals**, chosen under *Phone players*
+in setup. Share the QR shown on the TV, each phone joins at
+`/join/?code=XXXX`, and the host controls submissions, the guess reveal, the
+price reveal and the podium (3/2/1 points by closest guess).
 
 The app is preconfigured for the `game-night-price` Firebase project; the public
 web config lives in `.env.production`. Rules deployment, the emulator procedure

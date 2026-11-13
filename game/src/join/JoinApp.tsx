@@ -4,7 +4,7 @@ import { getFirebase } from "../multiplayer/client";
 import { firebaseConfigured } from "../multiplayer/config";
 import { friendlyFirebaseError } from "../multiplayer/errors";
 import {
-  joinTeam,
+  claimSlot,
   readSessionMeta,
   submitGuess,
   subscribeBoard,
@@ -15,14 +15,14 @@ import {
 
 const EXPIRY_MS = 12 * 60 * 60 * 1000;
 
-type Status = "loading" | "ended" | "join" | "playing" | "error";
+type Status = "loading" | "ended" | "error" | "ready";
 
 interface Identity {
-  teamId: string;
+  slot: string;
   name: string;
 }
 
-const storageKey = (code: string) => `gn:price-team:${code}`;
+const storageKey = (code: string) => `gn:price-entry:${code}`;
 
 function readCode(): string | null {
   const hash = window.location.hash.replace(/^#/, "");
@@ -38,7 +38,7 @@ function readIdentity(code: string): Identity | null {
     const raw = sessionStorage.getItem(storageKey(code));
     if (!raw) return null;
     const parsed = JSON.parse(raw) as Identity;
-    return parsed.teamId && parsed.name ? parsed : null;
+    return parsed.slot && parsed.name ? parsed : null;
   } catch {
     return null;
   }
@@ -66,7 +66,7 @@ export function JoinApp() {
   });
   const [guess, setGuess] = useState<number | null>(null);
   const [draft, setDraft] = useState("");
-  const [teamName, setTeamName] = useState("");
+  const [name, setName] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(
     readCode() ? null : "Scan the code on the TV or open the join link.",
@@ -77,7 +77,7 @@ export function JoinApp() {
     if (!code) return;
     if (!firebaseConfigured()) {
       setStatus("error");
-      setError("Phone teams are not configured for this event.");
+      setError("Phone players are not configured for this event.");
       return;
     }
 
@@ -96,38 +96,31 @@ export function JoinApp() {
           return;
         }
 
-        // Restore the team saved by a previous visit on this phone.
         const saved = readIdentity(code);
         if (saved) {
-          const team = await firebase.get(`sessions/${code}/teams/${saved.teamId}`);
+          const entry = await firebase.get(`sessions/${code}/teams/${saved.slot}`);
           if (!active) return;
-          if (team && team.uid === firebase.uid) {
-            setIdentity(saved);
-          } else {
+          if (entry && entry.uid === firebase.uid) setIdentity(saved);
+          else {
             sessionStorage.removeItem(storageKey(code));
             setIdentity(null);
           }
         }
 
-        unsubscribe = subscribeBoard(code, (next) => {
-          if (!active) return;
-          if (!next) {
-            // The board is also empty before the first round; only a missing
-            // session meta means the host ended it.
-            void readSessionMeta(code)
-              .then((meta) => {
-                if (active && !meta) setStatus("ended");
-              })
-              .catch(() => undefined);
-          }
-          setBoard(next);
-          setStatus((current) => (current === "ended" ? current : "playing"));
-        }, (subscribeError) => {
-          if (!active) return;
-          setStatus("error");
-          setError(friendlyFirebaseError(subscribeError));
-        });
-        setStatus((current) => (current === "join" ? current : "playing"));
+        unsubscribe = subscribeBoard(
+          code,
+          (next) => {
+            if (!active) return;
+            setBoard(next);
+            setStatus((current) => (current === "ended" ? current : "ready"));
+          },
+          (subscribeError) => {
+            if (!active) return;
+            setStatus("error");
+            setError(friendlyFirebaseError(subscribeError));
+          },
+        );
+        setStatus((current) => (current === "error" ? current : "ready"));
       } catch (loadError) {
         if (!active) return;
         setStatus("error");
@@ -141,39 +134,47 @@ export function JoinApp() {
     };
   }, [code]);
 
-  // Watch our own team (host may remove it) and our own guess.
+  // If the host removes the entry, drop back to the join form.
   useEffect(() => {
     if (!code || !identity) return;
     let active = true;
-    const unsubscribeTeam = subscribeOwnTeam(code, identity.teamId, (team) => {
-      if (!active) return;
-      if (!team) {
-        sessionStorage.removeItem(storageKey(code));
-        setIdentity(null);
-        setStatus("join");
-        setNotice("The host removed this team. You can join again.");
-        return;
-      }
-      // Follow host renames without losing this phone's identity.
-      if (team.name && team.name !== identity.name) {
-        const renamed = { ...identity, name: team.name };
-        sessionStorage.setItem(storageKey(code), JSON.stringify(renamed));
-        setIdentity(renamed);
-      }
-    });
+    const unsubscribe = subscribeOwnTeam(
+      code,
+      identity.slot,
+      (team) => {
+        if (!active) return;
+        if (!team) {
+          sessionStorage.removeItem(storageKey(code));
+          setIdentity(null);
+          setNotice("The host removed this entry. You can join again.");
+          return;
+        }
+        if (team.name && team.name !== identity.name) {
+          const renamed = { ...identity, name: team.name };
+          sessionStorage.setItem(storageKey(code), JSON.stringify(renamed));
+          setIdentity(renamed);
+        }
+      },
+      (subscribeError) => setNotice(friendlyFirebaseError(subscribeError)),
+    );
     return () => {
       active = false;
-      unsubscribeTeam();
+      unsubscribe();
     };
   }, [code, identity]);
 
   useEffect(() => {
     if (!code || !identity || !board?.roundId) return;
     let active = true;
-    const unsubscribe = subscribeOwnGuess(code, identity.teamId, board.roundId, (value) => {
-      if (!active) return;
-      setGuess(value);
-    }, (subscribeError) => setNotice(friendlyFirebaseError(subscribeError)));
+    const unsubscribe = subscribeOwnGuess(
+      code,
+      identity.slot,
+      board.roundId,
+      (value) => {
+        if (active) setGuess(value);
+      },
+      (subscribeError) => setNotice(friendlyFirebaseError(subscribeError)),
+    );
     return () => {
       active = false;
       unsubscribe();
@@ -181,29 +182,31 @@ export function JoinApp() {
   }, [code, identity, board?.roundId]);
 
   const join = useCallback(async () => {
-    if (!code) return;
-    const name = teamName.trim();
-    if (!name) {
-      setNotice("Enter a team name first.");
+    if (!code || !board) return;
+    const chosen = name.trim();
+    if (!chosen) {
+      setNotice("Enter a name first.");
       return;
     }
     try {
       const firebase = await getFirebase();
-      const existing = (await firebase.get(`sessions/${code}/teams`)) ?? {};
-      if (Object.keys(existing).length >= 3) {
-        setNotice("Three teams have already joined this game.");
+      const claimed = await claimSlot(code, board.mode, firebase.uid, chosen);
+      if ("full" in claimed) {
+        setNotice(
+          board.mode === "teams"
+            ? "All three team slots are taken."
+            : "All six player slots are taken.",
+        );
         return;
       }
-      const next: Identity = { teamId: crypto.randomUUID(), name };
-      await joinTeam(code, next.teamId, name, firebase.uid);
+      const next: Identity = { slot: claimed.slot, name: chosen };
       sessionStorage.setItem(storageKey(code), JSON.stringify(next));
       setIdentity(next);
       setNotice(null);
-      setStatus("playing");
     } catch (joinError) {
       setNotice(friendlyFirebaseError(joinError));
     }
-  }, [code, teamName]);
+  }, [board, code, name]);
 
   const sendGuess = useCallback(async () => {
     if (!code || !identity || !board) return;
@@ -213,7 +216,7 @@ export function JoinApp() {
       return;
     }
     try {
-      await submitGuess(code, identity.teamId, board.roundId, value);
+      await submitGuess(code, identity.slot, board.roundId, value);
       setGuess(value);
       setNotice("Guess received. You can change it until the host locks guesses.");
     } catch (submitError) {
@@ -248,11 +251,8 @@ export function JoinApp() {
             event.preventDefault();
             const input = new FormData(event.currentTarget).get("code");
             const next = String(input ?? "").trim().toUpperCase();
-            if (/^[A-Z0-9]{4}$/.test(next)) {
-              window.location.search = `?code=${next}`;
-            } else {
-              setError("That code needs four letters or numbers.");
-            }
+            if (/^[A-Z0-9]{4}$/.test(next)) window.location.search = `?code=${next}`;
+            else setError("That code needs four letters or numbers.");
           }}
         >
           <input
@@ -283,11 +283,18 @@ export function JoinApp() {
   }
 
   if (!identity) {
+    const teamsMode = board.mode === "teams";
     return (
       <Shell>
         <p className="kicker">The Price Is Right</p>
-        <h1 className="mt-3 font-serif text-[30px] leading-tight">Name your team</h1>
-        <p className="mt-2 text-[13px] text-plum-soft">One phone per team. Three teams maximum.</p>
+        <h1 className="mt-3 font-serif text-[30px] leading-tight">
+          {teamsMode ? "Name your team" : "Enter your name"}
+        </h1>
+        <p className="mt-2 text-[13px] text-plum-soft">
+          {teamsMode
+            ? "Three teams, one phone each. You can update your guess until the host locks them."
+            : "Six players, one phone each. You can update your guess until the host locks them."}
+        </p>
         <form
           className="mt-6 flex flex-col gap-3"
           onSubmit={(event) => {
@@ -297,14 +304,14 @@ export function JoinApp() {
         >
           <input
             className="field text-[16px]"
-            value={teamName}
+            value={name}
             maxLength={24}
-            placeholder="e.g. The Bargain Hunters"
-            aria-label="Team name"
-            onChange={(event) => setTeamName(event.target.value)}
+            placeholder={teamsMode ? "e.g. The Bargain Hunters" : "e.g. Priya"}
+            aria-label={teamsMode ? "Team name" : "Your name"}
+            onChange={(event) => setName(event.target.value)}
             autoFocus
           />
-          <button className="btn btn-primary" type="submit" disabled={!teamName.trim()}>
+          <button className="btn btn-primary" type="submit" disabled={!name.trim()}>
             Join the game
           </button>
         </form>
@@ -313,17 +320,17 @@ export function JoinApp() {
     );
   }
 
-  const ownScore = board.scores?.[identity.teamId] ?? 0;
-  const isWinner = (board.winners ?? []).includes(identity.teamId);
+  const ownScore = board.scores?.[identity.slot] ?? 0;
+  const rank = board.leaderboardRevealed
+    ? board.podium.find((entry) => entry.entryId === identity.slot)
+    : undefined;
   const locked = board.locked || board.revealed || board.priceRevealed;
 
   return (
     <Shell wide>
       <div className="flex items-baseline justify-between gap-3">
         <p className="kicker">{identity.name}</p>
-        <span className="text-[10px] uppercase tracking-[0.2em] text-plum-hush">
-          Score {ownScore}
-        </span>
+        <span className="text-[10px] uppercase tracking-[0.2em] text-plum-hush">Score {ownScore}</span>
       </div>
 
       <div className="mt-4 overflow-hidden border border-gold/30 bg-lavender-pale">
@@ -343,9 +350,15 @@ export function JoinApp() {
           <p className="mt-1 font-serif text-[34px] leading-none">
             {money(board.price ?? 0, board.currency)}
           </p>
-          <p className="mt-2 text-[13px] text-plum-soft">
-            {isWinner ? "You won the point." : "No point this round — watch the TV for the result."}
-          </p>
+          {board.leaderboardRevealed ? (
+            <p className="mt-2 text-[13px] text-plum-soft">
+              {rank
+                ? `Rank ${rank.rank} · +${rank.points} point${rank.points === 1 ? "" : "s"}`
+                : "No points this round."}
+            </p>
+          ) : (
+            <p className="mt-2 text-[13px] text-plum-soft">Leaderboard next — watch the TV.</p>
+          )}
         </div>
       ) : null}
 
@@ -358,9 +371,7 @@ export function JoinApp() {
           }}
         >
           <label className="grid gap-1">
-            <span className="text-[10px] uppercase tracking-[0.2em] text-plum-hush">
-              Your guess
-            </span>
+            <span className="text-[10px] uppercase tracking-[0.2em] text-plum-hush">Your guess</span>
             <input
               className="num-field text-[26px]"
               type="number"

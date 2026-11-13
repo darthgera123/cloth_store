@@ -449,19 +449,27 @@ function SetupCard({
                 <option value="team">Teams</option>
               </select>
             </Rule>
-            <label className="flex items-center gap-2 text-[12px] text-plum-soft">
-              <input
-                type="checkbox"
-                checked={config.pirPhoneTeams}
+            <Rule label="Phone players (Price Is Right)">
+              <select
+                className="field"
+                value={config.pirPhoneMode}
                 disabled={!firebaseConfigured()}
-                onChange={(event) => updateConfig("pirPhoneTeams", event.target.checked)}
-              />
-              Phone teams for The Price Is Right
-            </label>
+                onChange={(event) =>
+                  updateConfig(
+                    "pirPhoneMode",
+                    event.target.value as SessionConfig["pirPhoneMode"],
+                  )
+                }
+              >
+                <option value="off">Off — host enters guesses</option>
+                <option value="teams">3 teams — one phone each</option>
+                <option value="individual">6 individuals — one phone each</option>
+              </select>
+            </Rule>
             {!firebaseConfigured() ? (
               <p className="text-[11px] leading-relaxed text-plum-hush sm:col-span-2">
-                Firebase is not configured, so phone teams stay off. Set the VITE_FIREBASE_* variables
-                to enable them.
+                Firebase is not configured, so phone players stay off. Set the VITE_FIREBASE_*
+                variables to enable them.
               </p>
             ) : null}
             <Rule label="Price points">
@@ -744,9 +752,11 @@ function ScoresCard({ session, send }: { session: SessionState; send: (action: A
     return (
       <Panel className="p-4" corners={false}>
         <div className="card-head">
-          <h2 className="font-serif text-[20px] font-semibold">Team scores</h2>
+          <h2 className="font-serif text-[20px] font-semibold">
+            {phoneTeams.mode === "teams" ? "Team scores" : "Player scores"}
+          </h2>
           <span className="text-[10px] uppercase tracking-[0.2em] text-plum-hush">
-            Phone teams
+            {phoneTeams.mode === "teams" ? "3 teams" : "6 players"}
           </span>
         </div>
         {rows.length === 0 ? (

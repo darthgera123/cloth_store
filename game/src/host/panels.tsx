@@ -764,6 +764,7 @@ function PartyPricePanel({
   send: Send;
   party: PricePartyApi;
 }) {
+  const [override, setOverride] = useState<string[]>([]);
   const state = session.pir?.party;
   if (!state) return null;
 
@@ -771,13 +772,14 @@ function PartyPricePanel({
   const submitted = teams.filter(([id]) => id in state.guesses).length;
   const open = session.phase === "QUESTION_ACTIVE" && !state.locked;
   const canRevealPrice = session.phase === "REVEAL" && !state.priceRevealed;
-  const showPrice = state.priceRevealed;
+  const canRevealLeaderboard =
+    session.phase === "REVEAL" && state.priceRevealed && !state.leaderboardRevealed;
 
   return (
     <div>
       <div className="mb-3 flex flex-wrap gap-2">
         <span className="hbtn pointer-events-none">
-          {teams.length} team{teams.length === 1 ? "" : "s"}
+          {state.mode === "teams" ? "3 teams" : "6 players"} · {teams.length}/{state.capacity}
         </span>
         <span className="hbtn pointer-events-none">
           {submitted} of {teams.length} submitted
@@ -854,48 +856,83 @@ function PartyPricePanel({
         })}
       </ul>
 
-      {showPrice ? (
+      {state.priceRevealed ? (
         <div className="mt-3 border border-gold bg-lavender-pale p-3">
           <p className="text-[10px] uppercase tracking-[0.2em] text-gold-ink">Price revealed</p>
           <p className="mt-1 font-serif text-[24px]">
             {formatMoney(question.actualPrice, question.currency)}
           </p>
-          <p className="text-[12px] text-plum-soft">
-            Winners:{" "}
-            {state.winners
-              .map((id) => state.teams[id]?.name ?? id)
-              .join(", ") || "none"}
-            {state.awarded ? " · point awarded" : " · not yet awarded"}
-          </p>
-          {!state.awarded ? (
-            <div className="mt-2 flex flex-wrap gap-2">
-              {teams.map(([id, team]) => (
+
+          {state.leaderboardRevealed ? (
+            <div className="mt-3">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-gold-ink">Podium</p>
+              <ol className="mt-1 grid gap-1">
+                {state.podium.slice(0, 3).map((entry) => (
+                  <li key={entry.entryId} className="flex items-baseline justify-between gap-2">
+                    <span className="text-[13px]">
+                      {entry.rank}. {state.teams[entry.entryId]?.name ?? entry.entryId}
+                    </span>
+                    <span className="text-[12px] tabular-nums text-plum-soft">
+                      {formatMoney(entry.distance, session.config.currency)} away · +{entry.points}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+
+              {state.awarded ? (
                 <button
-                  key={id}
-                  className="hbtn"
+                  className="hbtn mt-2"
                   type="button"
-                  onClick={() => send({ type: "pir_override", teamIds: [id] })}
+                  onClick={() => send({ type: "pir_undo_award" })}
                 >
-                  Make {team.name} the winner
+                  Undo award
                 </button>
-              ))}
-              <button
-                className="hbtn hbtn-solid"
-                type="button"
-                onClick={() => send({ type: "pir_award" })}
-                disabled={state.winners.length === 0}
-              >
-                Award point
-              </button>
+              ) : (
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  {[0, 1, 2].map((position) => (
+                    <select
+                      key={position}
+                      className="field w-[150px]"
+                      aria-label={`Podium position ${position + 1}`}
+                      value={override[position] ?? ""}
+                      onChange={(event) => {
+                        const next = [...override];
+                        next[position] = event.target.value;
+                        setOverride(next);
+                      }}
+                    >
+                      <option value="">{position + 1}st/nd/rd…</option>
+                      {teams.map(([id, team]) => (
+                        <option key={id} value={id}>
+                          {team.name}
+                        </option>
+                      ))}
+                    </select>
+                  ))}
+                  <button
+                    className="hbtn"
+                    type="button"
+                    disabled={override.filter(Boolean).length === 0}
+                    onClick={() =>
+                      send({ type: "pir_override", teamIds: override.filter(Boolean) })
+                    }
+                  >
+                    Apply override
+                  </button>
+                  <button
+                    className="hbtn hbtn-solid"
+                    type="button"
+                    onClick={() => send({ type: "pir_award" })}
+                  >
+                    Award points
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
-            <button
-              className="hbtn mt-2"
-              type="button"
-              onClick={() => send({ type: "pir_undo_award" })}
-            >
-              Undo award
-            </button>
+            <p className="text-[12px] text-plum-soft">
+              Price first. Reveal the leaderboard when the room is ready.
+            </p>
           )}
         </div>
       ) : null}
@@ -924,6 +961,14 @@ function PartyPricePanel({
           onClick={() => send({ type: "pir_reveal_price" })}
         >
           Reveal price
+        </button>
+        <button
+          className="hbtn hbtn-solid"
+          type="button"
+          disabled={!canRevealLeaderboard}
+          onClick={() => send({ type: "pir_leaderboard" })}
+        >
+          Reveal leaderboard
         </button>
         <button
           className="hbtn"

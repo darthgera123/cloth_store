@@ -21,12 +21,15 @@ export interface PartyBoard {
   image: string;
   currency: string;
   priceUnit: string;
+  mode: "teams" | "individual";
+  capacity: number;
   locked: boolean;
   revealed: boolean;
   priceRevealed: boolean;
+  leaderboardRevealed: boolean;
   price: number | null;
   scores: Record<string, number>;
-  winners: string[];
+  podium: { entryId: string; rank: number; points: number; distance: number }[];
 }
 
 export interface PartyTeam {
@@ -37,6 +40,13 @@ export interface PartyTeam {
 
 const asRecord = (value: unknown): Record<string, unknown> =>
   value && typeof value === "object" ? (value as Record<string, unknown>) : {};
+
+export const PARTY_SLOTS = {
+  teams: ["t1", "t2", "t3"],
+  individual: ["p1", "p2", "p3", "p4", "p5", "p6"],
+} as const;
+
+export type PartyMode = keyof typeof PARTY_SLOTS;
 
 export async function ensureSession(code: string, uid: string): Promise<void> {
   const firebase = await getFirebase();
@@ -172,14 +182,24 @@ export function subscribeOwnTeam(
   return () => unsubscribe();
 }
 
-export async function joinTeam(
+/** Claim the first free slot atomically; concurrent phones never share one. */
+export async function claimSlot(
   code: string,
-  teamId: string,
-  name: string,
+  mode: PartyMode,
   uid: string,
-): Promise<void> {
+  name: string,
+): Promise<{ slot: string; team: PartyTeam } | { full: true }> {
   const firebase = await getFirebase();
-  await firebase.set(teamPath(code, teamId), { name, uid, joinedAt: Date.now() });
+  for (const slot of PARTY_SLOTS[mode]) {
+    const claimed = await firebase.transaction(teamPath(code, slot), (current) => {
+      if (current && typeof current === "object") return undefined; // taken: abort
+      return { name, uid, joinedAt: Date.now() };
+    });
+    if (claimed && typeof claimed === "object") {
+      return { slot, team: claimed as PartyTeam };
+    }
+  }
+  return { full: true };
 }
 
 export async function renameTeam(code: string, teamId: string, name: string): Promise<void> {

@@ -38,5 +38,6 @@ export const ACTION_LABEL: Record<Action["type"], string> = {
   pir_team_remove: "Team removed",
   pir_override: "Winner changed",
   pir_undo_award: "Award undone",
-  pir_award: "Point awarded",
+  pir_award: "Points awarded",
+  pir_leaderboard: "Leaderboard revealed",
 };

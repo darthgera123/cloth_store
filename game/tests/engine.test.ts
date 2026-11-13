@@ -8,7 +8,7 @@ import {
   defaultConfig,
 } from "../src/lib/types";
 import { RULES } from "../src/rules/slides";
-import { EngineError, applyAction, createSession, projectPublic } from "../src/engine/engine";
+import { EngineError, applyAction, createSession, projectPublic, rankPriceGuesses } from "../src/engine/engine";
 import { herdGroups, normalizeAnswer } from "../src/lib/herd";
 import { loadQuestionBank } from "../src/questions/bank";
 
@@ -599,129 +599,175 @@ describe("the price is right", () => {
   });
 });
 
-describe("price phone teams", () => {
-  const startParty = () => {
-    let s = session({ pirPhoneTeams: true });
+describe("price phone entries", () => {
+  const startParty = (mode: "teams" | "individual" = "teams") => {
+    let s = session({ pirPhoneMode: mode });
     s = act(s, { type: "select_game", game: "price_is_right" });
     s = act(s, { type: "rules_skip" });
     s = act(s, { type: "start_round" });
     return s;
   };
 
-  const joinTeams = (state: SessionState) => {
-    let s = act(state, { type: "pir_team_add", teamId: "t-a", name: "Alpha" });
-    s = act(s, { type: "pir_team_add", teamId: "t-b", name: "Bravo" });
-    s = act(s, { type: "pir_team_add", teamId: "t-c", name: "Charlie" });
+  const join = (state: SessionState, slot: string, name: string) =>
+    act(state, { type: "pir_team_add", teamId: slot, name });
+
+  const guess = (state: SessionState, slot: string, value: number) =>
+    act(state, { type: "pir_set_guess", entityId: slot, value });
+
+  const revealed = (state: SessionState) => {
+    let s = act(state, { type: "reveal" });
+    s = act(s, { type: "pir_reveal_price" });
     return s;
   };
 
-  const guess = (state: SessionState, teamId: string, value: number) =>
-    act(state, { type: "pir_set_guess", entityId: teamId, value });
-
-  test("phone teams are off unless configured", () => {
-    const s = startGame("price_is_right");
-    expect(s.pir?.party).toBeNull();
+  test("phone mode is off by default and fixed per game", () => {
+    expect(startGame("price_is_right").pir?.party).toBeNull();
+    expect(startGame("price_is_right", { pirPhoneMode: "teams" }).pir?.party).toMatchObject({
+      mode: "teams",
+      capacity: 3,
+    });
+    expect(
+      startGame("price_is_right", { pirPhoneMode: "individual" }).pir?.party,
+    ).toMatchObject({ mode: "individual", capacity: 6 });
   });
 
-  test("up to three teams connect and are capped", () => {
-    let s = joinTeams(startParty());
+  test("entries are limited to their mode's slots", () => {
+    let s = startParty("teams");
+    s = join(s, "t1", "Alpha");
+    s = join(s, "t2", "Bravo");
+    s = join(s, "t3", "Charlie");
     expect(Object.keys(s.pir?.party?.teams ?? {})).toHaveLength(3);
-    expectEngineError(() =>
-      act(s, { type: "pir_team_add", teamId: "t-d", name: "Delta" }),
-    );
+    expectEngineError(() => join(s, "t4", "Delta"));
+    expectEngineError(() => join(s, "p1", "Player one"));
+
+    let individual = startParty("individual");
+    for (const slot of ["p1", "p2", "p3", "p4", "p5", "p6"]) {
+      individual = join(individual, slot, `Player ${slot}`);
+    }
+    expect(Object.keys(individual.pir?.party?.teams ?? {})).toHaveLength(6);
+    expectEngineError(() => join(individual, "p7", "Player seven"));
+    expectEngineError(() => join(individual, "t1", "Team one"));
   });
 
-  test("guesses stay private until the reveal and lock after", () => {
-    let s = joinTeams(startParty());
-    s = guess(s, "t-a", 1100);
-    s = guess(s, "t-b", 1400);
-
-    const hidden = projectPublic(s, bank);
-    expect(hidden.pir?.party?.guesses).toBeNull();
-    expect(hidden.pir?.party?.teams.find((team) => team.id === "t-a")?.submitted).toBe(true);
-
-    s = act(s, { type: "reveal" });
-    const shown = projectPublic(s, bank);
-    expect(shown.pir?.party?.guesses).toEqual([
-      { teamId: "t-a", value: 1100 },
-      { teamId: "t-b", value: 1400 },
+  test("ranking is pure distance with shared ranks for ties", () => {
+    const podium = rankPriceGuesses({ a: 1400, b: 1500, c: 1600, d: 1450 }, 1500);
+    expect(podium.map((entry) => [entry.entryId, entry.rank, entry.points])).toEqual([
+      ["b", 1, 3],
+      ["d", 2, 2],
+      ["a", 3, 1],
+      ["c", 3, 1],
     ]);
   });
 
-  test("closest without going over wins and the host confirms the point", () => {
-    let s = joinTeams(startParty());
-    s = guess(s, "t-a", 1100);
-    s = guess(s, "t-b", 1400);
-    s = guess(s, "t-c", 1600);
-    s = act(s, { type: "reveal" });
-    s = act(s, { type: "pir_reveal_price" });
+  test("price reveal shows no scores; the leaderboard awards 3/2/1", () => {
+    let s = startParty("individual");
+    for (const slot of ["p1", "p2", "p3", "p4"]) s = join(s, slot, slot);
+    s = guess(s, "p1", 1450);
+    s = guess(s, "p2", 1500);
+    s = guess(s, "p3", 1600);
+    s = guess(s, "p4", 1450);
 
-    expect(s.pir?.party?.winners).toEqual(["t-b"]);
-    expect(s.pir?.party?.scores["t-b"]).toBe(0);
+    s = revealed(s);
+    expect(s.pir?.party?.priceRevealed).toBe(true);
+    expect(s.pir?.party?.leaderboardRevealed).toBe(false);
+    expect(Object.values(s.pir?.party?.scores ?? {})).toEqual([0, 0, 0, 0]);
+    expect(projectPublic(s, bank).pir?.party?.podium).toEqual([]);
 
-    s = act(s, { type: "pir_award" });
-    expect(s.pir?.party?.scores["t-b"]).toBe(1);
-    expectEngineError(() => act(s, { type: "pir_award" }));
+    s = act(s, { type: "pir_leaderboard" });
+    expect(s.pir?.party?.leaderboardRevealed).toBe(true);
+    expect(s.pir?.party?.podium.map((entry) => [entry.entryId, entry.rank, entry.points])).toEqual([
+      ["p2", 1, 3],
+      ["p1", 2, 2],
+      ["p4", 2, 2],
+      ["p3", 4, 0],
+    ]);
+    expect(s.pir?.party?.scores).toEqual({ p1: 2, p2: 3, p3: 0, p4: 2 });
+    expectEngineError(() => act(s, { type: "pir_leaderboard" }));
   });
 
-  test("the host can undo, override and re-award the point", () => {
-    let s = joinTeams(startParty());
-    s = guess(s, "t-a", 1400);
-    s = guess(s, "t-b", 1400);
-    s = guess(s, "t-c", 1600);
-    s = act(s, { type: "reveal" });
-    s = act(s, { type: "pir_reveal_price" });
-    s = act(s, { type: "pir_award" });
+  test("guesses stay private until revealed, the price until its reveal", () => {
+    let s = startParty("teams");
+    s = join(s, "t1", "Alpha");
+    s = join(s, "t2", "Bravo");
+    s = guess(s, "t1", 1200);
+    s = guess(s, "t2", 1800);
 
-    expect(s.pir?.party?.winners.sort()).toEqual(["t-a", "t-b"]);
-    expect(s.pir?.party?.scores["t-a"]).toBe(1);
+    const before = projectPublic(s, bank);
+    expect(before.pir?.party?.guesses).toBeNull();
+    expect(before.question?.actualPrice).toBeNull();
+    expect(before.pir?.party?.teams.find((team) => team.id === "t1")?.submitted).toBe(true);
+
+    s = act(s, { type: "reveal" });
+    const guesses = projectPublic(s, bank);
+    expect(guesses.pir?.party?.guesses).toHaveLength(2);
+    expect(guesses.question?.actualPrice).toBeNull();
+
+    s = act(s, { type: "pir_reveal_price" });
+    const price = projectPublic(s, bank);
+    expect(price.question?.actualPrice).toBe(1500);
+  });
+
+  test("undo, override and re-award work together", () => {
+    let s = startParty("teams");
+    s = join(s, "t1", "Alpha");
+    s = join(s, "t2", "Bravo");
+    s = join(s, "t3", "Charlie");
+    s = guess(s, "t1", 1400);
+    s = guess(s, "t2", 1600);
+    s = guess(s, "t3", 1500);
+
+    s = revealed(s);
+    s = act(s, { type: "pir_leaderboard" });
+    expect(s.pir?.party?.scores).toEqual({ t1: 2, t2: 2, t3: 3 });
 
     s = act(s, { type: "pir_undo_award" });
-    expect(s.pir?.party?.scores["t-a"]).toBe(0);
+    expect(s.pir?.party?.scores).toEqual({ t1: 0, t2: 0, t3: 0 });
     expect(s.pir?.party?.awarded).toBe(false);
 
-    s = act(s, { type: "pir_override", teamIds: ["t-c"] });
+    s = act(s, { type: "pir_override", teamIds: ["t1", "t2", "t3"] });
     s = act(s, { type: "pir_award" });
-    expect(s.pir?.party?.scores["t-c"]).toBe(1);
-    expect(s.pir?.party?.scores["t-a"]).toBe(0);
+    expect(s.pir?.party?.scores).toEqual({ t1: 3, t2: 2, t3: 1 });
   });
 
-  test("teams and scores survive the next round, guesses do not", () => {
-    let s = joinTeams(startParty());
-    s = guess(s, "t-a", 1400);
-    s = act(s, { type: "reveal" });
-    s = act(s, { type: "pir_reveal_price" });
-    s = act(s, { type: "pir_award" });
+  test("teams and totals survive the next round", () => {
+    let s = startParty("teams");
+    s = join(s, "t1", "Alpha");
+    s = guess(s, "t1", 1500);
+    s = revealed(s);
+    s = act(s, { type: "pir_leaderboard" });
     s = act(s, { type: "round_result" });
     s = act(s, { type: "next_round" });
     s = act(s, { type: "start_round" });
 
-    expect(Object.keys(s.pir?.party?.teams ?? {})).toHaveLength(3);
-    expect(s.pir?.party?.scores["t-a"]).toBe(1);
+    expect(Object.keys(s.pir?.party?.teams ?? {})).toHaveLength(1);
+    expect(s.pir?.party?.scores.t1).toBe(3);
     expect(s.pir?.party?.guesses).toEqual({});
-    expect(s.pir?.party?.winners).toEqual([]);
+    expect(s.pir?.party?.podium).toEqual([]);
+    expect(s.pir?.party?.leaderboardRevealed).toBe(false);
   });
 
-  test("restarting a round takes back its phone-team point", () => {
-    let s = joinTeams(startParty());
-    s = guess(s, "t-a", 1400);
-    s = act(s, { type: "reveal" });
-    s = act(s, { type: "pir_reveal_price" });
-    s = act(s, { type: "pir_award" });
-    expect(s.pir?.party?.scores["t-a"]).toBe(1);
+  test("restarting a round takes back its podium points", () => {
+    let s = startParty("teams");
+    s = join(s, "t1", "Alpha");
+    s = guess(s, "t1", 1500);
+    s = revealed(s);
+    s = act(s, { type: "pir_leaderboard" });
+    expect(s.pir?.party?.scores.t1).toBe(3);
 
     s = act(s, { type: "restart_round" });
-    expect(s.pir?.party?.scores["t-a"]).toBe(0);
-    expect(Object.keys(s.pir?.party?.teams ?? {})).toHaveLength(3);
+    expect(s.pir?.party?.scores.t1).toBe(0);
+    expect(s.pir?.party?.podium).toEqual([]);
+    expect(Object.keys(s.pir?.party?.teams ?? {})).toHaveLength(1);
   });
 
-  test("a removed team loses its guess and score", () => {
-    let s = joinTeams(startParty());
-    s = guess(s, "t-a", 1400);
-    s = act(s, { type: "pir_team_remove", teamId: "t-a" });
-    expect(s.pir?.party?.teams["t-a"]).toBeUndefined();
-    expect(s.pir?.party?.scores["t-a"]).toBeUndefined();
-    expect(s.pir?.party?.guesses["t-a"]).toBeUndefined();
+  test("a removed entry loses its guess and score", () => {
+    let s = startParty("teams");
+    s = join(s, "t1", "Alpha");
+    s = guess(s, "t1", 1400);
+    s = act(s, { type: "pir_team_remove", teamId: "t1" });
+    expect(s.pir?.party?.teams.t1).toBeUndefined();
+    expect(s.pir?.party?.scores.t1).toBeUndefined();
+    expect(s.pir?.party?.guesses.t1).toBeUndefined();
   });
 });
 

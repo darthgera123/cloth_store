@@ -18,7 +18,7 @@ import {
   type HostLinkStatus,
 } from "../transport/link";
 
-const STORAGE_KEY = "gn:host-session:v1";
+const STORAGE_KEY = "gn:host-session:v2";
 const HISTORY_LIMIT = 12;
 
 export interface HostSnapshot {

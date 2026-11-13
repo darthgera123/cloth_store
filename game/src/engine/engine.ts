@@ -8,6 +8,7 @@ import {
   type FeudOutcome,
   type GameStanding,
   type Participant,
+  type PricePodiumEntry,
   type HerdResult,
   type HerdState,
   type Phase,
@@ -271,6 +272,22 @@ function winnersFromGuesses(
   return entries.filter(([, value]) => Math.abs(value - actualPrice) === best).map(([id]) => id);
 }
 
+/** Closest to the actual price by absolute distance; ties share the rank. */
+export function rankPriceGuesses(
+  guesses: Record<string, number>,
+  actualPrice: number,
+): PricePodiumEntry[] {
+  const rows = Object.entries(guesses)
+    .map(([entryId, value]) => ({ entryId, distance: Math.abs(value - actualPrice) }))
+    .sort((a, b) => a.distance - b.distance || a.entryId.localeCompare(b.entryId));
+
+  return rows.map((row) => {
+    const rank = 1 + rows.filter((other) => other.distance < row.distance).length;
+    const points = rank === 1 ? 3 : rank === 2 ? 2 : rank === 3 ? 1 : 0;
+    return { entryId: row.entryId, rank, points, distance: row.distance };
+  });
+}
+
 function computePriceWinners(state: SessionState, actualPrice: number): string[] {
   const guesses = Object.fromEntries(
     Object.entries(state.pir?.guesses ?? {}).filter(
@@ -381,18 +398,29 @@ function initGameState(state: SessionState, question: Question) {
       priceRevealed: false,
       winners: [],
       awarded: false,
-      party: state.config.pirPhoneTeams
-        ? {
-            teams: previousParty?.teams ?? {},
-            scores: previousParty?.scores ?? {},
-            guesses: {},
-            locked: false,
-            revealed: false,
-            priceRevealed: false,
-            winners: [],
-            awarded: false,
-          }
-        : null,
+      party: (() => {
+        const mode =
+          previousParty?.mode ??
+          (state.config.pirPhoneMode === "individual"
+            ? "individual"
+            : state.config.pirPhoneMode === "teams"
+              ? "teams"
+              : null);
+        if (!mode) return null;
+        return {
+          mode,
+          capacity: mode === "teams" ? 3 : 6,
+          teams: previousParty?.teams ?? {},
+          scores: previousParty?.scores ?? {},
+          guesses: {},
+          locked: false,
+          revealed: false,
+          priceRevealed: false,
+          leaderboardRevealed: false,
+          podium: [],
+          awarded: false,
+        };
+      })(),
     };
     state.feud = null;
     state.herd = null;
@@ -697,11 +725,17 @@ export function applyAction(
       }
       next.roundAwards = [];
       if (next.pir?.party?.awarded) {
-        for (const id of next.pir.party.winners) {
-          next.pir.party.scores[id] = Math.max(0, (next.pir.party.scores[id] ?? 0) - 1);
+        for (const entry of next.pir.party.podium) {
+          next.pir.party.scores[entry.entryId] = Math.max(
+            0,
+            (next.pir.party.scores[entry.entryId] ?? 0) - entry.points,
+          );
         }
         next.pir.party.awarded = false;
-        next.pir.party.winners = [];
+      }
+      if (next.pir?.party) {
+        next.pir.party.podium = [];
+        next.pir.party.leaderboardRevealed = false;
       }
       next.phase = "ROUND_READY";
       next.feud = null;
@@ -817,10 +851,12 @@ export function applyAction(
     case "pir_team_add": {
       needGame(next, "price_is_right");
       const pir = next.pir;
-      if (!pir?.party) fail("Phone teams are not enabled for this round");
+      if (!pir?.party) fail("Phone entries are not enabled for this round");
+      const slotPattern = pir.party.mode === "teams" ? /^t[1-3]$/ : /^p[1-6]$/;
+      if (!slotPattern.test(action.teamId)) fail("Unknown entry slot");
       const exists = Boolean(pir.party.teams[action.teamId]);
-      if (!exists && Object.keys(pir.party.teams).length >= 3) {
-        fail("Three teams are already connected");
+      if (!exists && Object.keys(pir.party.teams).length >= pir.party.capacity) {
+        fail("All entry slots are taken");
       }
       pir.party.teams[action.teamId] = {
         name: action.name,
@@ -840,28 +876,62 @@ export function applyAction(
       break;
     }
 
+    case "pir_leaderboard": {
+      needGame(next, "price_is_right");
+      const pir = next.pir;
+      if (!pir?.party) fail("Phone entries are not enabled for this round");
+      const question = currentQuestion(next, bank) as PriceQuestion | null;
+      if (!question || question.game !== "price_is_right") fail("No price round");
+      if (!pir.party.priceRevealed) fail("Reveal the price first");
+      if (pir.party.leaderboardRevealed) fail("The leaderboard is already visible");
+
+      const podium = rankPriceGuesses(pir.party.guesses, question.actualPrice);
+      pir.party.podium = podium;
+      pir.party.leaderboardRevealed = true;
+      pir.winners = podium.filter((entry) => entry.rank === 1).map((entry) => entry.entryId);
+
+      if (!pir.party.awarded) {
+        for (const entry of podium) {
+          pir.party.scores[entry.entryId] = (pir.party.scores[entry.entryId] ?? 0) + entry.points;
+        }
+        pir.party.awarded = true;
+      }
+      break;
+    }
+
     case "pir_override": {
       needGame(next, "price_is_right");
       const pir = next.pir;
-      if (!pir?.party) fail("Phone teams are not enabled for this round");
+      if (!pir?.party) fail("Phone entries are not enabled for this round");
+      const question = currentQuestion(next, bank) as PriceQuestion | null;
+      if (!question || question.game !== "price_is_right") fail("No price round");
       if (!pir.party.priceRevealed) fail("Reveal the price first");
-      if (pir.party.awarded) fail("Undo the award before changing the winner");
-      for (const id of action.teamIds) {
-        if (!pir.party.teams[id]) fail("Unknown team");
+      if (pir.party.awarded) fail("Undo the award before changing the podium");
+
+      const ids = [...new Set(action.teamIds)].slice(0, 3);
+      for (const id of ids) {
+        if (pir.party.teams[id] === undefined) fail("Unknown entry");
+        if (pir.party.guesses[id] === undefined) fail("That entry has no guess");
       }
-      pir.party.winners = [...new Set(action.teamIds)];
+      pir.party.podium = ids.map((id, index) => ({
+        entryId: id,
+        rank: index + 1,
+        points: [3, 2, 1][index] ?? 0,
+        distance: Math.abs((pir.party?.guesses[id] ?? 0) - question.actualPrice),
+      }));
+      pir.party.leaderboardRevealed = true;
       break;
     }
 
     case "pir_award": {
       needGame(next, "price_is_right");
       const pir = next.pir;
-      if (!pir?.party) fail("Phone teams are not enabled for this round");
+      if (!pir?.party) fail("Phone entries are not enabled for this round");
       if (!pir.party.priceRevealed) fail("Reveal the price first");
-      if (pir.party.awarded) fail("The point has already been awarded");
-      if (pir.party.winners.length === 0) fail("No winning team");
-      for (const id of pir.party.winners) {
-        pir.party.scores[id] = (pir.party.scores[id] ?? 0) + 1;
+      if (pir.party.awarded) fail("The points have already been awarded");
+      if (pir.party.podium.length === 0) fail("Reveal the leaderboard first");
+      for (const entry of pir.party.podium) {
+        pir.party.scores[entry.entryId] = (pir.party.scores[entry.entryId] ?? 0) + entry.points;
       }
       pir.party.awarded = true;
       break;
@@ -870,10 +940,13 @@ export function applyAction(
     case "pir_undo_award": {
       needGame(next, "price_is_right");
       const pir = next.pir;
-      if (!pir?.party) fail("Phone teams are not enabled for this round");
+      if (!pir?.party) fail("Phone entries are not enabled for this round");
       if (!pir.party.awarded) fail("No award to undo");
-      for (const id of pir.party.winners) {
-        pir.party.scores[id] = Math.max(0, (pir.party.scores[id] ?? 0) - 1);
+      for (const entry of pir.party.podium) {
+        pir.party.scores[entry.entryId] = Math.max(
+          0,
+          (pir.party.scores[entry.entryId] ?? 0) - entry.points,
+        );
       }
       pir.party.awarded = false;
       break;
@@ -1003,15 +1076,8 @@ export function applyAction(
       pir.party = pir.party ?? null;
 
       if (pir.party) {
-        const winners = winnersFromGuesses(
-          pir.party.guesses,
-          question.actualPrice,
-          next.config.pirAllOverFallback,
-        );
+        // The price is shown on its own; ranking and points come next.
         pir.party.priceRevealed = true;
-        pir.party.winners = winners;
-        // The point is awarded only when the host confirms it.
-        pir.winners = winners;
         break;
       }
 
@@ -1137,16 +1203,21 @@ export function projectPublic(state: SessionState, bank: QuestionBank): PublicSt
         mode: state.config.pirMode,
         party: party
           ? {
-              teams: Object.entries(party.teams).map(([id, team]) => ({
-                id,
-                name: team.name,
-                submitted: id in party.guesses,
-              })),
+              mode: party.mode,
+              capacity: party.capacity,
+              teams: Object.entries(party.teams)
+                .map(([id, team]) => ({
+                  id,
+                  name: team.name,
+                  submitted: id in party.guesses,
+                }))
+                .sort((a, b) => a.id.localeCompare(b.id)),
               scores: party.scores,
               locked: party.locked,
               revealed: party.revealed,
               priceRevealed: party.priceRevealed,
-              winners: party.winners,
+              leaderboardRevealed: party.leaderboardRevealed,
+              podium: party.podium,
               guesses: party.revealed
                 ? Object.entries(party.guesses).map(([teamId, value]) => ({ teamId, value }))
                 : null,
