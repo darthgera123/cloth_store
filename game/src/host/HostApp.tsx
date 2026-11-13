@@ -364,6 +364,34 @@ function SetupCard({
         </div>
       ) : null}
 
+      <div className="mt-4 border border-gold/25 p-3">
+        <label className="grid gap-1">
+          <span className="text-[10px] uppercase tracking-[0.18em] text-plum-hush">
+            Phone players — The Price Is Right
+          </span>
+          <select
+            className="field"
+            value={config.pirPhoneMode}
+            disabled={!firebaseConfigured()}
+            onChange={(event) =>
+              updateConfig(
+                "pirPhoneMode",
+                event.target.value as SessionConfig["pirPhoneMode"],
+              )
+            }
+          >
+            <option value="off">Off — you enter the guesses here</option>
+            <option value="teams">3 teams — one phone each</option>
+            <option value="individual">6 players — one phone each</option>
+          </select>
+        </label>
+        <p className="mt-1 text-[11px] leading-relaxed text-plum-hush">
+          {firebaseConfigured()
+            ? "Phones join at the QR shown on the TV. Leave off to type every guess on this laptop."
+            : "Firebase is not configured, so phone players stay off."}
+        </p>
+      </div>
+
       {teamsOn ? (
         <p className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-plum-soft">
           <span>
@@ -449,29 +477,6 @@ function SetupCard({
                 <option value="team">Teams</option>
               </select>
             </Rule>
-            <Rule label="Phone players (Price Is Right)">
-              <select
-                className="field"
-                value={config.pirPhoneMode}
-                disabled={!firebaseConfigured()}
-                onChange={(event) =>
-                  updateConfig(
-                    "pirPhoneMode",
-                    event.target.value as SessionConfig["pirPhoneMode"],
-                  )
-                }
-              >
-                <option value="off">Off — host enters guesses</option>
-                <option value="teams">3 teams — one phone each</option>
-                <option value="individual">6 individuals — one phone each</option>
-              </select>
-            </Rule>
-            {!firebaseConfigured() ? (
-              <p className="text-[11px] leading-relaxed text-plum-hush sm:col-span-2">
-                Firebase is not configured, so phone players stay off. Set the VITE_FIREBASE_*
-                variables to enable them.
-              </p>
-            ) : null}
             <Rule label="Price points">
               <select
                 className="field"

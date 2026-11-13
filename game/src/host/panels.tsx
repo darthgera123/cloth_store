@@ -4,6 +4,7 @@
 import { useEffect, useRef, useState } from "react";
 import { herdGroups } from "../lib/herd";
 import type { PricePartyApi } from "../multiplayer/usePriceParty";
+import { firebaseConfigured } from "../multiplayer/config";
 import {
   GAME_LABEL,
   type Action,
@@ -652,6 +653,9 @@ export function PricePanel({
     return <PartyPricePanel session={session} question={question} send={send} party={party} />;
   }
 
+  const phonesAvailable = firebaseConfigured();
+  const phoneModeOff = session.config.pirPhoneMode === "off";
+
   const entities =
     session.config.pirMode === "team"
       ? session.teams.map((team) => ({ id: team.id, name: team.name }))
@@ -661,6 +665,12 @@ export function PricePanel({
 
   return (
     <div>
+      {phonesAvailable && phoneModeOff ? (
+        <p className="mb-3 border border-gold/40 bg-lavender-pale px-3 py-2 text-[12px] text-plum-soft">
+          Phone players are off — every guess is typed here. Set <b>Phone players</b> to 3 teams or
+          6 players in setup before starting the game to let guests join from their phones.
+        </p>
+      ) : null}
       <div className="mb-3 flex flex-wrap gap-2">
         <span className="hbtn pointer-events-none">Actual {formatMoney(question.actualPrice, question.currency)}</span>
         <span className="hbtn pointer-events-none">{session.config.pirMode} mode</span>
