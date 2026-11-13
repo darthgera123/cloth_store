@@ -354,7 +354,7 @@ export function PartyJoinCard({
         module.toString(joinUrl, {
           type: "svg",
           margin: 1,
-          width: 200,
+          width: 240,
           color: { dark: "#392747", light: "#00000000" },
         }),
       )
@@ -375,7 +375,7 @@ export function PartyJoinCard({
     >
       {qr ? (
         <div
-          className="qr h-[110px] w-[110px] shrink-0"
+          className="qr h-[150px] w-[150px] shrink-0"
           aria-hidden="true"
           dangerouslySetInnerHTML={{ __html: qr }}
         />
