@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Placeholder illustration of a table lamp">
+  <rect width="640" height="480" fill="#eee5f5" />
+  <g fill="none" stroke="#d4a52e" stroke-width="2" stroke-linecap="round">
+    <circle cx="320" cy="240" r="150" stroke-dasharray="2 10" opacity=".55" />
+    <path d="M320 96c46 0 78 30 78 60 0 16-12 24-30 24h-96c-18 0-30-8-30-24 0-30 32-60 78-60Z" />
+    <path d="M248 156h144" opacity=".6" />
+    <path d="M320 180v130" />
+    <path d="M262 340c0-16 26-30 58-30s58 14 58 30" />
+    <path d="M246 372h148" />
+    <path d="M292 96c8-16 48-16 56 0" opacity=".7" />
+    <circle cx="320" cy="246" r="5" fill="#d4a52e" stroke="none" />
+  </g>
+  <text x="320" y="424" text-anchor="middle" fill="#6c5a7a" font-family="Cormorant Garamond, serif" font-size="22" letter-spacing="4">
+    DEMO ITEM
+  </text>
+</svg>
