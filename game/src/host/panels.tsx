@@ -656,10 +656,10 @@ export function PricePanel({
   const phonesAvailable = firebaseConfigured();
   const phoneModeOff = session.config.pirPhoneMode === "off";
 
-  const entities =
-    session.config.pirMode === "team"
-      ? session.teams.map((team) => ({ id: team.id, name: team.name }))
-      : session.participants.map((person) => ({ id: person.id, name: person.name }));
+  const entities = session.participants.map((person) => ({
+    id: person.id,
+    name: person.name,
+  }));
 
   const open = session.phase === "QUESTION_ACTIVE" && !pir.locked;
 
@@ -673,7 +673,7 @@ export function PricePanel({
       ) : null}
       <div className="mb-3 flex flex-wrap gap-2">
         <span className="hbtn pointer-events-none">Actual {formatMoney(question.actualPrice, question.currency)}</span>
-        <span className="hbtn pointer-events-none">{session.config.pirMode} mode</span>
+        <span className="hbtn pointer-events-none">Host entry</span>
         {pir.locked ? <span className="hbtn pointer-events-none border-gold">Locked</span> : null}
       </div>
 

@@ -63,6 +63,12 @@ export function HostApp() {
 
           {session.phase === "RULES" ? <RulesCard session={session} send={send} /> : null}
 
+          {session.game === "family_feud" &&
+          (session.phase === "GAME_INTRO" ||
+            (session.phase === "ROUND_READY" && session.round <= 1)) ? (
+            <FeudTeamsCard session={session} send={send} />
+          ) : null}
+
           {session.phase === "GAME_INTRO" || session.phase === "ROUND_READY" ? (
             <ReadyCard session={session} send={send} />
           ) : null}
@@ -214,44 +220,19 @@ function SetupCard({
   onSave,
 }: {
   session?: SessionState;
-  onCreate?: (input: {
-    names: string[];
-    teams: [string, string] | null;
-    config?: Partial<SessionConfig>;
-    participantTeams?: (0 | 1 | null)[];
-  }) => Promise<boolean>;
+  onCreate?: (input: { names: string[]; config?: Partial<SessionConfig> }) => Promise<boolean>;
   onSave?: (payload: {
-    participants: { name: string; team?: 0 | 1 }[];
-    teams: [string, string] | null;
+    participants: { name: string }[];
     config?: Partial<SessionConfig>;
   }) => void;
 }) {
   const [names, setNames] = useState<string[]>(
     session ? session.participants.map((person) => person.name) : DEFAULT_NAMES,
   );
-  const [teamPick, setTeamPick] = useState<(0 | 1)[]>(() =>
-    Array.from({ length: 8 }, (_, index) => {
-      const existing = session?.participants[index];
-      if (existing) return existing.teamId === "t2" ? 1 : 0;
-      return index < 4 ? 0 : 1;
-    }),
-  );
-  const [teamsOn, setTeamsOn] = useState<boolean>(session ? session.teams.length === 2 : true);
-  const [teamNames, setTeamNames] = useState<[string, string]>(
-    session && session.teams.length === 2
-      ? [session.teams[0]!.name, session.teams[1]!.name]
-      : DEFAULT_TEAMS,
-  );
   const [config, setConfig] = useState<SessionConfig>(session ? session.config : defaultConfig);
   const [message, setMessage] = useState<string | null>(null);
 
   const filled = names.map((name) => name.trim()).filter(Boolean);
-  const teamCount = (team: 0 | 1) =>
-    names.reduce(
-      (count, name, index) =>
-        name.trim().length > 0 && (teamPick[index] ?? 0) === team ? count + 1 : count,
-      0,
-    );
 
   const updateConfig = <K extends keyof SessionConfig>(key: K, value: SessionConfig[K]) => {
     setConfig((current) => ({ ...current, [key]: value }));
@@ -263,36 +244,20 @@ function SetupCard({
       return;
     }
     setMessage(null);
-    const roster = names
-      .map((name, index) => ({ name: name.trim(), team: teamPick[index] ?? 0, index }))
-      .filter((entry) => entry.name.length > 0);
-    const teams = teamsOn ? teamNames : null;
 
     if (onCreate) {
-      const ok = await onCreate({
-        names: roster.map((entry) => entry.name),
-        teams,
-        config: { ...config },
-        participantTeams: teams ? roster.map((entry) => entry.team) : undefined,
-      });
+      const ok = await onCreate({ names: filled, config: { ...config } });
       if (!ok) setMessage("Could not create the session.");
       return;
     }
-    onSave?.({
-      participants: roster.map((entry) => ({
-        name: entry.name,
-        ...(teams ? { team: entry.team } : {}),
-      })),
-      teams,
-      config,
-    });
+    onSave?.({ participants: filled.map((name) => ({ name })), config });
   };
 
   return (
     <Panel className="p-5" corners={false}>
       <div className="mb-4 flex items-baseline justify-between gap-2 border-b border-gold/20 pb-3">
         <h2 className="font-serif text-[24px] font-semibold">
-          {session ? "Players & teams" : "Set up the evening"}
+          {session ? "Players" : "Set up the evening"}
         </h2>
         <span className="text-[10px] uppercase tracking-[0.22em] text-plum-hush">
           {session ? "Changes apply in the lobby" : "Step 1"}
@@ -301,13 +266,8 @@ function SetupCard({
 
       <div className="grid gap-2">
         {names.map((name, index) => (
-          <div
-            key={index}
-            className="grid grid-cols-[18px_minmax(0,1fr)] items-center gap-2 sm:grid-cols-[18px_minmax(0,1fr)_minmax(150px,210px)]"
-          >
-            <span className="text-right font-serif text-[13px] text-gold-ink">
-              {index + 1}
-            </span>
+          <div key={index} className="grid grid-cols-[18px_minmax(0,1fr)] items-center gap-2">
+            <span className="text-right font-serif text-[13px] text-gold-ink">{index + 1}</span>
             <input
               className="field"
               placeholder={`Player ${index + 1}`}
@@ -319,50 +279,14 @@ function SetupCard({
                 setNames(next);
               }}
             />
-            {teamsOn ? (
-              <select
-                className="field"
-                aria-label={`Team for ${name.trim() || `player ${index + 1}`}`}
-                value={teamPick[index] ?? 0}
-                onChange={(event) => {
-                  const next = [...teamPick];
-                  next[index] = event.target.value === "1" ? 1 : 0;
-                  setTeamPick(next);
-                }}
-              >
-                <option value="0">{teamNames[0] || "Team one"}</option>
-                <option value="1">{teamNames[1] || "Team two"}</option>
-              </select>
-            ) : null}
           </div>
         ))}
       </div>
 
-      <label className="mt-4 flex items-center gap-2 text-[12px] text-plum-soft">
-        <input
-          type="checkbox"
-          checked={teamsOn}
-          onChange={(event) => setTeamsOn(event.target.checked)}
-        />
-        Two teams (needed for Family Feud)
-      </label>
-
-      {teamsOn ? (
-        <div className="mt-2 grid gap-2 sm:grid-cols-2">
-          <input
-            className="field"
-            aria-label="First team name"
-            value={teamNames[0]}
-            onChange={(event) => setTeamNames([event.target.value, teamNames[1]])}
-          />
-          <input
-            className="field"
-            aria-label="Second team name"
-            value={teamNames[1]}
-            onChange={(event) => setTeamNames([teamNames[0], event.target.value])}
-          />
-        </div>
-      ) : null}
+      <p className="mt-3 text-[11px] leading-relaxed text-plum-hush">
+        Teams belong to a game: Family Feud asks for its two teams after the rules, and The Price Is
+        Right uses phone teams.
+      </p>
 
       <div className="mt-4 border border-gold/25 p-3">
         <label className="grid gap-1">
@@ -392,154 +316,75 @@ function SetupCard({
         </p>
       </div>
 
-      {teamsOn ? (
-        <p className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-plum-soft">
-          <span>
-            {teamNames[0] || "Team one"}:{" "}
-            <b className="tabular-nums text-plum">{teamCount(0)}</b>
-          </span>
-          <span>
-            {teamNames[1] || "Team two"}:{" "}
-            <b className="tabular-nums text-plum">{teamCount(1)}</b>
-          </span>
-          {teamCount(0) !== teamCount(1) ? (
-            <span className="text-gold-ink">Teams are uneven</span>
-          ) : null}
-        </p>
-      ) : null}
-
-      {config ? (
-        <details className="mt-4 border border-gold/20 p-3">
-          <summary className="cursor-pointer text-[10px] uppercase tracking-[0.22em] text-plum-hush">
-            Game rules
-          </summary>
-          <div className="mt-3 grid gap-3 sm:grid-cols-2">
-            <Rule label="Strike limit">
-              <select
-                className="field"
-                value={config.strikeLimit}
-                onChange={(event) => updateConfig("strikeLimit", Number(event.target.value))}
-              >
-                {[2, 3, 4, 5].map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </Rule>
-            <Rule label="Round multiplier">
-              <select
-                className="field"
-                value={config.roundMultiplier}
-                onChange={(event) => updateConfig("roundMultiplier", Number(event.target.value))}
-              >
-                {[1, 2, 3].map((value) => (
-                  <option key={value} value={value}>
-                    ×{value}
-                  </option>
-                ))}
-              </select>
-            </Rule>
-            <Rule label="Herd points">
-              <select
-                className="field"
-                value={config.herdPoints}
-                onChange={(event) => updateConfig("herdPoints", Number(event.target.value))}
-              >
-                {[1, 2, 3, 5].map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </Rule>
-            <Rule label="Most Likely">
-              <select
-                className="field"
-                value={config.mlMode}
-                onChange={(event) =>
-                  updateConfig("mlMode", event.target.value as SessionConfig["mlMode"])
-                }
-              >
-                <option value="casual">Casual (no points)</option>
-                <option value="competitive">Competitive</option>
-              </select>
-            </Rule>
-            <Rule label="Price mode">
-              <select
-                className="field"
-                value={config.pirMode}
-                onChange={(event) =>
-                  updateConfig("pirMode", event.target.value as SessionConfig["pirMode"])
-                }
-              >
-                <option value="individual">Individual</option>
-                <option value="team">Teams</option>
-              </select>
-            </Rule>
-            <Rule label="Price points">
-              <select
-                className="field"
-                value={config.pirPoints}
-                onChange={(event) => updateConfig("pirPoints", Number(event.target.value))}
-              >
-                {[1, 2, 3, 5, 10].map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </Rule>
-            <label className="flex items-center gap-2 text-[12px] text-plum-soft">
-              <input
-                type="checkbox"
-                checked={config.herdTieAwards}
-                onChange={(event) => updateConfig("herdTieAwards", event.target.checked)}
-              />
-              Award tied majorities
-            </label>
-            <label className="flex items-center gap-2 text-[12px] text-plum-soft">
-              <input
-                type="checkbox"
-                checked={config.pinkCowEnabled}
-                onChange={(event) => updateConfig("pinkCowEnabled", event.target.checked)}
-              />
-              Pink Cow enabled
-            </label>
-            <label className="flex items-center gap-2 text-[12px] text-plum-soft">
-              <input
-                type="checkbox"
-                checked={config.pinkCowBlocksWin}
-                onChange={(event) => updateConfig("pinkCowBlocksWin", event.target.checked)}
-              />
-              Pink Cow blocks winning
-            </label>
-            <label className="flex items-center gap-2 text-[12px] text-plum-soft">
-              <input
-                type="checkbox"
-                checked={config.shuffleQuestions}
-                onChange={(event) => updateConfig("shuffleQuestions", event.target.checked)}
-              />
-              Shuffle question order
-            </label>
-            <Rule label="Price fallback">
-              <select
-                className="field"
-                value={config.pirAllOverFallback}
-                onChange={(event) =>
-                  updateConfig(
-                    "pirAllOverFallback",
-                    event.target.value as SessionConfig["pirAllOverFallback"],
-                  )
-                }
-              >
-                <option value="closest">Closest when all over</option>
-                <option value="lowest">Lowest guess when all over</option>
-              </select>
-            </Rule>
-          </div>
-        </details>
-      ) : null}
+      <details className="mt-4 border border-gold/20 p-3">
+        <summary className="cursor-pointer text-[10px] uppercase tracking-[0.22em] text-plum-hush">
+          Game rules
+        </summary>
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+          <Rule label="Family Feud — strike limit">
+            <select
+              className="field"
+              value={config.strikeLimit}
+              onChange={(event) => updateConfig("strikeLimit", Number(event.target.value))}
+            >
+              {[2, 3, 4, 5].map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
+          </Rule>
+          <Rule label="Family Feud — round multiplier">
+            <select
+              className="field"
+              value={config.roundMultiplier}
+              onChange={(event) => updateConfig("roundMultiplier", Number(event.target.value))}
+            >
+              {[1, 2, 3].map((value) => (
+                <option key={value} value={value}>
+                  ×{value}
+                </option>
+              ))}
+            </select>
+          </Rule>
+          <Rule label="Price Is Right — host-entry points">
+            <select
+              className="field"
+              value={config.pirPoints}
+              onChange={(event) => updateConfig("pirPoints", Number(event.target.value))}
+            >
+              {[1, 2, 3, 5, 10].map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
+          </Rule>
+          <Rule label="Price Is Right — all-over fallback">
+            <select
+              className="field"
+              value={config.pirAllOverFallback}
+              onChange={(event) =>
+                updateConfig(
+                  "pirAllOverFallback",
+                  event.target.value as SessionConfig["pirAllOverFallback"],
+                )
+              }
+            >
+              <option value="closest">Closest when all over</option>
+              <option value="lowest">Lowest guess when all over</option>
+            </select>
+          </Rule>
+          <label className="flex items-center gap-2 text-[12px] text-plum-soft sm:col-span-2">
+            <input
+              type="checkbox"
+              checked={config.shuffleQuestions}
+              onChange={(event) => updateConfig("shuffleQuestions", event.target.checked)}
+            />
+            Shuffle question order
+          </label>
+        </div>
+      </details>
 
       {message ? <p className="mt-3 text-[12px] text-gold-ink">{message}</p> : null}
 
@@ -577,15 +422,13 @@ function SelectCard({ session, send }: { session: SessionState; send: (action: A
       </div>
       <div className="grid gap-2 sm:grid-cols-2">
         {VISIBLE_GAMES.map((game: GameId, index) => {
-          const blocked = game === "family_feud" && session.teams.length !== 2;
           return (
             <button
               key={game}
               type="button"
               className="tile"
-              disabled={blocked}
               onClick={() => send({ type: "select_game", game })}
-              title={blocked ? "Add two team names in setup first" : GAME_BLURB[game]}
+              title={GAME_BLURB[game]}
             >
               <span className="font-serif text-[11px] uppercase tracking-[0.3em] text-gold-ink">
                 {index + 1}
@@ -675,7 +518,116 @@ function RulesCard({
   );
 }
 
+function FeudTeamsCard({
+  session,
+  send,
+}: {
+  session: SessionState;
+  send: (action: Action) => void;
+}) {
+  const existing = session.teams;
+  const [names, setNames] = useState<[string, string]>(
+    existing.length === 2 ? [existing[0]!.name, existing[1]!.name] : DEFAULT_TEAMS,
+  );
+  const [picks, setPicks] = useState<Record<string, 0 | 1>>(() =>
+    Object.fromEntries(
+      session.participants.map((person, index) => [
+        person.id,
+        person.teamId === "t2" ? 1 : person.teamId === "t1" ? 0 : index < 4 ? 0 : 1,
+      ]),
+    ),
+  );
+
+  const count = (team: 0 | 1) =>
+    Object.values(picks).filter((value) => value === team).length;
+  const ready = names[0].trim() && names[1].trim() && count(0) > 0 && count(1) > 0;
+
+  return (
+    <Panel className="p-5" corners={false}>
+      <div className="mb-3 flex items-baseline justify-between gap-2 border-b border-gold/20 pb-3">
+        <h2 className="font-serif text-[24px] font-semibold">Family Feud teams</h2>
+        <span className="text-[10px] uppercase tracking-[0.22em] text-plum-hush">
+          Before round one
+        </span>
+      </div>
+      <div className="grid gap-2 sm:grid-cols-2">
+        <input
+          className="field"
+          aria-label="First team name"
+          value={names[0]}
+          onChange={(event) => setNames([event.target.value, names[1]])}
+        />
+        <input
+          className="field"
+          aria-label="Second team name"
+          value={names[1]}
+          onChange={(event) => setNames([names[0], event.target.value])}
+        />
+      </div>
+
+      <ul className="mt-3 grid gap-2">
+        {session.participants.map((person) => (
+          <li key={person.id} className="grid grid-cols-[minmax(0,1fr)_190px] items-center gap-2">
+            <span className="text-[13px]">{person.name}</span>
+            <select
+              className="field"
+              aria-label={`Team for ${person.name}`}
+              value={picks[person.id] ?? 0}
+              onChange={(event) =>
+                setPicks((current) => ({
+                  ...current,
+                  [person.id]: event.target.value === "1" ? 1 : 0,
+                }))
+              }
+            >
+              <option value="0">{names[0] || "Team one"}</option>
+              <option value="1">{names[1] || "Team two"}</option>
+            </select>
+          </li>
+        ))}
+      </ul>
+
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-plum-soft">
+        <span>
+          {names[0] || "Team one"}: <b className="tabular-nums text-plum">{count(0)}</b>
+        </span>
+        <span>
+          {names[1] || "Team two"}: <b className="tabular-nums text-plum">{count(1)}</b>
+        </span>
+        {(session.teams.length !== 2 || count(0) !== count(1)) && (
+          <span className="text-gold-ink">
+            {session.teams.length !== 2 ? "Save the teams to start" : "Teams are uneven"}
+          </span>
+        )}
+      </div>
+
+      <div className="mt-3 flex flex-wrap gap-2 border-t border-gold/20 pt-3">
+        <button
+          className="hbtn hbtn-solid"
+          type="button"
+          disabled={!ready}
+          onClick={() =>
+            send({
+              type: "feud_teams",
+              names: [names[0].trim(), names[1].trim()],
+              assignment: picks,
+            })
+          }
+        >
+          Save teams
+        </button>
+        {session.teams.length === 2 ? (
+          <span className="self-center text-[11px] text-plum-soft">
+            Teams saved — start round one when ready.
+          </span>
+        ) : null}
+      </div>
+    </Panel>
+  );
+}
+
 function ReadyCard({ session, send }: { session: SessionState; send: (action: Action) => void }) {
+  const feudMissing = session.game === "family_feud" && session.teams.length !== 2;
   return (
     <Panel className="p-6" corners={false}>
       <p className="text-[10px] uppercase tracking-[0.3em] text-gold-ink">
@@ -685,10 +637,31 @@ function ReadyCard({ session, send }: { session: SessionState; send: (action: Ac
       <p className="mt-3 text-[13px] text-plum-soft">
         The audience sees the game introduction. Start the question when the room is ready.
       </p>
+
+      {session.game === "price_is_right" && session.pir?.party ? (
+        <div className="mt-4 border border-gold/30 bg-lavender-pale/50 p-3">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-plum-hush">
+            Phones can join now
+          </p>
+          <p className="mt-1 text-[13px]">
+            Code <b className="tracking-[0.2em]">{session.code}</b> ·{" "}
+            {Object.keys(session.pir.party.teams).length} / {session.pir.party.capacity} joined
+          </p>
+          {Object.values(session.pir.party.teams).length > 0 ? (
+            <p className="text-[12px] text-plum-soft">
+              {Object.values(session.pir.party.teams)
+                .map((team) => team.name)
+                .join(" · ")}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+
       <div className="mt-5 flex flex-wrap gap-2 border-t border-gold/20 pt-4">
         <button
           className="hbtn hbtn-solid"
           type="button"
+          disabled={feudMissing}
           onClick={() => send({ type: "start_round" })}
         >
           Start round {session.round || 1}
@@ -696,6 +669,11 @@ function ReadyCard({ session, send }: { session: SessionState; send: (action: Ac
         <button className="hbtn" type="button" onClick={() => send({ type: "open_rules" })}>
           How to play
         </button>
+        {feudMissing ? (
+          <span className="self-center text-[11px] text-gold-ink">
+            Save the two teams above first.
+          </span>
+        ) : null}
         <button className="hbtn" type="button" onClick={() => send({ type: "skip_question" })}>
           Skip question
         </button>

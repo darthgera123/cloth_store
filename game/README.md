@@ -22,15 +22,20 @@ bun run dev        # http://127.0.0.1:5173
 | `/display/?code=XXXX` | Audience display (TV or projector) |
 | `/join/?code=XXXX` | Team phone for The Price Is Right (optional) |
 
-Open `/host/`: the eight names are prefilled (Pulkit, Lavani, Rajat, Bindu,
-Gaurang, Amita, Dhrupad, Aarush) and you pick a team for each player. Create
-the session, then open `/display/` on the TV (or the copied link with the
-code) and enter the four-letter code shown in the host bar.
+Open `/host/`: the eight names are prefilled and that is all setup needs —
+teams belong to the games. Family Feud asks for its two teams (names and
+assignments) after the rules; The Price Is Right uses phone teams or
+host-entered guesses. Create the session, then open `/display/` on the TV (or
+the copied link with the code) and enter the four-letter code shown in the
+host bar.
 
 Selecting a game first opens its **How to Play** slides. The host steps through
 them with Previous/Next, then **Start game** (title card) or **Skip rules**
 (straight to round one). **Rules** in the game header reopens them mid-round;
-scores, pot and strikes are untouched, and closing returns to the same state. `#/host` and `#/display?code=XXXX`
+scores, pot and strikes are untouched, and closing returns to the same state.
+For The Price Is Right the QR and join link appear on the TV as soon as the
+game intro or round-ready screen is showing, so teams can join before the
+question starts. `#/host` and `#/display?code=XXXX`
 still work as a fallback when the app is opened from the site root.
 
 Production build and local preview:

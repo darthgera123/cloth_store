@@ -333,29 +333,19 @@ export function PriceBoard({ state }: { state: PublicState }) {
   );
 }
 
-function PartyPriceBoard({
+export function PartyJoinCard({
   state,
-  pir,
   party,
+  compact = false,
 }: {
   state: PublicState;
-  pir: PublicPrice;
   party: NonNullable<PublicPrice["party"]>;
+  compact?: boolean;
 }) {
-  const question = state.question!;
-  const currency = question.currency ?? "INR";
   const [qr, setQr] = useState<string | null>(null);
-  const showJoin = !party.locked && !party.priceRevealed;
   const joinUrl = `${window.location.origin}${import.meta.env.BASE_URL}join/?code=${state.code}`;
-  const submitted = party.teams.filter((team) => team.submitted).length;
-  const podiumRank = (entryId: string) =>
-    party.podium.find((entry) => entry.entryId === entryId && entry.rank <= 3);
 
   useEffect(() => {
-    if (!showJoin) {
-      setQr(null);
-      return;
-    }
     let active = true;
     // QR codes are only needed while phones can join; the library stays out
     // of the default bundle.
@@ -375,7 +365,48 @@ function PartyPriceBoard({
     return () => {
       active = false;
     };
-  }, [joinUrl, showJoin]);
+  }, [joinUrl]);
+
+  return (
+    <div
+      className={`flex items-center gap-4 border border-gold/40 bg-lavender-pale/50 p-3 ${
+        compact ? "justify-center" : ""
+      }`}
+    >
+      {qr ? (
+        <div
+          className="qr h-[110px] w-[110px] shrink-0"
+          aria-hidden="true"
+          dangerouslySetInnerHTML={{ __html: qr }}
+        />
+      ) : null}
+      <div className="min-w-0">
+        <p className="text-[9px] uppercase tracking-[0.3em] text-gold-ink">Scan to join</p>
+        <p className="mt-1 font-serif text-[clamp(20px,1.8vw,30px)] leading-none">{state.code}</p>
+        <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-plum-soft">
+          {party.mode === "teams" ? "3 teams · one phone each" : "6 players · one phone each"}
+        </p>
+        <p className="mt-1 break-all text-[10px] leading-snug text-plum-hush">{joinUrl}</p>
+      </div>
+    </div>
+  );
+}
+
+function PartyPriceBoard({
+  state,
+  pir,
+  party,
+}: {
+  state: PublicState;
+  pir: PublicPrice;
+  party: NonNullable<PublicPrice["party"]>;
+}) {
+  const question = state.question!;
+  const currency = question.currency ?? "INR";
+  const showJoin = !party.locked && !party.priceRevealed;
+  const submitted = party.teams.filter((team) => team.submitted).length;
+  const podiumRank = (entryId: string) =>
+    party.podium.find((entry) => entry.entryId === entryId && entry.rank <= 3);
 
   const guesses = [...(party.guesses ?? [])].sort((a, b) => {
     const left = party.teams.find((team) => team.id === a.teamId)?.name ?? "";
@@ -402,27 +433,7 @@ function PartyPriceBoard({
           />
         </div>
 
-        {showJoin ? (
-          <div className="flex items-center gap-4 border border-gold/40 bg-lavender-pale/50 p-3">
-            {qr ? (
-              <div
-                className="qr h-[110px] w-[110px] shrink-0"
-                aria-hidden="true"
-                dangerouslySetInnerHTML={{ __html: qr }}
-              />
-            ) : null}
-            <div className="min-w-0">
-              <p className="text-[9px] uppercase tracking-[0.3em] text-gold-ink">Scan to join</p>
-              <p className="mt-1 font-serif text-[clamp(20px,1.8vw,30px)] leading-none">
-                {state.code}
-              </p>
-              <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-plum-soft">
-                {party.mode === "teams" ? "3 teams · one phone each" : "6 players · one phone each"}
-              </p>
-              <p className="mt-1 break-all text-[10px] leading-snug text-plum-hush">{joinUrl}</p>
-            </div>
-          </div>
-        ) : null}
+        {showJoin ? <PartyJoinCard state={state} party={party} /> : null}
       </div>
 
       <div className="flex flex-col gap-4">

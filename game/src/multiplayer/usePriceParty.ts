@@ -38,7 +38,7 @@ export function usePriceParty(options: {
   // Between rounds the engine still points at the last question, so the board
   // is primed with the upcoming item to reset the phones.
   const upcoming =
-    session?.phase === "ROUND_READY"
+    session?.phase === "ROUND_READY" || session?.phase === "GAME_INTRO"
       ? (questions[session.questionIndex] as PriceQuestion | undefined) ?? null
       : null;
   const enabled = Boolean(session?.pir?.party) && firebaseConfigured();

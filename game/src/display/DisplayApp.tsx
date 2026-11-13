@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { GAME_BLURB, GAME_LABEL, type PublicState } from "../lib/types";
 import { Ornaments } from "../components/Mandala";
 import { Confetti, Countdown, Panel, Rule, Toast } from "../components/ui";
-import { GameBoard, scoreRows } from "./boards";
+import { GameBoard, PartyJoinCard, scoreRows } from "./boards";
 import { RULES } from "../rules/slides";
 import { VISIBLE_GAMES } from "../lib/games";
 import { useDisplaySession } from "../client/useDisplaySession";
@@ -330,6 +330,14 @@ function GameIntro({ state }: { state: PublicState }) {
           ? `${state.teams[0]?.name} versus ${state.teams[1]?.name}`
           : `${state.participants.length} players`}
       </p>
+      {state.pir?.party ? (
+        <div className="mt-8">
+          <p className="mb-2 text-[10px] uppercase tracking-[0.3em] text-gold-ink">
+            Phones can join now
+          </p>
+          <PartyJoinCard state={state} party={state.pir.party} compact />
+        </div>
+      ) : null}
     </BasePanel>
   );
 }
@@ -340,9 +348,17 @@ function RoundReady({ state }: { state: PublicState }) {
       <p className="kicker">{state.game ? GAME_LABEL[state.game] : "Game Night"}</p>
       <p className="mt-4 font-serif text-[clamp(28px,3vw,44px)] italic text-plum-soft">Round</p>
       <p className="font-serif text-[clamp(96px,12vw,180px)] leading-none text-gold-display">
-        {state.round}
+        {Math.max(1, state.round)}
       </p>
       <p className="mt-6 text-[10px] uppercase tracking-[0.34em] text-plum-hush">Get ready</p>
+      {state.game === "price_is_right" && state.pir?.party ? (
+        <div className="mt-8">
+          <p className="mb-2 text-[10px] uppercase tracking-[0.3em] text-gold-ink">
+            Phones can join now
+          </p>
+          <PartyJoinCard state={state} party={state.pir.party} compact />
+        </div>
+      ) : null}
     </BasePanel>
   );
 }

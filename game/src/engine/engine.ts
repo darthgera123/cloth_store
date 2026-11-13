@@ -75,9 +75,7 @@ function shuffled<T>(items: T[]): T[] {
 export function createSession(
   input: {
     names: string[];
-    teams: [string, string] | null;
     config?: Partial<SessionConfig>;
-    participantTeams?: (0 | 1 | null)[];
   },
   code: string,
   now: number,
@@ -85,21 +83,12 @@ export function createSession(
   const names = input.names.map((n) => n.trim()).filter(Boolean);
   if (names.length < 2) fail("At least two participants are required");
 
-  const teams: Team[] = input.teams
-    ? [
-        { id: "t1", name: input.teams[0].trim() },
-        { id: "t2", name: input.teams[1].trim() },
-      ]
-    : [];
-
+  // Teams belong to a game, not the roster: Family Feud builds its own two
+  // teams from these players, and Price Is Right uses phone teams.
   const participants: Participant[] = names.map((name, index) => ({
     id: `p${index + 1}`,
     name,
-    teamId: teams.length
-      ? (input.participantTeams?.[index] ?? (index % 2 === 0 ? 0 : 1)) === 0
-        ? "t1"
-        : "t2"
-      : null,
+    teamId: null,
   }));
 
   const config: SessionConfig = { ...defaultConfig, ...input.config };
@@ -121,9 +110,9 @@ export function createSession(
     usedQuestionIds: [],
     questionOrder: [],
     participants,
-    teams,
+    teams: [],
     config,
-    scores: emptyScores(participants, teams),
+    scores: emptyScores(participants, []),
     feud: null,
     herd: null,
     ml: null,
@@ -242,9 +231,7 @@ function computeHerdResult(herd: HerdState, state: SessionState): HerdResult {
 }
 
 function priceEntityIds(state: SessionState): string[] {
-  return state.config.pirMode === "team"
-    ? state.teams.map((t) => t.id)
-    : state.participants.map((p) => p.id);
+  return state.participants.map((person) => person.id);
 }
 
 function winnersFromGuesses(
@@ -446,20 +433,13 @@ export function applyAction(
       const names = action.participants.map((p) => p.name.trim()).filter(Boolean);
       if (names.length < 2) fail("At least two participants are required");
 
-      const teams: Team[] = action.teams
-        ? [
-            { id: "t1", name: action.teams[0].trim() },
-            { id: "t2", name: action.teams[1].trim() },
-          ]
-        : [];
-
-      next.teams = teams;
+      next.teams = [];
       next.participants = action.participants.slice(0, names.length).map((p, index) => ({
         id: `p${index + 1}`,
         name: p.name.trim(),
-        teamId: teams.length ? ((p.team ?? (index % 2 === 0 ? 0 : 1)) === 0 ? "t1" : "t2") : null,
+        teamId: null,
       }));
-      next.scores = emptyScores(next.participants, next.teams);
+      next.scores = emptyScores(next.participants, []);
       next.config = configSchema.parse({ ...next.config, ...(action.config ?? {}) });
       break;
     }
@@ -468,9 +448,9 @@ export function applyAction(
       needPhase(next, ["LOBBY"]);
       const questions = questionsFor(bank, action.game);
       if (questions.length === 0) fail("No questions loaded for that game");
-      if (action.game === "family_feud" && next.teams.length !== 2) {
-        fail("Family Feud needs two teams — set team names in setup");
-      }
+      // Teams are configured inside the game that uses them.
+      next.teams = [];
+      next.participants = next.participants.map((person) => ({ ...person, teamId: null }));
       next.game = action.game;
       next.phase = "RULES";
       next.rulesSlide = 0;
@@ -489,6 +469,65 @@ export function applyAction(
       next.pir = null;
       next.usedQuestionIds = [];
       next.timer = null;
+
+      // Phones can join during the game intro, before round one starts.
+      if (action.game === "price_is_right" && next.config.pirPhoneMode !== "off") {
+        const mode = next.config.pirPhoneMode;
+        next.pir = {
+          questionId: "",
+          guesses: {},
+          locked: false,
+          guessesRevealed: false,
+          priceRevealed: false,
+          winners: [],
+          awarded: false,
+          party: {
+            mode,
+            capacity: mode === "teams" ? 3 : 6,
+            teams: {},
+            guesses: {},
+            scores: {},
+            locked: false,
+            revealed: false,
+            priceRevealed: false,
+            leaderboardRevealed: false,
+            podium: [],
+            awarded: false,
+          },
+        };
+      }
+      break;
+    }
+
+    case "feud_teams": {
+      needGame(next, "family_feud");
+      needPhase(next, ["GAME_INTRO", "ROUND_READY"]);
+      if (next.round > 1) fail("Teams can only be changed before the first round");
+
+      const names = action.names;
+      const assignment = action.assignment;
+
+      for (const person of next.participants) {
+        if (!(person.id in assignment)) fail(`Choose a team for ${person.name}`);
+      }
+
+      next.teams = [
+        { id: "t1", name: names[0].trim() },
+        { id: "t2", name: names[1].trim() },
+      ];
+      next.participants = next.participants.map((person) => ({
+        ...person,
+        teamId: assignment[person.id] === 1 ? "t2" : "t1",
+      }));
+
+      const sizes = {
+        t1: next.participants.filter((person) => person.teamId === "t1").length,
+        t2: next.participants.filter((person) => person.teamId === "t2").length,
+      };
+      if (sizes.t1 === 0 || sizes.t2 === 0) fail("Each team needs at least one player");
+
+      next.scores.teams = { t1: 0, t2: 0 };
+      next.feud = null;
       break;
     }
 
@@ -543,6 +582,13 @@ export function applyAction(
     case "start_round": {
       needPhase(next, ["GAME_INTRO", "ROUND_READY"]);
       if (!next.game) fail("Select a game first");
+      if (next.game === "family_feud") {
+        if (next.teams.length !== 2) fail("Set up the two Family Feud teams first");
+        const unassigned = next.participants.filter(
+          (person) => person.teamId !== "t1" && person.teamId !== "t2",
+        );
+        if (unassigned.length > 0) fail("Assign every player to a Family Feud team");
+      }
       const questions = questionsFor(bank, next.game);
       const wanted = next.questionOrder[next.questionIndex];
       const question =
@@ -1082,8 +1128,7 @@ export function applyAction(
       }
 
       if (!pir.awarded) {
-        const kind = next.config.pirMode === "team" ? "team" : "participant";
-        for (const id of pir.winners) addPoints(next, kind, id, next.config.pirPoints);
+        for (const id of pir.winners) addPoints(next, "participant", id, next.config.pirPoints);
         pir.awarded = true;
       }
       break;
@@ -1200,7 +1245,6 @@ export function projectPublic(state: SessionState, bank: QuestionBank): PublicSt
         locked: state.pir.locked,
         priceRevealed: state.pir.priceRevealed,
         winners: state.pir.winners,
-        mode: state.config.pirMode,
         party: party
           ? {
               mode: party.mode,

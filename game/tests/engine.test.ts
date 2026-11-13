@@ -23,10 +23,25 @@ const tick = () => (clock += 10);
 function session(overrides: Partial<SessionState["config"]> = {}) {
   clock = 1_000;
   return createSession(
-    { names: NAMES, teams: TEAMS, config: { ...defaultConfig, ...overrides } },
+    { names: NAMES, config: { ...defaultConfig, ...overrides } },
     "TEST",
     clock,
   );
+}
+
+/** Family Feud teams are configured inside the game, not in setup. */
+function withFeudTeams(state: SessionState, bankOverride?: QuestionBank): SessionState {
+  const assignment = Object.fromEntries(
+    state.participants.map((person, index) => [person.id, index < 4 ? 0 : 1]),
+  );
+  const action: Action = {
+    type: "feud_teams",
+    names: ["Bride's Family", "Groom's Family"],
+    assignment,
+  };
+  return bankOverride
+    ? applyAction(state, action, bankOverride, tick())
+    : act(state, action);
 }
 
 function act(state: SessionState, action: Action): SessionState {
@@ -37,6 +52,7 @@ function startGame(game: SessionState["game"], overrides: Partial<SessionState["
   let s = session(overrides);
   s = act(s, { type: "select_game", game: game as NonNullable<typeof game> });
   s = act(s, { type: "rules_finish" });
+  if (game === "family_feud") s = withFeudTeams(s);
   s = act(s, { type: "start_round" });
   return s;
 }
@@ -52,12 +68,12 @@ const expectEngineError = (fn: () => unknown) => {
 };
 
 describe("session lifecycle", () => {
-  test("starts in the lobby with zeroed scores", () => {
+  test("starts in the lobby with players only and no teams", () => {
     const s = session();
     expect(s.phase).toBe("LOBBY");
     expect(s.participants).toHaveLength(8);
-    expect(s.participants[0]).toMatchObject({ name: "Asha", teamId: "t1" });
-    expect(s.participants[1]).toMatchObject({ name: "Ravi", teamId: "t2" });
+    expect(s.participants[0]).toMatchObject({ name: "Asha", teamId: null });
+    expect(s.teams).toEqual([]);
     expect(Object.values(s.scores.participants)).toEqual(Array(8).fill(0));
   });
 
@@ -67,39 +83,29 @@ describe("session lifecycle", () => {
     expectEngineError(() => act(s, { type: "reveal" }));
   });
 
-  test("explicit team picks override the alternating default", () => {
-    const s = createSession(
-      {
-        names: ["Pulkit", "Lavani", "Rajat", "Bindu"],
-        teams: ["Bride's Family", "Groom's Family"],
-        participantTeams: [1, 1, 0, 0],
-      },
-      "TEAM",
-      clock,
-    );
-    expect(s.participants.map((person) => person.teamId)).toEqual(["t2", "t2", "t1", "t1"]);
+  test("family feud teams are created inside the game from the roster", () => {
+    let s = act(session(), { type: "select_game", game: "family_feud" });
+    s = act(s, { type: "rules_finish" });
+    expect(s.teams).toEqual([]);
+    expectEngineError(() => act(s, { type: "start_round" }));
+
+    s = withFeudTeams(s);
+    expect(s.teams.map((team) => team.name)).toEqual(["Bride's Family", "Groom's Family"]);
+    expect(s.participants.slice(0, 4).every((person) => person.teamId === "t1")).toBe(true);
+    expect(s.participants.slice(4).every((person) => person.teamId === "t2")).toBe(true);
+    s = act(s, { type: "start_round" });
+    expect(s.phase).toBe("QUESTION_ACTIVE");
   });
 
-  test("configure replaces participants and keeps config valid", () => {
+  test("configure replaces players and resets team state", () => {
     const s = act(session(), {
       type: "configure",
-      participants: [{ name: "One" }, { name: "Two" }, { name: "Three", team: 1 }],
-      teams: ["A", "B"],
+      participants: [{ name: "One" }, { name: "Two" }, { name: "Three" }],
     });
     expect(s.participants.map((p) => p.name)).toEqual(["One", "Two", "Three"]);
-    expect(s.participants[2]?.teamId).toBe("t2");
+    expect(s.participants.every((p) => p.teamId === null)).toBe(true);
+    expect(s.teams).toEqual([]);
     expect(s.scores.participants.p3).toBe(0);
-
-    const swapped = act(s, {
-      type: "configure",
-      participants: [
-        { name: "One", team: 1 },
-        { name: "Two", team: 0 },
-        { name: "Three", team: 1 },
-      ],
-      teams: ["A", "B"],
-    });
-    expect(swapped.participants.map((person) => person.teamId)).toEqual(["t2", "t1", "t2"]);
   });
 });
 
@@ -209,6 +215,7 @@ describe("family feud", () => {
   const startWith = (questionBank: QuestionBank) => {
     let s = act(session(), { type: "select_game", game: "family_feud" });
     s = applyAction(s, { type: "rules_finish" }, questionBank, tick());
+    s = withFeudTeams(s, questionBank);
     s = applyAction(s, { type: "start_round" }, questionBank, tick());
     return s;
   };
@@ -585,17 +592,6 @@ describe("the price is right", () => {
 
     s = act(s, { type: "pir_lock" });
     expectEngineError(() => act(s, { type: "pir_set_guess", entityId: "p2", value: 5 }));
-  });
-
-  test("team mode scores teams rather than individuals", () => {
-    let s = startGame("price_is_right", { pirMode: "team" });
-    const price = bank.price_is_right[0]!.actualPrice;
-    s = act(s, { type: "pir_set_guess", entityId: "t1", value: price - 10 });
-    s = act(s, { type: "pir_set_guess", entityId: "t2", value: price + 10 });
-    s = act(s, { type: "reveal" });
-    s = act(s, { type: "pir_reveal_price" });
-    expect(s.scores.teams.t1).toBe(1);
-    expect(s.scores.teams.t2).toBe(0);
   });
 });
 

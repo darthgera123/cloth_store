@@ -77,10 +77,11 @@ skips itself when the emulators are not running.
 
 Manual run-through:
 
-1. Open `/host/`, enable **Phone teams for The Price Is Right** under *Game
-   rules*, create the session.
+1. Open `/host/`, choose **Phone players** (3 teams or 6 players) on the setup
+   card, create the session.
 2. Choose **The Price Is Right** → Skip rules → Start round 1.
-3. Open `/display/?code=CODE` — the QR and join URL appear with the item.
+3. Open `/display/?code=CODE` — the QR and join URL appear on the game intro
+   and round-ready screens, so teams can join before the question starts.
 4. Open `/join/?code=CODE` on three phones (or three separate browser
    profiles), name each team, submit a price.
 5. Lock submissions → reveal guesses → reveal price → reveal leaderboard. The

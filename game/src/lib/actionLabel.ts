@@ -3,6 +3,7 @@ import type { Action } from "./types";
 export const ACTION_LABEL: Record<Action["type"], string> = {
   configure: "Setup changed",
   select_game: "Game selected",
+  feud_teams: "Teams set",
   rules_next: "Rules slide",
   rules_prev: "Rules slide",
   rules_finish: "Rules closed",

@@ -292,7 +292,6 @@ export interface SessionConfig {
   mlMode: "casual" | "competitive";
   mlPoints: number;
   mlAllowSelfVote: boolean;
-  pirMode: "individual" | "team";
   pirPhoneMode: "off" | "teams" | "individual";
   pirPoints: number;
   pirAllOverFallback: "closest" | "lowest";
@@ -311,7 +310,6 @@ export const configSchema = z.object({
   mlMode: z.enum(["casual", "competitive"]),
   mlPoints: z.number().int().min(1).max(10),
   mlAllowSelfVote: z.boolean(),
-  pirMode: z.enum(["individual", "team"]),
   pirPhoneMode: z.enum(["off", "teams", "individual"]),
   pirPoints: z.number().int().min(1).max(100),
   pirAllOverFallback: z.enum(["closest", "lowest"]),
@@ -330,7 +328,6 @@ export const defaultConfig: SessionConfig = {
   mlMode: "casual",
   mlPoints: 1,
   mlAllowSelfVote: true,
-  pirMode: "individual",
   pirPhoneMode: "off",
   pirPoints: 1,
   pirAllOverFallback: "closest",
@@ -344,20 +341,15 @@ export const defaultConfig: SessionConfig = {
 export const actionSchema = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("configure"),
-    participants: z
-      .array(
-        z.object({
-          name: z.string().trim().min(1).max(24),
-          team: z.union([z.literal(0), z.literal(1)]).optional(),
-        }),
-      )
-      .min(2)
-      .max(8),
-    teams: z.tuple([z.string().trim().min(1).max(24), z.string().trim().min(1).max(24)]).nullable(),
+    participants: z.array(z.object({ name: z.string().trim().min(1).max(24) })).min(2).max(8),
     config: configSchema.partial().optional(),
-    assignTeams: z.boolean().optional(),
   }),
   z.object({ type: z.literal("select_game"), game: gameIdSchema }),
+  z.object({
+    type: z.literal("feud_teams"),
+    names: z.tuple([z.string().trim().min(1).max(24), z.string().trim().min(1).max(24)]),
+    assignment: z.record(z.string(), z.union([z.literal(0), z.literal(1)])),
+  }),
   z.object({ type: z.literal("rules_next") }),
   z.object({ type: z.literal("rules_prev") }),
   z.object({ type: z.literal("rules_finish") }),
@@ -487,7 +479,6 @@ export interface PublicPrice {
   locked: boolean;
   priceRevealed: boolean;
   winners: string[];
-  mode: "individual" | "team";
   party: PublicParty | null;
 }
 

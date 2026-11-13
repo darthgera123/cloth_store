@@ -40,7 +40,11 @@ Source documents:
    keep unrevealed guesses private and make the board host-only. The
    feature is disabled without `VITE_FIREBASE_*` configuration.
    See `../MULTIPLAYER.md`.
-10. **How to Play slides** — a `RULES` phase before the title card, with
+10. **Players-only setup** — the roster holds players; teams are configured
+   inside the game that uses them (Family Feud asks for its two teams after
+   the rules, Price Is Right uses phone teams). Herd Mentality and Most
+   Likely scoring controls are no longer shown in Game rules.
+11. **How to Play slides** — a `RULES` phase before the title card, with
    host-driven slides stored in `src/rules/slides.ts` (separate from questions),
    reopenable mid-round without touching scores or round state.
 
