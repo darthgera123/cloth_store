@@ -3,6 +3,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { herdGroups } from "../lib/herd";
+import type { PricePartyApi } from "../multiplayer/usePriceParty";
 import {
   GAME_LABEL,
   type Action,
@@ -636,14 +637,20 @@ export function PricePanel({
   session,
   questions,
   send,
+  party,
 }: {
   session: SessionState;
   questions: Question[];
   send: Send;
+  party: PricePartyApi;
 }) {
   const pir = session.pir;
   const question = questions.find((q) => q.id === pir?.questionId) as PriceQuestion | undefined;
   if (!pir || !question) return <p className="text-[13px] text-plum-soft">No price round in progress.</p>;
+
+  if (pir.party) {
+    return <PartyPricePanel session={session} question={question} send={send} party={party} />;
+  }
 
   const entities =
     session.config.pirMode === "team"
@@ -746,19 +753,210 @@ export function PricePanel({
   );
 }
 
+function PartyPricePanel({
+  session,
+  question,
+  send,
+  party,
+}: {
+  session: SessionState;
+  question: PriceQuestion;
+  send: Send;
+  party: PricePartyApi;
+}) {
+  const state = session.pir?.party;
+  if (!state) return null;
+
+  const teams = Object.entries(state.teams);
+  const submitted = teams.filter(([id]) => id in state.guesses).length;
+  const open = session.phase === "QUESTION_ACTIVE" && !state.locked;
+  const canRevealPrice = session.phase === "REVEAL" && !state.priceRevealed;
+  const showPrice = state.priceRevealed;
+
+  return (
+    <div>
+      <div className="mb-3 flex flex-wrap gap-2">
+        <span className="hbtn pointer-events-none">
+          {teams.length} team{teams.length === 1 ? "" : "s"}
+        </span>
+        <span className="hbtn pointer-events-none">
+          {submitted} of {teams.length} submitted
+        </span>
+        <span className="hbtn pointer-events-none border-gold">
+          {state.locked ? "Submissions locked" : "Submissions open"}
+        </span>
+        <span className="hbtn pointer-events-none">
+          Actual {formatMoney(question.actualPrice, question.currency)}
+        </span>
+      </div>
+
+      {teams.length === 0 ? (
+        <p className="mb-3 border border-gold/30 bg-lavender-pale/60 px-3 py-2 text-[12px] text-plum-soft">
+          Waiting for phones. Share code <b className="text-plum">{session.code}</b> — teams open the
+          join link from the TV.
+        </p>
+      ) : null}
+
+      <ul className="grid gap-2">
+        {teams.map(([teamId, team]) => {
+          const guess = state.guesses[teamId];
+          const score = state.scores[teamId] ?? 0;
+          return (
+            <li
+              key={teamId}
+              className="grid items-center gap-2 border border-gold/25 p-2 sm:grid-cols-[minmax(0,1fr)_90px_100px_auto]"
+            >
+              <input
+                className="field"
+                aria-label={`Team name for ${team.name}`}
+                defaultValue={team.name}
+                onBlur={(event) => {
+                  const name = event.target.value.trim();
+                  if (name && name !== team.name) party.rename(teamId, name);
+                }}
+              />
+              <span className="text-[11px] uppercase tracking-[0.14em] text-plum-hush">
+                {guess === undefined ? "waiting" : "submitted"}
+              </span>
+              <input
+                key={`${teamId}-${question.id}`}
+                className="num-field"
+                type="number"
+                min={0}
+                aria-label={`Guess for ${team.name}`}
+                defaultValue={guess ?? ""}
+                placeholder="guess"
+                onBlur={(event) => {
+                  const value = Number(event.target.value);
+                  if (!open || event.target.value === "" || Number.isNaN(value)) return;
+                  party.setManualGuess(teamId, Math.max(0, Math.round(value)));
+                }}
+              />
+              <div className="flex items-center gap-2">
+                <span className="w-10 text-right text-[15px] tabular-nums text-gold-ink">{score}</span>
+                <button
+                  className="hbtn hbtn-danger"
+                  type="button"
+                  aria-label={`Remove ${team.name}`}
+                  onClick={() => party.removeTeam(teamId)}
+                >
+                  Remove
+                </button>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+
+      {showPrice ? (
+        <div className="mt-3 border border-gold bg-lavender-pale p-3">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-gold-ink">Price revealed</p>
+          <p className="mt-1 font-serif text-[24px]">
+            {formatMoney(question.actualPrice, question.currency)}
+          </p>
+          <p className="text-[12px] text-plum-soft">
+            Winners:{" "}
+            {state.winners
+              .map((id) => state.teams[id]?.name ?? id)
+              .join(", ") || "none"}
+            {state.awarded ? " · point awarded" : " · not yet awarded"}
+          </p>
+          {!state.awarded ? (
+            <div className="mt-2 flex flex-wrap gap-2">
+              {teams.map(([id, team]) => (
+                <button
+                  key={id}
+                  className="hbtn"
+                  type="button"
+                  onClick={() => send({ type: "pir_override", teamIds: [id] })}
+                >
+                  Make {team.name} the winner
+                </button>
+              ))}
+              <button
+                className="hbtn hbtn-solid"
+                type="button"
+                onClick={() => send({ type: "pir_award" })}
+                disabled={state.winners.length === 0}
+              >
+                Award point
+              </button>
+            </div>
+          ) : (
+            <button
+              className="hbtn mt-2"
+              type="button"
+              onClick={() => send({ type: "pir_undo_award" })}
+            >
+              Undo award
+            </button>
+          )}
+        </div>
+      ) : null}
+
+      <div className="mt-4 flex flex-wrap gap-2 border-t border-gold/20 pt-3">
+        <button
+          className="hbtn"
+          type="button"
+          disabled={session.phase !== "QUESTION_ACTIVE"}
+          onClick={() => send({ type: "pir_lock" })}
+        >
+          {state.locked ? "Reopen submissions" : "Lock submissions"}
+        </button>
+        <button
+          className="hbtn hbtn-solid"
+          type="button"
+          disabled={session.phase !== "QUESTION_ACTIVE"}
+          onClick={() => send({ type: "reveal" })}
+        >
+          Reveal guesses
+        </button>
+        <button
+          className="hbtn hbtn-solid"
+          type="button"
+          disabled={!canRevealPrice}
+          onClick={() => send({ type: "pir_reveal_price" })}
+        >
+          Reveal price
+        </button>
+        <button
+          className="hbtn"
+          type="button"
+          disabled={session.phase !== "REVEAL"}
+          onClick={() => send({ type: "round_result" })}
+        >
+          Round result
+        </button>
+        <button
+          className="hbtn"
+          type="button"
+          disabled={session.phase !== "ROUND_RESULT"}
+          onClick={() => send({ type: "next_round" })}
+        >
+          Next item
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export function GamePanel({
   session,
   questions,
   send,
+  party,
 }: {
   session: SessionState;
   questions: Question[];
   send: Send;
+  party: PricePartyApi;
 }) {
   if (session.game === "family_feud") return <FeudPanel session={session} questions={questions} send={send} />;
   if (session.game === "herd_mentality") return <HerdPanel session={session} questions={questions} send={send} />;
   if (session.game === "whos_most_likely") return <MostLikelyPanel session={session} questions={questions} send={send} />;
-  if (session.game === "price_is_right") return <PricePanel session={session} questions={questions} send={send} />;
+  if (session.game === "price_is_right") {
+    return <PricePanel session={session} questions={questions} send={send} party={party} />;
+  }
   return null;
 }
 

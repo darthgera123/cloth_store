@@ -194,6 +194,23 @@ export interface MostLikelyState {
   awarded: boolean;
 }
 
+export interface PricePartyTeam {
+  name: string;
+  joinedAt: number;
+}
+
+/** Phone teams for The Price Is Right (max three, one phone each). */
+export interface PriceParty {
+  teams: Record<string, PricePartyTeam>;
+  guesses: Record<string, number>;
+  scores: Record<string, number>;
+  locked: boolean;
+  revealed: boolean;
+  priceRevealed: boolean;
+  winners: string[];
+  awarded: boolean;
+}
+
 export interface PriceState {
   questionId: string;
   guesses: Record<string, number | null>;
@@ -202,6 +219,7 @@ export interface PriceState {
   priceRevealed: boolean;
   winners: string[];
   awarded: boolean;
+  party: PriceParty | null;
 }
 
 export interface GameStanding {
@@ -263,6 +281,7 @@ export interface SessionConfig {
   mlPoints: number;
   mlAllowSelfVote: boolean;
   pirMode: "individual" | "team";
+  pirPhoneTeams: boolean;
   pirPoints: number;
   pirAllOverFallback: "closest" | "lowest";
   currency: string;
@@ -281,6 +300,7 @@ export const configSchema = z.object({
   mlPoints: z.number().int().min(1).max(10),
   mlAllowSelfVote: z.boolean(),
   pirMode: z.enum(["individual", "team"]),
+  pirPhoneTeams: z.boolean(),
   pirPoints: z.number().int().min(1).max(100),
   pirAllOverFallback: z.enum(["closest", "lowest"]),
   currency: z.string().min(1).max(8),
@@ -299,6 +319,7 @@ export const defaultConfig: SessionConfig = {
   mlPoints: 1,
   mlAllowSelfVote: true,
   pirMode: "individual",
+  pirPhoneTeams: false,
   pirPoints: 1,
   pirAllOverFallback: "closest",
   currency: "INR",
@@ -367,6 +388,15 @@ export const actionSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("ml_clear_votes") }),
 
   z.object({ type: z.literal("pir_set_guess"), entityId: z.string().min(1), value: z.number().min(0).max(10000000) }),
+  z.object({
+    type: z.literal("pir_team_add"),
+    teamId: z.string().min(1).max(40),
+    name: z.string().trim().min(1).max(24),
+  }),
+  z.object({ type: z.literal("pir_team_remove"), teamId: z.string().min(1).max(40) }),
+  z.object({ type: z.literal("pir_override"), teamIds: z.array(z.string().min(1)).max(3) }),
+  z.object({ type: z.literal("pir_undo_award") }),
+  z.object({ type: z.literal("pir_award") }),
   z.object({ type: z.literal("pir_lock") }),
   z.object({ type: z.literal("pir_reveal_price") }),
 ]);
@@ -426,12 +456,23 @@ export interface PublicMostLikely {
   votes: { participantId: string; votes: number }[] | null;
 }
 
+export interface PublicParty {
+  teams: { id: string; name: string; submitted: boolean }[];
+  scores: Record<string, number>;
+  locked: boolean;
+  revealed: boolean;
+  priceRevealed: boolean;
+  winners: string[];
+  guesses: { teamId: string; value: number }[] | null;
+}
+
 export interface PublicPrice {
   guesses: { entityId: string; value: number | null }[] | null;
   locked: boolean;
   priceRevealed: boolean;
   winners: string[];
   mode: "individual" | "team";
+  party: PublicParty | null;
 }
 
 export interface PublicState {

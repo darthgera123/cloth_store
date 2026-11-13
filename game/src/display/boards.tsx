@@ -1,7 +1,8 @@
 /* Audience boards. Everything here reads PublicState only — hidden answers,
    prices and tallies never reach this code path. */
 
-import type { GameId, Participant, PublicState, Team } from "../lib/types";
+import { useEffect, useState } from "react";
+import type { GameId, Participant, PublicState, PublicPrice, Team } from "../lib/types";
 import { StrikeMark } from "../components/Mandala";
 
 const labelFor = (state: PublicState, id: string | null): string => {
@@ -262,6 +263,10 @@ export function PriceBoard({ state }: { state: PublicState }) {
   const pir = state.pir;
   if (!question || !pir) return null;
 
+  if (pir.party) {
+    return <PartyPriceBoard state={state} pir={pir} party={pir.party} />;
+  }
+
   const guessRows = (pir.guesses ?? []).map((row) => ({
     ...row,
     label: labelFor(state, row.entityId),
@@ -321,6 +326,161 @@ export function PriceBoard({ state }: { state: PublicState }) {
                 {pir.winners.map((id) => labelFor(state, id)).join(" · ")}
               </p>
             ) : null}
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+function PartyPriceBoard({
+  state,
+  pir,
+  party,
+}: {
+  state: PublicState;
+  pir: PublicPrice;
+  party: NonNullable<PublicPrice["party"]>;
+}) {
+  const question = state.question!;
+  const currency = question.currency ?? "INR";
+  const [qr, setQr] = useState<string | null>(null);
+  const showJoin = !party.locked && !party.priceRevealed;
+  const joinUrl = `${window.location.origin}${import.meta.env.BASE_URL}join/?code=${state.code}`;
+  const submitted = party.teams.filter((team) => team.submitted).length;
+
+  useEffect(() => {
+    if (!showJoin) {
+      setQr(null);
+      return;
+    }
+    let active = true;
+    // QR codes are only needed while phones can join; the library stays out
+    // of the default bundle.
+    void import("qrcode")
+      .then((module) =>
+        module.toString(joinUrl, {
+          type: "svg",
+          margin: 1,
+          width: 200,
+          color: { dark: "#392747", light: "#00000000" },
+        }),
+      )
+      .then((svg) => {
+        if (active) setQr(svg);
+      })
+      .catch(() => setQr(null));
+    return () => {
+      active = false;
+    };
+  }, [joinUrl, showJoin]);
+
+  const guesses = [...(party.guesses ?? [])].sort((a, b) => {
+    const left = party.teams.find((team) => team.id === a.teamId)?.name ?? "";
+    const right = party.teams.find((team) => team.id === b.teamId)?.name ?? "";
+    return left.localeCompare(right);
+  });
+  const leaderboard = [...party.teams]
+    .map((team) => ({ id: team.id, name: team.name, score: party.scores[team.id] ?? 0 }))
+    .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
+
+  return (
+    <div className="grid w-full items-start gap-[clamp(18px,2.6vw,48px)] md:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)]">
+      <div className="flex flex-col gap-3">
+        <div className="border border-gold/30 bg-lavender-pale p-3">
+          <img
+            src={question.image ?? "/demo/placeholder.svg"}
+            alt={question.text}
+            className="mx-auto block w-full max-w-[420px]"
+          />
+        </div>
+
+        {showJoin ? (
+          <div className="flex items-center gap-4 border border-gold/40 bg-lavender-pale/50 p-3">
+            {qr ? (
+              <div
+                className="qr h-[110px] w-[110px] shrink-0"
+                aria-hidden="true"
+                dangerouslySetInnerHTML={{ __html: qr }}
+              />
+            ) : null}
+            <div className="min-w-0">
+              <p className="text-[9px] uppercase tracking-[0.3em] text-gold-ink">Scan to join</p>
+              <p className="mt-1 font-serif text-[clamp(20px,1.8vw,30px)] leading-none">
+                {state.code}
+              </p>
+              <p className="mt-1 break-all text-[10px] leading-snug text-plum-hush">{joinUrl}</p>
+            </div>
+          </div>
+        ) : null}
+      </div>
+
+      <div className="flex flex-col gap-4">
+        <div>
+          <h2 className="font-serif text-[clamp(26px,2.8vw,46px)] font-medium leading-[1.15]">
+            {question.text}
+          </h2>
+          <p className="mt-2 text-[clamp(13px,1.15vw,18px)] text-plum-soft">{question.description}</p>
+        </div>
+
+        <div className="flex flex-wrap items-baseline gap-4 border-y border-gold/25 py-3">
+          <span className="text-[10px] uppercase tracking-[0.24em] text-plum-hush">Submissions</span>
+          <span className="font-serif text-[clamp(22px,2.2vw,34px)] leading-none tabular-nums">
+            {submitted} <span className="text-plum-hush">of {party.teams.length}</span>
+          </span>
+          <span className="text-[10px] uppercase tracking-[0.24em] text-gold-ink">
+            {party.locked ? "Locked" : "Open"}
+          </span>
+        </div>
+
+        {guesses.length > 0 ? (
+          <ul className="grid gap-1.5">
+            {guesses.map((guess) => {
+              const team = party.teams.find((entry) => entry.id === guess.teamId);
+              const isWinner = party.winners.includes(guess.teamId);
+              return (
+                <li
+                  key={guess.teamId}
+                  className={`flex items-baseline justify-between border px-4 py-2 ${
+                    isWinner ? "border-gold bg-lavender-pale" : "border-gold/25"
+                  }`}
+                >
+                  <span className="text-[clamp(14px,1.3vw,20px)]">{team?.name ?? guess.teamId}</span>
+                  <span className="text-[clamp(16px,1.5vw,24px)] tabular-nums text-gold-ink">
+                    {moneyLabel(guess.value, currency)}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        ) : (
+          <p className="text-[11px] uppercase tracking-[0.28em] text-plum-hush">
+            {party.locked ? "Guesses locked" : "Guesses stay hidden until the reveal"}
+          </p>
+        )}
+
+        {pir.priceRevealed ? (
+          <div className="fade-up border-t border-gold/30 pt-3">
+            <p className="text-[10px] uppercase tracking-[0.28em] text-plum-hush">Actual price</p>
+            <p className="font-serif text-[clamp(34px,3.8vw,62px)] leading-none text-gold-display">
+              {moneyLabel(question.actualPrice ?? 0, currency)}
+            </p>
+          </div>
+        ) : null}
+
+        {party.priceRevealed && leaderboard.length > 0 ? (
+          <div className="border border-gold/30 px-4 py-3">
+            <p className="text-[9px] uppercase tracking-[0.3em] text-plum-hush">Team scores</p>
+            <ul className="mt-2 grid gap-1">
+              {leaderboard.map((team) => (
+                <li key={team.id} className="flex items-baseline justify-between">
+                  <span className="text-[clamp(13px,1.2vw,18px)]">{team.name}</span>
+                  <span className="text-[clamp(16px,1.5vw,24px)] tabular-nums text-gold-ink">
+                    {team.score}
+                  </span>
+                </li>
+              ))}
+            </ul>
           </div>
         ) : null}
       </div>

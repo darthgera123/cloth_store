@@ -4,6 +4,7 @@ import {
   GAME_LABEL,
   type Action,
   type GameId,
+  type PriceQuestion,
   type SessionConfig,
   type SessionState,
   defaultConfig,
@@ -13,10 +14,22 @@ import { useHostGame, type HostGameApi } from "../client/useHostGame";
 import { GamePanel, formatMoney } from "./panels";
 import { RULES } from "../rules/slides";
 import { VISIBLE_GAMES } from "../lib/games";
+import { usePriceParty } from "../multiplayer/usePriceParty";
+import { firebaseConfigured } from "../multiplayer/config";
 
 export function HostApp() {
   const api = useHostGame();
   const session = api.hostState?.session ?? null;
+
+  const priceQuestion = (api.hostState?.questions.find(
+    (question) => question.id === session?.pir?.questionId,
+  ) as PriceQuestion | undefined) ?? null;
+  const party = usePriceParty({
+    session,
+    question: priceQuestion,
+    questions: api.hostState?.questions ?? [],
+    send: api.send,
+  });
 
   if (!api.ready && !session) {
     return <Centered>Starting host session…</Centered>;
@@ -81,6 +94,7 @@ export function HostApp() {
                   session={session}
                   questions={api.hostState?.questions ?? []}
                   send={send}
+                  party={party}
                 />
               </div>
             </Panel>
@@ -89,7 +103,7 @@ export function HostApp() {
 
         <aside className="grid content-start gap-4">
           <ScoresCard session={session} send={send} />
-          <SessionCard session={session} api={api} />
+          <SessionCard session={session} api={api} party={party} />
         </aside>
       </div>
       <Toast message={api.error} />
@@ -435,6 +449,21 @@ function SetupCard({
                 <option value="team">Teams</option>
               </select>
             </Rule>
+            <label className="flex items-center gap-2 text-[12px] text-plum-soft">
+              <input
+                type="checkbox"
+                checked={config.pirPhoneTeams}
+                disabled={!firebaseConfigured()}
+                onChange={(event) => updateConfig("pirPhoneTeams", event.target.checked)}
+              />
+              Phone teams for The Price Is Right
+            </label>
+            {!firebaseConfigured() ? (
+              <p className="text-[11px] leading-relaxed text-plum-hush sm:col-span-2">
+                Firebase is not configured, so phone teams stay off. Set the VITE_FIREBASE_* variables
+                to enable them.
+              </p>
+            ) : null}
             <Rule label="Price points">
               <select
                 className="field"
@@ -707,6 +736,37 @@ function ResultCard({ session, send }: { session: SessionState; send: (action: A
 /* ---------- scores ---------- */
 
 function ScoresCard({ session, send }: { session: SessionState; send: (action: Action) => void }) {
+  const phoneTeams = session.pir?.party;
+  if (phoneTeams) {
+    const rows = Object.entries(phoneTeams.teams)
+      .map(([id, team]) => ({ id, name: team.name, score: phoneTeams.scores[id] ?? 0 }))
+      .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
+    return (
+      <Panel className="p-4" corners={false}>
+        <div className="card-head">
+          <h2 className="font-serif text-[20px] font-semibold">Team scores</h2>
+          <span className="text-[10px] uppercase tracking-[0.2em] text-plum-hush">
+            Phone teams
+          </span>
+        </div>
+        {rows.length === 0 ? (
+          <p className="text-[13px] text-plum-soft">No teams have joined yet.</p>
+        ) : (
+          <ul className="grid gap-1.5">
+            {rows.map((row) => (
+              <li key={row.id} className="flex items-baseline justify-between">
+                <span className="text-[12px] uppercase tracking-[0.1em] text-plum-soft">
+                  {row.name}
+                </span>
+                <span className="text-[18px] tabular-nums text-gold-ink">{row.score}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Panel>
+    );
+  }
+
   const showTeams = session.game === "family_feud" && session.teams.length === 2;
   const rows = showTeams
     ? session.teams.map((team) => ({
@@ -759,9 +819,11 @@ function ScoresCard({ session, send }: { session: SessionState; send: (action: A
 function SessionCard({
   session,
   api,
+  party,
 }: {
   session: SessionState;
   api: HostGameApi;
+  party: ReturnType<typeof usePriceParty>;
 }) {
   const displayUrl = new URL(
     `${import.meta.env.BASE_URL}display/?code=${session.code}`,
@@ -856,9 +918,10 @@ function SessionCard({
             className="hbtn hbtn-danger"
             type="button"
             onClick={() => {
-              if (window.confirm("End this session? The display will show that it has ended.")) {
-                api.endSession();
+              if (!window.confirm("End this session? The display will show that it has ended.")) {
+                return;
               }
+              void party.endRemoteSession().finally(() => api.endSession());
             }}
           >
             End session

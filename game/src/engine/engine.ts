@@ -246,26 +246,38 @@ function priceEntityIds(state: SessionState): string[] {
     : state.participants.map((p) => p.id);
 }
 
-function computePriceWinners(state: SessionState, honestPrice: number): string[] {
-  const guesses = state.pir?.guesses ?? {};
+function winnersFromGuesses(
+  guesses: Record<string, number>,
+  actualPrice: number,
+  fallback: SessionState["config"]["pirAllOverFallback"],
+): string[] {
   const entries = Object.entries(guesses).filter(
     (entry): entry is [string, number] => typeof entry[1] === "number",
   );
   if (entries.length === 0) return [];
 
-  const under = entries.filter(([, value]) => value <= honestPrice);
+  const under = entries.filter(([, value]) => value <= actualPrice);
   if (under.length > 0) {
     const best = Math.max(...under.map(([, value]) => value));
     return under.filter(([, value]) => value === best).map(([id]) => id);
   }
 
-  if (state.config.pirAllOverFallback === "lowest") {
+  if (fallback === "lowest") {
     const best = Math.min(...entries.map(([, value]) => value));
     return entries.filter(([, value]) => value === best).map(([id]) => id);
   }
 
-  const best = Math.min(...entries.map(([, value]) => Math.abs(value - honestPrice)));
-  return entries.filter(([, value]) => Math.abs(value - honestPrice) === best).map(([id]) => id);
+  const best = Math.min(...entries.map(([, value]) => Math.abs(value - actualPrice)));
+  return entries.filter(([, value]) => Math.abs(value - actualPrice) === best).map(([id]) => id);
+}
+
+function computePriceWinners(state: SessionState, actualPrice: number): string[] {
+  const guesses = Object.fromEntries(
+    Object.entries(state.pir?.guesses ?? {}).filter(
+      (entry): entry is [string, number] => typeof entry[1] === "number",
+    ),
+  );
+  return winnersFromGuesses(guesses, actualPrice, state.config.pirAllOverFallback);
 }
 
 function addPoints(
@@ -360,6 +372,7 @@ function initGameState(state: SessionState, question: Question) {
     state.herd = null;
     state.pir = null;
   } else {
+    const previousParty = state.pir?.party ?? null;
     state.pir = {
       questionId: question.id,
       guesses: Object.fromEntries(priceEntityIds(state).map((id) => [id, null])),
@@ -368,6 +381,18 @@ function initGameState(state: SessionState, question: Question) {
       priceRevealed: false,
       winners: [],
       awarded: false,
+      party: state.config.pirPhoneTeams
+        ? {
+            teams: previousParty?.teams ?? {},
+            scores: previousParty?.scores ?? {},
+            guesses: {},
+            locked: false,
+            revealed: false,
+            priceRevealed: false,
+            winners: [],
+            awarded: false,
+          }
+        : null,
     };
     state.feud = null;
     state.herd = null;
@@ -550,6 +575,10 @@ export function applyAction(
       if (!pir) fail("No price round in progress");
       pir.guessesRevealed = true;
       pir.locked = true;
+      if (pir.party) {
+        pir.party.revealed = true;
+        pir.party.locked = true;
+      }
       next.phase = "REVEAL";
       break;
     }
@@ -667,11 +696,18 @@ export function applyAction(
         bucket[award.id] = Math.max(0, (bucket[award.id] ?? 0) - award.points);
       }
       next.roundAwards = [];
+      if (next.pir?.party?.awarded) {
+        for (const id of next.pir.party.winners) {
+          next.pir.party.scores[id] = Math.max(0, (next.pir.party.scores[id] ?? 0) - 1);
+        }
+        next.pir.party.awarded = false;
+        next.pir.party.winners = [];
+      }
       next.phase = "ROUND_READY";
       next.feud = null;
       next.herd = null;
       next.ml = null;
-      next.pir = null;
+      if (next.game !== "price_is_right") next.pir = null;
       next.timer = null;
       break;
     }
@@ -778,6 +814,71 @@ export function applyAction(
       break;
     }
 
+    case "pir_team_add": {
+      needGame(next, "price_is_right");
+      const pir = next.pir;
+      if (!pir?.party) fail("Phone teams are not enabled for this round");
+      const exists = Boolean(pir.party.teams[action.teamId]);
+      if (!exists && Object.keys(pir.party.teams).length >= 3) {
+        fail("Three teams are already connected");
+      }
+      pir.party.teams[action.teamId] = {
+        name: action.name,
+        joinedAt: pir.party.teams[action.teamId]?.joinedAt ?? now,
+      };
+      pir.party.scores[action.teamId] = pir.party.scores[action.teamId] ?? 0;
+      break;
+    }
+
+    case "pir_team_remove": {
+      needGame(next, "price_is_right");
+      const pir = next.pir;
+      if (!pir?.party) fail("Phone teams are not enabled for this round");
+      delete pir.party.teams[action.teamId];
+      delete pir.party.scores[action.teamId];
+      delete pir.party.guesses[action.teamId];
+      break;
+    }
+
+    case "pir_override": {
+      needGame(next, "price_is_right");
+      const pir = next.pir;
+      if (!pir?.party) fail("Phone teams are not enabled for this round");
+      if (!pir.party.priceRevealed) fail("Reveal the price first");
+      if (pir.party.awarded) fail("Undo the award before changing the winner");
+      for (const id of action.teamIds) {
+        if (!pir.party.teams[id]) fail("Unknown team");
+      }
+      pir.party.winners = [...new Set(action.teamIds)];
+      break;
+    }
+
+    case "pir_award": {
+      needGame(next, "price_is_right");
+      const pir = next.pir;
+      if (!pir?.party) fail("Phone teams are not enabled for this round");
+      if (!pir.party.priceRevealed) fail("Reveal the price first");
+      if (pir.party.awarded) fail("The point has already been awarded");
+      if (pir.party.winners.length === 0) fail("No winning team");
+      for (const id of pir.party.winners) {
+        pir.party.scores[id] = (pir.party.scores[id] ?? 0) + 1;
+      }
+      pir.party.awarded = true;
+      break;
+    }
+
+    case "pir_undo_award": {
+      needGame(next, "price_is_right");
+      const pir = next.pir;
+      if (!pir?.party) fail("Phone teams are not enabled for this round");
+      if (!pir.party.awarded) fail("No award to undo");
+      for (const id of pir.party.winners) {
+        pir.party.scores[id] = Math.max(0, (pir.party.scores[id] ?? 0) - 1);
+      }
+      pir.party.awarded = false;
+      break;
+    }
+
     /* ---- Herd Mentality ---- */
 
     case "herd_set_answer": {
@@ -868,6 +969,12 @@ export function applyAction(
       needPhase(next, ["QUESTION_ACTIVE"]);
       const pir = next.pir;
       if (!pir) fail("No price round");
+      if (pir.party) {
+        if (pir.party.locked) fail("Guesses are locked");
+        if (!pir.party.teams[action.entityId]) fail("Unknown team");
+        pir.party.guesses[action.entityId] = action.value;
+        break;
+      }
       if (pir.locked) fail("Guesses are locked");
       if (!(action.entityId in pir.guesses)) fail("Unknown guesser");
       pir.guesses[action.entityId] = action.value;
@@ -880,6 +987,7 @@ export function applyAction(
       const pir = next.pir;
       if (!pir) fail("No price round");
       pir.locked = !pir.locked;
+      if (pir.party) pir.party.locked = pir.locked;
       break;
     }
 
@@ -892,6 +1000,27 @@ export function applyAction(
       if (pir.priceRevealed) fail("Price already revealed");
       pir.priceRevealed = true;
       pir.winners = computePriceWinners(next, question.actualPrice);
+      pir.party = pir.party ?? null;
+
+      if (pir.party) {
+        const winners = winnersFromGuesses(
+          pir.party.guesses,
+          question.actualPrice,
+          next.config.pirAllOverFallback,
+        );
+        pir.party.priceRevealed = true;
+        pir.party.winners = winners;
+        if (!pir.party.awarded) {
+          for (const id of winners) {
+            pir.party.scores[id] = (pir.party.scores[id] ?? 0) + 1;
+          }
+          pir.party.awarded = true;
+        }
+        pir.winners = winners;
+        pir.awarded = true;
+        break;
+      }
+
       if (!pir.awarded) {
         const kind = next.config.pirMode === "team" ? "team" : "participant";
         for (const id of pir.winners) addPoints(next, kind, id, next.config.pirPoints);
@@ -1002,6 +1131,7 @@ export function projectPublic(state: SessionState, bank: QuestionBank): PublicSt
       }
     : null;
 
+  const party = state.pir?.party ?? null;
   const pir = state.pir
     ? {
         guesses: state.pir.guessesRevealed
@@ -1011,6 +1141,23 @@ export function projectPublic(state: SessionState, bank: QuestionBank): PublicSt
         priceRevealed: state.pir.priceRevealed,
         winners: state.pir.winners,
         mode: state.config.pirMode,
+        party: party
+          ? {
+              teams: Object.entries(party.teams).map(([id, team]) => ({
+                id,
+                name: team.name,
+                submitted: id in party.guesses,
+              })),
+              scores: party.scores,
+              locked: party.locked,
+              revealed: party.revealed,
+              priceRevealed: party.priceRevealed,
+              winners: party.winners,
+              guesses: party.revealed
+                ? Object.entries(party.guesses).map(([teamId, value]) => ({ teamId, value }))
+                : null,
+            }
+          : null,
       }
     : null;
 

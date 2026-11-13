@@ -33,7 +33,14 @@ Source documents:
    selection and on the audience programme; Herd Mentality and Who's Most
    Likely remain implemented but hidden (`src/lib/games.ts`). Family Feud now
    defaults to two strikes per family.
-9. **How to Play slides** — a `RULES` phase before the title card, with
+9. **Phone teams for The Price Is Right** — three teams join from
+   `/join/?code=…` and submit guesses through Firebase Realtime Database.
+   The host remains authoritative: it mirrors the round board and folds
+   phone joins/guesses into the engine. Rules bind a team to its auth uid,
+   keep unrevealed guesses private and make the board host-only. The
+   feature is disabled without `VITE_FIREBASE_*` configuration.
+   See `../MULTIPLAYER.md`.
+10. **How to Play slides** — a `RULES` phase before the title card, with
    host-driven slides stored in `src/rules/slides.ts` (separate from questions),
    reopenable mid-round without touching scores or round state.
 

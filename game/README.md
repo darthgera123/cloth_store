@@ -20,6 +20,7 @@ bun run dev        # http://127.0.0.1:5173
 |---|---|
 | `/host/` | Host dashboard (laptop) |
 | `/display/?code=XXXX` | Audience display (TV or projector) |
+| `/join/?code=XXXX` | Team phone for The Price Is Right (optional) |
 
 Open `/host/`: the eight names are prefilled (Pulkit, Lavani, Rajat, Bindu,
 Gaurang, Amita, Dhrupad, Aarush) and you pick a team for each player. Create
@@ -84,6 +85,17 @@ host's state, undo history and revision; `gn:last-code` remembers the display's
 session code. No `localStorage`, no IndexedDB, no database. Closing the host tab
 ends the session by design.
 
+## Phone teams (optional, Firebase)
+
+The Price Is Right can take guesses from three phones (one per team) through
+Firebase Realtime Database. Enable **Phone teams** in the game rules, share the
+QR shown on the TV, and each phone joins at `/join/?code=XXXX`. The host keeps
+control of submissions, reveals, the price and the leaderboard.
+
+Setup, security rules, the emulator procedure and deployment notes live in
+**[MULTIPLAYER.md](MULTIPLAYER.md)**. Without the `VITE_FIREBASE_*` variables the
+feature is disabled and the game uses host-entered guesses.
+
 ## Architecture
 
 ```
@@ -93,11 +105,14 @@ src/rules/slides.ts        How to Play copy per game (editable independently)
 src/lib/types.ts           domain types, zod schemas, action union
 src/lib/herd.ts            answer normalisation and grouping
 src/transport/link.ts      BroadcastChannel + relay client, one message shape
+src/multiplayer/           Firebase client, RTDB helpers, host orchestration
+src/join/                  team phone interface
+firebase/database.rules.json  security rules
+relay/index.ts             stateless WebSocket relay (Bun)
 src/client/useHostGame.ts  host: engine + sessionStorage + publish
 src/client/useDisplaySession.ts  audience: snapshots, presence, session-ended
 src/display/               audience screens and boards
 src/host/                  host dashboard, per-game controls
-relay/index.ts             stateless WebSocket relay (Bun)
 ```
 
 `HostApp` and the question bank are loaded as separate chunks, so the audience
@@ -142,7 +157,7 @@ without rewrites; `…/game/` itself opens the display.
 ## Tests
 
 ```bash
-bun test
+bun test                  # engine + relay + rules (rules need the emulator)
 ```
 
 - `tests/engine.test.ts` — phase guards, Feud alternating rules and pot award,

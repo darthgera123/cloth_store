@@ -105,6 +105,8 @@ export function useHostGame(): HostGameApi {
 
   useEffect(() => {
     let active = true;
+    // Static import would ship the question bank to every display client;
+    // the bank must stay a host-only chunk.
     void import("../questions/bank").then((module) => {
       if (!active) return;
       try {

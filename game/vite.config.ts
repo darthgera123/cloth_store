@@ -15,6 +15,7 @@ export default defineConfig({
         main: resolve("index.html"),
         host: resolve("host/index.html"),
         display: resolve("display/index.html"),
+        join: resolve("join/index.html"),
       },
     },
   },

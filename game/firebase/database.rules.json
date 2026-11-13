@@ -1,0 +1,48 @@
+{
+  "rules": {
+    "sessions": {
+      "$code": {
+        ".write": "auth != null && data.child('meta').child('hostUid').val() === auth.uid",
+
+        "meta": {
+          ".read": "auth != null",
+          ".write": "auth != null && (!data.exists() || data.child('hostUid').val() === auth.uid)",
+          ".validate": "newData.hasChildren(['hostUid', 'createdAt'])"
+        },
+
+        "board": {
+          ".read": "auth != null",
+          ".write": "auth != null && root.child('sessions').child($code).child('meta').child('hostUid').val() === auth.uid"
+        },
+
+        "teams": {
+          ".read": "auth != null",
+          "$teamId": {
+            ".write": "auth != null && (root.child('sessions').child($code).child('meta').child('hostUid').val() === auth.uid || (!data.exists() && newData.child('uid').val() === auth.uid) || data.child('uid').val() === auth.uid)",
+            ".validate": "newData.hasChildren(['name', 'uid', 'joinedAt'])",
+            "uid": {
+              ".validate": "!data.exists() || data.val() === newData.val()"
+            },
+            "name": {
+              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 24"
+            },
+            "joinedAt": {
+              ".validate": "newData.isNumber()"
+            }
+          }
+        },
+
+        "guesses": {
+          ".read": "auth != null && root.child('sessions').child($code).child('meta').child('hostUid').val() === auth.uid",
+          "$teamId": {
+            "$roundId": {
+              ".read": "auth != null && (root.child('sessions').child($code).child('meta').child('hostUid').val() === auth.uid || root.child('sessions').child($code).child('teams').child($teamId).child('uid').val() === auth.uid)",
+              ".write": "auth != null && (root.child('sessions').child($code).child('meta').child('hostUid').val() === auth.uid || (root.child('sessions').child($code).child('teams').child($teamId).child('uid').val() === auth.uid && root.child('sessions').child($code).child('board').child('locked').val() === false && root.child('sessions').child($code).child('board').child('roundId').val() === $roundId))",
+              ".validate": "newData.isNumber() && newData.val() >= 0"
+            }
+          }
+        }
+      }
+    }
+  }
+}

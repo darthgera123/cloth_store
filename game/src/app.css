@@ -564,3 +564,9 @@
     letter-spacing: 0.12em;
   }
 }
+
+.qr svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}

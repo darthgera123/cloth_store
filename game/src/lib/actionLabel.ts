@@ -34,4 +34,9 @@ export const ACTION_LABEL: Record<Action["type"], string> = {
   pir_set_guess: "Guess recorded",
   pir_lock: "Guesses locked",
   pir_reveal_price: "Price revealed",
+  pir_team_add: "Team joined",
+  pir_team_remove: "Team removed",
+  pir_override: "Winner changed",
+  pir_undo_award: "Award undone",
+  pir_award: "Point awarded",
 };
