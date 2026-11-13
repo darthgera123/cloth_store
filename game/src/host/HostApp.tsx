@@ -53,7 +53,7 @@ export function HostApp() {
     <div className="host-shell">
       <HostBar api={api} session={session} />
       <div className="mx-auto grid max-w-[1500px] gap-4 p-4 lg:grid-cols-[minmax(0,1.55fr)_minmax(340px,1fr)]">
-        <div className="grid content-start gap-4">
+        <div className="grid min-w-0 content-start gap-4">
           {session.phase === "LOBBY" ? (
             <>
               <SelectCard session={session} send={send} />
@@ -101,7 +101,7 @@ export function HostApp() {
           ) : null}
         </div>
 
-        <aside className="grid content-start gap-4">
+        <aside className="grid min-w-0 content-start gap-4">
           <ScoresCard session={session} send={send} />
           <SessionCard session={session} api={api} party={party} />
         </aside>
@@ -839,11 +839,11 @@ function SessionCard({
         </span>
       </div>
 
-      <div className="grid gap-2">
-        <div className="flex items-center gap-2">
-          <code className="field flex-1 truncate text-[11px] leading-9">{displayUrl}</code>
+      <div className="grid min-w-0 gap-2">
+        <div className="flex min-w-0 items-center gap-2">
+          <code className="field min-w-0 flex-1 truncate text-[11px] leading-9">{displayUrl}</code>
           <button
-            className="hbtn"
+            className="hbtn shrink-0"
             type="button"
             onClick={() => void navigator.clipboard?.writeText(displayUrl)}
           >
@@ -976,7 +976,7 @@ function SessionCard({
           </ul>
         </div>
 
-        <p className="text-[11px] leading-relaxed text-plum-hush">
+        <p className="break-words text-[11px] leading-relaxed text-plum-hush">
           Audience: open <b>/display/</b> on the television and enter code{" "}
           <b className="text-plum">{session.code}</b>. Keep this dashboard open on the laptop.
           {session.game === "price_is_right" ? " Prices are shown here only until you reveal them." : ""}
