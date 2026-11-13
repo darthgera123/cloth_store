@@ -105,6 +105,26 @@ export function JoinApp() {
             sessionStorage.removeItem(storageKey(code));
             setIdentity(null);
           }
+        } else {
+          // The tab may have been closed while the slot stayed claimed for
+          // this phone's anonymous user; adopt that entry instead of trying
+          // to take a new slot.
+          const teams = await firebase.get(`sessions/${code}/teams`);
+          if (!active) return;
+          const mine = Object.entries(teams ?? {}).find(
+            ([, entry]) =>
+              entry &&
+              typeof entry === "object" &&
+              (entry as { uid?: string }).uid === firebase.uid,
+          );
+          if (mine) {
+            const recovered: Identity = {
+              slot: mine[0],
+              name: String((mine[1] as { name?: string }).name ?? "Player"),
+            };
+            sessionStorage.setItem(storageKey(code), JSON.stringify(recovered));
+            setIdentity(recovered);
+          }
         }
 
         unsubscribe = subscribeBoard(
@@ -162,6 +182,11 @@ export function JoinApp() {
       unsubscribe();
     };
   }, [code, identity]);
+
+  // Keep the input in step with the saved guess (submit, refresh, new round).
+  useEffect(() => {
+    setDraft(guess === null ? "" : String(guess));
+  }, [guess, board?.roundId]);
 
   useEffect(() => {
     if (!code || !identity || !board?.roundId) return;
