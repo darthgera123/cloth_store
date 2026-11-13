@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Panel } from "../components/ui";
 import { getFirebase } from "../multiplayer/client";
 import { firebaseConfigured } from "../multiplayer/config";
+import { friendlyFirebaseError } from "../multiplayer/errors";
 import {
   joinTeam,
   readSessionMeta,
@@ -121,12 +122,16 @@ export function JoinApp() {
           }
           setBoard(next);
           setStatus((current) => (current === "ended" ? current : "playing"));
+        }, (subscribeError) => {
+          if (!active) return;
+          setStatus("error");
+          setError(friendlyFirebaseError(subscribeError));
         });
         setStatus((current) => (current === "join" ? current : "playing"));
       } catch (loadError) {
         if (!active) return;
         setStatus("error");
-        setError(loadError instanceof Error ? loadError.message : "Could not reach the game");
+        setError(friendlyFirebaseError(loadError));
       }
     })();
 
@@ -168,7 +173,7 @@ export function JoinApp() {
     const unsubscribe = subscribeOwnGuess(code, identity.teamId, board.roundId, (value) => {
       if (!active) return;
       setGuess(value);
-    });
+    }, (subscribeError) => setNotice(friendlyFirebaseError(subscribeError)));
     return () => {
       active = false;
       unsubscribe();
@@ -196,7 +201,7 @@ export function JoinApp() {
       setNotice(null);
       setStatus("playing");
     } catch (joinError) {
-      setNotice(joinError instanceof Error ? joinError.message : "Could not join");
+      setNotice(friendlyFirebaseError(joinError));
     }
   }, [code, teamName]);
 
@@ -212,9 +217,7 @@ export function JoinApp() {
       setGuess(value);
       setNotice("Guess received. You can change it until the host locks guesses.");
     } catch (submitError) {
-      setNotice(
-        submitError instanceof Error ? submitError.message : "Could not send the guess",
-      );
+      setNotice(friendlyFirebaseError(submitError));
     }
   }, [board, code, draft, identity]);
 

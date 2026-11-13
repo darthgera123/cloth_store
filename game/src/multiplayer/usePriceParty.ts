@@ -1,9 +1,10 @@
 /* Host orchestration for Price Is Right phone teams: mirrors the host's round
    state to Realtime Database and folds phone joins/guesses into the engine. */
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Action, PriceQuestion, Question, SessionState } from "../lib/types";
 import { firebaseConfigured } from "./config";
+import { friendlyFirebaseError } from "./errors";
 import {
   ensureSession,
   removeSession,
@@ -19,6 +20,7 @@ import {
 
 export interface PricePartyApi {
   enabled: boolean;
+  error: string | null;
   setManualGuess(teamId: string, value: number): void;
   removeTeam(teamId: string): void;
   rename(teamId: string, name: string): void;
@@ -43,6 +45,7 @@ export function usePriceParty(options: {
   const code = session?.code ?? null;
   const roundId = question?.id ?? null;
 
+  const [error, setError] = useState<string | null>(null);
   const sessionRef = useRef(session);
   sessionRef.current = session;
   const teamsRef = useRef<Record<string, PartyTeam>>({});
@@ -73,7 +76,7 @@ export function usePriceParty(options: {
               send({ type: "pir_team_add", teamId, name: String(team.name) });
             }
           }
-        });
+        }, (subscribeError) => setError(friendlyFirebaseError(subscribeError)));
 
         unsubscribeGuesses = subscribeGuesses(code, (guesses) => {
           const live = sessionRef.current;
@@ -93,9 +96,10 @@ export function usePriceParty(options: {
               send({ type: "pir_set_guess", entityId: teamId, value });
             }
           }
-        });
-      } catch {
-        /* Firebase unavailable: the host keeps running locally. */
+        }, (subscribeError) => setError(friendlyFirebaseError(subscribeError)));
+      } catch (connectionError) {
+        if (cancelled) return;
+        setError(friendlyFirebaseError(connectionError));
       }
     })();
 
@@ -141,8 +145,9 @@ export function usePriceParty(options: {
         const { uid } = await getFirebase();
         await ensureSession(code, uid);
         await writeBoard(code, board);
-      } catch {
+      } catch (writeError) {
         lastBoardRef.current = "";
+        setError(friendlyFirebaseError(writeError));
       }
     })();
   }, [
@@ -171,6 +176,7 @@ export function usePriceParty(options: {
 
   return {
     enabled,
+    error,
     setManualGuess(teamId, value) {
       send({ type: "pir_set_guess", entityId: teamId, value });
       if (code && roundId) void writeGuessForTeam(code, teamId, roundId, value);

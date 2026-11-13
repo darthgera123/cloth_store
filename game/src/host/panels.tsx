@@ -790,6 +790,12 @@ function PartyPricePanel({
         </span>
       </div>
 
+      {party.error ? (
+        <p className="mb-3 border border-gold/60 bg-lavender-pale px-3 py-2 text-[12px] text-plum">
+          {party.error}
+        </p>
+      ) : null}
+
       {teams.length === 0 ? (
         <p className="mb-3 border border-gold/30 bg-lavender-pale/60 px-3 py-2 text-[12px] text-plum-soft">
           Waiting for phones. Share code <b className="text-plum">{session.code}</b> — teams open the

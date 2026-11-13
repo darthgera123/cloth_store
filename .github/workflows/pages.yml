@@ -35,12 +35,8 @@ jobs:
           # Set the repository variable RELAY_URL to enable cross-device sync,
           # e.g. wss://your-relay.example.com. Empty = same-device only.
           VITE_RELAY_URL: ${{ vars.RELAY_URL }}
-          # Optional phone teams. Leave unset to keep multiplayer disabled.
-          VITE_FIREBASE_API_KEY: ${{ vars.FIREBASE_API_KEY }}
-          VITE_FIREBASE_AUTH_DOMAIN: ${{ vars.FIREBASE_AUTH_DOMAIN }}
-          VITE_FIREBASE_DATABASE_URL: ${{ vars.FIREBASE_DATABASE_URL }}
-          VITE_FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
-          VITE_FIREBASE_APP_ID: ${{ vars.FIREBASE_APP_ID }}
+          # Firebase phone teams use the public web config committed in
+          # game/.env.production.
         run: |
           bun install --frozen-lockfile
           bun run build

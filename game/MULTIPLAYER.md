@@ -27,29 +27,30 @@ host browser (authority)                 Firebase Realtime Database
 
 ## Firebase project setup
 
-1. Create a project at <https://console.firebase.google.com>.
-2. **Authentication → Sign-in method → Anonymous → Enable.**
-3. **Realtime Database → Create database** (pick a region, start in locked mode).
-4. **Project settings → Your apps → Web app** and copy the config.
-5. Put the values in `.env.local` (see `.env.example`):
+This repository is already wired to the **game-night-price** project:
 
-```bash
-VITE_FIREBASE_API_KEY=...
-VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
-VITE_FIREBASE_DATABASE_URL=https://your-project-default-rtdb.firebaseio.com
-VITE_FIREBASE_PROJECT_ID=your-project
-VITE_FIREBASE_APP_ID=...
-```
-
-6. Deploy the rules (never test mode):
-
-```bash
-npx firebase use --add            # choose the project
-npx firebase deploy --only database
-```
+- `.env.production` holds the public web config (Vite loads it for
+  `bun run build`).
+- `.firebaserc` points the CLI at the project.
+- Anonymous Authentication is enabled.
+- The Realtime Database exists in `asia-southeast1`.
 
 The public web config is safe to ship; authorization lives in
-`firebase/database.rules.json`.
+`firebase/database.rules.json`. **Publish the rules before using phone teams** —
+the database starts locked and denies every request until you do.
+
+Either paste `firebase/database.rules.json` into
+**Realtime Database → Rules** in the
+[console](https://console.firebase.google.com/project/game-night-price/database/game-night-price-default-rtdb/rules),
+or deploy with the CLI:
+
+```bash
+npx firebase login          # once per machine
+npm run deploy:rules        # firebase deploy --only database
+```
+
+For local development the same values live in `.env.local` (gitignored) so
+`bun run dev` and `bun run build` both use the real project.
 
 ## Local testing
 
@@ -106,22 +107,11 @@ same team. Renaming or removing a team from the host updates the phone.
 
 The workflow builds with `BASE_PATH=/cloth_store/game/`; the join URL and QR use
 `import.meta.env.BASE_URL`, so they point at `/cloth_store/game/join/?code=…`.
+The public Firebase config is committed in `.env.production`, so the Pages build
+needs no extra variables.
 
-Add these repository **variables** so the Pages build includes them:
-
-```
-FIREBASE_API_KEY
-FIREBASE_AUTH_DOMAIN
-FIREBASE_DATABASE_URL
-FIREBASE_PROJECT_ID
-FIREBASE_APP_ID
-```
-
-They are passed to Vite as `VITE_FIREBASE_*`. Leave them unset for a
-same-device-only event; phone teams then stay disabled.
-
-Anonymous auth must allow your Pages domain: **Authentication → Settings →
-Authorized domains → add `your-name.github.io`**.
+Anonymous auth must allow the Pages domain: **Authentication → Settings →
+Authorized domains → add `darthgera123.github.io`**.
 
 ## Cleanup
 

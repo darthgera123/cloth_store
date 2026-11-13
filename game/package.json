@@ -10,7 +10,8 @@
     "test": "bun test",
     "typecheck": "tsc --noEmit",
     "serve": "bun run serve.ts",
-    "emulators": "firebase emulators:start --only auth,database --project demo-game-night"
+    "emulators": "firebase emulators:start --only auth,database --project demo-game-night",
+    "deploy:rules": "firebase deploy --only database"
   },
   "dependencies": {
     "firebase": "^13.3.0",

@@ -9,7 +9,11 @@ export interface FirebaseHandle {
   set(path: string, value: unknown): Promise<void>;
   update(path: string, value: Record<string, unknown>): Promise<void>;
   remove(path: string): Promise<void>;
-  subscribe(path: string, callback: (value: Record<string, unknown> | null) => void): () => void;
+  subscribe(
+    path: string,
+    callback: (value: Record<string, unknown> | null) => void,
+    onError?: (error: unknown) => void,
+  ): () => void;
 }
 
 let boot: Promise<FirebaseHandle> | null = null;
@@ -50,10 +54,14 @@ export function getFirebase(): Promise<FirebaseHandle> {
       async remove(path) {
         await remove(ref(db, path));
       },
-      subscribe(path, callback) {
-        return onValue(ref(db, path), (snapshot) => {
-          callback(snapshot.exists() ? (snapshot.val() as Record<string, unknown>) : null);
-        });
+      subscribe(path, callback, onError) {
+        return onValue(
+          ref(db, path),
+          (snapshot) => {
+            callback(snapshot.exists() ? (snapshot.val() as Record<string, unknown>) : null);
+          },
+          (error) => onError?.(error),
+        );
       },
     };
   })();

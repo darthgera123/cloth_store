@@ -72,39 +72,60 @@ export async function readBoard(code: string): Promise<PartyBoard | null> {
 export function subscribeTeams(
   code: string,
   callback: (teams: Record<string, PartyTeam>) => void,
+  onError?: (error: unknown) => void,
 ): () => void {
   let unsubscribe = () => {};
-  void getFirebase().then((firebase) => {
-    unsubscribe = firebase.subscribe(teamsPath(code), (value) => {
-      callback(asRecord(value) as unknown as Record<string, PartyTeam>);
-    });
-  });
+  void getFirebase()
+    .then((firebase) => {
+      unsubscribe = firebase.subscribe(
+        teamsPath(code),
+        (value) => {
+          callback(asRecord(value) as unknown as Record<string, PartyTeam>);
+        },
+        onError,
+      );
+    })
+    .catch((error) => onError?.(error));
   return () => unsubscribe();
 }
 
 export function subscribeGuesses(
   code: string,
   callback: (guesses: Record<string, Record<string, number>>) => void,
+  onError?: (error: unknown) => void,
 ): () => void {
   let unsubscribe = () => {};
-  void getFirebase().then((firebase) => {
-    unsubscribe = firebase.subscribe(`${sessionPath(code)}/guesses`, (value) => {
-      callback(asRecord(value) as unknown as Record<string, Record<string, number>>);
-    });
-  });
+  void getFirebase()
+    .then((firebase) => {
+      unsubscribe = firebase.subscribe(
+        `${sessionPath(code)}/guesses`,
+        (value) => {
+          callback(asRecord(value) as unknown as Record<string, Record<string, number>>);
+        },
+        onError,
+      );
+    })
+    .catch((error) => onError?.(error));
   return () => unsubscribe();
 }
 
 export function subscribeBoard(
   code: string,
   callback: (board: PartyBoard | null) => void,
+  onError?: (error: unknown) => void,
 ): () => void {
   let unsubscribe = () => {};
-  void getFirebase().then((firebase) => {
-    unsubscribe = firebase.subscribe(boardPath(code), (value) => {
-      callback(value ? (value as unknown as PartyBoard) : null);
-    });
-  });
+  void getFirebase()
+    .then((firebase) => {
+      unsubscribe = firebase.subscribe(
+        boardPath(code),
+        (value) => {
+          callback(value ? (value as unknown as PartyBoard) : null);
+        },
+        onError,
+      );
+    })
+    .catch((error) => onError?.(error));
   return () => unsubscribe();
 }
 
@@ -113,13 +134,20 @@ export function subscribeOwnGuess(
   teamId: string,
   roundId: string,
   callback: (value: number | null) => void,
+  onError?: (error: unknown) => void,
 ): () => void {
   let unsubscribe = () => {};
-  void getFirebase().then((firebase) => {
-    unsubscribe = firebase.subscribe(guessPath(code, teamId, roundId), (value) => {
-      callback(typeof value === "number" ? value : null);
-    });
-  });
+  void getFirebase()
+    .then((firebase) => {
+      unsubscribe = firebase.subscribe(
+        guessPath(code, teamId, roundId),
+        (value) => {
+          callback(typeof value === "number" ? value : null);
+        },
+        onError,
+      );
+    })
+    .catch((error) => onError?.(error));
   return () => unsubscribe();
 }
 
@@ -127,13 +155,20 @@ export function subscribeOwnTeam(
   code: string,
   teamId: string,
   callback: (team: PartyTeam | null) => void,
+  onError?: (error: unknown) => void,
 ): () => void {
   let unsubscribe = () => {};
-  void getFirebase().then((firebase) => {
-    unsubscribe = firebase.subscribe(teamPath(code, teamId), (value) => {
-      callback(value ? (value as unknown as PartyTeam) : null);
-    });
-  });
+  void getFirebase()
+    .then((firebase) => {
+      unsubscribe = firebase.subscribe(
+        teamPath(code, teamId),
+        (value) => {
+          callback(value ? (value as unknown as PartyTeam) : null);
+        },
+        onError,
+      );
+    })
+    .catch((error) => onError?.(error));
   return () => unsubscribe();
 }
 

@@ -92,9 +92,11 @@ Firebase Realtime Database. Enable **Phone teams** in the game rules, share the
 QR shown on the TV, and each phone joins at `/join/?code=XXXX`. The host keeps
 control of submissions, reveals, the price and the leaderboard.
 
-Setup, security rules, the emulator procedure and deployment notes live in
-**[MULTIPLAYER.md](MULTIPLAYER.md)**. Without the `VITE_FIREBASE_*` variables the
-feature is disabled and the game uses host-entered guesses.
+The app is preconfigured for the `game-night-price` Firebase project; the public
+web config lives in `.env.production`. Rules deployment, the emulator procedure
+and GitHub Pages notes live in **[MULTIPLAYER.md](MULTIPLAYER.md)**. Until the
+database rules are published, phone teams show a clear “Firebase denied access”
+message and the local game continues normally.
 
 ## Architecture
 
