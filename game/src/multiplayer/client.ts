@@ -36,6 +36,10 @@ export function getFirebase(): Promise<FirebaseHandle> {
     const emulator = authEmulatorUrl();
     if (emulator && !auth.emulatorConfig) connectAuthEmulator(auth, emulator, { disableWarnings: true });
 
+    // Wait for the SDK to restore the persisted anonymous user before deciding
+    // who we are; otherwise a reload can sign in a second user and the host
+    // loses read access to its own session.
+    await auth.authStateReady();
     const user = auth.currentUser ?? (await signInAnonymously(auth)).user;
     const db = getDatabase(app);
 

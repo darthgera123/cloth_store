@@ -775,6 +775,7 @@ function PartyPricePanel({
   party: PricePartyApi;
 }) {
   const [override, setOverride] = useState<string[]>([]);
+  const [locking, setLocking] = useState(false);
   const state = session.pir?.party;
   if (!state) return null;
 
@@ -951,16 +952,25 @@ function PartyPricePanel({
         <button
           className="hbtn"
           type="button"
-          disabled={session.phase !== "QUESTION_ACTIVE"}
+          disabled={session.phase !== "QUESTION_ACTIVE" || locking}
           onClick={() => {
             void (async () => {
               // Catch any guess whose Firebase snapshot has not arrived yet.
-              if (!state.locked) await party.syncGuesses();
-              send({ type: "pir_lock" });
+              if (state.locked) {
+                send({ type: "pir_lock" });
+                return;
+              }
+              setLocking(true);
+              try {
+                await party.syncGuesses();
+                send({ type: "pir_lock" });
+              } finally {
+                setLocking(false);
+              }
             })();
           }}
         >
-          {state.locked ? "Reopen submissions" : "Lock submissions"}
+          {locking ? "Locking…" : state.locked ? "Reopen submissions" : "Lock submissions"}
         </button>
         <button
           className="hbtn hbtn-solid"
