@@ -83,8 +83,9 @@ Manual run-through:
 3. Open `/display/?code=CODE` — the QR and join URL appear with the item.
 4. Open `/join/?code=CODE` on three phones (or three separate browser
    profiles), name each team, submit a price.
-5. Lock submissions → reveal guesses → reveal price. The TV shows guesses,
-   price and leaderboard; each phone shows its own result.
+5. Lock submissions → reveal guesses → reveal price → **Award point**. The TV
+   shows guesses and the price when revealed; the leaderboard moves only when
+   the host confirms the award, and each phone shows its own result.
 
 Each phone keeps its team identity in `sessionStorage`, so a refresh rejoins the
 same team. Renaming or removing a team from the host updates the phone.

@@ -445,8 +445,8 @@ function PartyPriceBoard({
                     isWinner ? "border-gold bg-lavender-pale" : "border-gold/25"
                   }`}
                 >
-                  <span className="text-[clamp(14px,1.3vw,20px)]">{team?.name ?? guess.teamId}</span>
-                  <span className="text-[clamp(16px,1.5vw,24px)] tabular-nums text-gold-ink">
+                  <span className="text-[clamp(16px,1.6vw,24px)]">{team?.name ?? guess.teamId}</span>
+                  <span className="text-[clamp(18px,1.8vw,28px)] tabular-nums text-gold-ink">
                     {moneyLabel(guess.value, currency)}
                   </span>
                 </li>
@@ -474,8 +474,8 @@ function PartyPriceBoard({
             <ul className="mt-2 grid gap-1">
               {leaderboard.map((team) => (
                 <li key={team.id} className="flex items-baseline justify-between">
-                  <span className="text-[clamp(13px,1.2vw,18px)]">{team.name}</span>
-                  <span className="text-[clamp(16px,1.5vw,24px)] tabular-nums text-gold-ink">
+                  <span className="text-[clamp(14px,1.4vw,22px)]">{team.name}</span>
+                  <span className="text-[clamp(20px,2.1vw,32px)] tabular-nums text-gold-ink">
                     {team.score}
                   </span>
                 </li>

@@ -1010,14 +1010,8 @@ export function applyAction(
         );
         pir.party.priceRevealed = true;
         pir.party.winners = winners;
-        if (!pir.party.awarded) {
-          for (const id of winners) {
-            pir.party.scores[id] = (pir.party.scores[id] ?? 0) + 1;
-          }
-          pir.party.awarded = true;
-        }
+        // The point is awarded only when the host confirms it.
         pir.winners = winners;
-        pir.awarded = true;
         break;
       }
 

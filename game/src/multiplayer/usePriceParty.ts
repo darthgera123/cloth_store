@@ -68,6 +68,7 @@ export function usePriceParty(options: {
 
         unsubscribeTeams = subscribeTeams(code, (teams) => {
           teamsRef.current = teams;
+          setError(null);
           const live = sessionRef.current;
           if (!live?.pir?.party) return;
           for (const [teamId, team] of Object.entries(teams)) {
@@ -163,6 +164,9 @@ export function usePriceParty(options: {
 
   useEffect(() => {
     lastBoardRef.current = "";
+    // A new session (or a reopened one) starts with a clean slate; errors from
+    // the previous Firebase listener must not linger.
+    setError(null);
   }, [code]);
 
   // A finished Price Is Right game cleans up its temporary session data.

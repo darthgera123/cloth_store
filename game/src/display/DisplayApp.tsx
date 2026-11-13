@@ -354,7 +354,11 @@ function RoundResult({ state }: { state: PublicState }) {
       <h2 className="mt-3 font-serif text-[clamp(34px,4vw,60px)] leading-none">
         {state.game ? GAME_LABEL[state.game] : "Game Night"}
       </h2>
-      <ScoreList state={state} />
+      {state.pir?.party ? (
+        <PartyScoreList party={state.pir.party} />
+      ) : (
+        <ScoreList state={state} />
+      )}
       <p className="mt-8 text-[10px] uppercase tracking-[0.3em] text-plum-hush">
         Next round when the host is ready
       </p>
@@ -364,7 +368,17 @@ function RoundResult({ state }: { state: PublicState }) {
 
 function GameResult({ state }: { state: PublicState }) {
   const result = state.results.at(-1);
-  const winners = result?.standings.filter((row) => row.winner).map((row) => row.label) ?? [];
+  const party = state.pir?.party;
+  const partyRows = party
+    ? party.teams
+        .map((team) => ({ label: team.name, points: party.scores[team.id] ?? 0 }))
+        .sort((a, b) => b.points - a.points || a.label.localeCompare(b.label))
+    : null;
+  const best = partyRows?.length ? Math.max(...partyRows.map((row) => row.points)) : 0;
+  const winners = partyRows
+    ? partyRows.filter((row) => row.points === best && best > 0).map((row) => row.label)
+    : result?.standings.filter((row) => row.winner).map((row) => row.label) ?? [];
+  const rows = partyRows ?? result?.standings ?? [];
 
   return (
     <div className="relative w-full max-w-[1040px]">
@@ -379,23 +393,28 @@ function GameResult({ state }: { state: PublicState }) {
         <p className="mt-3 font-serif text-[clamp(26px,3.2vw,52px)] leading-tight">
           {winners.length > 0 ? winners.join(" · ") : "A draw"}
         </p>
-        {result ? (
+        {rows.length > 0 ? (
           <ul className="mx-auto mt-8 grid w-full max-w-[520px] gap-1.5">
-            {result.standings.map((row) => (
-              <li
-                key={row.label}
-                className={`flex items-baseline justify-between border px-5 py-2.5 ${
-                  row.winner ? "border-gold bg-lavender-pale" : "border-gold/20"
-                }`}
-              >
-                <span className="text-[clamp(14px,1.3vw,20px)] uppercase tracking-[0.12em]">
-                  {row.label}
-                </span>
-                <span className="text-[clamp(17px,1.6vw,26px)] tabular-nums text-gold-ink">
-                  {row.points}
-                </span>
-              </li>
-            ))}
+            {rows.map((row) => {
+              const highlighted = partyRows
+                ? row.points === best && best > 0
+                : (row as { winner?: boolean }).winner;
+              return (
+                <li
+                  key={row.label}
+                  className={`flex items-baseline justify-between border px-5 py-2.5 ${
+                    highlighted ? "border-gold bg-lavender-pale" : "border-gold/20"
+                  }`}
+                >
+                  <span className="text-[clamp(14px,1.3vw,20px)] uppercase tracking-[0.12em]">
+                    {row.label}
+                  </span>
+                  <span className="text-[clamp(17px,1.6vw,26px)] tabular-nums text-gold-ink">
+                    {row.points}
+                  </span>
+                </li>
+              );
+            })}
           </ul>
         ) : null}
         <p className="mt-8 text-[10px] uppercase tracking-[0.3em] text-plum-hush">
@@ -403,6 +422,40 @@ function GameResult({ state }: { state: PublicState }) {
         </p>
       </Panel>
     </div>
+  );
+}
+
+function PartyScoreList({
+  party,
+}: {
+  party: NonNullable<PublicState["pir"]>["party"];
+}) {
+  if (!party) return null;
+  const best = Math.max(0, ...Object.values(party.scores));
+  const rows = party.teams
+    .map((team) => ({ id: team.id, label: team.name, points: party.scores[team.id] ?? 0 }))
+    .sort((a, b) => b.points - a.points || a.label.localeCompare(b.label));
+
+  return (
+    <ul className="mx-auto mt-8 grid w-full max-w-[460px] gap-1.5">
+      {rows.map((row) => (
+        <li
+          key={row.id}
+          className={`flex items-baseline justify-between border px-5 py-2.5 ${
+            row.points === best && best > 0
+              ? "border-gold bg-lavender-pale"
+              : "border-gold/25"
+          }`}
+        >
+          <span className="text-[clamp(15px,1.5vw,24px)] uppercase tracking-[0.12em]">
+            {row.label}
+          </span>
+          <span className="text-[clamp(20px,2vw,32px)] tabular-nums text-gold-ink">
+            {row.points}
+          </span>
+        </li>
+      ))}
+    </ul>
   );
 }
 

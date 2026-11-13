@@ -648,7 +648,7 @@ describe("price phone teams", () => {
     ]);
   });
 
-  test("closest without going over wins and the point is awarded once", () => {
+  test("closest without going over wins and the host confirms the point", () => {
     let s = joinTeams(startParty());
     s = guess(s, "t-a", 1100);
     s = guess(s, "t-b", 1400);
@@ -657,8 +657,11 @@ describe("price phone teams", () => {
     s = act(s, { type: "pir_reveal_price" });
 
     expect(s.pir?.party?.winners).toEqual(["t-b"]);
+    expect(s.pir?.party?.scores["t-b"]).toBe(0);
+
+    s = act(s, { type: "pir_award" });
     expect(s.pir?.party?.scores["t-b"]).toBe(1);
-    expectEngineError(() => act(s, { type: "pir_reveal_price" }));
+    expectEngineError(() => act(s, { type: "pir_award" }));
   });
 
   test("the host can undo, override and re-award the point", () => {
@@ -668,6 +671,7 @@ describe("price phone teams", () => {
     s = guess(s, "t-c", 1600);
     s = act(s, { type: "reveal" });
     s = act(s, { type: "pir_reveal_price" });
+    s = act(s, { type: "pir_award" });
 
     expect(s.pir?.party?.winners.sort()).toEqual(["t-a", "t-b"]);
     expect(s.pir?.party?.scores["t-a"]).toBe(1);
@@ -687,6 +691,7 @@ describe("price phone teams", () => {
     s = guess(s, "t-a", 1400);
     s = act(s, { type: "reveal" });
     s = act(s, { type: "pir_reveal_price" });
+    s = act(s, { type: "pir_award" });
     s = act(s, { type: "round_result" });
     s = act(s, { type: "next_round" });
     s = act(s, { type: "start_round" });
@@ -702,6 +707,7 @@ describe("price phone teams", () => {
     s = guess(s, "t-a", 1400);
     s = act(s, { type: "reveal" });
     s = act(s, { type: "pir_reveal_price" });
+    s = act(s, { type: "pir_award" });
     expect(s.pir?.party?.scores["t-a"]).toBe(1);
 
     s = act(s, { type: "restart_round" });
