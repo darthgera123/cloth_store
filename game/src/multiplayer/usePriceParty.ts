@@ -21,6 +21,8 @@ import {
 export interface PricePartyApi {
   enabled: boolean;
   error: string | null;
+  /** Pull any guesses Firebase holds for the current round, before locking. */
+  syncGuesses(): Promise<void>;
   setManualGuess(teamId: string, value: number): void;
   removeTeam(teamId: string): void;
   rename(teamId: string, name: string): void;
@@ -184,6 +186,27 @@ export function usePriceParty(options: {
   return {
     enabled,
     error,
+    async syncGuesses() {
+      const live = sessionRef.current;
+      if (!code || !live?.pir?.party || live.pir.party.locked) return;
+      const roundId = live.pir.questionId;
+      if (!roundId) return;
+      try {
+        const { getFirebase } = await import("./client");
+        const firebase = await getFirebase();
+        const all = (await firebase.get(`sessions/${code}/guesses`)) ?? {};
+        for (const [teamId, rounds] of Object.entries(all)) {
+          if (typeof rounds !== "object" || rounds === null) continue;
+          const value = (rounds as Record<string, unknown>)[roundId];
+          if (typeof value !== "number") continue;
+          if (!live.pir.party.teams[teamId]) continue;
+          if (live.pir.party.guesses[teamId] === value) continue;
+          send({ type: "pir_set_guess", entityId: teamId, value });
+        }
+      } catch (syncError) {
+        setError(friendlyFirebaseError(syncError));
+      }
+    },
     setManualGuess(teamId, value) {
       send({ type: "pir_set_guess", entityId: teamId, value });
       if (code && roundId) void writeGuessForTeam(code, teamId, roundId, value);

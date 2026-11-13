@@ -436,17 +436,17 @@ function PartyPriceBoard({
         {showJoin ? <PartyJoinCard state={state} party={party} /> : null}
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="party-detail flex flex-col gap-4">
         <div>
-          <h2 className="font-serif text-[clamp(26px,2.8vw,46px)] font-medium leading-[1.15]">
+          <h2 className="party-title font-serif text-[clamp(26px,2.8vw,46px)] font-medium leading-[1.15]">
             {question.text}
           </h2>
           <p className="mt-2 text-[clamp(13px,1.15vw,18px)] text-plum-soft">{question.description}</p>
         </div>
 
-        <div className="flex flex-wrap items-baseline gap-4 border-y border-gold/25 py-3">
+        <div className="party-meta flex flex-wrap items-baseline gap-4 border-y border-gold/25 py-3">
           <span className="text-[10px] uppercase tracking-[0.24em] text-plum-hush">Submissions</span>
-          <span className="font-serif text-[clamp(22px,2.2vw,34px)] leading-none tabular-nums">
+          <span className="party-meta-count font-serif text-[clamp(22px,2.2vw,34px)] leading-none tabular-nums">
             {submitted} <span className="text-plum-hush">of {party.teams.length}</span>
           </span>
           <span className="text-[10px] uppercase tracking-[0.24em] text-gold-ink">
@@ -459,14 +459,14 @@ function PartyPriceBoard({
         ) : null}
 
         {guesses.length > 0 ? (
-          <ul className="grid gap-1">
+          <ul className="party-rows grid gap-1">
             {guesses.map((guess) => {
               const team = party.teams.find((entry) => entry.id === guess.teamId);
               const rank = podiumRank(guess.teamId);
               return (
                 <li
                   key={guess.teamId}
-                  className={`flex items-baseline justify-between border px-4 py-1.5 ${
+                  className={`party-row flex items-baseline justify-between border px-4 py-1.5 ${
                     rank ? "border-gold bg-lavender-pale" : "border-gold/25"
                   }`}
                 >

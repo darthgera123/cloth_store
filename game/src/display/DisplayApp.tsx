@@ -166,7 +166,7 @@ function Shell({
     <div className="relative min-h-screen">
       <Ornaments />
       <div className="relative z-10 flex min-h-screen flex-col">
-        <header className="flex items-center justify-between px-[clamp(20px,2.4vw,40px)] py-5">
+        <header className="display-header flex items-center justify-between px-[clamp(20px,2.4vw,40px)] py-5">
           <div className="flex items-center gap-3">
             <span className="font-script text-[26px] leading-[1.5] text-gold-ink">Game Night</span>
             {code ? (
@@ -204,7 +204,7 @@ function Shell({
           </p>
         ) : null}
 
-        <main className="grid flex-1 place-items-center px-[clamp(16px,2.4vw,40px)] pb-[clamp(16px,2.6vh,40px)]">
+        <main className="display-main grid flex-1 place-items-center px-[clamp(16px,2.4vw,40px)] pb-[clamp(16px,2.6vh,40px)]">
           {children}
         </main>
       </div>
@@ -226,7 +226,7 @@ function Phase({ state }: { state: PublicState }) {
       style={{ maxWidth: state.game === "family_feud" ? 1620 : 1240 }}
     >
       <Panel className="w-full">
-        <div className="px-[clamp(24px,3vw,56px)] py-[clamp(22px,3vh,44px)]">
+        <div className="board-body px-[clamp(24px,3vw,56px)] py-[clamp(22px,3vh,44px)]">
           <GameBoard state={state} />
         </div>
       </Panel>
@@ -498,7 +498,7 @@ function ScoreList({ state }: { state: PublicState }) {
 
 function BasePanel({ children }: { children: ReactNode }) {
   return (
-    <Panel className="w-[min(1040px,86vw)] px-[clamp(32px,5vw,88px)] py-[clamp(44px,7vh,84px)] text-center">
+    <Panel className="base-panel w-[min(1040px,86vw)] px-[clamp(32px,5vw,88px)] py-[clamp(44px,7vh,84px)] text-center">
       {children}
     </Panel>
   );

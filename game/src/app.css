@@ -570,3 +570,58 @@
   width: 100%;
   height: auto;
 }
+
+/* Short televisions and projectors: trim vertical padding so a full board never scrolls. */
+@media (max-height: 1040px) {
+  .display-header {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .display-main {
+    padding-bottom: 12px;
+  }
+  .board-body {
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+  .base-panel {
+    padding-top: 22px;
+    padding-bottom: 22px;
+  }
+  /* The six-player price board is the tallest screen: tighten it on 720p. */
+  .party-detail {
+    gap: 8px !important;
+  }
+  .party-title {
+    font-size: 28px !important;
+    line-height: 1.1 !important;
+  }
+  .party-meta {
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+  }
+  .party-meta-count {
+    font-size: 20px !important;
+  }
+  .party-row {
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+  }
+  .party-row span {
+    font-size: 17px !important;
+    line-height: 1.3 !important;
+  }
+  .party-price {
+    padding-top: 6px !important;
+  }
+  .party-price-value {
+    font-size: 34px !important;
+  }
+  .party-scores {
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+  }
+  .party-scores span {
+    font-size: 14px !important;
+  }
+}

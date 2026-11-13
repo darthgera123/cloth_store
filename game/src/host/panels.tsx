@@ -952,7 +952,13 @@ function PartyPricePanel({
           className="hbtn"
           type="button"
           disabled={session.phase !== "QUESTION_ACTIVE"}
-          onClick={() => send({ type: "pir_lock" })}
+          onClick={() => {
+            void (async () => {
+              // Catch any guess whose Firebase snapshot has not arrived yet.
+              if (!state.locked) await party.syncGuesses();
+              send({ type: "pir_lock" });
+            })();
+          }}
         >
           {state.locked ? "Reopen submissions" : "Lock submissions"}
         </button>

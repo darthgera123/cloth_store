@@ -162,6 +162,14 @@ only. The build emits real `host/index.html` and `display/index.html` pages,
 so `…/game/host/` and `…/game/display/?code=XXXX` survive refresh on Pages
 without rewrites; `…/game/` itself opens the display.
 
+## TV sizing
+
+The audience display targets 16:9 and was checked at 1024x768, 1280x720,
+1366x768, 1600x900, 1920x1080, 2560x1440 and 3840x2160 without scrolling.
+Six-player price boards switch to a compact layout on screens shorter than
+1040px. On a 4K browser that reports 3840 CSS pixels (no OS scaling), run the
+page at 200% zoom so it lays out at 1920 CSS pixels and fills the panel.
+
 ## Tests
 
 ```bash
