@@ -454,6 +454,10 @@ function PartyPriceBoard({
           </span>
         </div>
 
+        {party.leaderboardRevealed && guesses.length > 0 ? (
+          <p className="text-[9px] uppercase tracking-[0.3em] text-gold-ink">Podium</p>
+        ) : null}
+
         {guesses.length > 0 ? (
           <ul className="grid gap-1">
             {guesses.map((guess) => {
