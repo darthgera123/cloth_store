@@ -162,6 +162,33 @@ only. The build emits real `host/index.html` and `display/index.html` pages,
 so `…/game/host/` and `…/game/display/?code=XXXX` survive refresh on Pages
 without rewrites; `…/game/` itself opens the display.
 
+## Cross-device audience screens
+
+The host publishes the sanitized public state (`projectPublic`) from the
+browser to `sessions/{code}/display` in the Realtime Database on every action,
+plus a presence heartbeat every five seconds. Any display screen signed in
+anonymously can read that node; it cannot read guesses, the question bank,
+answers before they are revealed, prices before the reveal, or host controls.
+Same-device screens still use BroadcastChannel and the relay first; Firebase is
+the path for phones, second TVs and remote guests. The display shows the last
+board while disconnected, reports "Session not found" only when no session
+record exists, and "Session ended" only after the host ends it explicitly or
+the heartbeat is stale for ten minutes.
+
+Deploy the database rules whenever they change:
+
+```bash
+cd game
+bun run deploy:rules   # needs an authenticated firebase CLI
+```
+
+Rules tests run against the emulator (`bun run emulators` in another
+terminal):
+
+```bash
+bun test tests/multiplayer-rules.test.ts
+```
+
 ## TV sizing
 
 The audience display targets 16:9 and was checked at 1024x768, 1280x720,

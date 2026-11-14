@@ -4,10 +4,11 @@
 import { useEffect, useRef, useState } from "react";
 import type { Action, PriceQuestion, Question, SessionState } from "../lib/types";
 import { firebaseConfigured } from "./config";
+import { markDisplayEnded } from "./displayFeed";
 import { friendlyFirebaseError } from "./errors";
 import {
   ensureSession,
-  removeSession,
+  clearPartyData,
   removeTeamRemote,
   renameTeam,
   subscribeGuesses,
@@ -180,7 +181,7 @@ export function usePriceParty(options: {
     if (session?.game !== "price_is_right") return;
     if (!session.pir?.party) return;
     if (session.phase !== "GAME_RESULT") return;
-    void removeSession(code).catch(() => undefined);
+    void clearPartyData(code).catch(() => undefined);
   }, [code, session?.game, session?.pir?.party, session?.phase]);
 
   return {
@@ -221,7 +222,10 @@ export function usePriceParty(options: {
     },
     async endRemoteSession() {
       if (!code) return;
-      await removeSession(code).catch(() => undefined);
+      // Displays need an explicit end marker; the public state is dropped so
+      // no names linger after the evening.
+      await markDisplayEnded(code).catch(() => undefined);
+      await clearPartyData(code).catch(() => undefined);
     },
   };
 }

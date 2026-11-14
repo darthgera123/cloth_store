@@ -3,6 +3,8 @@ export const metaPath = (code: string) => `${sessionPath(code)}/meta`;
 export const boardPath = (code: string) => `${sessionPath(code)}/board`;
 export const teamsPath = (code: string) => `${sessionPath(code)}/teams`;
 export const teamPath = (code: string, teamId: string) => `${teamsPath(code)}/${teamId}`;
+export const displayPath = (code: string) => `${sessionPath(code)}/display`;
+export const displayPresencePath = (code: string) => `${displayPath(code)}/presence`;
 export const guessesPath = (code: string) => `${sessionPath(code)}/guesses`;
 export const teamGuessesPath = (code: string, teamId: string) =>
   `${guessesPath(code)}/${teamId}`;

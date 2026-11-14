@@ -151,6 +151,64 @@ test.skipIf(!up)("rules keep guesses private and the board host-only", async () 
   expect(await gone.json()).toBeNull();
 });
 
+test.skipIf(!up)("display feed is host-written and read-only for signed-in screens", async () => {
+  const host = await signUp();
+  const viewer = await signUp();
+  const displayCode = `D${Date.now().toString(36).slice(-3).toUpperCase()}`.slice(0, 4);
+
+  expect(
+    (await rtdb(host.token, `sessions/${displayCode}/meta`, {
+      method: "PUT",
+      body: { hostUid: host.uid, createdAt: Date.now() },
+    })).status,
+  ).toBe(200);
+
+  expect(
+    (await rtdb(host.token, `sessions/${displayCode}/display`, {
+      method: "PUT",
+      body: {
+        revision: 3,
+        state: { phase: "QUESTION_ACTIVE", question: { text: "Lamp" } },
+        updatedAt: Date.now(),
+        ended: false,
+      },
+    })).status,
+  ).toBe(200);
+
+  // Any signed-in screen can read the public state.
+  const read = await rtdb(viewer.token, `sessions/${displayCode}/display`);
+  expect(read.status).toBe(200);
+  expect((await read.json()).state).toEqual({ phase: "QUESTION_ACTIVE", question: { text: "Lamp" } });
+
+  // Presence heartbeats are host-only.
+  expect(
+    (await rtdb(host.token, `sessions/${displayCode}/display/presence`, {
+      method: "PUT",
+      body: { at: Date.now() },
+    })).status,
+  ).toBe(200);
+
+  // Another user cannot publish or end.
+  expect(
+    (await rtdb(viewer.token, `sessions/${displayCode}/display`, {
+      method: "PATCH",
+      body: { ended: true },
+    })).status,
+  ).toBe(401);
+
+  // Anonymous screens get nothing.
+  expect((await rtdb(null, `sessions/${displayCode}/display`)).status).toBe(401);
+
+  // Explicit end marker is a host write.
+  expect(
+    (await rtdb(host.token, `sessions/${displayCode}/display`, {
+      method: "PATCH",
+      body: { ended: true, endedAt: Date.now() },
+    })).status,
+  ).toBe(200);
+  expect((await rtdb(viewer.token, `sessions/${displayCode}/display/ended`)).status).toBe(200);
+});
+
 if (!up) {
   console.warn("Firebase emulators are not running; multiplayer rule checks skipped.");
 }

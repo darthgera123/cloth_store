@@ -15,6 +15,29 @@
           ".write": "auth != null && root.child('sessions').child($code).child('meta').child('hostUid').val() === auth.uid"
         },
 
+        "display": {
+          ".read": "auth != null",
+          ".write": "auth != null && root.child('sessions').child($code).child('meta').child('hostUid').val() === auth.uid",
+          "revision": {
+            ".validate": "newData.isNumber()"
+          },
+          "updatedAt": {
+            ".validate": "newData.isNumber()"
+          },
+          "presence": {
+            ".validate": "newData.hasChildren(['at'])",
+            "at": {
+              ".validate": "newData.isNumber()"
+            }
+          },
+          "ended": {
+            ".validate": "newData.isBoolean()"
+          },
+          "endedAt": {
+            ".validate": "newData.isNumber()"
+          }
+        },
+
         "teams": {
           ".read": "auth != null",
           "$teamId": {

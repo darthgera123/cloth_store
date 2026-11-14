@@ -78,7 +78,7 @@ export function DisplayApp() {
         code={session.code}
         muted={muted}
         onToggleMute={toggleMute}
-        connected={false}
+        connected
       >
         <Panel className="w-full max-w-[620px] px-10 py-12 text-center">
           <p className="kicker">Game Night</p>
@@ -94,6 +94,33 @@ export function DisplayApp() {
               Try again
             </button>
             <button className="btn" type="button" onClick={session.leave}>
+              Change code
+            </button>
+          </div>
+        </Panel>
+      </Shell>
+    );
+  }
+
+  if (session.invalid) {
+    return (
+      <Shell
+        state={null}
+        code={session.code}
+        muted={muted}
+        onToggleMute={toggleMute}
+        connected
+      >
+        <Panel className="w-full max-w-[560px] px-10 py-12 text-center">
+          <p className="kicker">Session {session.code}</p>
+          <h2 className="mt-3 font-serif text-[clamp(30px,3.6vw,48px)] leading-tight">
+            Session not found
+          </h2>
+          <p className="mx-auto mt-4 max-w-[34ch] text-[13px] leading-relaxed text-plum-soft">
+            No session is open with this code. Check the code on the host screen and try again.
+          </p>
+          <div className="mt-7 flex flex-wrap justify-center gap-3">
+            <button className="btn btn-primary" type="button" onClick={session.leave}>
               Change code
             </button>
           </div>

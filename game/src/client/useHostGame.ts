@@ -17,6 +17,7 @@ import {
   type HostLink,
   type HostLinkStatus,
 } from "../transport/link";
+import { startDisplayFeed, type DisplayFeed } from "../multiplayer/displayFeed";
 
 const STORAGE_KEY = "gn:host-session:v3";
 const HISTORY_LIMIT = 12;
@@ -95,6 +96,7 @@ export function useHostGame(): HostGameApi {
   const sessionRef = useRef<PersistedSession | null>(session);
   const bankRef = useRef<QuestionBank | null>(null);
   const linkRef = useRef<HostLink | null>(null);
+  const feedRef = useRef<DisplayFeed | null>(null);
 
   const setSession = useCallback((next: PersistedSession | null) => {
     sessionRef.current = next;
@@ -123,7 +125,9 @@ export function useHostGame(): HostGameApi {
   const publish = useCallback((snapshot: PersistedSession) => {
     const loaded = bankRef.current;
     if (!loaded) return;
-    linkRef.current?.publish(projectPublic(snapshot.state, loaded), snapshot.revision);
+    const publicState = projectPublic(snapshot.state, loaded);
+    linkRef.current?.publish(publicState, snapshot.revision);
+    feedRef.current?.publish(publicState, snapshot.revision);
   }, []);
 
   const commit = useCallback(
@@ -162,11 +166,19 @@ export function useHostGame(): HostGameApi {
       onStatus: setLink,
     });
     linkRef.current = hostLink;
-    hostLink.publish(projectPublic(current.state, bank), current.revision);
+    const publicState = projectPublic(current.state, bank);
+    hostLink.publish(publicState, current.revision);
+
+    // Cross-device screens read the same public snapshot from Firebase.
+    const feed = startDisplayFeed(code);
+    feedRef.current = feed;
+    feed.publish(publicState, current.revision);
 
     return () => {
       hostLink.close();
       linkRef.current = null;
+      feed.close();
+      feedRef.current = null;
     };
   }, [code, bank]);
 
@@ -234,6 +246,7 @@ export function useHostGame(): HostGameApi {
 
   const endSession = useCallback(() => {
     linkRef.current?.endSession();
+    feedRef.current?.end();
     setSession(null);
     persist(null);
   }, [setSession]);

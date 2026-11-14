@@ -6,6 +6,7 @@ import { getFirebase } from "./client";
 import {
   boardPath,
   guessPath,
+  guessesPath,
   metaPath,
   sessionPath,
   teamPath,
@@ -61,9 +62,17 @@ export async function writeBoard(code: string, board: PartyBoard): Promise<void>
   await firebase.set(boardPath(code), board);
 }
 
-export async function removeSession(code: string): Promise<void> {
+/**
+ * Drops the Price Is Right round data without touching the session record:
+ * cross-device displays still need meta (validity) and display (public state).
+ */
+export async function clearPartyData(code: string): Promise<void> {
   const firebase = await getFirebase();
-  await firebase.remove(sessionPath(code));
+  await Promise.all([
+    firebase.remove(boardPath(code)),
+    firebase.remove(teamsPath(code)),
+    firebase.remove(guessesPath(code)),
+  ]);
 }
 
 export async function readSessionMeta(code: string): Promise<{ createdAt: number } | null> {
