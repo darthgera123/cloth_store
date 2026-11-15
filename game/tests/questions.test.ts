@@ -57,6 +57,30 @@ describe("markdown question banks", () => {
     expect(bank.whos_most_likely.length).toBeGreaterThan(0);
   });
 
+  test("the Family Feud bank holds FF-001 through FF-013", () => {
+    const feud = assembleQuestionBank(files).family_feud;
+    expect(feud.map((question) => question.id)).toEqual(
+      Array.from({ length: 13 }, (_, index) => `FF-${String(index + 1).padStart(3, "0")}`),
+    );
+    for (const question of feud) {
+      expect(question.answers).toHaveLength(5);
+      expect(question.answers.reduce((sum, answer) => sum + answer.points, 0)).toBe(100);
+      expect(question.hindi?.length).toBeGreaterThan(0);
+      expect(question.answers.every((answer) => answer.hindi && answer.text)).toBe(true);
+    }
+    // Original wording and order are preserved.
+    const ff2 = feud.find((question) => question.id === "FF-002");
+    expect(ff2?.question).toBe("Name something mom always has in her purse.");
+    expect(ff2?.hindi).toBe("Mummy ke purse mein hamesha kya hota hai?");
+    expect(ff2?.answers.map((answer) => [answer.points, answer.hindi, answer.text])).toEqual([
+      [38, "Paise", "Money"],
+      [24, "rumaal", "tissues"],
+      [18, "Chaabi", "Keys"],
+      [11, "Phone", "Phone"],
+      [9, "Lip balm", "Lip balm"],
+    ]);
+  });
+
   test("malformed Feud entries are rejected", () => {
     const base = "## FF-X\n\nEnglish: Q\n\nHindi: H\n\n";
     const table = (rows: string[]) =>
@@ -240,6 +264,19 @@ describe("session question order", () => {
     const restored = JSON.parse(JSON.stringify(session)) as SessionState;
     expect(restored.questionOrder).toEqual(session.questionOrder);
     expect(Object.keys(projectPublic(session, corpus))).not.toContain("questionOrder");
+  });
+
+  test("a real Family Feud game samples ten of the thirteen", () => {
+    const real = assembleQuestionBank(files);
+    const session = createSession(
+      { names: ["Asha", "Ravi", "Meera", "Vikram"], config: defaultConfig },
+      "TEST",
+      1000,
+    );
+    const game = applyAction(session, { type: "select_game", game: "family_feud" }, real, 1000);
+    expect(game.questionOrder).toHaveLength(10);
+    expect(new Set(game.questionOrder).size).toBe(10);
+    expect(game.questionOrder.every((id) => real.family_feud.some((q) => q.id === id))).toBe(true);
   });
 
   test("bilingual question text is public but answer Hindi waits for the reveal", () => {
