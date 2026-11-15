@@ -85,7 +85,7 @@ export function usePriceParty(options: {
         unsubscribeGuesses = subscribeGuesses(code, (guesses) => {
           const live = sessionRef.current;
           if (!live?.pir?.party || !roundId) return;
-          if (live.pir.party.locked || live.pir.party.revealed) return;
+          if (live.pir.party.leaderboardRevealed) return;
 
           for (const [teamId, rounds] of Object.entries(guesses ?? {})) {
             const value = rounds?.[roundId];
@@ -189,7 +189,7 @@ export function usePriceParty(options: {
     error,
     async syncGuesses() {
       const live = sessionRef.current;
-      if (!code || !live?.pir?.party || live.pir.party.locked) return;
+      if (!code || !live?.pir?.party || live.pir.party.leaderboardRevealed) return;
       const roundId = live.pir.questionId;
       if (!roundId) return;
       try {

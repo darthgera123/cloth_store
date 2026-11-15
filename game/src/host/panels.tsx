@@ -984,7 +984,13 @@ function PartyPricePanel({
           className="hbtn hbtn-solid"
           type="button"
           disabled={!canRevealPrice}
-          onClick={() => send({ type: "pir_reveal_price" })}
+          onClick={() => {
+            void (async () => {
+              // Last chance to pick up a phone guess whose snapshot lagged.
+              await party.syncGuesses();
+              send({ type: "pir_reveal_price" });
+            })();
+          }}
         >
           Reveal price
         </button>
@@ -992,7 +998,12 @@ function PartyPricePanel({
           className="hbtn hbtn-solid"
           type="button"
           disabled={!canRevealLeaderboard}
-          onClick={() => send({ type: "pir_leaderboard" })}
+          onClick={() => {
+            void (async () => {
+              await party.syncGuesses();
+              send({ type: "pir_leaderboard" });
+            })();
+          }}
         >
           Reveal leaderboard
         </button>

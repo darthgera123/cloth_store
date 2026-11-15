@@ -1085,15 +1085,21 @@ export function applyAction(
 
     case "pir_set_guess": {
       needGame(next, "price_is_right");
-      needPhase(next, ["QUESTION_ACTIVE"]);
       const pir = next.pir;
       if (!pir) fail("No price round");
       if (pir.party) {
-        if (pir.party.locked) fail("Guesses are locked");
+        // The host mirrors phone guesses from Firebase. A late snapshot can
+        // land after the lock, so keep accepting it until the podium is out;
+        // phones themselves cannot write once the board is locked.
+        if (pir.party.leaderboardRevealed) fail("The leaderboard is already visible");
+        if (next.phase !== "QUESTION_ACTIVE" && next.phase !== "REVEAL") {
+          fail("Guess submissions are closed");
+        }
         if (!pir.party.teams[action.entityId]) fail("Unknown team");
         pir.party.guesses[action.entityId] = action.value;
         break;
       }
+      needPhase(next, ["QUESTION_ACTIVE"]);
       if (pir.locked) fail("Guesses are locked");
       if (!(action.entityId in pir.guesses)) fail("Unknown guesser");
       pir.guesses[action.entityId] = action.value;

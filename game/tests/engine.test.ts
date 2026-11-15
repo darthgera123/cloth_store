@@ -703,6 +703,25 @@ describe("price phone entries", () => {
     expect(price.question?.actualPrice).toBe(1500);
   });
 
+  test("a late phone guess is ingested before the leaderboard", () => {
+    let s = startParty("teams");
+    s = join(s, "t1", "Alpha");
+    s = join(s, "t2", "Bravo");
+    s = guess(s, "t1", 1500);
+    s = revealed(s);
+
+    // The Firebase snapshot for Bravo lands after the lock/reveal.
+    s = guess(s, "t2", 1400);
+    expect(s.pir?.party?.guesses.t2).toBe(1400);
+
+    s = act(s, { type: "pir_leaderboard" });
+    expect(s.pir?.party?.podium.map((entry) => [entry.entryId, entry.rank, entry.points])).toEqual([
+      ["t1", 1, 3],
+      ["t2", 2, 2],
+    ]);
+    expectEngineError(() => guess(s, "t2", 1600));
+  });
+
   test("undo, override and re-award work together", () => {
     let s = startParty("teams");
     s = join(s, "t1", "Alpha");

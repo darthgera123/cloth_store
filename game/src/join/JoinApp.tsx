@@ -347,7 +347,7 @@ export function JoinApp() {
 
   const ownScore = board.scores?.[identity.slot] ?? 0;
   const rank = board.leaderboardRevealed
-    ? board.podium.find((entry) => entry.entryId === identity.slot)
+    ? (board.podium ?? []).find((entry) => entry.entryId === identity.slot)
     : undefined;
   const locked = board.locked || board.revealed || board.priceRevealed;
 

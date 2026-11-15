@@ -139,7 +139,14 @@ export function subscribeBoard(
       unsubscribe = firebase.subscribe(
         boardPath(code),
         (value) => {
-          callback(value ? (value as unknown as PartyBoard) : null);
+          if (!value) {
+            callback(null);
+            return;
+          }
+          const board = value as unknown as PartyBoard;
+          // Firebase drops empty arrays/objects, so a board written before
+          // anyone scored has no podium or scores key at all.
+          callback({ ...board, podium: board.podium ?? [], scores: board.scores ?? {} });
         },
         onError,
       );
