@@ -120,14 +120,16 @@ export function usePriceParty(options: {
     const party = sessionRef.current?.pir?.party;
     if (!party) return;
 
+    // Before the host starts a round the phones get a blank board: they can
+    // join, but the product and the guess field only appear on start.
     const primed = Boolean(upcoming);
     const board: PartyBoard = {
-      roundId: boardQuestion.id,
+      roundId: primed ? "" : boardQuestion.id,
       index: session?.questionIndex ?? 0,
-      item: boardQuestion.item,
-      size: boardQuestion.size,
-      description: boardQuestion.description,
-      image: boardQuestion.image,
+      item: primed ? "" : boardQuestion.item,
+      size: primed ? undefined : boardQuestion.size,
+      description: primed ? undefined : boardQuestion.description,
+      image: primed ? "" : boardQuestion.image,
       currency: session?.config.currency || boardQuestion.currency,
       priceUnit: boardQuestion.priceUnit,
       mode: party.mode,

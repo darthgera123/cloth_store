@@ -347,6 +347,23 @@ export function JoinApp() {
   }
 
   const ownScore = board.scores?.[identity.slot] ?? 0;
+
+  // Joined before the host pressed start: no product yet.
+  if (!board.roundId || !board.item) {
+    return (
+      <Shell wide>
+        <div className="flex items-baseline justify-between gap-3">
+          <p className="kicker">{identity.name}</p>
+          <span className="text-[10px] uppercase tracking-[0.2em] text-plum-hush">Score {ownScore}</span>
+        </div>
+        <h1 className="mt-6 font-serif text-[26px] leading-tight">Waiting for the host</h1>
+        <p className="mt-2 text-[13px] leading-relaxed text-plum-soft">
+          You are in. The product appears here as soon as the host starts the round.
+        </p>
+      </Shell>
+    );
+  }
+
   const rank = board.leaderboardRevealed
     ? (board.podium ?? []).find((entry) => entry.entryId === identity.slot)
     : undefined;
