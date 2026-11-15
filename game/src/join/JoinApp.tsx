@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Panel } from "../components/ui";
+import { publicAsset } from "../lib/assets";
 import { getFirebase } from "../multiplayer/client";
 import { firebaseConfigured } from "../multiplayer/config";
 import { friendlyFirebaseError } from "../multiplayer/errors";
@@ -360,13 +361,16 @@ export function JoinApp() {
 
       <div className="mt-4 overflow-hidden border border-gold/30 bg-lavender-pale">
         <img
-          src={board.image}
+          src={publicAsset(board.image)}
           alt={board.item}
           className="mx-auto block max-h-[190px] w-full object-contain"
         />
       </div>
 
       <h1 className="mt-4 font-serif text-[26px] leading-tight">{board.item}</h1>
+      {board.size ? (
+        <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-gold-ink">{board.size}</p>
+      ) : null}
       <p className="mt-1 text-[13px] text-plum-soft">{board.description}</p>
 
       {board.priceRevealed ? (

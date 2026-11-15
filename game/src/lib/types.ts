@@ -91,11 +91,15 @@ export const priceQuestionSchema = z.object({
   ...baseQuestion,
   game: z.literal("price_is_right"),
   item: z.string().min(1),
-  description: z.string().min(1),
+  /** Pack size or variant, shown on every screen. */
+  size: z.string().min(1).optional(),
+  description: z.string().min(1).optional(),
   image: z.string().min(1),
   actualPrice: z.number().min(0),
   currency: z.string().min(1).default("INR"),
   priceUnit: z.string().min(1).default("item"),
+  /** Product page the price/photograph was taken from (host-only metadata). */
+  sourceUrl: z.string().min(1).optional(),
 });
 
 export const questionSchema = z.discriminatedUnion("game", [
@@ -429,6 +433,8 @@ export interface PublicQuestion {
   text: string;
   /** Family Feud's Hindi question text, when supplied. */
   hindi?: string;
+  /** The Price Is Right pack size, when supplied. */
+  size?: string;
   /** Family Feud */
   answers?: PublicAnswer[];
   /** The Price Is Right */

@@ -18,7 +18,8 @@ export interface PartyBoard {
   roundId: string;
   index: number;
   item: string;
-  description: string;
+  size?: string;
+  description?: string;
   image: string;
   currency: string;
   priceUnit: string;

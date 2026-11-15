@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import type { GameId, Participant, PublicState, PublicPrice, Team } from "../lib/types";
 import { StrikeMark } from "../components/Mandala";
+import { publicAsset } from "../lib/assets";
 
 const labelFor = (state: PublicState, id: string | null): string => {
   if (!id) return "";
@@ -282,9 +283,9 @@ export function PriceBoard({ state }: { state: PublicState }) {
     <div className="grid w-full items-center gap-[clamp(20px,3vw,56px)] md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
       <div className="border border-gold/30 bg-lavender-pale p-4">
         <img
-          src={question.image ?? "/demo/placeholder.svg"}
+          src={publicAsset(question.image ?? "demo/placeholder.svg")}
           alt={question.text}
-          className="mx-auto block w-full max-w-[520px]"
+          className="mx-auto block max-h-[min(52vh,460px)] w-full object-contain"
         />
       </div>
 
@@ -293,6 +294,11 @@ export function PriceBoard({ state }: { state: PublicState }) {
           <h2 className="font-serif text-[clamp(28px,3vw,50px)] font-medium leading-[1.15]">
             {question.text}
           </h2>
+          {question.size ? (
+            <p className="mt-1 text-[clamp(12px,1.1vw,17px)] uppercase tracking-[0.18em] text-gold-ink">
+              {question.size}
+            </p>
+          ) : null}
           <p className="mt-2 text-[clamp(14px,1.2vw,19px)] text-plum-soft">{question.description}</p>
         </div>
 
@@ -432,9 +438,9 @@ function PartyPriceBoard({
       <div className="flex flex-col gap-3">
         <div className="border border-gold/30 bg-lavender-pale p-3">
           <img
-            src={question.image ?? "/demo/placeholder.svg"}
+            src={publicAsset(question.image ?? "demo/placeholder.svg")}
             alt={question.text}
-            className="mx-auto block w-full max-w-[420px]"
+            className="mx-auto block max-h-[min(46vh,400px)] w-full object-contain"
           />
         </div>
 
@@ -446,6 +452,11 @@ function PartyPriceBoard({
           <h2 className="party-title font-serif text-[clamp(26px,2.8vw,46px)] font-medium leading-[1.15]">
             {question.text}
           </h2>
+          {question.size ? (
+            <p className="mt-1 text-[clamp(11px,1.05vw,16px)] uppercase tracking-[0.18em] text-gold-ink">
+              {question.size}
+            </p>
+          ) : null}
           <p className="mt-2 text-[clamp(13px,1.15vw,18px)] text-plum-soft">{question.description}</p>
         </div>
 

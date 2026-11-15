@@ -94,7 +94,8 @@ export function HostApp() {
                 </h2>
                 <div className="flex items-center gap-3">
                   <span className="text-[10px] uppercase tracking-[0.22em] text-plum-hush">
-                    Round {session.round} · {session.phase.replaceAll("_", " ").toLowerCase()}
+                    Round {session.round} of {session.questionOrder.length || 10} ·{" "}
+                    {session.phase.replaceAll("_", " ").toLowerCase()}
                   </span>
                   <button
                     className="hbtn"
@@ -112,6 +113,10 @@ export function HostApp() {
                     <p className="mb-1 font-serif text-[22px] leading-snug">{questionText(shown)}</p>
                     {shown?.game === "family_feud" && shown.hindi ? (
                       <p className="mb-4 text-[14px] italic text-plum-soft">{shown.hindi}</p>
+                    ) : shown?.game === "price_is_right" && shown.size ? (
+                      <p className="mb-4 text-[12px] uppercase tracking-[0.18em] text-gold-ink">
+                        {shown.size}
+                      </p>
                     ) : (
                       <div className="mb-4" />
                     )}

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { applyAction, createSession, projectPublic } from "../src/engine/engine";
 import { ROUNDS_PER_GAME, sampleWithoutReplacement } from "../src/lib/random";
@@ -147,16 +147,34 @@ describe("markdown question banks", () => {
   });
 
   test("price and most-likely validation is specific", () => {
+    const product = (overrides: Record<string, string> = {}) => {
+      const fields = {
+        Item: "A",
+        Size: "1 unit",
+        Image: "products/x.jpg",
+        Source: "https://example.com/x",
+        Price: "100",
+        ...overrides,
+      };
+      return `## PIR-X\n\n${Object.entries(fields)
+        .map(([key, value]) => `${key}: ${value}`)
+        .join("\n\n")}\n`;
+    };
+    expect(() => parseQuestionMarkdown("## PIR-X\n\nItem: A\n", "price_is_right", "p.md")).toThrow(
+      /size/,
+    );
+    expect(() => parseQuestionMarkdown(product({ Price: "not-a-number" }), "price_is_right", "p.md")).toThrow(
+      /invalid price/,
+    );
+    expect(() => parseQuestionMarkdown(product({ Price: "0" }), "price_is_right", "p.md")).toThrow(
+      /invalid price/,
+    );
+    expect(() => parseQuestionMarkdown(product({ Source: " " }), "price_is_right", "p.md")).toThrow(
+      /source/,
+    );
     expect(() =>
-      parseQuestionMarkdown("## PIR-X\n\nItem: A\n\nDescription: B\n\nImage: /x.svg\n", "price_is_right", "p.md"),
-    ).toThrow(/price/);
-    expect(() =>
-      parseQuestionMarkdown(
-        "## PIR-Y\n\nItem: A\n\nDescription: B\n\nImage: /x.svg\n\nPrice: not-a-number\n",
-        "price_is_right",
-        "p.md",
-      ),
-    ).toThrow(/invalid price/);
+      parseQuestionMarkdown(product({ Currency: "USD" }), "price_is_right", "p.md"),
+    ).toThrow(/INR/);
     expect(() =>
       parseQuestionMarkdown("## ML-X\n\nQuestion: Q?\n\nEligible: bride\n", "whos_most_likely", "m.md"),
     ).toThrow(/Eligible/);
@@ -264,6 +282,56 @@ describe("session question order", () => {
     const restored = JSON.parse(JSON.stringify(session)) as SessionState;
     expect(restored.questionOrder).toEqual(session.questionOrder);
     expect(Object.keys(projectPublic(session, corpus))).not.toContain("questionOrder");
+  });
+
+  test("the Price Is Right bank holds 26 products with local images", () => {
+    const pir = assembleQuestionBank(files).price_is_right;
+    expect(pir.map((question) => question.id)).toEqual(
+      Array.from({ length: 26 }, (_, index) => `PIR-${String(index + 1).padStart(3, "0")}`),
+    );
+    for (const question of pir) {
+      expect(question.actualPrice).toBeGreaterThan(0);
+      expect(Number.isInteger(question.actualPrice)).toBe(true);
+      expect(question.currency).toBe("INR");
+      expect(question.size?.length).toBeGreaterThan(0);
+      expect(question.sourceUrl).toMatch(/^https?:\/\//);
+      expect(existsSync(path.join(root, "public", question.image))).toBe(true);
+    }
+    expect(pir.find((question) => question.id === "PIR-024")?.item).toBe(
+      "Modern 5 W LED Lamp (Warm White) - DesiDiya",
+    );
+    expect(pir.find((question) => question.id === "PIR-018")?.actualPrice).toBe(3500000);
+  });
+
+  test("a real Price Is Right game samples ten of the twenty-six", () => {
+    const real = assembleQuestionBank(files);
+    const session = createSession(
+      { names: ["Asha", "Ravi", "Meera", "Vikram"], config: defaultConfig },
+      "TEST",
+      1000,
+    );
+    const game = applyAction(session, { type: "select_game", game: "price_is_right" }, real, 1000);
+    expect(game.questionOrder).toHaveLength(10);
+    expect(new Set(game.questionOrder).size).toBe(10);
+    expect(game.questionOrder.every((id) => real.price_is_right.some((q) => q.id === id))).toBe(true);
+  });
+
+  test("the actual price stays private until the reveal", () => {
+    const real = assembleQuestionBank(files);
+    const session = createSession(
+      { names: ["Asha", "Ravi", "Meera", "Vikram"], config: defaultConfig },
+      "TEST",
+      1000,
+    );
+    let game = applyAction(session, { type: "select_game", game: "price_is_right" }, real, 1000);
+    const selected = real.price_is_right.find((q) => q.id === game.questionOrder[0]);
+    game = applyAction(game, { type: "rules_finish" }, real, 1000);
+    game = applyAction(game, { type: "start_round" }, real, 1000);
+    expect(projectPublic(game, real).question?.actualPrice).toBeNull();
+    game = applyAction(game, { type: "reveal" }, real, 1000);
+    expect(projectPublic(game, real).question?.actualPrice).toBeNull();
+    game = applyAction(game, { type: "pir_reveal_price" }, real, 1000);
+    expect(projectPublic(game, real).question?.actualPrice).toBe(selected?.actualPrice);
   });
 
   test("a real Family Feud game samples ten of the thirteen", () => {

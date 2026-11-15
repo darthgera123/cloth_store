@@ -1194,6 +1194,7 @@ export function projectPublic(state: SessionState, bank: QuestionBank): PublicSt
         game: question.game,
         text: question.item,
         item: question.item,
+        size: question.size,
         description: question.description,
         image: question.image,
         currency: state.config.currency || question.currency,

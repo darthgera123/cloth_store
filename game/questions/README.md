@@ -38,22 +38,25 @@ English and Hindi text. Optional: `Category:`, `Difficulty:` (`easy`/`medium`/
 ```md
 ## PIR-001
 
-Item: Decorative table lamp
+Item: Maggi Masala Noodles
 
-Description: A simple home decor lamp.
+Size: 280 g (4-pack)
 
-Image: /demo/placeholder.svg
+Image: products/PIR-001.jpg
 
-Price: 1500
+Price: 60
 
 Currency: INR
 
-Unit: item
+Unit: pack
+
+Source: https://blinkit.com/prn/x/prid/171258
 ```
 
-`Item`, `Description`, `Image` and `Price` are required; `Currency` (default
-`INR`) and `Unit` (default `item`) are optional. The price is only shown after
-the host reveals it.
+`Item`, `Size`, `Image`, `Price` and `Source` are required. `Currency` must be
+`INR`; `Description` and `Unit` are optional. Images live in
+`public/products/` and are resolved against the deployed base path. The price
+is only shown after the host reveals it.
 
 ## Herd Mentality — `herd-mentality.md`
 

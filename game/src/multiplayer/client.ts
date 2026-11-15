@@ -42,6 +42,9 @@ export function getFirebase(): Promise<FirebaseHandle> {
     await auth.authStateReady();
     const user = auth.currentUser ?? (await signInAnonymously(auth)).user;
     const db = getDatabase(app);
+    // Optional question fields (size, description) can be undefined; the
+    // Realtime Database rejects undefined child values, so drop them.
+    const clean = <T,>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
 
     return {
       uid: user.uid,
@@ -50,10 +53,10 @@ export function getFirebase(): Promise<FirebaseHandle> {
         return snapshot.exists() ? (snapshot.val() as Record<string, unknown>) : null;
       },
       async set(path, value) {
-        await set(ref(db, path), value);
+        await set(ref(db, path), clean(value));
       },
       async update(path, value) {
-        await update(ref(db, path), value);
+        await update(ref(db, path), clean(value));
       },
       async remove(path) {
         await remove(ref(db, path));

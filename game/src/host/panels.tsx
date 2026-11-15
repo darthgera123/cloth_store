@@ -3,6 +3,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { herdGroups } from "../lib/herd";
+import { publicAsset } from "../lib/assets";
 import type { PricePartyApi } from "../multiplayer/usePriceParty";
 import { firebaseConfigured } from "../multiplayer/config";
 import {
@@ -679,12 +680,15 @@ export function PricePanel({
 
       <div className="mb-3 flex gap-3 border border-gold/25 p-3">
         <img
-          src={question.image}
+          src={publicAsset(question.image)}
           alt=""
-          className="h-20 w-24 border border-gold/20 bg-lavender-pale object-cover"
+          className="h-20 w-24 border border-gold/20 bg-lavender-pale object-contain"
         />
         <div>
           <p className="font-serif text-[19px]">{question.item}</p>
+          {question.size ? (
+            <p className="text-[10px] uppercase tracking-[0.16em] text-gold-ink">{question.size}</p>
+          ) : null}
           <p className="text-[12px] text-plum-soft">{question.description}</p>
         </div>
       </div>

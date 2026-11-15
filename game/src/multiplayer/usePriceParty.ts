@@ -125,6 +125,7 @@ export function usePriceParty(options: {
       roundId: boardQuestion.id,
       index: session?.questionIndex ?? 0,
       item: boardQuestion.item,
+      size: boardQuestion.size,
       description: boardQuestion.description,
       image: boardQuestion.image,
       currency: session?.config.currency || boardQuestion.currency,

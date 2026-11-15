@@ -225,22 +225,29 @@ function parseFeud(entry: Entry, file: string): FeudQuestion {
 
 function parsePrice(entry: Entry, file: string): PriceQuestion {
   const item = required(entry, ["item"], file);
-  const description = required(entry, ["description"], file);
+  const size = required(entry, ["size"], file);
   const image = required(entry, ["image"], file);
+  const sourceUrl = required(entry, ["source", "source url"], file);
   const rawPrice = required(entry, ["price", "actual price"], file);
   const actualPrice = Number(rawPrice);
-  if (!Number.isFinite(actualPrice) || actualPrice < 0) {
+  if (!Number.isFinite(actualPrice) || actualPrice <= 0) {
     throw new QuestionBankError(file, entry.id, `invalid price "${rawPrice}"`);
+  }
+  const currency = optional(entry, ["currency"]) ?? "INR";
+  if (currency !== "INR") {
+    throw new QuestionBankError(file, entry.id, `currency must be INR (found "${currency}")`);
   }
   return {
     id: entry.id,
     game: "price_is_right",
     item,
-    description,
+    size,
+    description: optional(entry, ["description"]),
     image,
     actualPrice,
-    currency: optional(entry, ["currency"]) ?? "INR",
+    currency,
     priceUnit: optional(entry, ["unit", "price unit"]) ?? "item",
+    sourceUrl,
     ...metadata(entry, file),
   };
 }
