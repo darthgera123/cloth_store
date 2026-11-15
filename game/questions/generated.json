@@ -1,0 +1,130 @@
+{
+  "family_feud": [
+    {
+      "id": "FF-001",
+      "game": "family_feud",
+      "question": "Name something an Indian mom asks when you leave the house.",
+      "hindi": "Ghar se nikalte waqt mummy kya poochti hai?",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "Where are you going?",
+          "hindi": "Kahan ja raha/rahi hai?",
+          "points": 34
+        },
+        {
+          "id": "a2",
+          "text": "Who are you meeting?",
+          "hindi": "Kisse milne ja raha/rahi hai?",
+          "points": 27
+        },
+        {
+          "id": "a3",
+          "text": "When will you be back?",
+          "hindi": "Kab wapas aayega/aayegi?",
+          "points": 19
+        },
+        {
+          "id": "a4",
+          "text": "Text/call me when you reach",
+          "hindi": "Pahunch ke call/message karna",
+          "points": 12
+        },
+        {
+          "id": "a5",
+          "text": "Have you eaten?",
+          "hindi": "Kuch khaya hai?",
+          "points": 8
+        }
+      ]
+    }
+  ],
+  "herd_mentality": [
+    {
+      "id": "HM-001",
+      "game": "herd_mentality",
+      "question": "Name a food people commonly eat at weddings.",
+      "answerType": "free_text"
+    },
+    {
+      "id": "HM-002",
+      "game": "herd_mentality",
+      "question": "Name a colour people wear to a celebration.",
+      "answerType": "free_text"
+    },
+    {
+      "id": "HM-003",
+      "game": "herd_mentality",
+      "question": "Name something that is always in a grandmother's kitchen.",
+      "answerType": "free_text"
+    },
+    {
+      "id": "HM-004",
+      "game": "herd_mentality",
+      "question": "Name the best thing about a long weekend.",
+      "answerType": "free_text"
+    }
+  ],
+  "whos_most_likely": [
+    {
+      "id": "ML-001",
+      "game": "whos_most_likely",
+      "question": "Who's most likely to arrive early to every event?",
+      "eligibleParticipants": "all",
+      "allowSelfVote": true
+    },
+    {
+      "id": "ML-002",
+      "game": "whos_most_likely",
+      "question": "Who's most likely to cry at a wedding?",
+      "eligibleParticipants": "all",
+      "allowSelfVote": true
+    },
+    {
+      "id": "ML-003",
+      "game": "whos_most_likely",
+      "question": "Who's most likely to give the longest speech?",
+      "eligibleParticipants": "all",
+      "allowSelfVote": true
+    },
+    {
+      "id": "ML-004",
+      "game": "whos_most_likely",
+      "question": "Who's most likely to organise everyone for a photo?",
+      "eligibleParticipants": "all",
+      "allowSelfVote": true
+    }
+  ],
+  "price_is_right": [
+    {
+      "id": "PIR-001",
+      "game": "price_is_right",
+      "item": "Decorative table lamp",
+      "description": "A simple home decor lamp.",
+      "image": "/demo/placeholder.svg",
+      "actualPrice": 1500,
+      "currency": "INR",
+      "priceUnit": "item"
+    },
+    {
+      "id": "PIR-002",
+      "game": "price_is_right",
+      "item": "Steel tea set",
+      "description": "A four-piece set, gift wrapped.",
+      "image": "/demo/placeholder.svg",
+      "actualPrice": 2400,
+      "currency": "INR",
+      "priceUnit": "set"
+    },
+    {
+      "id": "PIR-003",
+      "game": "price_is_right",
+      "item": "Wedding invitation box",
+      "description": "Printed cards with a keepsake box for fifty guests.",
+      "image": "/demo/placeholder.svg",
+      "actualPrice": 8000,
+      "currency": "INR",
+      "priceUnit": "box"
+    }
+  ]
+}

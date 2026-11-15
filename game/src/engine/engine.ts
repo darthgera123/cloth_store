@@ -26,6 +26,7 @@ import {
 } from "../lib/types";
 import { RULES } from "../rules/slides";
 import { herdGroups, normalizeAnswer } from "../lib/herd";
+import { ROUNDS_PER_GAME, sampleWithoutReplacement } from "../lib/random";
 
 export class EngineError extends Error {
   code: string;
@@ -54,20 +55,6 @@ export function currentQuestion(state: SessionState, bank: QuestionBank): Questi
   if (id) return list.find((q) => q.id === id) ?? null;
   const ordered = state.questionOrder[state.questionIndex];
   return list.find((q) => q.id === ordered) ?? list[state.questionIndex] ?? null;
-}
-
-function shuffled<T>(items: T[]): T[] {
-  const copy = [...items];
-  for (let i = copy.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    const a = copy[i];
-    const b = copy[j];
-    if (a !== undefined && b !== undefined) {
-      copy[i] = b;
-      copy[j] = a;
-    }
-  }
-  return copy;
 }
 
 /* ---------- creation ---------- */
@@ -432,6 +419,7 @@ export function applyAction(
   action: Action,
   bank: QuestionBank,
   now: number,
+  random: () => number = Math.random,
 ): SessionState {
   const next: SessionState = structuredClone(state);
 
@@ -467,9 +455,10 @@ export function applyAction(
       next.round = 0;
       next.status = "active";
       next.roundAwards = [];
-      next.questionOrder = (
-        next.config.shuffleQuestions ? shuffled(questions) : questions
-      ).map((question) => question.id);
+      // One unbiased sample per new game: ten unique questions, fixed order.
+      next.questionOrder = sampleWithoutReplacement(questions, ROUNDS_PER_GAME, random).map(
+        (question) => question.id,
+      );
       next.scores = emptyScores(next.participants, next.teams);
       next.feud = null;
       next.herd = null;
@@ -1179,6 +1168,7 @@ function publicAnswers(question: FeudQuestion, revealed: string[]): PublicAnswer
     return {
       id: answer.id,
       text: isRevealed ? answer.text : null,
+      hindi: isRevealed ? (answer.hindi ?? null) : null,
       points: isRevealed ? answer.points : null,
       revealed: isRevealed,
     };
@@ -1195,6 +1185,7 @@ export function projectPublic(state: SessionState, bank: QuestionBank): PublicSt
       pubQuestion = {
         game: question.game,
         text: question.question,
+        hindi: question.hindi,
         answers: publicAnswers(question, state.feud?.revealed ?? []),
       };
     } else if (question.game === "price_is_right") {

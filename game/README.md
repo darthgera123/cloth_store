@@ -111,7 +111,9 @@ message and the local game continues normally.
 
 ```
 src/engine/engine.ts       pure state machine (createSession / applyAction / projectPublic)
-src/questions/bank.ts      bundled JSON questions, zod-validated, host-only chunk
+src/questions/bank.ts      generated question bank, zod-validated, host-only chunk
+src/questions/markdown.ts  build-time Markdown parser and validators
+src/lib/random.ts          unbiased 10-question sampling
 src/rules/slides.ts        How to Play copy per game (editable independently)
 src/lib/types.ts           domain types, zod schemas, action union
 src/lib/herd.ts            answer normalisation and grouping
@@ -145,10 +147,14 @@ on/off.
 
 ## Questions
 
-`questions/*.json`, one array per game, validated with zod at load. Optional
-`category`, `difficulty` and `image` fields are supported. Order follows the
-file; enable "Shuffle question order" in setup to shuffle per session. Phase 1
-ships dummy questions only — the real corpus is a data-only change.
+`questions/*.md` are the single source of truth, one file per game; see
+[questions/README.md](questions/README.md) for the format. `bun run questions`
+(part of `bun run build`) parses and validates them into
+`questions/generated.json`, so adding a question never needs a code change.
+Each new game randomly samples 10 unique questions (or all of them, with a
+host notice, when the bank is shorter); the selected IDs and order live in the
+host session, so refreshes, phone reconnects and undo never reshuffle. Starting
+a new game draws a fresh set.
 
 ## Deploy to GitHub Pages
 

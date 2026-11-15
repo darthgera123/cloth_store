@@ -118,6 +118,11 @@ export function FeudBoard({ state }: { state: PublicState }) {
       <h2 className="mx-auto max-w-[34ch] text-balance text-center font-serif text-[clamp(28px,3.1vw,54px)] font-medium leading-[1.18] text-plum">
         {question.text}
       </h2>
+      {question.hindi ? (
+        <p className="-mt-[clamp(6px,1.2vh,14px)] text-center font-serif text-[clamp(15px,1.5vw,24px)] italic text-plum-soft">
+          {question.hindi}
+        </p>
+      ) : null}
 
       <ol className="grid grid-cols-1 gap-[clamp(8px,1.2vh,16px)] md:grid-cols-2">
         {answers.map((answer, index) => (

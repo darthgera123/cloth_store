@@ -4,14 +4,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "bun run questions && tsc --noEmit && vite build",
     "preview": "vite preview --port 8091",
     "relay": "bun run relay/index.ts",
     "test": "bun test",
     "typecheck": "tsc --noEmit",
     "serve": "bun run serve.ts",
     "emulators": "firebase emulators:start --only auth,database --project demo-game-night",
-    "deploy:rules": "firebase deploy --only database"
+    "deploy:rules": "firebase deploy --only database",
+    "questions": "bun run scripts/build-questions.ts"
   },
   "dependencies": {
     "firebase": "^13.3.0",

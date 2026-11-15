@@ -1,5 +1,4 @@
 import { describe, expect, test } from "bun:test";
-import path from "node:path";
 import {
   type Action,
   type FeudQuestion,
@@ -10,9 +9,10 @@ import {
 import { RULES } from "../src/rules/slides";
 import { EngineError, applyAction, createSession, projectPublic, rankPriceGuesses } from "../src/engine/engine";
 import { herdGroups, normalizeAnswer } from "../src/lib/herd";
+import engineBank from "./fixtures/engine-bank.json";
 import { loadQuestionBank } from "../src/questions/bank";
 
-const bank: QuestionBank = await loadQuestionBank(path.join(import.meta.dir, "../questions"));
+const bank: QuestionBank = loadQuestionBank(engineBank);
 
 const NAMES = ["Asha", "Ravi", "Meera", "Vikram", "Nisha", "Arjun", "Priya", "Karan"];
 const TEAMS: [string, string] = ["Bride's Family", "Groom's Family"];
@@ -40,12 +40,12 @@ function withFeudTeams(state: SessionState, bankOverride?: QuestionBank): Sessio
     assignment,
   };
   return bankOverride
-    ? applyAction(state, action, bankOverride, tick())
+    ? applyAction(state, action, bankOverride, tick(), () => 0)
     : act(state, action);
 }
 
 function act(state: SessionState, action: Action): SessionState {
-  return applyAction(state, action, bank, tick());
+  return applyAction(state, action, bank, tick(), () => 0);
 }
 
 function startGame(game: SessionState["game"], overrides: Partial<SessionState["config"]> = {}) {
@@ -187,16 +187,51 @@ describe("rules", () => {
 });
 
 describe("question order", () => {
-  test("shuffle keeps every question exactly once", () => {
-    const s = act(session({ shuffleQuestions: true }), {
-      type: "select_game",
-      game: "family_feud",
-    });
-    expect(s.questionOrder.length).toBe(bank.family_feud.length);
-    expect([...s.questionOrder].sort()).toEqual(
-      bank.family_feud.map((question) => question.id).sort(),
-    );
+  const answers = [34, 27, 19, 12, 8];
+  const corpus: QuestionBank = {
+    ...bank,
+    family_feud: Array.from({ length: 13 }, (_, index) => ({
+      id: `ff-${index + 1}`,
+      game: "family_feud" as const,
+      question: `Question ${index + 1}`,
+      hindi: `Sawaal ${index + 1}`,
+      answers: answers.map((points, answerIndex) => ({
+        id: `a${answerIndex + 1}`,
+        text: `Answer ${answerIndex + 1}`,
+        hindi: `Jawab ${answerIndex + 1}`,
+        points,
+      })),
+    })),
+  };
+
+  test("a new game samples ten unique questions", () => {
+    const s = applyAction(session(), { type: "select_game", game: "family_feud" }, corpus, tick());
+    expect(s.questionOrder).toHaveLength(10);
+    expect(new Set(s.questionOrder).size).toBe(10);
+    expect(s.questionOrder.every((id) => corpus.family_feud.some((q) => q.id === id))).toBe(true);
+  });
+
+  test("the selected order survives rounds and is not public", () => {
+    let s = applyAction(session(), { type: "select_game", game: "family_feud" }, corpus, tick());
+    const order = [...s.questionOrder];
+    s = applyAction(s, { type: "rules_finish" }, corpus, tick());
+    s = withFeudTeams(s, corpus);
+    s = applyAction(s, { type: "start_round" }, corpus, tick());
+    expect(s.questionOrder).toEqual(order);
+    expect(Object.keys(projectPublic(s, corpus))).not.toContain("questionOrder");
+  });
+
+  test("the bank uses every question when fewer than ten exist", () => {
+    const s = act(session(), { type: "select_game", game: "family_feud" });
+    expect(s.questionOrder).toHaveLength(bank.family_feud.length);
     expect(new Set(s.questionOrder).size).toBe(bank.family_feud.length);
+  });
+
+  test("an empty bank blocks the game", () => {
+    const empty: QuestionBank = { ...bank, family_feud: [] };
+    expectEngineError(() =>
+      applyAction(session(), { type: "select_game", game: "family_feud" }, empty, tick()),
+    );
   });
 });
 

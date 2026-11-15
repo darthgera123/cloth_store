@@ -5,6 +5,7 @@ import {
   type Action,
   type GameId,
   type PriceQuestion,
+  type Question,
   type SessionConfig,
   type SessionState,
   defaultConfig,
@@ -16,6 +17,7 @@ import { RULES } from "../rules/slides";
 import { VISIBLE_GAMES } from "../lib/games";
 import { usePriceParty } from "../multiplayer/usePriceParty";
 import { firebaseConfigured } from "../multiplayer/config";
+import { ROUNDS_PER_GAME } from "../lib/random";
 
 export function HostApp() {
   const api = useHostGame();
@@ -52,6 +54,15 @@ export function HostApp() {
   return (
     <div className="host-shell">
       <HostBar api={api} session={session} />
+      {session.game && session.questionOrder.length > 0 && session.questionOrder.length < ROUNDS_PER_GAME ? (
+        <div className="mx-auto max-w-[1500px] px-4 pt-4">
+          <p className="border border-gold/40 bg-lavender-pale px-3 py-2 text-[12px] text-plum-soft">
+            Only {session.questionOrder.length} question{session.questionOrder.length === 1 ? "" : "s"} in this
+            bank, so {GAME_LABEL[session.game]} runs {session.questionOrder.length} round
+            {session.questionOrder.length === 1 ? "" : "s"}. Add more in questions/ and rebuild.
+          </p>
+        </div>
+      ) : null}
       <div className="mx-auto grid max-w-[1500px] gap-4 p-4 lg:grid-cols-[minmax(0,1.55fr)_minmax(340px,1fr)]">
         <div className="grid min-w-0 content-start gap-4">
           {session.phase === "LOBBY" ? (
@@ -94,7 +105,19 @@ export function HostApp() {
                   </button>
                 </div>
               </div>
-              <p className="mb-4 font-serif text-[22px] leading-snug">{currentQuestionText(session, api.hostState?.questions ?? [])}</p>
+              {(() => {
+                const shown = currentQuestion(session, api.hostState?.questions ?? []);
+                return (
+                  <>
+                    <p className="mb-1 font-serif text-[22px] leading-snug">{questionText(shown)}</p>
+                    {shown?.game === "family_feud" && shown.hindi ? (
+                      <p className="mb-4 text-[14px] italic text-plum-soft">{shown.hindi}</p>
+                    ) : (
+                      <div className="mb-4" />
+                    )}
+                  </>
+                );
+              })()}
               <div className="fade-in">
                 <GamePanel
                   session={session}
@@ -125,17 +148,20 @@ function Centered({ children }: { children: React.ReactNode }) {
   );
 }
 
-function currentQuestionText(session: SessionState, questions: unknown[]): string {
-  if (!session || questions.length === 0) return "";
+function currentQuestion(session: SessionState, questions: Question[]): Question | null {
+  if (!session || questions.length === 0) return null;
   const id =
     session.feud?.questionId ??
     session.herd?.questionId ??
     session.ml?.questionId ??
     session.pir?.questionId;
-  const found = (questions as { id: string; question?: string; item?: string }[]).find(
-    (question) => question.id === id,
-  );
-  return found?.question ?? found?.item ?? "";
+  return questions.find((question) => question.id === id) ?? null;
+}
+
+function questionText(question: Question | null): string {
+  if (!question) return "";
+  if (question.game === "price_is_right") return question.item;
+  return question.question;
 }
 
 function HostBar({
@@ -385,14 +411,6 @@ function SetupCard({
               <option value="lowest">Lowest guess when all over</option>
             </select>
           </Rule>
-          <label className="flex items-center gap-2 text-[12px] text-plum-soft sm:col-span-2">
-            <input
-              type="checkbox"
-              checked={config.shuffleQuestions}
-              onChange={(event) => updateConfig("shuffleQuestions", event.target.checked)}
-            />
-            Shuffle question order
-          </label>
         </div>
       </details>
 
@@ -724,7 +742,7 @@ function ResultCard({ session, send }: { session: SessionState; send: (action: A
           type="button"
           onClick={() => send({ type: "back_to_lobby" })}
         >
-          Back to game selection
+          Start a new game
         </button>
         <button className="hbtn" type="button" onClick={() => send({ type: "reset_session" })}>
           Reset everything

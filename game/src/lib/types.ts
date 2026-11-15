@@ -57,11 +57,14 @@ export const feudQuestionSchema = z.object({
   ...baseQuestion,
   game: z.literal("family_feud"),
   question: z.string().min(1),
+  /** Question text in Hindi/Hinglish, when the bank supplies it. */
+  hindi: z.string().min(1).optional(),
   answers: z
     .array(
       z.object({
         id: z.string().min(1),
         text: z.string().min(1),
+        hindi: z.string().min(1).optional(),
         points: z.number().int().min(0),
       }),
     )
@@ -297,7 +300,6 @@ export interface SessionConfig {
   pirAllOverFallback: "closest" | "lowest";
   currency: string;
   soundDefault: boolean;
-  shuffleQuestions: boolean;
 }
 
 export const configSchema = z.object({
@@ -315,7 +317,6 @@ export const configSchema = z.object({
   pirAllOverFallback: z.enum(["closest", "lowest"]),
   currency: z.string().min(1).max(8),
   soundDefault: z.boolean(),
-  shuffleQuestions: z.boolean(),
 });
 
 export const defaultConfig: SessionConfig = {
@@ -333,7 +334,6 @@ export const defaultConfig: SessionConfig = {
   pirAllOverFallback: "closest",
   currency: "INR",
   soundDefault: true,
-  shuffleQuestions: false,
 };
 
 /* ---------- actions ---------- */
@@ -418,6 +418,8 @@ export interface ActionEnvelope {
 export interface PublicAnswer {
   id: string;
   text: string | null;
+  /** Hindi wording, kept with the answer for bilingual banks. */
+  hindi?: string | null;
   points: number | null;
   revealed: boolean;
 }
@@ -425,6 +427,8 @@ export interface PublicAnswer {
 export interface PublicQuestion {
   game: GameId;
   text: string;
+  /** Family Feud's Hindi question text, when supplied. */
+  hindi?: string;
   /** Family Feud */
   answers?: PublicAnswer[];
   /** The Price Is Right */
