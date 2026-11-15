@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Panel } from "../components/ui";
+import { Countdown, Panel } from "../components/ui";
 import { publicAsset } from "../lib/assets";
 import { getFirebase } from "../multiplayer/client";
 import { firebaseConfigured } from "../multiplayer/config";
@@ -356,6 +356,11 @@ export function JoinApp() {
           <p className="kicker">{identity.name}</p>
           <span className="text-[10px] uppercase tracking-[0.2em] text-plum-hush">Score {ownScore}</span>
         </div>
+        {board.timer ? (
+          <div className="mt-4">
+            <Countdown timer={board.timer} />
+          </div>
+        ) : null}
         <h1 className="mt-6 font-serif text-[26px] leading-tight">Waiting for the host</h1>
         <p className="mt-2 text-[13px] leading-relaxed text-plum-soft">
           You are in. The product appears here as soon as the host starts the round.
@@ -375,6 +380,11 @@ export function JoinApp() {
         <p className="kicker">{identity.name}</p>
         <span className="text-[10px] uppercase tracking-[0.2em] text-plum-hush">Score {ownScore}</span>
       </div>
+      {board.timer ? (
+        <div className="mt-3">
+          <Countdown timer={board.timer} />
+        </div>
+      ) : null}
 
       <div className="mt-4 overflow-hidden border border-gold/30 bg-lavender-pale">
         <img

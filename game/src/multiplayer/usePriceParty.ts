@@ -139,6 +139,7 @@ export function usePriceParty(options: {
       priceRevealed: primed ? false : party.priceRevealed,
       leaderboardRevealed: primed ? false : party.leaderboardRevealed,
       price: !primed && party.priceRevealed ? boardQuestion.actualPrice : null,
+      timer: session?.timer ?? null,
       scores: party.scores,
       podium: primed ? [] : party.podium,
     };
@@ -166,6 +167,7 @@ export function usePriceParty(options: {
     question,
     upcoming,
     session?.config.currency,
+    session?.timer,
     session?.questionIndex,
     session?.phase,
     session?.pir?.party,

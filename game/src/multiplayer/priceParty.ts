@@ -2,6 +2,7 @@
    The host is the only writer of the board and scores; phones write their own
    team record and guess. */
 
+import type { Timer } from "../lib/types";
 import { getFirebase } from "./client";
 import {
   boardPath,
@@ -30,6 +31,7 @@ export interface PartyBoard {
   priceRevealed: boolean;
   leaderboardRevealed: boolean;
   price: number | null;
+  timer?: Timer | null;
   scores: Record<string, number>;
   podium: { entryId: string; rank: number; points: number; distance: number }[];
 }
