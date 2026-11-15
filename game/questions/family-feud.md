@@ -170,7 +170,7 @@ Hindi: Khana offer karo toh mehmaan kya kehte hain?
 | 27 | Bas thoda sa | Just a little |
 | 18 | Sirf chai | Only chai |
 | 11 | Itni takleef kyun li? | Why did you take the trouble? |
-| 8 | Aur lo, aur lo! | Have some more! |
+| 8 | Baad mein kha lenge | We'll eat later |
 
 ---
 
