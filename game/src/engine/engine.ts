@@ -301,6 +301,8 @@ function standingsFor(state: SessionState): GameStanding[] {
   const blocked =
     herd && state.config.pinkCowEnabled && state.config.pinkCowBlocksWin ? herd.pinkCow : null;
 
+  const party = state.game === "price_is_right" ? state.pir?.party : null;
+  const partyTeams = party ? Object.entries(party.teams) : [];
   const rows =
     state.game === "family_feud"
       ? state.teams.map((team) => ({
@@ -308,11 +310,17 @@ function standingsFor(state: SessionState): GameStanding[] {
           label: team.name,
           points: state.scores.teams[team.id] ?? 0,
         }))
-      : state.participants.map((person) => ({
-          id: person.id,
-          label: person.name,
-          points: state.scores.participants[person.id] ?? 0,
-        }));
+      : partyTeams.length > 0
+        ? partyTeams.map(([id, team]) => ({
+            id,
+            label: team.name,
+            points: party?.scores[id] ?? 0,
+          }))
+        : state.participants.map((person) => ({
+            id: person.id,
+            label: person.name,
+            points: state.scores.participants[person.id] ?? 0,
+          }));
 
   const best = Math.max(0, ...rows.filter((row) => row.id !== blocked).map((row) => row.points));
 

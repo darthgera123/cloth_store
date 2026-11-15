@@ -722,6 +722,25 @@ describe("price phone entries", () => {
     expectEngineError(() => guess(s, "t2", 1600));
   });
 
+  test("the final result lists the teams that played, not the roster", () => {
+    let s = startParty("teams");
+    const roster = s.participants.map((person) => person.name);
+    s = join(s, "t1", "Alpha");
+    s = join(s, "t2", "Bravo");
+    s = guess(s, "t1", 1500);
+    s = guess(s, "t2", 1400);
+    s = revealed(s);
+    s = act(s, { type: "pir_leaderboard" });
+    s = act(s, { type: "end_game" });
+
+    const standings = s.results.at(-1)?.standings ?? [];
+    expect(standings.map((row) => [row.label, row.points, row.winner])).toEqual([
+      ["Alpha", 3, true],
+      ["Bravo", 2, false],
+    ]);
+    expect(standings.map((row) => row.label)).not.toEqual(roster);
+  });
+
   test("undo, override and re-award work together", () => {
     let s = startParty("teams");
     s = join(s, "t1", "Alpha");
