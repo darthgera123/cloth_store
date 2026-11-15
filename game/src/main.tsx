@@ -2,6 +2,7 @@ import { Suspense, lazy } from "react";
 import { createRoot } from "react-dom/client";
 import "./app.css";
 import { DisplayApp } from "./display/DisplayApp";
+import { HomeApp } from "./home/HomeApp";
 
 /* The host bundle carries the question bank and game engine; the audience
    never downloads it. */
@@ -12,7 +13,7 @@ const JoinApp = lazy(() => import("./join/JoinApp").then((module) => ({ default:
 const root = document.getElementById("root");
 if (!root) throw new Error("Missing #root");
 
-function resolveRoute(): "host" | "display" | "join" {
+function resolveRoute(): "host" | "display" | "join" | "home" {
   const hash = window.location.hash.replace(/^#/, "");
   if (hash.startsWith("/host")) return "host";
   if (hash.startsWith("/join")) return "join";
@@ -20,7 +21,8 @@ function resolveRoute(): "host" | "display" | "join" {
   const path = window.location.pathname.replace(/\/+$/, "");
   if (path.endsWith("/host")) return "host";
   if (path.endsWith("/join")) return "join";
-  return "display";
+  if (path.endsWith("/display")) return "display";
+  return "home";
 }
 
 const route = resolveRoute();
@@ -32,6 +34,8 @@ window.addEventListener("hashchange", () => {
 createRoot(root).render(
   route === "display" ? (
     <DisplayApp />
+  ) : route === "home" ? (
+    <HomeApp />
   ) : (
     <Suspense fallback={<div className="grid min-h-screen place-items-center bg-lavender" />}>
       {route === "host" ? <HostApp /> : <JoinApp />}

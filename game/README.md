@@ -20,7 +20,8 @@ bun run dev        # http://127.0.0.1:5173
 |---|---|
 | `/host/` | Host dashboard (laptop) |
 | `/display/?code=XXXX` | Audience display (TV or projector) |
-| `/join/?code=XXXX` | Team phone for The Price Is Right (optional) |
+| `/join/?code=XXXX` | Player phone: Join → Play → Results for The Price Is Right |
+| `/` | General link: Join as Player or Watch Game |
 
 Open `/host/`: the eight names are prefilled and that is all setup needs —
 teams belong to the games. Family Feud asks for its two teams (names and
@@ -164,7 +165,8 @@ BroadcastChannel + Firebase. The Firebase web settings live in the committed
 `game/.env.production`, so a plain CI build already enables cross-device
 screens. The build emits real `host/index.html` and `display/index.html`
 pages, so `…/game/host/` and `…/game/display/?code=XXXX` survive refresh on
-Pages without rewrites; `…/game/` itself opens the display.
+Pages without rewrites; `…/game/` opens the Join as Player / Watch Game
+landing page.
 
 ## Cross-device audience screens
 

@@ -243,7 +243,7 @@ export function JoinApp() {
     try {
       await submitGuess(code, identity.slot, board.roundId, value);
       setGuess(value);
-      setNotice("Guess received. You can change it until the host locks guesses.");
+      setNotice("Guess received — waiting for other players.");
     } catch (submitError) {
       setNotice(friendlyFirebaseError(submitError));
     }

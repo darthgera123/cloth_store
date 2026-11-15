@@ -148,6 +148,9 @@ function HostBar({
   const displayUrl = session
     ? new URL(`${import.meta.env.BASE_URL}display/?code=${session.code}`, window.location.origin).toString()
     : "";
+  const playerUrl = session
+    ? new URL(`${import.meta.env.BASE_URL}join/?code=${session.code}`, window.location.origin).toString()
+    : "";
 
   return (
     <header className="host-bar">
@@ -177,6 +180,13 @@ function HostBar({
             <a className="hbtn" href={displayUrl} target="_blank" rel="noreferrer">
               Open display
             </a>
+            <button
+              className="hbtn"
+              type="button"
+              onClick={() => void navigator.clipboard?.writeText(playerUrl)}
+            >
+              Copy player link
+            </button>
             <button
               className="hbtn"
               type="button"
@@ -818,8 +828,8 @@ function SessionCard({
   api: HostGameApi;
   party: ReturnType<typeof usePriceParty>;
 }) {
-  const displayUrl = new URL(
-    `${import.meta.env.BASE_URL}display/?code=${session.code}`,
+  const playerUrl = new URL(
+    `${import.meta.env.BASE_URL}join/?code=${session.code}`,
     window.location.origin,
   ).toString();
 
@@ -834,13 +844,13 @@ function SessionCard({
 
       <div className="grid min-w-0 gap-2">
         <div className="flex min-w-0 items-center gap-2">
-          <code className="field min-w-0 flex-1 truncate text-[11px] leading-9">{displayUrl}</code>
+          <code className="field min-w-0 flex-1 truncate text-[11px] leading-9">{playerUrl}</code>
           <button
             className="hbtn shrink-0"
             type="button"
-            onClick={() => void navigator.clipboard?.writeText(displayUrl)}
+            onClick={() => void navigator.clipboard?.writeText(playerUrl)}
           >
-            Copy
+            Copy player link
           </button>
         </div>
 
