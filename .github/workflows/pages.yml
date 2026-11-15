@@ -33,9 +33,20 @@ jobs:
         working-directory: game
         env:
           BASE_PATH: /cloth_store/game/
+          # Optional LAN relay; absent means BroadcastChannel + Firebase.
+          VITE_RELAY_URL: ${{ vars.RELAY_URL }}
         run: |
           bun install --frozen-lockfile
           bun run build
+
+      - name: Check the deployed build carries the Firebase settings
+        working-directory: game
+        run: |
+          if ! grep -rq "firebasedatabase\.app" dist/assets; then
+            echo "Firebase database settings missing from the build" >&2
+            exit 1
+          fi
+          echo "Firebase settings present in dist/assets"
 
       - name: Publish to the gh-pages branch
         env:

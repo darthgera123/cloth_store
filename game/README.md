@@ -57,9 +57,11 @@ Point the app at it at build/dev time:
 VITE_RELAY_URL=ws://127.0.0.1:8092 bun run build
 ```
 
-Without `VITE_RELAY_URL` the app runs same-device only. The relay keeps rooms
-in memory and forwards messages; it stores nothing and is **not** hosted on
-GitHub Pages.
+The relay is an optional low-latency carrier for venues where the host and
+the TV share a LAN. Without it, same-device windows still sync over
+BroadcastChannel and screens on other networks sync over Firebase. The relay
+keeps rooms in memory and forwards messages; it stores nothing and is **not**
+hosted on GitHub Pages.
 
 ## How state flows
 
@@ -156,11 +158,13 @@ ships dummy questions only — the real corpus is a data-only change.
   exists in the checkout), and
 - this game at `/cloth_store/game/`.
 
-Set the repository variable `RELAY_URL` (for example
-`wss://relay.example.com`) to enable Mode B; leave it unset for same-device
-only. The build emits real `host/index.html` and `display/index.html` pages,
-so `…/game/host/` and `…/game/display/?code=XXXX` survive refresh on Pages
-without rewrites; `…/game/` itself opens the display.
+The workflow reads the optional repository variable `RELAY_URL` (for example
+`wss://relay.example.com`) into `VITE_RELAY_URL`; leave it unset to rely on
+BroadcastChannel + Firebase. The Firebase web settings live in the committed
+`game/.env.production`, so a plain CI build already enables cross-device
+screens. The build emits real `host/index.html` and `display/index.html`
+pages, so `…/game/host/` and `…/game/display/?code=XXXX` survive refresh on
+Pages without rewrites; `…/game/` itself opens the display.
 
 ## Cross-device audience screens
 
