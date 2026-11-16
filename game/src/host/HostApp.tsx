@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
   GAME_BLURB,
   GAME_LABEL,
+  FEUD_STRIKES,
   type Action,
   type GameId,
   type PriceQuestion,
@@ -12,7 +13,7 @@ import {
 } from "../lib/types";
 import { Panel, Toast } from "../components/ui";
 import { useHostGame, type HostGameApi } from "../client/useHostGame";
-import { GamePanel, formatMoney } from "./panels";
+import { GamePanel } from "./panels";
 import { RULES } from "../rules/slides";
 import { VISIBLE_GAMES } from "../lib/games";
 import { usePriceParty } from "../multiplayer/usePriceParty";
@@ -362,32 +363,6 @@ function SetupCard({
           Game rules
         </summary>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
-          <Rule label="Family Feud — strike limit">
-            <select
-              className="field"
-              value={config.strikeLimit}
-              onChange={(event) => updateConfig("strikeLimit", Number(event.target.value))}
-            >
-              {[2, 3, 4, 5].map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </Rule>
-          <Rule label="Family Feud — round multiplier">
-            <select
-              className="field"
-              value={config.roundMultiplier}
-              onChange={(event) => updateConfig("roundMultiplier", Number(event.target.value))}
-            >
-              {[1, 2, 3].map((value) => (
-                <option key={value} value={value}>
-                  ×{value}
-                </option>
-              ))}
-            </select>
-          </Rule>
           <Rule label="Price Is Right — host-entry points">
             <select
               className="field"
@@ -1009,7 +984,7 @@ function SessionCard({
           {session.timer ? ` Timer ends at ${new Date(session.timer.endsAt).toLocaleTimeString()}.` : ""}
           {session.config.currency ? ` Currency: ${session.config.currency}.` : ""}
           {session.game === "family_feud" && session.feud
-            ? ` Pot: ${formatMoney(session.feud.pot * session.config.roundMultiplier, session.config.currency)}.`
+            ? ` Turn: ${session.teams.find((team) => team.id === session.feud?.activeTeamId)?.name ?? ""} · strikes ${session.feud.strikes}/${FEUD_STRIKES}.`
             : ""}
         </p>
       </div>

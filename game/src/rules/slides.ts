@@ -12,16 +12,16 @@ export interface RuleSlide {
 export const RULES: Record<GameId, RuleSlide[]> = {
   family_feud: [
     {
-      title: "Two Families, One Pot",
-      body: "Two families of four compete to guess the most popular answers.",
+      title: "Two Families, Five Answers",
+      body: "Two families compete to guess the five most popular answers on the board.",
     },
     {
       title: "Take Turns",
-      body: "Families alternate guesses. A correct answer adds its points to the shared pot. Two wrong guesses put a family out of the round.",
+      body: "A correct guess reveals the answer and scores its points for your family right away. Keep guessing while the board is yours.",
     },
     {
-      title: "Win the Pot",
-      body: "The winning family takes the entire pot. One family left standing wins it. Otherwise the family with the more valuable correct answers wins. The starting family alternates each round. Two strikes knock a family out.",
+      title: "Two Strikes",
+      body: "Two wrong guesses pass the turn to the other family and reset the strikes. The starting family alternates each round, and the round ends when all five answers are revealed.",
     },
   ],
   herd_mentality: [

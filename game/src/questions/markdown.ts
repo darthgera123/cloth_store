@@ -237,12 +237,13 @@ function parsePrice(entry: Entry, file: string): PriceQuestion {
   if (currency !== "INR") {
     throw new QuestionBankError(file, entry.id, `currency must be INR (found "${currency}")`);
   }
+  const description = optional(entry, ["description"]);
   return {
     id: entry.id,
     game: "price_is_right",
     item,
     size,
-    description: optional(entry, ["description"]),
+    ...(description ? { description } : {}),
     image,
     actualPrice,
     currency,

@@ -5,7 +5,6 @@ import {
   type Action,
   type FeudQuestion,
   type GameId,
-  type FeudOutcome,
   type GameStanding,
   type Participant,
   type PricePodiumEntry,
@@ -23,6 +22,7 @@ import {
   type Team,
   configSchema,
   defaultConfig,
+  FEUD_STRIKES,
 } from "../lib/types";
 import { RULES } from "../rules/slides";
 import { herdGroups, normalizeAnswer } from "../lib/herd";
@@ -139,64 +139,6 @@ const teamIds = (state: SessionState): [string, string] => {
 function feudQuestionOf(state: SessionState, bank: QuestionBank): FeudQuestion | null {
   const question = currentQuestion(state, bank);
   return question && question.game === "family_feud" ? question : null;
-}
-
-function feudCreditedPoints(
-  state: SessionState,
-  bank: QuestionBank,
-): Record<string, number> {
-  const feud = state.feud;
-  const question = feudQuestionOf(state, bank);
-  const [a, b] = teamIds(state);
-  const totals: Record<string, number> = { [a]: 0, [b]: 0 };
-  if (!feud || !question) return totals;
-  for (const [answerId, teamId] of Object.entries(feud.credited)) {
-    const answer = question.answers.find((item) => item.id === answerId);
-    if (answer) totals[teamId] = (totals[teamId] ?? 0) + answer.points;
-  }
-  return totals;
-}
-
-function finishFeudRound(
-  state: SessionState,
-  bank: QuestionBank,
-  trigger: "answers_exhausted" | "both_eliminated",
-) {
-  const feud = state.feud;
-  if (!feud || feud.ended) return;
-  const [a, b] = teamIds(state);
-  const credited = feudCreditedPoints(state, bank);
-  const limit = state.config.strikeLimit;
-  const alive = [a, b].filter((id) => (feud.strikes[id] ?? 0) < limit);
-
-  let reason: FeudOutcome["reason"] = trigger;
-  let winner: string | null = null;
-  let tied = false;
-
-  if (alive.length === 1) {
-    // Only one team left in the round: it takes the whole pot (rule 7).
-    reason = "last_team_standing";
-    winner = alive[0] ?? null;
-  } else if ((credited[a] ?? 0) === (credited[b] ?? 0)) {
-    // Both alive with the board clear, or both eliminated: level on revealed
-    // points, so the host decides (rule 8).
-    tied = true;
-  } else {
-    winner = (credited[a] ?? 0) > (credited[b] ?? 0) ? a : b;
-  }
-
-  feud.ended = true;
-  feud.outcome = { reason, winnerTeamId: winner, tied, credited };
-  state.phase = "REVEAL";
-}
-
-/** Hand the next guess to the other team, unless it is already eliminated. */
-function advanceFeudTurn(state: SessionState) {
-  const feud = state.feud;
-  if (!feud || feud.ended) return;
-  const [a, b] = teamIds(state);
-  const next = feud.activeTeamId === a ? b : a;
-  if ((feud.strikes[next] ?? 0) < state.config.strikeLimit) feud.activeTeamId = next;
 }
 
 function computeHerdResult(herd: HerdState, state: SessionState): HerdResult {
@@ -335,14 +277,10 @@ function initGameState(state: SessionState, question: Question) {
       questionId: question.id,
       revealed: [],
       credited: {},
-      strikes: { [a]: 0, [b]: 0 },
+      strikes: 0,
       activeTeamId: starter,
       startingTeamId: starter,
-      pot: 0,
-      awarded: false,
-      awardedTo: null,
       ended: false,
-      outcome: null,
     };
     state.herd = null;
     state.ml = null;
@@ -663,9 +601,6 @@ export function applyAction(
     case "next_round": {
       needPhase(next, ["ROUND_RESULT"]);
       if (!next.game) fail("No game");
-      if (next.game === "family_feud" && next.feud?.ended && !next.feud.awarded) {
-        fail("Award the pot before moving to the next round");
-      }
       const questions = questionsFor(bank, next.game);
       if (next.questionIndex + 1 >= (next.questionOrder.length || questions.length)) {
         finishGame(next, now);
@@ -682,9 +617,6 @@ export function applyAction(
     case "skip_question": {
       if (!next.game) fail("No game");
       needPhase(next, ["QUESTION_ACTIVE", "ANSWERING", "REVEAL", "ROUND_READY", "ROUND_RESULT"]);
-      if (next.game === "family_feud" && next.feud?.ended && !next.feud.awarded) {
-        fail("Award the pot before skipping the round");
-      }
       const questions = questionsFor(bank, next.game);
       if (next.questionIndex + 1 >= (next.questionOrder.length || questions.length)) {
         finishGame(next, now);
@@ -820,22 +752,19 @@ export function applyAction(
       const question = feudQuestionOf(next, bank);
       if (!feud || !question) fail("No Feud round");
       if (feud.ended) fail("The round is already over");
-      const active = feud.activeTeamId;
-      if ((feud.strikes[active] ?? 0) >= next.config.strikeLimit) {
-        fail("That team is out of the round");
-      }
       const answer = question.answers.find((item) => item.id === action.answerId);
       if (!answer) fail("Unknown answer");
       if (feud.revealed.includes(answer.id)) fail("Answer already revealed");
 
+      // A correct guess reveals the answer, scores it for the team on the
+      // board right away, and the same team keeps the turn.
       feud.revealed = [...feud.revealed, answer.id];
-      feud.credited[answer.id] = active;
-      feud.pot += answer.points;
+      feud.credited[answer.id] = feud.activeTeamId;
+      addPoints(next, "team", feud.activeTeamId, answer.points);
 
       if (feud.revealed.length >= question.answers.length) {
-        finishFeudRound(next, bank, "answers_exhausted");
-      } else {
-        advanceFeudTurn(next);
+        feud.ended = true;
+        next.phase = "REVEAL";
       }
       break;
     }
@@ -847,47 +776,18 @@ export function applyAction(
       if (!feud) fail("No Feud round");
       if (feud.ended) fail("The round is already over");
 
-      const [a, b] = teamIds(next);
-      const team = action.teamId ?? feud.activeTeamId;
-      if (team !== a && team !== b) fail("Unknown team");
-      const current = feud.strikes[team] ?? 0;
-
       if (action.delta === -1) {
-        feud.strikes[team] = Math.max(0, current - 1);
+        feud.strikes = Math.max(0, feud.strikes - 1);
         break;
       }
+      if (feud.strikes >= FEUD_STRIKES) fail("Switch teams before adding strikes");
 
-      if (current >= next.config.strikeLimit) fail("That team is already out");
-      feud.strikes[team] = current + 1;
-
-      const alive = [a, b].filter((id) => (feud.strikes[id] ?? 0) < next.config.strikeLimit);
-      if (alive.length === 0) {
-        finishFeudRound(next, bank, "both_eliminated");
-      } else if (alive.length === 1) {
-        // One team is out; the survivor keeps guessing alone.
-        feud.activeTeamId = alive[0] ?? feud.activeTeamId;
-      } else if (team === feud.activeTeamId) {
-        advanceFeudTurn(next);
+      feud.strikes += 1;
+      if (feud.strikes >= FEUD_STRIKES) {
+        const [a, b] = teamIds(next);
+        feud.activeTeamId = feud.activeTeamId === a ? b : a;
+        feud.strikes = 0;
       }
-      break;
-    }
-
-    case "feud_award": {
-      needGame(next, "family_feud");
-      const feud = next.feud;
-      if (!feud) fail("No Feud round");
-      if (!feud.ended) fail("Finish the round before awarding the pot");
-      if (feud.awarded) fail("The pot has already been awarded");
-
-      const [a, b] = teamIds(next);
-      const winner = action.teamId ?? feud.outcome?.winnerTeamId ?? null;
-      if (!winner || (winner !== a && winner !== b)) {
-        fail("Choose which team takes the pot");
-      }
-
-      addPoints(next, "team", winner, feud.pot * next.config.roundMultiplier);
-      feud.awarded = true;
-      feud.awardedTo = winner;
       break;
     }
 
@@ -1210,12 +1110,8 @@ export function projectPublic(state: SessionState, bank: QuestionBank): PublicSt
     ? {
         activeTeamId: state.feud.activeTeamId,
         strikes: state.feud.strikes,
-        strikeLimit: state.config.strikeLimit,
-        pot: state.feud.pot,
-        awarded: state.feud.awarded,
-        awardedTo: state.feud.awardedTo,
+        strikeLimit: FEUD_STRIKES,
         ended: state.feud.ended,
-        outcome: state.feud.outcome,
       }
     : null;
 

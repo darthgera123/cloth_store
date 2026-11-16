@@ -146,29 +146,18 @@ export interface Timer {
   label: string;
 }
 
-export type FeudEndReason = "answers_exhausted" | "both_eliminated" | "last_team_standing";
-
-export interface FeudOutcome {
-  reason: FeudEndReason;
-  winnerTeamId: string | null;
-  tied: boolean;
-  credited: Record<string, number>;
-}
+export const FEUD_STRIKES = 2;
 
 export interface FeudState {
   questionId: string;
   revealed: string[];
   /** answer id -> team id that guessed it correctly */
   credited: Record<string, string>;
-  /** per-team incorrect guesses this round */
-  strikes: Record<string, number>;
+  /** strikes in the current turn only; reset on every team switch */
+  strikes: number;
   activeTeamId: string;
   startingTeamId: string;
-  pot: number;
-  awarded: boolean;
-  awardedTo: string | null;
   ended: boolean;
-  outcome: FeudOutcome | null;
 }
 
 export interface HerdGroup {
@@ -290,8 +279,6 @@ export interface SessionState {
 }
 
 export interface SessionConfig {
-  strikeLimit: number;
-  roundMultiplier: number;
   herdPoints: number;
   herdTieAwards: boolean;
   pinkCowEnabled: boolean;
@@ -307,8 +294,6 @@ export interface SessionConfig {
 }
 
 export const configSchema = z.object({
-  strikeLimit: z.number().int().min(1).max(5),
-  roundMultiplier: z.number().int().min(1).max(3),
   herdPoints: z.number().int().min(1).max(10),
   herdTieAwards: z.boolean(),
   pinkCowEnabled: z.boolean(),
@@ -324,8 +309,6 @@ export const configSchema = z.object({
 });
 
 export const defaultConfig: SessionConfig = {
-  strikeLimit: 2,
-  roundMultiplier: 1,
   herdPoints: 1,
   herdTieAwards: false,
   pinkCowEnabled: false,
@@ -385,7 +368,6 @@ export const actionSchema = z.discriminatedUnion("type", [
     delta: z.union([z.literal(1), z.literal(-1)]),
     teamId: z.string().min(1).optional(),
   }),
-  z.object({ type: z.literal("feud_award"), teamId: z.string().min(1).optional() }),
 
   z.object({ type: z.literal("herd_set_answer"), participantId: z.string().min(1), text: z.string().max(60) }),
   z.object({ type: z.literal("herd_merge"), from: z.string().min(1), to: z.string().min(1) }),
@@ -448,13 +430,9 @@ export interface PublicQuestion {
 
 export interface PublicFeud {
   activeTeamId: string | null;
-  strikes: Record<string, number>;
+  strikes: number;
   strikeLimit: number;
-  pot: number;
-  awarded: boolean;
-  awardedTo: string | null;
   ended: boolean;
-  outcome: FeudOutcome | null;
 }
 
 export interface PublicHerd {

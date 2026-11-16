@@ -155,7 +155,7 @@ describe("rules", () => {
   test("reopening rules keeps the round intact and returns to it", () => {
     let s = startGame("family_feud");
     s = act(s, { type: "feud_reveal", answerId: "a1" });
-    const before = { pot: s.feud?.pot, revealed: s.feud?.revealed, scores: { ...s.scores.teams } };
+    const before = { revealed: s.feud?.revealed, scores: { ...s.scores.teams } };
 
     s = act(s, { type: "open_rules" });
     expect(s.phase).toBe("RULES");
@@ -167,7 +167,6 @@ describe("rules", () => {
 
     s = act(s, { type: "rules_finish" });
     expect(s.phase).toBe("QUESTION_ACTIVE");
-    expect(s.feud?.pot).toBe(before.pot);
     expect(s.feud?.revealed).toEqual(before.revealed!);
     expect(s.scores.teams).toEqual(before.scores);
   });
@@ -178,7 +177,6 @@ describe("rules", () => {
     s = act(s, { type: "feud_reveal", answerId: "a2" });
     s = act(s, { type: "feud_reveal", answerId: "a3" });
     s = act(s, { type: "feud_reveal", answerId: "a4" });
-    s = act(s, { type: "feud_award" });
     s = act(s, { type: "round_result" });
     s = act(s, { type: "open_rules" });
     s = act(s, { type: "rules_finish" });
@@ -236,227 +234,154 @@ describe("question order", () => {
 });
 
 describe("family feud", () => {
-  const tieQuestion: FeudQuestion = {
-    id: "ff-tie",
+  const feudQuestion: FeudQuestion = {
+    id: "ff-main",
     game: "family_feud",
-    question: "Tie question?",
+    question: "Five answers?",
+    hindi: "Paanch jawaab?",
     answers: [
-      { id: "a1", text: "One", points: 10 },
-      { id: "a2", text: "Two", points: 10 },
+      { id: "a1", text: "One", hindi: "Ek", points: 40 },
+      { id: "a2", text: "Two", hindi: "Do", points: 30 },
+      { id: "a3", text: "Three", hindi: "Teen", points: 20 },
+      { id: "a4", text: "Four", hindi: "Chaar", points: 6 },
+      { id: "a5", text: "Five", hindi: "Paanch", points: 4 },
     ],
   };
-  const tieBank: QuestionBank = { ...bank, family_feud: [tieQuestion] };
+  const feudBank: QuestionBank = { ...bank, family_feud: [feudQuestion, ...bank.family_feud] };
 
   const startWith = (questionBank: QuestionBank) => {
-    let s = act(session(), { type: "select_game", game: "family_feud" });
-    s = applyAction(s, { type: "rules_finish" }, questionBank, tick());
+    let s = applyAction(session(), { type: "select_game", game: "family_feud" }, questionBank, tick(), () => 0);
+    s = applyAction(s, { type: "rules_finish" }, questionBank, tick(), () => 0);
     s = withFeudTeams(s, questionBank);
-    s = applyAction(s, { type: "start_round" }, questionBank, tick());
+    s = applyAction(s, { type: "start_round" }, questionBank, tick(), () => 0);
     return s;
   };
 
-  test("correct answers build the pot without touching team scores", () => {
-    let s = startGame("family_feud");
-    s = act(s, { type: "feud_reveal", answerId: "a1" });
+  const onBank = (state: SessionState, action: Action, questionBank: QuestionBank) =>
+    applyAction(state, action, questionBank, tick(), () => 0);
 
-    expect(s.feud?.pot).toBe(40);
-    expect(s.scores.teams.t1).toBe(0);
+  test("a correct answer scores immediately and keeps the turn", () => {
+    let s = startWith(feudBank);
+    expect(s.feud?.activeTeamId).toBe("t1");
+
+    s = onBank(s, { type: "feud_reveal", answerId: "a1" }, feudBank);
+    expect(s.scores.teams.t1).toBe(40);
     expect(s.scores.teams.t2).toBe(0);
     expect(s.feud?.credited.a1).toBe("t1");
-    expect(s.phase).toBe("QUESTION_ACTIVE");
-  });
-
-  test("the default strike limit is two", () => {
-    expect(session().config.strikeLimit).toBe(2);
-
-    let s = startGame("family_feud");
-    s = act(s, { type: "feud_strike", delta: 1 }); // t1
-    s = act(s, { type: "feud_strike", delta: 1 }); // t2
-    s = act(s, { type: "feud_strike", delta: 1 }); // t1 reaches two
-
-    expect(s.feud?.strikes).toEqual({ t1: 2, t2: 1 });
-    expect(s.feud?.ended).toBe(false);
-    expect(s.feud?.activeTeamId).toBe("t2");
-  });
-
-  test("the active team alternates after every guess", () => {
-    let s = startGame("family_feud");
     expect(s.feud?.activeTeamId).toBe("t1");
+    expect(s.feud?.strikes).toBe(0);
 
-    s = act(s, { type: "feud_reveal", answerId: "a1" });
-    expect(s.feud?.activeTeamId).toBe("t2");
-
-    s = act(s, { type: "feud_strike", delta: 1 });
-    expect(s.feud?.strikes.t2).toBe(1);
+    s = onBank(s, { type: "feud_reveal", answerId: "a2" }, feudBank);
+    expect(s.scores.teams.t1).toBe(70);
     expect(s.feud?.activeTeamId).toBe("t1");
   });
 
-  test("strikes are counted per team and elimination does not end the round", () => {
-    let s = startGame("family_feud", { strikeLimit: 3 });
-    s = act(s, { type: "feud_reveal", answerId: "a1" });
-    s = act(s, { type: "feud_reveal", answerId: "a2" });
-    // t1, t2, t1, t2, t1 → t1 reaches three and drops out
-    for (let i = 0; i < 5; i += 1) s = act(s, { type: "feud_strike", delta: 1 });
+  test("two strikes pass the turn and reset the strikes", () => {
+    let s = startWith(feudBank);
+    s = onBank(s, { type: "feud_strike", delta: 1 }, feudBank);
+    expect(s.feud?.activeTeamId).toBe("t1");
+    expect(s.feud?.strikes).toBe(1);
 
-    expect(s.feud?.strikes).toEqual({ t1: 3, t2: 2 });
-    expect(s.feud?.ended).toBe(false);
-    expect(s.phase).toBe("QUESTION_ACTIVE");
+    s = onBank(s, { type: "feud_strike", delta: 1 }, feudBank);
     expect(s.feud?.activeTeamId).toBe("t2");
+    expect(s.feud?.strikes).toBe(0);
 
-    // the survivor's third strike ends the round by comparison
-    s = act(s, { type: "feud_strike", delta: 1 });
-    expect(s.feud?.ended).toBe(true);
-    expect(s.phase).toBe("REVEAL");
-    expect(s.feud?.outcome).toMatchObject({
-      reason: "both_eliminated",
-      winnerTeamId: "t1",
-      credited: { t1: 40, t2: 30 },
-    });
+    s = onBank(s, { type: "feud_strike", delta: 1 }, feudBank);
+    expect(s.feud?.strikes).toBe(1);
+    s = onBank(s, { type: "feud_strike", delta: 1 }, feudBank);
+    expect(s.feud?.activeTeamId).toBe("t1");
+    expect(s.feud?.strikes).toBe(0);
   });
 
-  test("the last team standing takes the whole pot even with fewer points", () => {
-    let s = startGame("family_feud", { strikeLimit: 3 });
-    s = act(s, { type: "feud_reveal", answerId: "a1" }); // t1 +40
-    s = act(s, { type: "feud_reveal", answerId: "a2" }); // t2 +30
-    for (let i = 0; i < 5; i += 1) s = act(s, { type: "feud_strike", delta: 1 });
-
-    // t1 is out; t2 keeps guessing alone and clears the board
-    s = act(s, { type: "feud_reveal", answerId: "a3" }); // t2 +20
-    s = act(s, { type: "feud_reveal", answerId: "a4" }); // t2 +10
-
-    expect(s.feud?.ended).toBe(true);
-    expect(s.feud?.outcome).toMatchObject({
-      reason: "last_team_standing",
-      winnerTeamId: "t2",
-      credited: { t1: 40, t2: 60 },
-    });
-
-    s = act(s, { type: "feud_award" });
-    expect(s.scores.teams.t2).toBe(100);
+  test("a correct guess on the new turn scores for that team", () => {
+    let s = startWith(feudBank);
+    s = onBank(s, { type: "feud_strike", delta: 1 }, feudBank);
+    s = onBank(s, { type: "feud_strike", delta: 1 }, feudBank);
+    expect(s.feud?.activeTeamId).toBe("t2");
+    s = onBank(s, { type: "feud_reveal", answerId: "a3" }, feudBank);
+    expect(s.scores.teams.t2).toBe(20);
     expect(s.scores.teams.t1).toBe(0);
-    expect(s.feud?.awardedTo).toBe("t2");
+    expect(s.feud?.activeTeamId).toBe("t2");
   });
 
-  test("clearing the board compares the points each team revealed", () => {
-    let s = startGame("family_feud");
-    s = act(s, { type: "feud_reveal", answerId: "a1" }); // t1 +40
-    s = act(s, { type: "feud_reveal", answerId: "a2" }); // t2 +30
-    s = act(s, { type: "feud_reveal", answerId: "a3" }); // t1 +20
-
+  test("a strike can be corrected without changing the turn", () => {
+    let s = startWith(feudBank);
+    s = onBank(s, { type: "feud_strike", delta: 1 }, feudBank);
+    expect(s.feud?.strikes).toBe(1);
+    s = onBank(s, { type: "feud_strike", delta: -1 }, feudBank);
+    expect(s.feud?.strikes).toBe(0);
+    expect(s.feud?.activeTeamId).toBe("t1");
     expect(s.phase).toBe("QUESTION_ACTIVE");
-    s = act(s, { type: "feud_reveal", answerId: "a4" }); // t2 +10, board clear
+  });
 
+  test("the round ends only once all five answers are revealed", () => {
+    let s = startWith(feudBank);
+    for (const answer of feudQuestion.answers.slice(0, 4)) {
+      s = onBank(s, { type: "feud_reveal", answerId: answer.id }, feudBank);
+    }
+    expect(s.feud?.ended).toBe(false);
+    expect(s.phase).toBe("QUESTION_ACTIVE");
+
+    s = onBank(s, { type: "feud_reveal", answerId: "a5" }, feudBank);
+    expect(s.feud?.ended).toBe(true);
     expect(s.phase).toBe("REVEAL");
-    expect(s.feud?.outcome).toMatchObject({
-      reason: "answers_exhausted",
-      winnerTeamId: "t1",
-    });
-    expect(s.feud?.outcome?.credited).toEqual({ t1: 60, t2: 40 });
-
-    s = act(s, { type: "feud_award" });
     expect(s.scores.teams.t1).toBe(100);
-  });
+    expect(Object.keys(s.feud ?? {})).not.toContain("pot");
 
-  test("a tied round waits for the host to choose the winner", () => {
-    const onTie = (state: SessionState, action: Action) =>
-      applyAction(state, action, tieBank, tick());
-    let s = startWith(tieBank);
-    s = onTie(s, { type: "feud_reveal", answerId: "a1" });
-    s = onTie(s, { type: "feud_reveal", answerId: "a2" });
-
-    expect(s.feud?.outcome).toMatchObject({ tied: true, winnerTeamId: null });
-    expect(s.scores.teams.t1).toBe(0);
-
-    expectEngineError(() => onTie(s, { type: "feud_award" }));
-    s = onTie(s, { type: "feud_award", teamId: "t1" });
-    expect(s.scores.teams.t1).toBe(20);
-    expect(s.feud?.awarded).toBe(true);
-    expectEngineError(() => onTie(s, { type: "feud_award", teamId: "t2" }));
-  });
-
-  test("the pot is multiplied at award time", () => {
-    let s = startGame("family_feud", { roundMultiplier: 2 });
-    s = act(s, { type: "feud_reveal", answerId: "a1" });
-    s = act(s, { type: "feud_reveal", answerId: "a2" });
-    s = act(s, { type: "feud_reveal", answerId: "a3" });
-    s = act(s, { type: "feud_reveal", answerId: "a4" });
-    const winner = s.feud?.outcome?.winnerTeamId ?? "";
-    s = act(s, { type: "feud_award" });
-    expect(s.scores.teams[winner]).toBe(200);
-  });
-
-  test("next round is blocked until the pot is awarded", () => {
-    let s = startGame("family_feud");
-    s = act(s, { type: "feud_reveal", answerId: "a1" });
-    s = act(s, { type: "feud_reveal", answerId: "a2" });
-    s = act(s, { type: "feud_reveal", answerId: "a3" });
-    s = act(s, { type: "feud_reveal", answerId: "a4" });
-
-    expectEngineError(() => act(s, { type: "next_round" }));
-    s = act(s, { type: "feud_award" });
-    s = act(s, { type: "round_result" });
-    s = act(s, { type: "next_round" });
+    // No award step: the round result is available straight away.
+    expectEngineError(() => onBank(s, { type: "next_round" }, feudBank));
+    s = onBank(s, { type: "round_result" }, feudBank);
+    s = onBank(s, { type: "next_round" }, feudBank);
     expect(s.phase).toBe("ROUND_READY");
   });
 
-  test("the opening team alternates every round", () => {
-    let s = startGame("family_feud");
+  test("the starting team alternates each round and scores carry over", () => {
+    let s = startWith(feudBank);
     expect(s.feud?.startingTeamId).toBe("t1");
-
-    s = act(s, { type: "feud_reveal", answerId: "a1" });
-    s = act(s, { type: "feud_reveal", answerId: "a2" });
-    s = act(s, { type: "feud_reveal", answerId: "a3" });
-    s = act(s, { type: "feud_reveal", answerId: "a4" });
-    s = act(s, { type: "feud_award" });
-    s = act(s, { type: "round_result" });
-    s = act(s, { type: "next_round" });
-    s = act(s, { type: "start_round" });
+    for (const answer of feudQuestion.answers) {
+      s = onBank(s, { type: "feud_reveal", answerId: answer.id }, feudBank);
+    }
+    s = onBank(s, { type: "round_result" }, feudBank);
+    s = onBank(s, { type: "next_round" }, feudBank);
+    s = onBank(s, { type: "start_round" }, feudBank);
 
     expect(s.feud?.startingTeamId).toBe("t2");
     expect(s.feud?.activeTeamId).toBe("t2");
+    expect(s.scores.teams.t1).toBe(100);
+
+    s = onBank(s, { type: "feud_reveal", answerId: "a1" }, feudBank);
+    expect(s.scores.teams.t2).toBe(40);
+    expect(s.scores.teams.t1).toBe(100);
   });
 
-  test("restarting a round rolls back its awarded points", () => {
-    const onTie = (state: SessionState, action: Action) =>
-      applyAction(state, action, tieBank, tick());
-    let s = startWith(tieBank);
-    s = onTie(s, { type: "feud_reveal", answerId: "a1" });
-    s = onTie(s, { type: "feud_reveal", answerId: "a2" });
-    s = onTie(s, { type: "feud_award", teamId: "t1" });
-    expect(s.scores.teams.t1).toBe(20);
-
-    s = onTie(s, { type: "restart_round" });
+  test("restarting a round rolls back its immediate points", () => {
+    let s = startWith(feudBank);
+    s = onBank(s, { type: "feud_reveal", answerId: "a1" }, feudBank);
+    expect(s.scores.teams.t1).toBe(40);
+    s = onBank(s, { type: "restart_round" }, feudBank);
     expect(s.scores.teams.t1).toBe(0);
     expect(s.phase).toBe("ROUND_READY");
+    expect(s.feud).toBeNull();
   });
 
-  test("a team's strike can be corrected down without ending the round", () => {
-    let s = startGame("family_feud");
-    s = act(s, { type: "feud_strike", delta: 1 });
-    expect(s.feud?.strikes.t1).toBe(1);
-    s = act(s, { type: "feud_strike", delta: -1, teamId: "t1" });
-    expect(s.feud?.strikes.t1).toBe(0);
-    expect(s.phase).toBe("QUESTION_ACTIVE");
-  });
-
-  test("game ends with standings after the last question", () => {
+  test("game ends with cumulative team standings after the last question", () => {
     let s = startGame("family_feud");
     const total = bank.family_feud.length;
     for (let round = 0; round < total; round += 1) {
       if (round > 0) s = act(s, { type: "start_round" });
-      const question = bank.family_feud[round]!;
+      const question = bank.family_feud.find((item) => item.id === s.feud?.questionId);
+      if (!question) throw new Error("missing question");
       for (const answer of question.answers) {
         s = act(s, { type: "feud_reveal", answerId: answer.id });
       }
-      s = act(s, { type: "feud_award" });
       s = act(s, { type: "round_result" });
       s = act(s, { type: "next_round" });
     }
     expect(s.phase).toBe("GAME_RESULT");
     expect(s.results).toHaveLength(1);
-    const points = s.results[0]?.standings.map((row) => row.points) ?? [];
-    expect(points).toHaveLength(2);
-    expect(Math.max(...points)).toBeGreaterThan(0);
+    const standings = s.results[0]?.standings ?? [];
+    expect(standings.map((row) => row.label)).toEqual(["Bride's Family", "Groom's Family"]);
+    expect(Math.max(...standings.map((row) => row.points))).toBeGreaterThan(0);
   });
 });
 

@@ -624,4 +624,13 @@
   .party-scores span {
     font-size: 14px !important;
   }
+  .feud-complete {
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+  }
+  .feud-complete p:last-child {
+    margin-top: 0 !important;
+    font-size: 18px !important;
+    line-height: 1.2 !important;
+  }
 }

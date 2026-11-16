@@ -122,7 +122,7 @@ Hindi: Train ke safar ke liye kya khana pack karte hain?
 | 26 | Sandwich | Sandwich |
 | 18 | Puri-aloo | Puri-aloo |
 | 13 | Namkeen | Namkeen |
-| 8 | Achar | Pickle |
+| 8 | Aloo Parantha | Aloo Parantha |
 
 ---
 
