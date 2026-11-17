@@ -462,7 +462,7 @@ function PartyPriceBoard({
             src={publicAsset(question.image ?? "demo/placeholder.svg")}
             alt={question.text}
             className={`block max-w-[min(100%,900px)] object-contain ${
-              party.mode === "teams" ? "max-h-[min(48vh,520px)]" : "max-h-[min(36vh,420px)]"
+              party.mode === "teams" ? "max-h-[min(44vh,520px)]" : "max-h-[min(30vh,420px)]"
             }`}
           />
         </div>
@@ -479,32 +479,44 @@ function PartyPriceBoard({
         ) : null}
       </div>
 
-      <ul className="grid w-full grid-cols-3 gap-[clamp(8px,1.1vw,18px)]">
+      <ul
+        className="flex w-full flex-wrap justify-center"
+        style={
+          {
+            "--pir-card-gap": "clamp(8px, 1.1vw, 18px)",
+            gap: "var(--pir-card-gap)",
+          } as React.CSSProperties
+        }
+      >
         {teams.map((team) => {
           const guess = guesses.get(team.id);
           const rank = podium(team.id);
           return (
             <li
               key={team.id}
-              className={`flex min-w-0 flex-col items-center justify-between border px-2 py-1.5 text-center ${
+              className={`flex min-w-0 flex-col items-center justify-between border px-2 py-2 text-center ${
                 rank?.rank === 1
                   ? "border-gold bg-lavender-pale"
-                  : "border-gold/25 bg-lavender-pale/40"
+                  : "border-gold/40 bg-lavender-pale/60"
               }`}
+              style={{
+                flex: "0 0 calc((100% - 2 * var(--pir-card-gap)) / 3)",
+                maxWidth: "calc((100% - 2 * var(--pir-card-gap)) / 3)",
+              }}
             >
-              <span className="w-full truncate text-[clamp(10px,0.95vw,14px)] uppercase tracking-[0.16em] text-plum-soft">
+              <span className="w-full truncate text-[clamp(11px,1.05vw,16px)] font-semibold uppercase tracking-[0.14em] text-plum">
                 {team.name}
               </span>
               <span className="mt-1 flex min-h-[clamp(26px,3.4vh,42px)] items-center justify-center">
                 {revealed && typeof guess === "number" ? (
                   <span
                     key={`value-${guess}`}
-                    className="fade-in font-serif text-[clamp(18px,1.9vw,30px)] leading-none text-gold-ink tabular-nums"
+                    className="fade-in font-serif text-[clamp(19px,2vw,32px)] font-bold leading-none text-gold-ink tabular-nums"
                   >
                     {moneyLabel(guess, currency)}
                   </span>
                 ) : (
-                  <span className="text-[clamp(10px,0.95vw,14px)] uppercase tracking-[0.16em] text-plum-hush">
+                  <span className="text-[clamp(10px,0.95vw,14px)] font-medium uppercase tracking-[0.16em] text-plum-soft">
                     {party.locked
                       ? team.submitted
                         ? "Guess locked"
@@ -532,11 +544,11 @@ function PartyPriceBoard({
         })}
       </ul>
 
-      <div className="flex min-h-[clamp(58px,8.5vh,96px)] w-full items-center justify-center">
+      <div className="flex min-h-[clamp(86px,11.5vh,128px)] w-full flex-col items-center justify-start pt-[clamp(10px,1.6vh,20px)] pb-[clamp(16px,2.4vh,32px)]">
         {pir.priceRevealed ? (
           <div className="fade-in text-center">
             <p className="text-[9px] uppercase tracking-[0.3em] text-plum-hush">Actual price</p>
-            <p className="font-serif text-[clamp(30px,3.4vw,56px)] leading-none text-gold-display">
+            <p className="mt-0.5 font-serif text-[clamp(30px,3.4vw,56px)] leading-none text-gold-display">
               {moneyLabel(question.actualPrice ?? 0, currency)}
             </p>
           </div>
