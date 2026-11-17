@@ -434,6 +434,8 @@ export interface PublicFeud {
   activeTeamId: string | null;
   strikes: number;
   strikeLimit: number;
+  /** Points each family scored this round (guessed answers only). */
+  roundPoints: Record<string, number>;
   ended: boolean;
 }
 

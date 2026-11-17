@@ -1127,6 +1127,17 @@ export function projectPublic(state: SessionState, bank: QuestionBank): PublicSt
         activeTeamId: state.feud.activeTeamId,
         strikes: state.feud.strikes,
         strikeLimit: FEUD_STRIKES,
+        roundPoints:
+          question?.game === "family_feud"
+            ? Object.entries(state.feud.credited).reduce<Record<string, number>>(
+                (totals, [answerId, teamId]) => {
+                  const answer = question.answers.find((item) => item.id === answerId);
+                  if (answer) totals[teamId] = (totals[teamId] ?? 0) + answer.points;
+                  return totals;
+                },
+                {},
+              )
+            : {},
         ended: state.feud.ended,
       }
     : null;

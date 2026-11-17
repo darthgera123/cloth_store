@@ -374,6 +374,32 @@ describe("family feud", () => {
     expect(s.scores.teams.t1).toBe(100);
   });
 
+  test("all five answers close the round before any strikes", () => {
+    let s = startWith(feudBank);
+    for (const answer of feudQuestion.answers) {
+      s = onBank(s, { type: "feud_reveal", answerId: answer.id }, feudBank);
+    }
+    expect(s.feud?.ended).toBe(true);
+    expect(s.feud?.turnsPlayed).toBe(1);
+    expect(s.phase).toBe("REVEAL");
+    expect(projectPublic(s, feudBank).feud?.roundPoints).toEqual({ t1: 100 });
+  });
+
+  test("the round summary counts guessed answers only", () => {
+    let s = startWith(feudBank);
+    s = onBank(s, { type: "feud_reveal", answerId: "a1" }, feudBank); // t1 +40
+    s = onBank(s, { type: "feud_strike", delta: 1 }, feudBank);
+    s = onBank(s, { type: "feud_strike", delta: 1 }, feudBank); // t2's turn
+    s = onBank(s, { type: "feud_reveal", answerId: "a2" }, feudBank); // t2 +30
+    s = onBank(s, { type: "feud_strike", delta: 1 }, feudBank);
+    s = onBank(s, { type: "feud_strike", delta: 1 }, feudBank); // round ends
+
+    const pub = projectPublic(s, feudBank);
+    expect(pub.feud?.ended).toBe(true);
+    expect(pub.feud?.roundPoints).toEqual({ t1: 40, t2: 30 });
+    expect(pub.scores.teams).toEqual({ t1: 40, t2: 30 });
+  });
+
   test("restarting a round rolls back its immediate points", () => {
     let s = startWith(feudBank);
     s = onBank(s, { type: "feud_reveal", answerId: "a1" }, feudBank);

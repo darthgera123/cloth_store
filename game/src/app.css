@@ -651,3 +651,50 @@
     line-height: 1.2 !important;
   }
 }
+
+.turn-cue {
+  animation: turn-cue 1.7s cubic-bezier(0.25, 0.6, 0.25, 1) both;
+}
+
+.turn-cue-card {
+  box-shadow: 0 18px 50px rgb(57 39 71 / 0.18);
+}
+
+@keyframes turn-cue {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  12% {
+    opacity: 1;
+    transform: none;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* 720p TVs: keep the Feud board (turn cue, summary, five answers) on screen. */
+@media (max-height: 800px) {
+  .feud-board {
+    gap: 10px;
+  }
+  .feud-complete {
+    padding-top: 2px;
+    padding-bottom: 2px;
+  }
+  .feud-complete p:last-of-type {
+    font-size: 16px;
+  }
+  .feud-complete ul {
+    margin-top: 0;
+    gap: 0 12px;
+    font-size: 10px;
+  }
+  .feud-question-hindi {
+    font-size: 22px;
+  }
+}

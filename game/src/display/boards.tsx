@@ -1,7 +1,7 @@
 /* Audience boards. Everything here reads PublicState only — hidden answers,
    prices and tallies never reach this code path. */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { GameId, Participant, PublicState, PublicPrice, Team } from "../lib/types";
 import { StrikeMark } from "../components/Mandala";
 import { publicAsset } from "../lib/assets";
@@ -59,6 +59,49 @@ function TeamScore({
   );
 }
 
+
+const turnTitle = (name: string): string => {
+  if (/^bride/i.test(name)) return "Brides' Turn";
+  if (/^groom/i.test(name)) return "Grooms' Turn";
+  return `${name} — Turn`;
+};
+
+function FeudTurnCue({
+  teamId,
+  teamName,
+  ended,
+}: {
+  teamId: string | null;
+  teamName: string;
+  ended: boolean;
+}) {
+  const [cue, setCue] = useState<string | null>(null);
+  const previous = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!teamId || ended) return;
+    if (previous.current === teamId) return;
+    previous.current = teamId;
+    setCue(turnTitle(teamName));
+    const id = window.setTimeout(() => setCue(null), 1700);
+    return () => window.clearTimeout(id);
+  }, [teamId, teamName, ended]);
+
+  if (!cue || ended) return null;
+  return (
+    <div
+      key={cue}
+      className="turn-cue pointer-events-none fixed inset-x-0 top-[16vh] z-30 flex justify-center"
+      aria-live="polite"
+    >
+      <div className="turn-cue-card border border-gold/60 bg-lavender/95 px-[clamp(24px,3vw,48px)] py-[clamp(10px,1.6vh,20px)] text-center">
+        <p className="text-[9px] uppercase tracking-[0.34em] text-gold-ink">Turn</p>
+        <p className="mt-1 font-serif text-[clamp(26px,2.8vw,46px)] leading-none text-plum">{cue}</p>
+      </div>
+    </div>
+  );
+}
+
 export function FeudBoard({ state }: { state: PublicState }) {
   const feud = state.feud;
   const question = state.question;
@@ -67,7 +110,12 @@ export function FeudBoard({ state }: { state: PublicState }) {
   const answers = question.answers ?? [];
 
   return (
-    <div className="flex w-full flex-col gap-[clamp(16px,2.6vh,32px)]">
+    <div className="feud-board flex w-full flex-col gap-[clamp(16px,2.6vh,32px)]">
+      <FeudTurnCue
+        teamId={feud.ended ? null : feud.activeTeamId}
+        teamName={labelFor(state, feud.activeTeamId)}
+        ended={feud.ended}
+      />
       <div className="grid grid-cols-[1fr_auto_1fr] items-end gap-[clamp(16px,3vw,56px)] border-b border-gold/20 pb-[clamp(12px,1.8vh,20px)]">
         {state.teams[0] ? (
           <TeamScore
@@ -123,6 +171,16 @@ export function FeudBoard({ state }: { state: PublicState }) {
           <p className="mt-1 font-serif text-[clamp(20px,2vw,32px)] leading-tight">
             Every answer is on the board
           </p>
+          <ul className="mt-1 flex flex-wrap justify-center gap-x-5 gap-y-0.5 text-[clamp(10px,0.95vw,14px)] uppercase tracking-[0.14em] text-plum-soft">
+            {state.teams.map((team) => (
+              <li key={team.id}>
+                {team.name}{" "}
+                <b className="tabular-nums text-gold-ink">{feud.roundPoints[team.id] ?? 0}</b> this
+                round<span className="text-plum-hush"> · </span>
+                <b className="tabular-nums text-plum">{state.scores.teams[team.id] ?? 0}</b> total
+              </li>
+            ))}
+          </ul>
         </div>
       ) : null}
 
@@ -130,7 +188,7 @@ export function FeudBoard({ state }: { state: PublicState }) {
         {question.text}
       </h2>
       {question.hindi ? (
-        <p className="-mt-[clamp(6px,1.2vh,14px)] text-center font-serif text-[clamp(22px,2.4vw,40px)] italic text-plum-soft">
+        <p className="feud-question-hindi -mt-[clamp(6px,1.2vh,14px)] text-center font-serif text-[clamp(22px,2.4vw,40px)] italic text-plum-soft">
           {question.hindi}
         </p>
       ) : null}

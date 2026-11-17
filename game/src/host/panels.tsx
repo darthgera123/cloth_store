@@ -244,8 +244,23 @@ export function FeudPanel({
       {feud.ended ? (
         <div className="mt-4 border border-gold bg-lavender-pale p-4">
           <Meta>Round over · all five answers revealed</Meta>
-          <p className="mt-2 text-[13px]">
-            Points already went to the families who guessed them. Next question when you are ready.
+          <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-[12px]">
+            {session.teams.map((team) => {
+              const roundPoints = Object.entries(feud.credited).reduce((sum, [answerId, teamId]) => {
+                if (teamId !== team.id) return sum;
+                return sum + (question.answers.find((answer) => answer.id === answerId)?.points ?? 0);
+              }, 0);
+              return (
+                <span key={team.id}>
+                  {team.name}: <b className="tabular-nums text-gold-ink">{roundPoints}</b> this round
+                  <span className="text-plum-hush"> · </span>
+                  <b className="tabular-nums">{session.scores.teams[team.id] ?? 0}</b> total
+                </span>
+              );
+            })}
+          </div>
+          <p className="mt-2 text-[12px] text-plum-soft">
+            Next question when you are ready.
           </p>
         </div>
       ) : null}
