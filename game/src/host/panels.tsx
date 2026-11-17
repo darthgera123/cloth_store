@@ -213,7 +213,14 @@ export function FeudPanel({
                 <span className="w-5 text-center font-serif text-[15px] text-gold-ink">
                   {index + 1}
                 </span>
-                <span className="flex-1 text-[15px]">{answer.text}</span>
+                <span className="grid flex-1 gap-0.5">
+                  <span className="font-serif text-[15px] leading-snug">{answer.text}</span>
+                  {answer.hindi ? (
+                    <span className="font-serif text-[12px] italic leading-snug text-plum-soft">
+                      {answer.hindi}
+                    </span>
+                  ) : null}
+                </span>
                 {revealed ? (
                   <span className="text-[9px] uppercase tracking-[0.14em] text-plum-hush">
                     {teamName(claimedBy)}

@@ -498,11 +498,28 @@
   position: relative;
   overflow: hidden;
   align-self: center;
+  display: grid;
+  gap: 2px;
   width: 100%;
   min-height: 1.3em;
+  font-family: var(--font-serif);
   font-size: clamp(19px, 1.95vw, 34px);
   color: var(--color-plum);
   transition: color 380ms ease;
+}
+
+.answer-english,
+.answer-hindi {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.answer-hindi {
+  font-size: 0.6em;
+  font-style: italic;
+  line-height: 1.25;
+  color: var(--color-plum-soft);
 }
 
 .answer.pending .answer-text {

@@ -80,13 +80,22 @@ export function FeudBoard({ state }: { state: PublicState }) {
           />
         ) : null}
 
-        <div className="grid justify-items-center gap-0.5 px-[clamp(10px,2vw,30px)] text-center">
-          <span className="text-[9px] uppercase tracking-[0.34em] text-plum-hush">Turn</span>
-          <span className="font-serif text-[clamp(16px,1.5vw,26px)] leading-tight text-gold-display">
+        <div className="grid justify-items-center gap-1 px-[clamp(8px,1.6vw,24px)] text-center">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.34em] text-gold-ink">
+            Turn
+          </span>
+          <span className="font-serif text-[clamp(24px,2.6vw,42px)] font-semibold leading-none text-plum">
             {feud.ended ? "Round complete" : labelFor(state, feud.activeTeamId)}
           </span>
-          <span className="text-[9px] uppercase tracking-[0.24em] text-plum-hush">
-            Strikes {feud.strikes} / {feud.strikeLimit}
+          <span
+            className={`mt-1 flex items-baseline gap-2 border px-3 py-1 ${
+              feud.strikes > 0 ? "border-gold bg-lavender-pale" : "border-gold/40"
+            }`}
+          >
+            <span className="text-[9px] uppercase tracking-[0.26em] text-plum-hush">Strikes</span>
+            <span className="font-serif text-[clamp(16px,1.7vw,28px)] leading-none tabular-nums text-gold-ink">
+              {feud.strikes} / {feud.strikeLimit}
+            </span>
           </span>
           <span className="text-[9px] uppercase tracking-[0.24em] text-plum-hush">
             Question {state.round}
@@ -131,7 +140,12 @@ export function FeudBoard({ state }: { state: PublicState }) {
             style={{ animationDelay: `${index * 40}ms` }}
           >
             <span className="answer-num">{index + 1}</span>
-            <span className="answer-text">{answer.text ?? ""}</span>
+            <span className="answer-text">
+              <span className="answer-english">{answer.text ?? ""}</span>
+              {answer.revealed && answer.hindi ? (
+                <span className="answer-hindi">{answer.hindi}</span>
+              ) : null}
+            </span>
             <span className="answer-pts">{answer.points ?? ""}</span>
           </li>
         ))}
