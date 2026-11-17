@@ -127,7 +127,7 @@ export function FeudBoard({ state }: { state: PublicState }) {
         {question.text}
       </h2>
       {question.hindi ? (
-        <p className="-mt-[clamp(6px,1.2vh,14px)] text-center font-serif text-[clamp(15px,1.5vw,24px)] italic text-plum-soft">
+        <p className="-mt-[clamp(6px,1.2vh,14px)] text-center font-serif text-[clamp(22px,2.4vw,40px)] italic text-plum-soft">
           {question.hindi}
         </p>
       ) : null}

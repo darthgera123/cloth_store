@@ -113,7 +113,7 @@ export function HostApp() {
                   <>
                     <p className="mb-1 font-serif text-[22px] leading-snug">{questionText(shown)}</p>
                     {shown?.game === "family_feud" && shown.hindi ? (
-                      <p className="mb-4 text-[14px] italic text-plum-soft">{shown.hindi}</p>
+                      <p className="mb-4 text-[18px] italic text-plum-soft">{shown.hindi}</p>
                     ) : shown?.game === "price_is_right" && shown.size ? (
                       <p className="mb-4 text-[12px] uppercase tracking-[0.18em] text-gold-ink">
                         {shown.size}

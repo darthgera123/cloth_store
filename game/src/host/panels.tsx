@@ -216,7 +216,7 @@ export function FeudPanel({
                 <span className="grid flex-1 gap-0.5">
                   <span className="font-serif text-[15px] leading-snug">{answer.text}</span>
                   {answer.hindi ? (
-                    <span className="font-serif text-[12px] italic leading-snug text-plum-soft">
+                    <span className="font-serif text-[14px] italic leading-snug text-plum-soft">
                       {answer.hindi}
                     </span>
                   ) : null}
