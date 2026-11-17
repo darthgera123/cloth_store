@@ -437,132 +437,118 @@ function PartyPriceBoard({
 }) {
   const question = state.question!;
   const currency = question.currency ?? "INR";
-  const showJoin = !party.locked && !party.priceRevealed;
-  const submitted = party.teams.filter((team) => team.submitted).length;
-  const podiumRank = (entryId: string) =>
-    party.podium.find((entry) => entry.entryId === entryId && entry.rank <= 3);
-
-  const guesses = [...(party.guesses ?? [])].sort((a, b) => {
-    const left = party.teams.find((team) => team.id === a.teamId)?.name ?? "";
-    const right = party.teams.find((team) => team.id === b.teamId)?.name ?? "";
-    if (party.leaderboardRevealed) {
-      const rankA = party.podium.find((entry) => entry.entryId === a.teamId)?.rank ?? 99;
-      const rankB = party.podium.find((entry) => entry.entryId === b.teamId)?.rank ?? 99;
-      return rankA - rankB || left.localeCompare(right);
-    }
-    return left.localeCompare(right);
-  });
-  const leaderboard = [...party.teams]
-    .map((team) => ({ id: team.id, name: team.name, score: party.scores[team.id] ?? 0 }))
-    .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
+  const teams = [...party.teams].sort((a, b) => a.id.localeCompare(b.id));
+  const guesses = new Map((party.guesses ?? []).map((guess) => [guess.teamId, guess.value]));
+  const submitted = teams.filter((team) => team.submitted).length;
+  const revealed = party.revealed || party.priceRevealed;
+  const podium = (teamId: string) =>
+    party.podium.find((entry) => entry.entryId === teamId && entry.rank <= 3);
+  const ordinal = (rank: number) => (rank === 1 ? "1st" : rank === 2 ? "2nd" : "3rd");
 
   return (
-    <div className="grid w-full items-start gap-[clamp(18px,2.6vw,48px)] md:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)]">
-      <div className="flex flex-col gap-3">
-        <div className="border border-gold/30 bg-lavender-pale p-3">
+    <div className="flex h-full w-full flex-col items-center gap-[clamp(6px,1.1vh,14px)]">
+      <div className="flex w-full items-baseline justify-between gap-4">
+        <span className="text-[10px] uppercase tracking-[0.34em] text-gold-ink">
+          Round {state.round}
+        </span>
+        <span className="text-[10px] uppercase tracking-[0.22em] text-plum-hush">
+          {submitted} of {teams.length} submitted
+        </span>
+      </div>
+
+      <div className="flex w-full justify-center">
+        <div className="border border-gold/30 bg-lavender-pale p-[clamp(6px,1vh,14px)]">
           <img
             src={publicAsset(question.image ?? "demo/placeholder.svg")}
             alt={question.text}
-            className="mx-auto block max-h-[min(46vh,400px)] w-full object-contain"
+            className={`block max-w-[min(100%,900px)] object-contain ${
+              party.mode === "teams" ? "max-h-[min(48vh,520px)]" : "max-h-[min(36vh,420px)]"
+            }`}
           />
         </div>
-
-        {showJoin ? <PartyJoinCard state={state} party={party} /> : null}
       </div>
 
-      <div className="party-detail flex flex-col gap-4">
-        <div>
-          <h2 className="party-title font-serif text-[clamp(26px,2.8vw,46px)] font-medium leading-[1.15]">
-            {question.text}
-          </h2>
-          {question.size ? (
-            <p className="mt-1 text-[clamp(11px,1.05vw,16px)] uppercase tracking-[0.18em] text-gold-ink">
-              {question.size}
-            </p>
-          ) : null}
-          <p className="mt-2 text-[clamp(13px,1.15vw,18px)] text-plum-soft">{question.description}</p>
-        </div>
-
-        <div className="party-meta flex flex-wrap items-baseline gap-4 border-y border-gold/25 py-3">
-          <span className="text-[10px] uppercase tracking-[0.24em] text-plum-hush">Submissions</span>
-          <span className="party-meta-count font-serif text-[clamp(22px,2.2vw,34px)] leading-none tabular-nums">
-            {submitted} <span className="text-plum-hush">of {party.teams.length}</span>
-          </span>
-          <span className="text-[10px] uppercase tracking-[0.24em] text-gold-ink">
-            {party.locked ? "Locked" : "Open"}
-          </span>
-        </div>
-
-        {party.leaderboardRevealed && guesses.length > 0 ? (
-          <p className="text-[9px] uppercase tracking-[0.3em] text-gold-ink">Podium</p>
-        ) : null}
-
-        {guesses.length > 0 ? (
-          <ul className="party-rows grid gap-1">
-            {guesses.map((guess) => {
-              const team = party.teams.find((entry) => entry.id === guess.teamId);
-              const rank = podiumRank(guess.teamId);
-              return (
-                <li
-                  key={guess.teamId}
-                  className={`party-row flex items-baseline justify-between border px-4 py-1.5 ${
-                    rank ? "border-gold bg-lavender-pale" : "border-gold/25"
-                  }`}
-                >
-                  <span className="text-[clamp(16px,1.6vw,24px)]">
-                    {rank ? `${rank.rank}. ` : ""}
-                    {team?.name ?? guess.teamId}
-                  </span>
-                  <span className="text-[clamp(18px,1.8vw,28px)] tabular-nums text-gold-ink">
-                    {moneyLabel(guess.value, currency)}
-                    {rank ? ` · +${rank.points}` : ""}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-        ) : (
-          <p className="text-[11px] uppercase tracking-[0.28em] text-plum-hush">
-            {party.locked ? "Guesses locked" : "Guesses stay hidden until the reveal"}
+      <div className="text-center">
+        <h2 className="font-serif text-[clamp(22px,2.3vw,40px)] font-medium leading-[1.12] text-plum">
+          {question.text}
+        </h2>
+        {question.size ? (
+          <p className="mt-0.5 text-[clamp(10px,0.95vw,15px)] uppercase tracking-[0.18em] text-gold-ink">
+            {question.size}
           </p>
-        )}
+        ) : null}
+      </div>
 
+      <ul className="grid w-full grid-cols-3 gap-[clamp(8px,1.1vw,18px)]">
+        {teams.map((team) => {
+          const guess = guesses.get(team.id);
+          const rank = podium(team.id);
+          return (
+            <li
+              key={team.id}
+              className={`flex min-w-0 flex-col items-center justify-between border px-2 py-1.5 text-center ${
+                rank?.rank === 1
+                  ? "border-gold bg-lavender-pale"
+                  : "border-gold/25 bg-lavender-pale/40"
+              }`}
+            >
+              <span className="w-full truncate text-[clamp(10px,0.95vw,14px)] uppercase tracking-[0.16em] text-plum-soft">
+                {team.name}
+              </span>
+              <span className="mt-1 flex min-h-[clamp(26px,3.4vh,42px)] items-center justify-center">
+                {revealed && typeof guess === "number" ? (
+                  <span
+                    key={`value-${guess}`}
+                    className="fade-in font-serif text-[clamp(18px,1.9vw,30px)] leading-none text-gold-ink tabular-nums"
+                  >
+                    {moneyLabel(guess, currency)}
+                  </span>
+                ) : (
+                  <span className="text-[clamp(10px,0.95vw,14px)] uppercase tracking-[0.16em] text-plum-hush">
+                    {party.locked
+                      ? team.submitted
+                        ? "Guess locked"
+                        : "No guess"
+                      : team.submitted
+                        ? "Guess locked"
+                        : "Waiting"}
+                  </span>
+                )}
+              </span>
+              <span className="mt-0.5 flex min-h-[clamp(14px,2.2vh,26px)] items-center justify-center gap-2 text-[clamp(9px,0.85vw,13px)] uppercase tracking-[0.14em] text-plum-soft">
+                {party.leaderboardRevealed && rank ? (
+                  <>
+                    <span className="text-gold-ink">
+                      {ordinal(rank.rank)} · +{rank.points}
+                    </span>
+                    <span className="text-plum-hush">
+                      Total {party.scores[team.id] ?? 0}
+                    </span>
+                  </>
+                ) : null}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+
+      <div className="flex min-h-[clamp(58px,8.5vh,96px)] w-full items-center justify-center">
         {pir.priceRevealed ? (
-          <div className="fade-up border-t border-gold/30 pt-3">
-            <p className="text-[10px] uppercase tracking-[0.28em] text-plum-hush">Actual price</p>
-            <p className="font-serif text-[clamp(34px,3.8vw,62px)] leading-none text-gold-display">
+          <div className="fade-in text-center">
+            <p className="text-[9px] uppercase tracking-[0.3em] text-plum-hush">Actual price</p>
+            <p className="font-serif text-[clamp(30px,3.4vw,56px)] leading-none text-gold-display">
               {moneyLabel(question.actualPrice ?? 0, currency)}
             </p>
           </div>
-        ) : null}
-
-        {party.priceRevealed && !party.leaderboardRevealed ? (
-          <p className="text-[11px] uppercase tracking-[0.28em] text-plum-hush">
-            Leaderboard next
+        ) : (
+          <p className="text-[10px] uppercase tracking-[0.28em] text-plum-hush">
+            {party.revealed
+              ? "Guesses revealed — actual price next"
+              : party.locked
+                ? "Guesses locked — waiting for the reveal"
+                : "Guesses stay hidden until the host reveals them"}
           </p>
-        ) : null}
-
-        {party.leaderboardRevealed && leaderboard.length > 0 ? (
-          <div className="border border-gold/30 px-4 py-2.5">
-            <p className="text-[9px] uppercase tracking-[0.3em] text-plum-hush">
-              {party.mode === "teams" ? "Team scores" : "Player scores"}
-            </p>
-            <ul
-              className={`mt-1.5 grid gap-x-8 gap-y-0.5 ${
-                leaderboard.length > 3 ? "grid-cols-2" : "grid-cols-1"
-              }`}
-            >
-              {leaderboard.map((team) => (
-                <li key={team.id} className="flex items-baseline justify-between gap-2">
-                  <span className="text-[clamp(13px,1.25vw,19px)]">{team.name}</span>
-                  <span className="text-[clamp(16px,1.6vw,24px)] tabular-nums text-gold-ink">
-                    {team.score}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : null}
+        )}
       </div>
     </div>
   );
