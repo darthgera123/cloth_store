@@ -152,7 +152,10 @@ export function FeudPanel({
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border border-gold/30 bg-lavender-pale/50 px-4 py-3">
         <div>
           <p className="text-[10px] uppercase tracking-[0.22em] text-plum-hush">Guessing now</p>
-          <p className="font-serif text-[24px] leading-tight">
+          <p
+            key={feud.ended ? "done" : feud.activeTeamId}
+            className="fade-in font-serif text-[24px] leading-tight"
+          >
             {feud.ended ? "Round complete" : teamName(feud.activeTeamId)}
           </p>
           <p className="mt-1 flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-plum-hush">

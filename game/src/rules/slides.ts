@@ -21,7 +21,7 @@ export const RULES: Record<GameId, RuleSlide[]> = {
     },
     {
       title: "Two Strikes",
-      body: "Two wrong guesses pass the turn to the other family and reset the strikes. The starting family alternates each round, and the round ends when all five answers are revealed.",
+      body: "Two wrong guesses pass the turn to the other family and reset the strikes. Each family gets one turn; when both have struck out, the round closes and every remaining answer is shown. The starting family alternates each round.",
     },
   ],
   herd_mentality: [

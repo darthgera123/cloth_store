@@ -74,23 +74,23 @@ Hindi: Mehmaan aane wale hon toh mummy kya karti hai?
 | 25 | Khana banana ya order karna | Cooks or orders food |
 | 20 | Achhi crockery nikalna | Takes out the good crockery |
 | 11 | Achhe kapde pehenna | Changes into nice clothes |
-| 8 | Mehmaanon ke liye nashta nikalna | Puts out snacks for guests |
+| 8 | Fancy chocolates nikalna | Fancy chocolates |
 
 ---
 
 ## FF-005
 
-English: Name something you check before leaving the house for a trip.
+English: Name something Indian families do before leaving for a trip.
 
-Hindi: Trip ke liye ghar se nikalne se pehle kya check karte hain?
+Hindi: Trip pe nikalne se pehle parivar kya karti hain?
 
 | Points | Hindi | English |
 |---|---|---|
 | 33 | Gas band hai? | Gas off? |
 | 28 | Sab le liya? Wallet, passport/ID, chaabi | Did you take everything? Wallet, passport/ID, keys |
-| 19 | Nal band hai? | Water taps off? |
+| 19 | Mandir mein matha tekna / Bhagwan ko yaad karna | 	Pray before leaving |
 | 12 | Switch, light, bijli band? | Switches and lights off? |
-| 8 | Darwaaze aur khidkiyaan lock hain? | Doors and windows locked? |
+| 8 | Paani ki bottle aur snacks rakhna | Pack water and snacks |
 
 ---
 
@@ -120,7 +120,7 @@ Hindi: Train ke safar ke liye kya khana pack karte hain?
 |---|---|---|
 | 35 | Thepla | Thepla |
 | 26 | Sandwich | Sandwich |
-| 18 | Puri-aloo | Puri-aloo |
+| 18 | Sabzi-roti | Sabzi-roti |
 | 13 | Namkeen | Namkeen |
 | 8 | Aloo Parantha | Aloo Parantha |
 
@@ -169,8 +169,8 @@ Hindi: Khana offer karo toh mehmaan kya kehte hain?
 | 36 | Nahi nahi, khaake aaye hain | No no, we've eaten |
 | 27 | Bas thoda sa | Just a little |
 | 18 | Sirf chai | Only chai |
-| 11 | Itni takleef kyun li? | Why did you take the trouble? |
-| 8 | Baad mein kha lenge | We'll eat later |
+| 11 | Arre, aapne itna sab kyun banaya? | Why did you take the trouble? |
+| 8 | Recipe batana! | Share recipe |
 
 ---
 
@@ -186,7 +186,7 @@ Hindi: Koi rishtedaar paise de toh aap kya kehte ho?
 | 26 | Mummy/papa ki taraf dekhna | Look at mom/dad for permission |
 | 21 | 3–5 baar mana karke le lena | Say no 3–5 times, then take it |
 | 12 | Pair chhoo ke thank you | Touch their feet and say thank you |
-| 8 | Aap hi rakh lo | You keep it |
+| 8 | Aashirwad hi kaafi hai | Your blessings are enough |
 
 ---
 
@@ -202,7 +202,7 @@ Hindi: Family WhatsApp group pe kya dikhta hai?
 | 25 | News/ Whatsapp forwards | News/Whatsapp forwards |
 | 17 | Good morning messages | Good morning messages |
 | 11 | Birthday aur anniversary wishes | Birthday and anniversary wishes |
-| 9 | Shaadi ke invitations | Wedding invitations |
+| 9 | Mera Bharat Mahan / India Shining posts  | Patriotic India appreciation posts |
 
 ---
 

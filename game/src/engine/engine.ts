@@ -280,6 +280,7 @@ function initGameState(state: SessionState, question: Question) {
       strikes: 0,
       activeTeamId: starter,
       startingTeamId: starter,
+      turnsPlayed: 1,
       ended: false,
     };
     state.herd = null;
@@ -784,7 +785,22 @@ export function applyAction(
 
       feud.strikes += 1;
       if (feud.strikes >= FEUD_STRIKES) {
+        if (feud.turnsPlayed >= 2) {
+          // Both families have had their turn: close the round and put every
+          // remaining answer on the board. Only guessed answers scored.
+          const question = feudQuestionOf(next, bank);
+          if (question) {
+            const missing = question.answers
+              .map((answer) => answer.id)
+              .filter((id) => !feud.revealed.includes(id));
+            feud.revealed = [...feud.revealed, ...missing];
+          }
+          feud.ended = true;
+          next.phase = "REVEAL";
+          break;
+        }
         const [a, b] = teamIds(next);
+        feud.turnsPlayed += 1;
         feud.activeTeamId = feud.activeTeamId === a ? b : a;
         feud.strikes = 0;
       }

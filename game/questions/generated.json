@@ -146,8 +146,8 @@
         },
         {
           "id": "a5",
-          "text": "Puts out snacks for guests",
-          "hindi": "Mehmaanon ke liye nashta nikalna",
+          "text": "Fancy chocolates",
+          "hindi": "Fancy chocolates nikalna",
           "points": 8
         }
       ]
@@ -155,8 +155,8 @@
     {
       "id": "FF-005",
       "game": "family_feud",
-      "question": "Name something you check before leaving the house for a trip.",
-      "hindi": "Trip ke liye ghar se nikalne se pehle kya check karte hain?",
+      "question": "Name something Indian families do before leaving for a trip.",
+      "hindi": "Trip pe nikalne se pehle parivar kya karti hain?",
       "answers": [
         {
           "id": "a1",
@@ -172,8 +172,8 @@
         },
         {
           "id": "a3",
-          "text": "Water taps off?",
-          "hindi": "Nal band hai?",
+          "text": "Pray before leaving",
+          "hindi": "Mandir mein matha tekna / Bhagwan ko yaad karna",
           "points": 19
         },
         {
@@ -184,8 +184,8 @@
         },
         {
           "id": "a5",
-          "text": "Doors and windows locked?",
-          "hindi": "Darwaaze aur khidkiyaan lock hain?",
+          "text": "Pack water and snacks",
+          "hindi": "Paani ki bottle aur snacks rakhna",
           "points": 8
         }
       ]
@@ -248,8 +248,8 @@
         },
         {
           "id": "a3",
-          "text": "Puri-aloo",
-          "hindi": "Puri-aloo",
+          "text": "Sabzi-roti",
+          "hindi": "Sabzi-roti",
           "points": 18
         },
         {
@@ -369,13 +369,13 @@
         {
           "id": "a4",
           "text": "Why did you take the trouble?",
-          "hindi": "Itni takleef kyun li?",
+          "hindi": "Arre, aapne itna sab kyun banaya?",
           "points": 11
         },
         {
           "id": "a5",
-          "text": "We'll eat later",
-          "hindi": "Baad mein kha lenge",
+          "text": "Share recipe",
+          "hindi": "Recipe batana!",
           "points": 8
         }
       ]
@@ -412,8 +412,8 @@
         },
         {
           "id": "a5",
-          "text": "You keep it",
-          "hindi": "Aap hi rakh lo",
+          "text": "Your blessings are enough",
+          "hindi": "Aashirwad hi kaafi hai",
           "points": 8
         }
       ]
@@ -450,8 +450,8 @@
         },
         {
           "id": "a5",
-          "text": "Wedding invitations",
-          "hindi": "Shaadi ke invitations",
+          "text": "Patriotic India appreciation posts",
+          "hindi": "Mera Bharat Mahan / India Shining posts",
           "points": 9
         }
       ]

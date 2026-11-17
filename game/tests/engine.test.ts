@@ -285,17 +285,32 @@ describe("family feud", () => {
     s = onBank(s, { type: "feud_strike", delta: 1 }, feudBank);
     expect(s.feud?.activeTeamId).toBe("t2");
     expect(s.feud?.strikes).toBe(0);
-
-    s = onBank(s, { type: "feud_strike", delta: 1 }, feudBank);
-    expect(s.feud?.strikes).toBe(1);
-    s = onBank(s, { type: "feud_strike", delta: 1 }, feudBank);
-    expect(s.feud?.activeTeamId).toBe("t1");
-    expect(s.feud?.strikes).toBe(0);
-
-    // Four strikes across both families must not end the round.
-    expect(s.phase).toBe("QUESTION_ACTIVE");
+    expect(s.feud?.turnsPlayed).toBe(2);
     expect(s.feud?.ended).toBe(false);
-    expect(s.feud?.revealed).toEqual([]);
+
+    s = onBank(s, { type: "feud_strike", delta: 1 }, feudBank);
+    expect(s.feud?.activeTeamId).toBe("t2");
+    expect(s.feud?.strikes).toBe(1);
+  });
+
+  test("the round closes after both families have had a turn", () => {
+    let s = startWith(feudBank);
+    s = onBank(s, { type: "feud_reveal", answerId: "a1" }, feudBank);
+    expect(s.scores.teams.t1).toBe(40);
+
+    s = onBank(s, { type: "feud_strike", delta: 1 }, feudBank);
+    s = onBank(s, { type: "feud_strike", delta: 1 }, feudBank);
+    expect(s.feud?.activeTeamId).toBe("t2");
+
+    s = onBank(s, { type: "feud_strike", delta: 1 }, feudBank);
+    s = onBank(s, { type: "feud_strike", delta: 1 }, feudBank);
+
+    expect(s.feud?.ended).toBe(true);
+    expect(s.phase).toBe("REVEAL");
+    expect(s.feud?.revealed.sort()).toEqual(["a1", "a2", "a3", "a4", "a5"]);
+    // Only the guessed answer scored; the reveal is for the board, not points.
+    expect(s.scores.teams).toEqual({ t1: 40, t2: 0 });
+    expect(Object.keys(s.feud?.credited ?? {})).toEqual(["a1"]);
   });
 
   test("a correct guess on the new turn scores for that team", () => {
@@ -319,7 +334,7 @@ describe("family feud", () => {
     expect(s.phase).toBe("QUESTION_ACTIVE");
   });
 
-  test("the round ends only once all five answers are revealed", () => {
+  test("the round ends once every answer is on the board", () => {
     let s = startWith(feudBank);
     for (const answer of feudQuestion.answers.slice(0, 4)) {
       s = onBank(s, { type: "feud_reveal", answerId: answer.id }, feudBank);

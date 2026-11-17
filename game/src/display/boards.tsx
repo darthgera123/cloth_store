@@ -84,7 +84,10 @@ export function FeudBoard({ state }: { state: PublicState }) {
           <span className="text-[10px] font-semibold uppercase tracking-[0.34em] text-gold-ink">
             Turn
           </span>
-          <span className="font-serif text-[clamp(24px,2.6vw,42px)] font-semibold leading-none text-plum">
+          <span
+            key={feud.ended ? "done" : feud.activeTeamId}
+            className="fade-in font-serif text-[clamp(24px,2.6vw,42px)] font-semibold leading-none text-plum"
+          >
             {feud.ended ? "Round complete" : labelFor(state, feud.activeTeamId)}
           </span>
           <span

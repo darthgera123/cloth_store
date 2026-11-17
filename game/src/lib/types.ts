@@ -157,6 +157,8 @@ export interface FeudState {
   strikes: number;
   activeTeamId: string;
   startingTeamId: string;
+  /** 1 while the opening family has the board, 2 for the other family's turn */
+  turnsPlayed: number;
   ended: boolean;
 }
 
