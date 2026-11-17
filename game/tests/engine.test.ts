@@ -291,6 +291,11 @@ describe("family feud", () => {
     s = onBank(s, { type: "feud_strike", delta: 1 }, feudBank);
     expect(s.feud?.activeTeamId).toBe("t1");
     expect(s.feud?.strikes).toBe(0);
+
+    // Four strikes across both families must not end the round.
+    expect(s.phase).toBe("QUESTION_ACTIVE");
+    expect(s.feud?.ended).toBe(false);
+    expect(s.feud?.revealed).toEqual([]);
   });
 
   test("a correct guess on the new turn scores for that team", () => {

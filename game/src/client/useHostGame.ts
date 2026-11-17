@@ -18,6 +18,7 @@ import {
   type HostLinkStatus,
 } from "../transport/link";
 import { startDisplayFeed, type DisplayFeed } from "../multiplayer/displayFeed";
+import { migrateLegacySession } from "../lib/sessionMigration";
 
 const STORAGE_KEY = "gn:host-session:v3";
 const HISTORY_LIMIT = 12;
@@ -58,7 +59,7 @@ function readPersisted(): PersistedSession | null {
     const parsed = JSON.parse(raw) as PersistedSession;
     if (!parsed?.code || !parsed.state?.code || !parsed.state?.phase) return null;
     if (!Array.isArray(parsed.history)) return null;
-    return parsed;
+    return { ...parsed, state: migrateLegacySession(parsed.state) };
   } catch {
     return null;
   }
