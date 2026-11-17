@@ -318,7 +318,7 @@ export const defaultConfig: SessionConfig = {
   mlMode: "casual",
   mlPoints: 1,
   mlAllowSelfVote: true,
-  pirPhoneMode: "off",
+  pirPhoneMode: "teams",
   pirPoints: 1,
   pirAllOverFallback: "closest",
   currency: "INR",

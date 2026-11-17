@@ -244,17 +244,8 @@ function HostBar({
 
 /* ---------- setup ---------- */
 
-const DEFAULT_NAMES = [
-  "Pulkit",
-  "Lavani",
-  "Rajat",
-  "Bindu",
-  "Gaurang",
-  "Amita",
-  "Dhrupad",
-  "Aarush",
-];
-const DEFAULT_TEAMS: [string, string] = ["Bride's Family", "Groom's Family"];
+const DEFAULT_NAMES = ["Aarush", "Bindu", "Rajat", "Gaurang", "Amita", "Dhrupad"];
+const DEFAULT_TEAMS: [string, string] = ["Gera", "Hindocha"];
 
 function SetupCard({
   session,
@@ -541,7 +532,13 @@ function FeudTeamsCard({
     Object.fromEntries(
       session.participants.map((person, index) => [
         person.id,
-        person.teamId === "t2" ? 1 : person.teamId === "t1" ? 0 : index < 4 ? 0 : 1,
+        person.teamId === "t2"
+          ? 1
+          : person.teamId === "t1"
+            ? 0
+            : index < Math.ceil(session.participants.length / 2)
+              ? 0
+              : 1,
       ]),
     ),
   );

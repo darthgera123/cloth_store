@@ -556,7 +556,7 @@ describe("the price is right", () => {
     act(state, { type: "pir_set_guess", entityId: id, value });
 
   test("closest without going over wins", () => {
-    let s = startGame("price_is_right");
+    let s = startGame("price_is_right", { pirPhoneMode: "off" });
     const price = bank.price_is_right[0]!.actualPrice;
     s = guess(s, "p1", Math.round(price * 0.8));
     s = guess(s, "p2", price + 100);
@@ -568,7 +568,7 @@ describe("the price is right", () => {
   });
 
   test("when every guess is over, nearest price wins", () => {
-    let s = startGame("price_is_right");
+    let s = startGame("price_is_right", { pirPhoneMode: "off" });
     const price = bank.price_is_right[0]!.actualPrice;
     s = guess(s, "p1", price + 500);
     s = guess(s, "p2", price + 50);
@@ -578,7 +578,7 @@ describe("the price is right", () => {
   });
 
   test("ties award every equal winning guess", () => {
-    let s = startGame("price_is_right");
+    let s = startGame("price_is_right", { pirPhoneMode: "off" });
     const price = bank.price_is_right[0]!.actualPrice;
     s = guess(s, "p1", 800);
     s = guess(s, "p2", 800);
@@ -590,7 +590,7 @@ describe("the price is right", () => {
   });
 
   test("the price stays private until revealed, and guesses lock", () => {
-    let s = startGame("price_is_right");
+    let s = startGame("price_is_right", { pirPhoneMode: "off" });
     s = guess(s, "p1", 900);
     const hidden = projectPublic(s, bank);
     expect(hidden.question?.actualPrice).toBeNull();
@@ -622,8 +622,12 @@ describe("price phone entries", () => {
     return s;
   };
 
-  test("phone mode is off by default and fixed per game", () => {
-    expect(startGame("price_is_right").pir?.party).toBeNull();
+  test("phone mode defaults to three teams and is fixed per game", () => {
+    expect(startGame("price_is_right").pir?.party).toMatchObject({
+      mode: "teams",
+      capacity: 3,
+    });
+    expect(startGame("price_is_right", { pirPhoneMode: "off" }).pir?.party).toBeNull();
     expect(startGame("price_is_right", { pirPhoneMode: "teams" }).pir?.party).toMatchObject({
       mode: "teams",
       capacity: 3,

@@ -63,7 +63,7 @@ function TeamScore({
 const turnTitle = (name: string): string => {
   if (/^bride/i.test(name)) return "Brides' Turn";
   if (/^groom/i.test(name)) return "Grooms' Turn";
-  return `${name} — Turn`;
+  return `${name}'s Turn`;
 };
 
 function FeudTurnCue({
@@ -95,7 +95,7 @@ function FeudTurnCue({
       aria-live="polite"
     >
       <div className="turn-cue-card border border-gold/60 bg-lavender/95 px-[clamp(24px,3vw,48px)] py-[clamp(10px,1.6vh,20px)] text-center">
-        <p className="text-[9px] uppercase tracking-[0.34em] text-gold-ink">Turn</p>
+        <p className="text-[9px] uppercase tracking-[0.34em] text-gold-ink">Next up</p>
         <p className="mt-1 font-serif text-[clamp(26px,2.8vw,46px)] leading-none text-plum">{cue}</p>
       </div>
     </div>
