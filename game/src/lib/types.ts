@@ -147,6 +147,7 @@ export interface Timer {
 }
 
 export const FEUD_STRIKES = 2;
+export const FEUD_GRACE_POINTS = 5;
 
 export interface FeudState {
   questionId: string;
@@ -159,6 +160,8 @@ export interface FeudState {
   startingTeamId: string;
   /** 1 while the opening family has the board, 2 for the other family's turn */
   turnsPlayed: number;
+  /** host-awarded bonus guesses, kept for scoring and undo */
+  grace: { teamId: string; at: number }[];
   ended: boolean;
 }
 
@@ -370,6 +373,7 @@ export const actionSchema = z.discriminatedUnion("type", [
     delta: z.union([z.literal(1), z.literal(-1)]),
     teamId: z.string().min(1).optional(),
   }),
+  z.object({ type: z.literal("feud_grace") }),
 
   z.object({ type: z.literal("herd_set_answer"), participantId: z.string().min(1), text: z.string().max(60) }),
   z.object({ type: z.literal("herd_merge"), from: z.string().min(1), to: z.string().min(1) }),
@@ -434,8 +438,11 @@ export interface PublicFeud {
   activeTeamId: string | null;
   strikes: number;
   strikeLimit: number;
-  /** Points each family scored this round (guessed answers only). */
+  /** Points each family scored this round, including Grace Points. */
   roundPoints: Record<string, number>;
+  /** Total Grace awards this round (drives the TV cue, never replaying). */
+  graceCount: number;
+  graceTeamId: string | null;
   ended: boolean;
 }
 

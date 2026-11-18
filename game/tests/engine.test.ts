@@ -400,6 +400,129 @@ describe("family feud", () => {
     expect(pub.scores.teams).toEqual({ t1: 40, t2: 30 });
   });
 
+  test("grace points award five to the active team without revealing or striking", () => {
+    let s = startWith(feudBank);
+    s = onBank(s, { type: "feud_grace" }, feudBank);
+
+    expect(s.scores.teams).toEqual({ t1: 5, t2: 0 });
+    expect(s.feud?.strikes).toBe(0);
+    expect(s.feud?.revealed).toEqual([]);
+    expect(s.feud?.activeTeamId).toBe("t1");
+    expect(s.feud?.grace).toHaveLength(1);
+
+    const pub = projectPublic(s, feudBank);
+    expect(pub.feud?.roundPoints).toEqual({ t1: 5 });
+    expect(pub.feud?.graceCount).toBe(1);
+    expect(pub.feud?.graceTeamId).toBe("t1");
+    expect(pub.question?.answers?.every((answer) => !answer.revealed)).toBe(true);
+
+    // Projecting again (Firebase snapshots) does not duplicate the award.
+    expect(projectPublic(s, feudBank).feud?.graceCount).toBe(1);
+    expect(s.scores.teams.t1).toBe(5);
+  });
+
+  test("grace points stack and never count as a strike", () => {
+    let s = startWith(feudBank);
+    s = onBank(s, { type: "feud_grace" }, feudBank);
+    s = onBank(s, { type: "feud_grace" }, feudBank);
+    expect(s.scores.teams.t1).toBe(10);
+
+    s = onBank(s, { type: "feud_strike", delta: 1 }, feudBank);
+    expect(s.feud?.strikes).toBe(1);
+    expect(s.feud?.activeTeamId).toBe("t1");
+    expect(s.scores.teams.t1).toBe(10);
+
+    s = onBank(s, { type: "feud_grace" }, feudBank);
+    expect(s.scores.teams.t1).toBe(15);
+    expect(s.feud?.strikes).toBe(1);
+    expect(projectPublic(s, feudBank).feud?.graceCount).toBe(3);
+  });
+
+  test("grace points on the second family's turn credit the other team", () => {
+    let s = startWith(feudBank);
+    s = onBank(s, { type: "feud_strike", delta: 1 }, feudBank);
+    s = onBank(s, { type: "feud_strike", delta: 1 }, feudBank);
+    expect(s.feud?.activeTeamId).toBe("t2");
+
+    s = onBank(s, { type: "feud_grace" }, feudBank);
+    expect(s.scores.teams).toEqual({ t1: 0, t2: 5 });
+    expect(s.feud?.activeTeamId).toBe("t2");
+    expect(s.feud?.strikes).toBe(0);
+    expect(projectPublic(s, feudBank).feud?.roundPoints).toEqual({ t2: 5 });
+  });
+
+  test("grace points are refused outside an active turn", () => {
+    let s = startWith(feudBank);
+    for (const answer of feudQuestion.answers) {
+      s = onBank(s, { type: "feud_reveal", answerId: answer.id }, feudBank);
+    }
+    expect(s.phase).toBe("REVEAL");
+    expectEngineError(() => onBank(s, { type: "feud_grace" }, feudBank));
+
+    s = onBank(s, { type: "round_result" }, feudBank);
+    expectEngineError(() => onBank(s, { type: "feud_grace" }, feudBank));
+  });
+
+  test("grace points join the round summary and cumulative score", () => {
+    let s = startWith(feudBank);
+    s = onBank(s, { type: "feud_reveal", answerId: "a1" }, feudBank); // t1 +40
+    s = onBank(s, { type: "feud_grace" }, feudBank);
+    s = onBank(s, { type: "feud_grace" }, feudBank);
+    s = onBank(s, { type: "feud_strike", delta: 1 }, feudBank);
+    s = onBank(s, { type: "feud_strike", delta: 1 }, feudBank); // t2's turn
+    s = onBank(s, { type: "feud_strike", delta: 1 }, feudBank);
+    s = onBank(s, { type: "feud_strike", delta: 1 }, feudBank); // round closes
+
+    const pub = projectPublic(s, feudBank);
+    expect(pub.feud?.ended).toBe(true);
+    expect(pub.feud?.roundPoints).toEqual({ t1: 50 });
+    expect(s.scores.teams.t1).toBe(50);
+    expect(s.scores.teams.t2).toBe(0);
+  });
+
+  test("grace points appear in the final standings", () => {
+    let s = startGame("family_feud");
+    s = act(s, { type: "feud_grace" });
+    const total = bank.family_feud.length;
+    for (let round = 0; round < total; round += 1) {
+      if (round > 0) s = act(s, { type: "start_round" });
+      const question = bank.family_feud.find((item) => item.id === s.feud?.questionId);
+      if (!question) throw new Error("missing question");
+      for (const answer of question.answers) {
+        s = act(s, { type: "feud_reveal", answerId: answer.id });
+      }
+      s = act(s, { type: "round_result" });
+      s = act(s, { type: "next_round" });
+    }
+    expect(s.phase).toBe("GAME_RESULT");
+    // The opening family alternates, so Brides fully guess rounds 1, 3, …
+    const official = bank.family_feud
+      .filter((_, index) => index % 2 === 0)
+      .reduce(
+        (sum, question) => sum + question.answers.reduce((points, answer) => points + answer.points, 0),
+        0,
+      );
+    const bride = s.results[0]?.standings.find((row) => row.label === "Bride's Family");
+    expect(bride?.points).toBe(official + 5);
+  });
+
+  test("restarting a round rolls back grace points too", () => {
+    let s = startWith(feudBank);
+    s = onBank(s, { type: "feud_grace" }, feudBank);
+    expect(s.scores.teams.t1).toBe(5);
+    s = onBank(s, { type: "restart_round" }, feudBank);
+    expect(s.scores.teams.t1).toBe(0);
+    expect(s.phase).toBe("ROUND_READY");
+  });
+
+  test("the undo snapshot keeps the pre-grace score", () => {
+    const before = startWith(feudBank);
+    const after = onBank(before, { type: "feud_grace" }, feudBank);
+    expect(before.scores.teams.t1).toBe(0);
+    expect(before.feud?.grace).toEqual([]);
+    expect(after.scores.teams.t1).toBe(5);
+  });
+
   test("restarting a round rolls back its immediate points", () => {
     let s = startWith(feudBank);
     s = onBank(s, { type: "feud_reveal", answerId: "a1" }, feudBank);

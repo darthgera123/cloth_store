@@ -1,8 +1,8 @@
 /* Audience boards. Everything here reads PublicState only — hidden answers,
    prices and tallies never reach this code path. */
 
-import { useEffect, useState } from "react";
-import type { GameId, Participant, PublicState, PublicPrice, Team } from "../lib/types";
+import { useEffect, useRef, useState } from "react";
+import { FEUD_GRACE_POINTS, type GameId, type Participant, type PublicState, type PublicPrice, type Team } from "../lib/types";
 import { StrikeMark } from "../components/Mandala";
 import { publicAsset } from "../lib/assets";
 
@@ -60,6 +60,45 @@ function TeamScore({
 }
 
 
+
+function FeudGraceCue({
+  count,
+  teamName,
+}: {
+  count: number;
+  teamName: string | null;
+}) {
+  const [visible, setVisible] = useState(false);
+  const previous = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (previous.current === null) {
+      previous.current = count;
+      return;
+    }
+    if (count > previous.current && teamName) {
+      previous.current = count;
+      setVisible(true);
+      const id = window.setTimeout(() => setVisible(false), 1600);
+      return () => window.clearTimeout(id);
+    }
+    previous.current = count;
+  }, [count, teamName]);
+
+  if (!visible || !teamName) return null;
+  return (
+    <div
+      key={count}
+      className="grace-cue pointer-events-none fixed inset-x-0 top-[14vh] z-30 flex justify-center"
+      aria-live="polite"
+    >
+      <p className="grace-cue-card border border-gold/60 bg-lavender/95 px-[clamp(14px,1.6vw,26px)] py-[clamp(6px,1vh,12px)] text-center text-[clamp(10px,1vw,15px)] uppercase tracking-[0.24em] text-gold-ink">
+        {teamName} +{FEUD_GRACE_POINTS} Grace Points
+      </p>
+    </div>
+  );
+}
+
 export function FeudBoard({ state }: { state: PublicState }) {
   const feud = state.feud;
   const question = state.question;
@@ -69,6 +108,10 @@ export function FeudBoard({ state }: { state: PublicState }) {
 
   return (
     <div className="feud-board flex w-full flex-col gap-[clamp(16px,2.6vh,32px)]">
+      <FeudGraceCue
+        count={feud.graceCount}
+        teamName={feud.graceTeamId ? labelFor(state, feud.graceTeamId) : null}
+      />
       <div className="grid grid-cols-[1fr_auto_1fr] items-end gap-[clamp(16px,3vw,56px)] border-b border-gold/20 pb-[clamp(12px,1.8vh,20px)]">
         {state.teams[0] ? (
           <TeamScore

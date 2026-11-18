@@ -637,3 +637,28 @@
     font-size: 22px;
   }
 }
+
+.grace-cue {
+  animation: grace-cue 1.6s cubic-bezier(0.25, 0.6, 0.25, 1) both;
+}
+
+.grace-cue-card {
+  box-shadow: 0 14px 40px rgb(57 39 71 / 0.16);
+}
+
+@keyframes grace-cue {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  12% {
+    opacity: 1;
+    transform: none;
+  }
+  78% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

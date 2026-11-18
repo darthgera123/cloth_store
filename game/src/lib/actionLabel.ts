@@ -25,6 +25,7 @@ export const ACTION_LABEL: Record<Action["type"], string> = {
   reset_session: "Session reset",
   feud_reveal: "Answer revealed",
   feud_strike: "Strike recorded",
+  feud_grace: "Grace points",
   herd_set_answer: "Answer recorded",
   herd_merge: "Answers grouped",
   herd_unmerge: "Group split",

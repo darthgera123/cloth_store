@@ -22,6 +22,7 @@ import {
   type Team,
   configSchema,
   defaultConfig,
+  FEUD_GRACE_POINTS,
   FEUD_STRIKES,
 } from "../lib/types";
 import { RULES } from "../rules/slides";
@@ -281,6 +282,7 @@ function initGameState(state: SessionState, question: Question) {
       activeTeamId: starter,
       startingTeamId: starter,
       turnsPlayed: 1,
+      grace: [],
       ended: false,
     };
     state.herd = null;
@@ -770,6 +772,17 @@ export function applyAction(
       break;
     }
 
+    case "feud_grace": {
+      needGame(next, "family_feud");
+      needPhase(next, ["QUESTION_ACTIVE"]);
+      const feud = next.feud;
+      if (!feud) fail("No Feud round");
+      if (feud.ended) fail("The round is already over");
+      addPoints(next, "team", feud.activeTeamId, FEUD_GRACE_POINTS);
+      feud.grace = [...feud.grace, { teamId: feud.activeTeamId, at: now }];
+      break;
+    }
+
     case "feud_strike": {
       needGame(next, "family_feud");
       needPhase(next, ["QUESTION_ACTIVE"]);
@@ -1127,17 +1140,23 @@ export function projectPublic(state: SessionState, bank: QuestionBank): PublicSt
         activeTeamId: state.feud.activeTeamId,
         strikes: state.feud.strikes,
         strikeLimit: FEUD_STRIKES,
-        roundPoints:
-          question?.game === "family_feud"
-            ? Object.entries(state.feud.credited).reduce<Record<string, number>>(
-                (totals, [answerId, teamId]) => {
-                  const answer = question.answers.find((item) => item.id === answerId);
-                  if (answer) totals[teamId] = (totals[teamId] ?? 0) + answer.points;
-                  return totals;
-                },
-                {},
-              )
-            : {},
+        roundPoints: (() => {
+          if (question?.game !== "family_feud") return {};
+          const totals = Object.entries(state.feud.credited).reduce<Record<string, number>>(
+            (sums, [answerId, teamId]) => {
+              const answer = question.answers.find((item) => item.id === answerId);
+              if (answer) sums[teamId] = (sums[teamId] ?? 0) + answer.points;
+              return sums;
+            },
+            {},
+          );
+          for (const award of state.feud.grace) {
+            totals[award.teamId] = (totals[award.teamId] ?? 0) + FEUD_GRACE_POINTS;
+          }
+          return totals;
+        })(),
+        graceCount: state.feud.grace.length,
+        graceTeamId: state.feud.grace[state.feud.grace.length - 1]?.teamId ?? null,
         ended: state.feud.ended,
       }
     : null;

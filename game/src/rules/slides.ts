@@ -17,7 +17,7 @@ export const RULES: Record<GameId, RuleSlide[]> = {
     },
     {
       title: "Take Turns",
-      body: "A correct guess reveals the answer and scores its points for your family right away. Keep guessing while the board is yours.",
+      body: "A correct guess reveals the answer and scores its points for your family right away. Keep guessing while the board is yours. The host can award +5 Grace Points for a clever answer that is not on the board.",
     },
     {
       title: "Two Strikes",

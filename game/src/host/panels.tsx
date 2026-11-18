@@ -8,6 +8,7 @@ import type { PricePartyApi } from "../multiplayer/usePriceParty";
 import { firebaseConfigured } from "../multiplayer/config";
 import {
   GAME_LABEL,
+  FEUD_GRACE_POINTS,
   FEUD_STRIKES,
   type Action,
   type FeudQuestion,
@@ -126,6 +127,7 @@ export function FeudPanel({
   questions: Question[];
   send: Send;
 }) {
+  const [graceLocked, setGraceLocked] = useState(false);
   const feud = session.feud;
   const question = questions.find((q) => q.id === feud?.questionId) as FeudQuestion | undefined;
   if (!feud || !question) {
@@ -193,6 +195,18 @@ export function FeudPanel({
           >
             Undo strike
           </button>
+          <button
+            className="hbtn"
+            type="button"
+            disabled={!open || graceLocked}
+            onClick={() => {
+              setGraceLocked(true);
+              send({ type: "feud_grace" });
+              window.setTimeout(() => setGraceLocked(false), 450);
+            }}
+          >
+            Grace +{FEUD_GRACE_POINTS}
+          </button>
         </div>
       </div>
 
@@ -243,13 +257,15 @@ export function FeudPanel({
           <Meta>Round over · all five answers revealed</Meta>
           <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-[12px]">
             {session.teams.map((team) => {
-              const roundPoints = Object.entries(feud.credited).reduce((sum, [answerId, teamId]) => {
+              const official = Object.entries(feud.credited).reduce((sum, [answerId, teamId]) => {
                 if (teamId !== team.id) return sum;
                 return sum + (question.answers.find((answer) => answer.id === answerId)?.points ?? 0);
               }, 0);
+              const grace = feud.grace.filter((award) => award.teamId === team.id).length * FEUD_GRACE_POINTS;
               return (
                 <span key={team.id}>
-                  {team.name}: <b className="tabular-nums text-gold-ink">{roundPoints}</b> this round
+                  {team.name}: <b className="tabular-nums text-gold-ink">{official + grace}</b> this round
+                  {grace > 0 ? ` (${official} + ${grace} grace)` : ""}
                   <span className="text-plum-hush"> · </span>
                   <b className="tabular-nums">{session.scores.teams[team.id] ?? 0}</b> total
                 </span>
