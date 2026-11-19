@@ -219,6 +219,36 @@ describe("question order", () => {
     expect(Object.keys(projectPublic(s, corpus))).not.toContain("questionOrder");
   });
 
+  test("the host can choose ten, fifteen or twenty rounds", () => {
+    const answers = [34, 27, 19, 12, 8];
+    const large: QuestionBank = {
+      ...bank,
+      family_feud: Array.from({ length: 26 }, (_, index) => ({
+        id: `ff-${index + 1}`,
+        game: "family_feud" as const,
+        question: `Question ${index + 1}`,
+        hindi: `Sawaal ${index + 1}`,
+        answers: answers.map((points, answerIndex) => ({
+          id: `a${answerIndex + 1}`,
+          text: `Answer ${answerIndex + 1}`,
+          hindi: `Jawab ${answerIndex + 1}`,
+          points,
+        })),
+      })),
+    };
+    for (const rounds of [10, 15, 20] as const) {
+      const s = applyAction(
+        session({ roundsPerGame: rounds }),
+        { type: "select_game", game: "family_feud" },
+        large,
+        tick(),
+        () => 0,
+      );
+      expect(s.questionOrder).toHaveLength(rounds);
+      expect(new Set(s.questionOrder).size).toBe(rounds);
+    }
+  });
+
   test("the bank uses every question when fewer than ten exist", () => {
     const s = act(session(), { type: "select_game", game: "family_feud" });
     expect(s.questionOrder).toHaveLength(bank.family_feud.length);
@@ -781,14 +811,14 @@ describe("price phone entries", () => {
   test("ranking is pure distance with shared ranks for ties", () => {
     const podium = rankPriceGuesses({ a: 1400, b: 1500, c: 1600, d: 1450 }, 1500);
     expect(podium.map((entry) => [entry.entryId, entry.rank, entry.points])).toEqual([
-      ["b", 1, 3],
-      ["d", 2, 2],
-      ["a", 3, 1],
-      ["c", 3, 1],
+      ["b", 1, 30],
+      ["d", 2, 20],
+      ["a", 3, 10],
+      ["c", 3, 10],
     ]);
   });
 
-  test("price reveal shows no scores; the leaderboard awards 3/2/1", () => {
+  test("price reveal shows no scores; the leaderboard awards 30/20/10", () => {
     let s = startParty("individual");
     for (const slot of ["p1", "p2", "p3", "p4"]) s = join(s, slot, slot);
     s = guess(s, "p1", 1450);
@@ -805,12 +835,12 @@ describe("price phone entries", () => {
     s = act(s, { type: "pir_leaderboard" });
     expect(s.pir?.party?.leaderboardRevealed).toBe(true);
     expect(s.pir?.party?.podium.map((entry) => [entry.entryId, entry.rank, entry.points])).toEqual([
-      ["p2", 1, 3],
-      ["p1", 2, 2],
-      ["p4", 2, 2],
+      ["p2", 1, 30],
+      ["p1", 2, 20],
+      ["p4", 2, 20],
       ["p3", 4, 0],
     ]);
-    expect(s.pir?.party?.scores).toEqual({ p1: 2, p2: 3, p3: 0, p4: 2 });
+    expect(s.pir?.party?.scores).toEqual({ p1: 20, p2: 30, p3: 0, p4: 20 });
     expectEngineError(() => act(s, { type: "pir_leaderboard" }));
   });
 
@@ -849,8 +879,8 @@ describe("price phone entries", () => {
 
     s = act(s, { type: "pir_leaderboard" });
     expect(s.pir?.party?.podium.map((entry) => [entry.entryId, entry.rank, entry.points])).toEqual([
-      ["t1", 1, 3],
-      ["t2", 2, 2],
+      ["t1", 1, 30],
+      ["t2", 2, 20],
     ]);
     expectEngineError(() => guess(s, "t2", 1600));
   });
@@ -868,8 +898,8 @@ describe("price phone entries", () => {
 
     const standings = s.results.at(-1)?.standings ?? [];
     expect(standings.map((row) => [row.label, row.points, row.winner])).toEqual([
-      ["Alpha", 3, true],
-      ["Bravo", 2, false],
+      ["Alpha", 30, true],
+      ["Bravo", 20, false],
     ]);
     expect(standings.map((row) => row.label)).not.toEqual(roster);
   });
@@ -885,7 +915,7 @@ describe("price phone entries", () => {
 
     s = revealed(s);
     s = act(s, { type: "pir_leaderboard" });
-    expect(s.pir?.party?.scores).toEqual({ t1: 2, t2: 2, t3: 3 });
+    expect(s.pir?.party?.scores).toEqual({ t1: 20, t2: 20, t3: 30 });
 
     s = act(s, { type: "pir_undo_award" });
     expect(s.pir?.party?.scores).toEqual({ t1: 0, t2: 0, t3: 0 });
@@ -893,7 +923,7 @@ describe("price phone entries", () => {
 
     s = act(s, { type: "pir_override", teamIds: ["t1", "t2", "t3"] });
     s = act(s, { type: "pir_award" });
-    expect(s.pir?.party?.scores).toEqual({ t1: 3, t2: 2, t3: 1 });
+    expect(s.pir?.party?.scores).toEqual({ t1: 30, t2: 20, t3: 10 });
   });
 
   test("teams and totals survive the next round", () => {
@@ -907,7 +937,7 @@ describe("price phone entries", () => {
     s = act(s, { type: "start_round" });
 
     expect(Object.keys(s.pir?.party?.teams ?? {})).toHaveLength(1);
-    expect(s.pir?.party?.scores.t1).toBe(3);
+    expect(s.pir?.party?.scores.t1).toBe(30);
     expect(s.pir?.party?.guesses).toEqual({});
     expect(s.pir?.party?.podium).toEqual([]);
     expect(s.pir?.party?.leaderboardRevealed).toBe(false);
@@ -919,7 +949,7 @@ describe("price phone entries", () => {
     s = guess(s, "t1", 1500);
     s = revealed(s);
     s = act(s, { type: "pir_leaderboard" });
-    expect(s.pir?.party?.scores.t1).toBe(3);
+    expect(s.pir?.party?.scores.t1).toBe(30);
 
     s = act(s, { type: "restart_round" });
     expect(s.pir?.party?.scores.t1).toBe(0);

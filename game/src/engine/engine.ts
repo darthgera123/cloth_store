@@ -27,7 +27,7 @@ import {
 } from "../lib/types";
 import { RULES } from "../rules/slides";
 import { herdGroups, normalizeAnswer } from "../lib/herd";
-import { ROUNDS_PER_GAME, sampleWithoutReplacement } from "../lib/random";
+import { sampleWithoutReplacement } from "../lib/random";
 
 export class EngineError extends Error {
   code: string;
@@ -200,7 +200,7 @@ export function rankPriceGuesses(
 
   return rows.map((row) => {
     const rank = 1 + rows.filter((other) => other.distance < row.distance).length;
-    const points = rank === 1 ? 3 : rank === 2 ? 2 : rank === 3 ? 1 : 0;
+    const points = rank === 1 ? 30 : rank === 2 ? 20 : rank === 3 ? 10 : 0;
     return { entryId: row.entryId, rank, points, distance: row.distance };
   });
 }
@@ -397,7 +397,8 @@ export function applyAction(
       next.status = "active";
       next.roundAwards = [];
       // One unbiased sample per new game: ten unique questions, fixed order.
-      next.questionOrder = sampleWithoutReplacement(questions, ROUNDS_PER_GAME, random).map(
+      const rounds = next.config.roundsPerGame ?? 10;
+      next.questionOrder = sampleWithoutReplacement(questions, rounds, random).map(
         (question) => question.id,
       );
       next.scores = emptyScores(next.participants, next.teams);
@@ -888,7 +889,7 @@ export function applyAction(
       pir.party.podium = ids.map((id, index) => ({
         entryId: id,
         rank: index + 1,
-        points: [3, 2, 1][index] ?? 0,
+        points: [30, 20, 10][index] ?? 0,
         distance: Math.abs((pir.party?.guesses[id] ?? 0) - question.actualPrice),
       }));
       pir.party.leaderboardRevealed = true;

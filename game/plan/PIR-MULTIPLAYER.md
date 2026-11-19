@@ -77,7 +77,7 @@ RULES (how to play)
 Rank submitted guesses by **absolute distance** from the actual price
 (overbids count the same). Exact ties share the rank and the points using
 standard competition ranking (1, 2, 2, 4…). Points: **3 / 2 / 1** for ranks
-1–3; ranks 4–6 score nothing. With 3 teams every team scores 3/2/1.
+1–3; ranks 4–6 score nothing. With 3 teams every team scores 30/20/10.
 
 The podium stores `{ entryId, rank, points, distance }` so the TV can show
 guesses, distances and points together, and undo can subtract exactly.

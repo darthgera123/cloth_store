@@ -292,6 +292,8 @@ export interface SessionConfig {
   mlPoints: number;
   mlAllowSelfVote: boolean;
   pirPhoneMode: "off" | "teams" | "individual";
+  /** Rounds sampled for a new game: 10, 15 or 20. */
+  roundsPerGame: 10 | 15 | 20;
   pirPoints: number;
   pirAllOverFallback: "closest" | "lowest";
   currency: string;
@@ -307,6 +309,7 @@ export const configSchema = z.object({
   mlPoints: z.number().int().min(1).max(10),
   mlAllowSelfVote: z.boolean(),
   pirPhoneMode: z.enum(["off", "teams", "individual"]),
+  roundsPerGame: z.union([z.literal(10), z.literal(15), z.literal(20)]).default(10),
   pirPoints: z.number().int().min(1).max(100),
   pirAllOverFallback: z.enum(["closest", "lowest"]),
   currency: z.string().min(1).max(8),
@@ -322,6 +325,7 @@ export const defaultConfig: SessionConfig = {
   mlPoints: 1,
   mlAllowSelfVote: true,
   pirPhoneMode: "teams",
+  roundsPerGame: 10,
   pirPoints: 1,
   pirAllOverFallback: "closest",
   currency: "INR",

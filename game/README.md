@@ -99,7 +99,7 @@ The Price Is Right can take guesses from phones through Firebase Realtime
 Database: **three teams** or **six individuals**, chosen under *Phone players*
 in setup. Share the QR shown on the TV, each phone joins at
 `/join/?code=XXXX`, and the host controls submissions, the guess reveal, the
-price reveal and the podium (3/2/1 points by closest guess).
+price reveal and the podium (30/20/10 points by closest guess).
 
 The app is preconfigured for the `game-night-price` Firebase project; the public
 web config lives in `.env.production`. Rules deployment, the emulator procedure
@@ -151,10 +151,10 @@ on/off.
 [questions/README.md](questions/README.md) for the format. `bun run questions`
 (part of `bun run build`) parses and validates them into
 `questions/generated.json`, so adding a question never needs a code change.
-Each new game randomly samples 10 unique questions (or all of them, with a
-host notice, when the bank is shorter); the selected IDs and order live in the
-host session, so refreshes, phone reconnects and undo never reshuffle. Starting
-a new game draws a fresh set.
+Each new game randomly samples 10, 15 or 20 unique questions (set in the host's
+setup; all of them, with a host notice, when the bank is shorter). The selected
+IDs and order live in the host session, so refreshes, phone reconnects and undo
+never reshuffle. Starting a new game draws a fresh set.
 
 ## Deploy to GitHub Pages
 

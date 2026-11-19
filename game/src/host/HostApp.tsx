@@ -18,7 +18,6 @@ import { RULES } from "../rules/slides";
 import { VISIBLE_GAMES } from "../lib/games";
 import { usePriceParty } from "../multiplayer/usePriceParty";
 import { firebaseConfigured } from "../multiplayer/config";
-import { ROUNDS_PER_GAME } from "../lib/random";
 
 export function HostApp() {
   const api = useHostGame();
@@ -55,7 +54,7 @@ export function HostApp() {
   return (
     <div className="host-shell">
       <HostBar api={api} session={session} />
-      {session.game && session.questionOrder.length > 0 && session.questionOrder.length < ROUNDS_PER_GAME ? (
+      {session.game && session.questionOrder.length > 0 && session.questionOrder.length < (session.config.roundsPerGame ?? 10) ? (
         <div className="mx-auto max-w-[1500px] px-4 pt-4">
           <p className="border border-gold/40 bg-lavender-pale px-3 py-2 text-[12px] text-plum-soft">
             Only {session.questionOrder.length} question{session.questionOrder.length === 1 ? "" : "s"} in this
@@ -354,6 +353,21 @@ function SetupCard({
           Game rules
         </summary>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
+          <Rule label="Questions per game">
+            <select
+              className="field"
+              value={config.roundsPerGame ?? 10}
+              onChange={(event) =>
+                updateConfig("roundsPerGame", Number(event.target.value) as SessionConfig["roundsPerGame"])
+              }
+            >
+              {[10, 15, 20].map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
+          </Rule>
           <Rule label="Price Is Right — host-entry points">
             <select
               className="field"
