@@ -27,7 +27,7 @@ import {
 } from "../lib/types";
 import { RULES } from "../rules/slides";
 import { herdGroups, normalizeAnswer } from "../lib/herd";
-import { sampleWithoutReplacement } from "../lib/random";
+import { samplePriceQuestions, sampleWithoutReplacement } from "../lib/random";
 
 export class EngineError extends Error {
   code: string;
@@ -397,10 +397,19 @@ export function applyAction(
       next.status = "active";
       next.roundAwards = [];
       // One unbiased sample per new game: ten unique questions, fixed order.
-      const rounds = next.config.roundsPerGame ?? 10;
-      next.questionOrder = sampleWithoutReplacement(questions, rounds, random).map(
-        (question) => question.id,
-      );
+      // Only The Price Is Right exposes the 10/15/20 round setting; the other
+      // games always run their ten-round draw.
+      const rounds = action.game === "price_is_right" ? (next.config.roundsPerGame ?? 10) : 10;
+      const selected =
+        action.game === "price_is_right"
+          ? samplePriceQuestions(
+              questions as PriceQuestion[],
+              rounds,
+              (question) => question.actualPrice,
+              random,
+            )
+          : sampleWithoutReplacement(questions, rounds, random);
+      next.questionOrder = selected.map((question) => question.id);
       next.scores = emptyScores(next.participants, next.teams);
       next.feud = null;
       next.herd = null;

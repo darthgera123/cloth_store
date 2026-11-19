@@ -151,10 +151,13 @@ on/off.
 [questions/README.md](questions/README.md) for the format. `bun run questions`
 (part of `bun run build`) parses and validates them into
 `questions/generated.json`, so adding a question never needs a code change.
-Each new game randomly samples 10, 15 or 20 unique questions (set in the host's
-setup; all of them, with a host notice, when the bank is shorter). The selected
-IDs and order live in the host session, so refreshes, phone reconnects and undo
-never reshuffle. Starting a new game draws a fresh set.
+The Price Is Right samples 10, 15 or 20 unique products (set in the host's
+setup), balanced across cheap, mid-range and expensive thirds of the catalogue
+so a game never turns into all luxury items or all groceries. Every other game
+samples ten questions, or all of them when the bank is shorter, with a notice on
+the host screen. The selected IDs and order live in the host session, so
+refreshes, phone reconnects and undo never reshuffle. Starting a new game draws
+a fresh set.
 
 ## Deploy to GitHub Pages
 

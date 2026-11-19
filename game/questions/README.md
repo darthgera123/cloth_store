@@ -8,9 +8,11 @@ One `## QUESTION-ID` block per question. IDs are stable: they are what a host
 session stores for its ten selected rounds, so do not rename an ID once it has
 been used.
 
-Every new game randomly samples **10, 15 or 20 unique questions** (chosen in
-the host setup) from that game's file; when the file is shorter, all of them are
-used and the host screen shows a notice.
+Every new game randomly samples **ten unique questions** from that game's file
+(or all of them when the file is shorter, with a notice on the host screen).
+The Price Is Right is the exception: the host can pick **10, 15 or 20 products**,
+and the draw is balanced across the cheapest, mid-range and most expensive
+thirds of the catalogue.
 
 ## Family Feud — `family-feud.md`
 

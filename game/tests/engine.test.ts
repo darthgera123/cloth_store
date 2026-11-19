@@ -219,9 +219,46 @@ describe("question order", () => {
     expect(Object.keys(projectPublic(s, corpus))).not.toContain("questionOrder");
   });
 
-  test("the host can choose ten, fifteen or twenty rounds", () => {
+  test("Price Is Right mixes cheap and expensive products for 10, 15 or 20 rounds", () => {
+    const products = Array.from({ length: 26 }, (_, index) => ({
+      id: `PIR-${index + 1}`,
+      game: "price_is_right" as const,
+      item: `Item ${index + 1}`,
+      description: `Description ${index + 1}`,
+      image: `products/pir-${index + 1}.jpg`,
+      actualPrice: (index + 1) * 100,
+      currency: "INR",
+      priceUnit: "item",
+    }));
+    const pirBank: QuestionBank = { ...bank, price_is_right: products };
+
+    for (const rounds of [10, 15, 20] as const) {
+      const s = applyAction(
+        session({ roundsPerGame: rounds }),
+        { type: "select_game", game: "price_is_right" },
+        pirBank,
+        tick(),
+        () => 0,
+      );
+      expect(s.questionOrder).toHaveLength(rounds);
+      expect(new Set(s.questionOrder).size).toBe(rounds);
+      const prices = s.questionOrder
+        .map((id) => products.find((product) => product.id === id)?.actualPrice ?? 0)
+        .sort((a, b) => a - b);
+      // Cheap (≤900), mid (≤1800) and expensive thirds all appear.
+      expect(prices.filter((price) => price <= 900).length).toBeGreaterThanOrEqual(3);
+      expect(prices.filter((price) => price > 900 && price <= 1800).length).toBeGreaterThanOrEqual(
+        rounds === 10 ? 3 : 5,
+      );
+      expect(prices.filter((price) => price > 1800).length).toBeGreaterThanOrEqual(
+        rounds === 10 ? 3 : 5,
+      );
+    }
+  });
+
+  test("other games keep ten rounds even when the setting says otherwise", () => {
     const answers = [34, 27, 19, 12, 8];
-    const large: QuestionBank = {
+    const corpus: QuestionBank = {
       ...bank,
       family_feud: Array.from({ length: 26 }, (_, index) => ({
         id: `ff-${index + 1}`,
@@ -236,17 +273,14 @@ describe("question order", () => {
         })),
       })),
     };
-    for (const rounds of [10, 15, 20] as const) {
-      const s = applyAction(
-        session({ roundsPerGame: rounds }),
-        { type: "select_game", game: "family_feud" },
-        large,
-        tick(),
-        () => 0,
-      );
-      expect(s.questionOrder).toHaveLength(rounds);
-      expect(new Set(s.questionOrder).size).toBe(rounds);
-    }
+    const s = applyAction(
+      session({ roundsPerGame: 20 }),
+      { type: "select_game", game: "family_feud" },
+      corpus,
+      tick(),
+      () => 0,
+    );
+    expect(s.questionOrder).toHaveLength(10);
   });
 
   test("the bank uses every question when fewer than ten exist", () => {

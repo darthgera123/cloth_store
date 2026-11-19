@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { applyAction, createSession, projectPublic } from "../src/engine/engine";
-import { ROUNDS_PER_GAME, sampleWithoutReplacement } from "../src/lib/random";
+import { ROUNDS_PER_GAME, samplePriceQuestions, sampleWithoutReplacement } from "../src/lib/random";
 import {
   GAME_FILES,
   QuestionBankError,
@@ -238,6 +238,32 @@ describe("random selection", () => {
   test("an empty corpus yields nothing", () => {
     expect(sampleWithoutReplacement([], 10, seeded(5))).toEqual([]);
     expect(sampleWithoutReplacement(corpus, 0, seeded(5))).toEqual([]);
+  });
+
+  test("price draws spread cheap, mid and expensive products", () => {
+    const products = Array.from({ length: 26 }, (_, index) => ({
+      id: `p${index + 1}`,
+      price: (index + 1) * 100,
+    }));
+    for (const count of [10, 15, 20]) {
+      const picked = samplePriceQuestions(products, count, (p) => p.price, seeded(count));
+      expect(picked).toHaveLength(count);
+      expect(new Set(picked).size).toBe(count);
+      const prices = picked.map((p) => p.price).sort((a, b) => a - b);
+      expect(prices.filter((price) => price <= 900).length).toBeGreaterThanOrEqual(3);
+      expect(prices.filter((price) => price > 1800).length).toBeGreaterThanOrEqual(3);
+    }
+  });
+
+  test("price draws still fill the count when a tier is small", () => {
+    const products = Array.from({ length: 7 }, (_, index) => ({
+      id: `p${index + 1}`,
+      price: (index + 1) * 100,
+    }));
+    const picked = samplePriceQuestions(products, 5, (p) => p.price, seeded(3));
+    expect(picked).toHaveLength(5);
+    expect(new Set(picked).size).toBe(5);
+    expect(samplePriceQuestions(products, 20, (p) => p.price, seeded(3))).toHaveLength(7);
   });
 });
 
